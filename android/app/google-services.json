@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "19673110035",
+    "project_id": "rosember-comunity-app-63216",
+    "storage_bucket": "rosember-comunity-app-63216.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:19673110035:android:24d15510be2b6f650d51e6",
+        "android_client_info": {
+          "package_name": "com.example.community_islamic_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDQONe2bJH2LkqjDYHNQaf2gA7a06InTX0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
