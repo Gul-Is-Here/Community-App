@@ -1,0 +1,38 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "rosember-comunity-app-63216",
+          "appId": "1:19673110035:android:24d15510be2b6f650d51e6",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "rosember-comunity-app-63216",
+          "configurations": {
+            "android": "1:19673110035:android:24d15510be2b6f650d51e6",
+            "ios": "1:19673110035:ios:f39fc85cf1b7e12c0d51e6",
+            "macos": "1:19673110035:ios:f39fc85cf1b7e12c0d51e6",
+            "web": "1:19673110035:web:ae078235b432bdaf0d51e6",
+            "windows": "1:19673110035:web:a42e143e3957fb4f0d51e6"
+          }
+        }
+      }
+    }
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ]
+    }
+  ]
+}
