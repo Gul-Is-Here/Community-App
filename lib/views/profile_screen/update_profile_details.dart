@@ -148,7 +148,7 @@ class _UpdateProfileDetailsState extends State<UpdateProfileDetails> {
                   },
                 ),
                 buildTextField(
-                   label: "Residential Address",
+                    label: "Residential Address",
                     controller: addressController),
                 buildTextField(label: "City", controller: cityController),
                 buildDropdownField(
@@ -192,8 +192,6 @@ class _UpdateProfileDetailsState extends State<UpdateProfileDetails> {
     );
   }
 
-  
- 
   Widget _buildUpdateButton() {
     return Center(
       child: ElevatedButton(
@@ -253,10 +251,11 @@ class _UpdateProfileDetailsState extends State<UpdateProfileDetails> {
           shadowColor: const Color.fromARGB(255, 252, 254, 255),
           elevation: 8,
         ),
-        child: Text(
+        child: const Text(
           'UPDATE',
           style: TextStyle(
             fontSize: 16,
+            fontFamily: popinsSemiBold,
             fontWeight: FontWeight.bold,
             color: Colors.white,
           ),
