@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import '../constants/globals.dart';
+import '../model/class_model.dart';
 import 'login_controller.dart';
 
 class ProfileController extends GetxController {
@@ -146,51 +147,48 @@ class ProfileController extends GetxController {
 
   Future<void> addFamilyMember({
     File? profileImage,
-    String? avatar,
     required String firstName,
     required String lastName,
-    required String gender,
     required String relationType,
     required String dob,
-    String? profession,
+    required String id,
     String? email,
-    String? phoneNumber,
   }) async {
     final url =
         Uri.parse('https://rosenbergcommunitycenter.org/api/AddRelationApi');
 
-    final headers = {
+    var request = http.MultipartRequest('POST', url);
+    request.headers.addAll({
       "Authorization": "Bearer ${globals.accessToken.value}",
-      "Content-Type": "application/x-www-form-urlencoded",
-    };
+    });
 
-    // Ensure email is not null
-    final body = {
-      "first_name": firstName,
-      "last_name": lastName,
-      "gender": gender,
-      "relation_type": relationType,
-      "dob": dob,
-      "profession": profession ?? '',
-      "email":
-          'gulfarazahmed08@gmail.com', // Send empty string if email is null
-      "phone_number": phoneNumber ?? '',
-      'profile_image': profileImage.toString()
-    };
+    // Add fields
+    request.fields['token'] = globals.accessToken.value;
+    request.fields['id'] = id;
+    request.fields['relation_firstname'] = firstName;
+    request.fields['relation_lastname'] = lastName;
+    request.fields['email_address'] =
+        email ?? ''; // Convert null to empty string
+    request.fields['relation_dob'] = dob;
+    request.fields['relation_type'] = relationType;
+
+    // Add image if it's not null
+    if (profileImage != null) {
+      request.files.add(await http.MultipartFile.fromPath(
+        'relation_image',
+        profileImage.path,
+      ));
+    }
 
     try {
-      final response = await http.post(
-        url,
-        headers: headers,
-        body: body,
-      );
+      final response = await request.send();
 
       if (response.statusCode == 200) {
+        fetchUserData2();
         print("Family member added successfully.");
       } else {
         print(
             "Failed to add family member. Status code: ${response.statusCode}");
-        print("Response body: ${response.body}");
       }
     } catch (e) {
       print("Error occurred while adding family member: $e");
@@ -200,14 +198,14 @@ class ProfileController extends GetxController {
   // Edit Profile Method
   // Method to edit family member
   Future<void> editFamilyMember({
-    required String email,
+    required String auth,
     required String id,
+    required String roleId,
     required String firstName,
     required String lastName,
     required String dob,
     required String relationType,
     File? profileImage,
-    String? avatar,
   }) async {
     try {
       isLoading(true);
@@ -216,15 +214,14 @@ class ProfileController extends GetxController {
         'POST',
         Uri.parse('https://rosenbergcommunitycenter.org/api/EditRelationApi'),
       );
-
-      request.fields['email_address'] = email;
+      request.fields['token'] = auth;
       request.fields['id'] = id;
+      request.fields['role_id'] = roleId;
       request.fields['relation_firstname'] = firstName;
       request.fields['relation_lastname'] = lastName;
       request.fields['relation_dob'] = dob;
       request.fields['relation_type'] = relationType;
 
-      // If profileImage is not null, upload it
       if (profileImage != null) {
         request.files.add(await http.MultipartFile.fromPath(
           'relation_image',
@@ -232,21 +229,41 @@ class ProfileController extends GetxController {
         ));
       }
 
-      // If avatar is selected, send it instead of the image
-      if (avatar != null) {
-        request.fields['relation_image'] = avatar;
-      }
-
       var response = await request.send();
       if (response.statusCode == 200) {
+        await fetchUserData2(); // Refresh user data after editing a family member
         print('Family member updated successfully');
       } else {
-        print('Failed to update family member. Status code: ${response.statusCode}');
+        print(
+            'Failed to update family member. Status code: ${response.statusCode}');
       }
     } catch (e) {
       print('Error: $e');
     } finally {
       isLoading(false);
+    }
+  }
+
+  // Get  Classes Data Method
+  Future<List<Class>> fetchClasses() async {
+    const String apiUrl =
+        "http://rosenbergcommunitycenter.org/api/ClassApi?access=7b150e45-e0c1-43bc-9290-3c0bf6473a51332";
+
+    try {
+      final response = await http.get(Uri.parse(apiUrl));
+
+      if (response.statusCode == 200) {
+        // Parse the JSON
+        final classesModel = ClassesModel.fromRawJson(response.body);
+
+        print(classesModel.data.classes);
+        // Return the list of classes
+        return classesModel.data.classes;
+      } else {
+        throw Exception('Failed to load classes');
+      }
+    } catch (e) {
+      throw Exception('Error fetching classes: $e');
     }
   }
 }

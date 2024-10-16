@@ -1,5 +1,8 @@
 import 'dart:io';
+import 'package:community_islamic_app/app_classes/app_class.dart';
+import 'package:community_islamic_app/constants/globals.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../constants/color.dart';
@@ -17,21 +20,27 @@ class FamilyMemberScreen extends StatefulWidget {
 class _FamilyMemberScreenState extends State<FamilyMemberScreen> {
   final ProfileController profileController = Get.put(ProfileController());
 
-  @override
   TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
   TextEditingController dobController = TextEditingController();
 
-  // Dropdown selections
   String selectedRelation = 'Brother';
-  String selectedGender = 'Male';
 
-  // File for profile picture or selected avatar
   File? _profileImage;
-  String? _selectedAvatar;
 
-  final List<String> relation = ['Brother', 'Sister', 'Father', 'Mother'];
-  final List<String> genders = ["Male", "Female"];
+  bool isLoading = false; // Loading state
+
+  final List<String> relation = [
+    "Father",
+    "Husband",
+    "Brother",
+    "Son",
+    "Mother",
+    "Wife",
+    "Sister",
+    "Daughter"
+  ];
+
   final List<String> avatars = [
     'assets/images/male.png',
     'assets/images/female.png',
@@ -39,43 +48,42 @@ class _FamilyMemberScreenState extends State<FamilyMemberScreen> {
     'assets/images/girl.png'
   ];
 
-  // Pick image from gallery or camera
   Future<void> _pickImageFromGallery() async {
     final pickedFile =
         await ImagePicker().pickImage(source: ImageSource.gallery);
-    setState(() {
-      if (pickedFile != null) {
+    if (pickedFile != null) {
+      setState(() {
         _profileImage = File(pickedFile.path);
-        _selectedAvatar = null; // Reset avatar selection if image is picked
-      }
-    });
+      });
+    }
   }
 
-  // Show dialog to choose between picking avatar or image from gallery
   Future<void> _showImageSelectionDialog() async {
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Select Profile Picture'),
+          title: const Text(
+            'Select Profile Picture',
+            style: TextStyle(fontFamily: popinsSemiBold, color: Colors.black),
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextButton.icon(
                 onPressed: () {
                   Navigator.of(context).pop();
-                  showAvatarSelectionDialog();
-                },
-                icon: Icon(Icons.person),
-                label: Text('Select Avatar'),
-              ),
-              TextButton.icon(
-                onPressed: () {
-                  Navigator.of(context).pop();
                   _pickImageFromGallery();
                 },
-                icon: Icon(Icons.photo),
-                label: Text('Select from Gallery'),
+                icon: Icon(
+                  Icons.photo,
+                  color: primaryColor,
+                ),
+                label: Text(
+                  'Select from Gallery',
+                  style:
+                      TextStyle(fontFamily: popinsRegulr, color: primaryColor),
+                ),
               ),
             ],
           ),
@@ -84,60 +92,124 @@ class _FamilyMemberScreenState extends State<FamilyMemberScreen> {
     );
   }
 
-  // Show dialog for avatar selection
-  Future<void> showAvatarSelectionDialog() async {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text(
-            'Select an Avatar',
-            style: TextStyle(fontFamily: popinsRegulr),
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      floatingActionButton: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(30),
+          gradient:
+              const LinearGradient(colors: [gradianColor1, gradianColor2]),
+        ),
+        child: FloatingActionButton(
+          backgroundColor: Colors.transparent,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+            side: BorderSide(width: 2, color: whiteColor),
           ),
-          content: SizedBox(
-            height: 200,
-            width: double.maxFinite,
-            child: GridView.builder(
-              shrinkWrap: true,
-              itemCount: avatars.length,
-              itemBuilder: (context, index) {
-                String avatarPath = avatars[index];
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _selectedAvatar = avatarPath;
-                      _profileImage =
-                          null; // Reset profile image if avatar is picked
-                    });
-                    Navigator.of(context).pop();
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 5),
-                    child: Image.asset(avatarPath, width: 100, height: 100),
+          onPressed: () {
+            showAddMemberDialog(context);
+            lastNameController.clear();
+            firstNameController.clear();
+            dobController.clear();
+          },
+          child: Icon(
+            Icons.add,
+            size: 30,
+            color: whiteColor,
+          ),
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            const Projectbackground(title: 'Family Members'),
+            Container(
+              alignment: Alignment.centerLeft,
+              height: 50,
+              width: double.infinity,
+              color: primaryColor,
+              child: const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 12),
+                child: Text(
+                  'FAMILY MEMBERS',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: popinsSemiBold,
+                    fontSize: 24,
                   ),
-                );
-              },
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-                childAspectRatio: 1.0,
+                ),
               ),
             ),
-          ),
-        );
-      },
+            Obx(() {
+              if (profileController.isLoading.value) {
+                return Center(
+                  child: SpinKitFadingCircle(
+                    color: primaryColor,
+                    size: 50.0,
+                  ),
+                ); // Loading indicator
+              }
+
+              if (profileController.userData.isEmpty) {
+                return const Center(
+                    child: Text(
+                  "No data available.",
+                  style:
+                      TextStyle(color: Colors.black, fontFamily: popinsRegulr),
+                ));
+              }
+              List<dynamic> relations =
+                  profileController.userData['relations'] ?? [];
+              return ListView.builder(
+                shrinkWrap: true,
+                physics:
+                    NeverScrollableScrollPhysics(), // Disable internal scrolling
+                itemCount: relations.length,
+                itemBuilder: (context, index) {
+                  final member = relations[index];
+                  if (member == null) {
+                    return const Center(
+                      child: Text(
+                        'No Family Member Added Yet',
+                        style: TextStyle(fontFamily: popinsRegulr),
+                      ),
+                    );
+                  } else {
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: FamilyMemberCard(
+                        heroTag: 'btn$index',
+                        name: member['name'] ?? 'Unknown',
+                        relationship: member['relation_type'] ?? 'Unknown',
+                        dob: member['dob'] ?? 'N/A',
+                        age: AppClass().calculateAge(member['dob']),
+                        profileImage:
+                            member['profile_image'] ?? 'default_image_path',
+                        onTap: () => _showEditMemberDialog(context, member),
+                      ),
+                    );
+                  }
+                },
+              );
+            }),
+          ],
+        ),
+      ),
     );
   }
 
-  void _showAddMemberDialog(BuildContext context) {
+  void showAddMemberDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
-              title: Text('Add Family Member'),
+              title: const Text(
+                'Add Family Member',
+                style: TextStyle(fontFamily: popinsSemiBold),
+              ),
               content: SingleChildScrollView(
                 child: Column(
                   children: [
@@ -150,9 +222,11 @@ class _FamilyMemberScreenState extends State<FamilyMemberScreen> {
                       value: selectedRelation,
                       items: relation,
                       onChanged: (newValue) {
-                        setState(() {
-                          selectedRelation = newValue!;
-                        });
+                        if (mounted) {
+                          setState(() {
+                            selectedRelation = newValue!;
+                          });
+                        }
                       },
                     ),
                     buildTextField(
@@ -166,32 +240,29 @@ class _FamilyMemberScreenState extends State<FamilyMemberScreen> {
                           lastDate: DateTime.now(),
                         );
                         if (pickedDate != null) {
-                          dobController.text =
-                              "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
+                          if (mounted) {
+                            setState(() {
+                              dobController.text =
+                                  "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
+                            });
+                          }
                         }
                       },
                     ),
-                    buildDropdownField(
-                        label: "Gender",
-                        value: selectedGender,
-                        items: genders,
-                        onChanged: (newValue) {
-                          setState(() {
-                            selectedGender = newValue!;
-                          });
-                        }),
-                    const SizedBox(height: 10),
-                    // Profile Picture or Avatar
                     _profileImage != null
                         ? Image.file(_profileImage!, height: 100, width: 100)
-                        : _selectedAvatar != null
-                            ? Image.asset(_selectedAvatar!,
-                                height: 100, width: 100)
-                            : Text('No image or avatar selected.'),
+                        : const Text(
+                            'No image selected.',
+                            style: TextStyle(fontFamily: popinsRegulr),
+                          ),
                     TextButton.icon(
                       onPressed: _showImageSelectionDialog,
-                      icon: Icon(Icons.photo),
-                      label: Text('Upload Profile Picture'),
+                      icon: Icon(Icons.photo, color: primaryColor),
+                      label: Text(
+                        'Upload Profile Picture',
+                        style: TextStyle(
+                            fontFamily: popinsRegulr, color: primaryColor),
+                      ),
                     ),
                   ],
                 ),
@@ -199,38 +270,53 @@ class _FamilyMemberScreenState extends State<FamilyMemberScreen> {
               actions: [
                 TextButton(
                   onPressed: () {
-                    Navigator.of(context).pop(); // Close dialog
+                    Navigator.of(context).pop();
                   },
-                  child: Text('Cancel'),
+                  child: Text(
+                    'Cancel',
+                    style: TextStyle(
+                        fontFamily: popinsSemiBold, color: primaryColor),
+                  ),
                 ),
                 TextButton(
                   onPressed: () async {
-                    // Upload the avatar if selected, otherwise upload the image
-                    if (_selectedAvatar != null) {
-                      await profileController.addFamilyMember(
-                        email: 'gulfarazahmed08@gmail.com',
-                        avatar: _selectedAvatar,
-                        firstName: firstNameController.text,
-                        lastName: lastNameController.text,
-                        gender: selectedGender,
-                        relationType: selectedRelation,
-                        dob: dobController.text,
-                      );
-                    } else if (_profileImage != null) {
-                      await profileController.addFamilyMember(
-                        email: 'gulfarazahmed08@gmail.com',
-                        profileImage: _profileImage,
-                        firstName: firstNameController.text,
-                        lastName: lastNameController.text,
-                        gender: selectedGender,
-                        relationType: selectedRelation,
-                        dob: dobController.text,
-                      );
-                    }
+                    setState(() {
+                      isLoading = true; // Start loading
+                    });
+                    await profileController.addFamilyMember(
+                      id: globals.userId.value,
+                      firstName: firstNameController.text,
+                      lastName: lastNameController.text,
+                      relationType: selectedRelation,
+                      dob: dobController.text,
+                      profileImage: _profileImage,
+                    );
 
-                    Navigator.of(context).pop(); // Close dialog
+                    // Clear form fields
+                    firstNameController.clear();
+                    lastNameController.clear();
+                    dobController.clear();
+                    _profileImage = null;
+
+                    // Fetch updated list of family members
+                    await profileController.fetchUserData2();
+
+                    setState(() {
+                      isLoading = false; // Stop loading
+                    });
+
+                    Navigator.of(context).pop();
                   },
-                  child: Text('Save'),
+                  child: isLoading
+                      ? SpinKitFadingCircle(
+                          color: primaryColor,
+                          size: 50.0,
+                        ) // Loading indicator
+                      : Text(
+                          'Save',
+                          style: TextStyle(
+                              fontFamily: popinsSemiBold, color: primaryColor),
+                        ),
                 ),
               ],
             );
@@ -240,7 +326,6 @@ class _FamilyMemberScreenState extends State<FamilyMemberScreen> {
     );
   }
 
-// Edit Dialog box
   void _showEditMemberDialog(
       BuildContext context, Map<String, dynamic> member) {
     firstNameController.text = member['first_name'] ?? '';
@@ -254,7 +339,10 @@ class _FamilyMemberScreenState extends State<FamilyMemberScreen> {
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
-              title: Text('Edit Family Member'),
+              title: const Text(
+                'Edit Family Member',
+                style: TextStyle(fontFamily: popinsSemiBold),
+              ),
               content: SingleChildScrollView(
                 child: Column(
                   children: [
@@ -267,9 +355,11 @@ class _FamilyMemberScreenState extends State<FamilyMemberScreen> {
                       value: selectedRelation,
                       items: relation,
                       onChanged: (newValue) {
-                        setState(() {
-                          selectedRelation = newValue!;
-                        });
+                        if (mounted) {
+                          setState(() {
+                            selectedRelation = newValue!;
+                          });
+                        }
                       },
                     ),
                     buildTextField(
@@ -283,22 +373,30 @@ class _FamilyMemberScreenState extends State<FamilyMemberScreen> {
                           lastDate: DateTime.now(),
                         );
                         if (pickedDate != null) {
-                          dobController.text =
-                              "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
+                          if (mounted) {
+                            setState(() {
+                              dobController.text =
+                                  "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
+                            });
+                          }
                         }
                       },
                     ),
-                    const SizedBox(height: 10),
                     _profileImage != null
                         ? Image.file(_profileImage!, height: 100, width: 100)
-                        : _selectedAvatar != null
-                            ? Image.asset(_selectedAvatar!,
-                                height: 100, width: 100)
-                            : Text('No image or avatar selected.'),
+                        : const Text(
+                            'No image selected.',
+                            style: TextStyle(
+                                fontFamily: popinsRegulr, color: Colors.black),
+                          ),
                     TextButton.icon(
                       onPressed: _showImageSelectionDialog,
-                      icon: Icon(Icons.photo),
-                      label: Text('Upload Profile Picture'),
+                      icon: Icon(Icons.photo, color: primaryColor),
+                      label: const Text(
+                        'Upload Profile Picture',
+                        style: TextStyle(
+                            fontFamily: popinsRegulr, color: Colors.black),
+                      ),
                     ),
                   ],
                 ),
@@ -306,28 +404,49 @@ class _FamilyMemberScreenState extends State<FamilyMemberScreen> {
               actions: [
                 TextButton(
                   onPressed: () {
-                    Navigator.of(context).pop(); // Close dialog
+                    Navigator.of(context).pop();
                   },
-                  child: Text('Cancel'),
+                  child: Text(
+                    'Cancel',
+                    style: TextStyle(
+                        fontFamily: popinsSemiBold, color: primaryColor),
+                  ),
                 ),
                 TextButton(
                   onPressed: () async {
-                    if (_selectedAvatar != null || _profileImage != null) {
-                      await profileController.editFamilyMember(
-                        email: 'gulfarazahmed08@gmail.com',
-                        id: member['id'].toString(),
-                        avatar: _selectedAvatar,
-                        profileImage: _profileImage,
-                        firstName: firstNameController.text,
-                        lastName: lastNameController.text,
-                        dob: dobController.text,
-                        relationType: selectedRelation,
-                      );
-                    }
+                    setState(() {
+                      isLoading = true; // Start loading
+                    });
+                    await profileController.editFamilyMember(
+                      auth: globals.accessToken.value,
+                      id: member['id'].toString(),
+                      roleId: member['role_id'].toString(),
+                      profileImage: _profileImage,
+                      firstName: firstNameController.text,
+                      lastName: lastNameController.text,
+                      dob: dobController.text,
+                      relationType: selectedRelation,
+                    );
 
-                    Navigator.of(context).pop(); // Close dialog
+                    // Fetch updated list of family members
+                    await profileController.fetchUserData2();
+
+                    setState(() {
+                      isLoading = false; // Stop loading
+                    });
+
+                    Navigator.of(context).pop();
                   },
-                  child: Text('Save'),
+                  child: isLoading
+                      ? SpinKitFadingCircle(
+                          color: primaryColor,
+                          size: 50.0,
+                        ) // Loading indicator// Show loading indicator
+                      : Text(
+                          'Save',
+                          style: TextStyle(
+                              fontFamily: popinsSemiBold, color: primaryColor),
+                        ),
                 ),
               ],
             );
@@ -336,82 +455,4 @@ class _FamilyMemberScreenState extends State<FamilyMemberScreen> {
       },
     );
   }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Obx(() {
-        if (profileController.isLoading.value) {
-          return Center(child: CircularProgressIndicator());
-        }
-
-        if (profileController.userData.isEmpty) {
-          return Center(child: Text("No data available."));
-        }
-
-        // Access the relations from userData map
-        final List<dynamic> relations =
-            profileController.userData['relations'] ?? [];
-
-        return SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Projectbackground(title: 'Family Members'),
-              Container(
-                alignment: Alignment.centerLeft,
-                height: 50,
-                width: double.infinity,
-                color: primaryColor,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 12),
-                  child: Text(
-                    'FAMILY MEMBERS',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: popinsSemiBold,
-                      fontSize: 24,
-                    ),
-                  ),
-                ),
-              ),
-              ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: relations.length,
-                itemBuilder: (context, index) {
-                  final member = relations[index];
-                  return FamilyMemberCard(
-                    heroTag: 'btn$index',
-                    name: member['name'] ?? 'Unknown',
-                    relationship: member['relation_type'] ?? 'Unknown',
-                    dob: member['dob'] ?? 'N/A',
-                    age: calculateAge(member['dob']),
-                    profileImage:
-                        member['profile_image'] ?? 'default_image_path',
-                    onTap: () => _showEditMemberDialog(context, member),
-                  );
-                },
-              ),
-            ],
-          ),
-        );
-      }),
-    );
-  }
-
-  // Utility function to calculate age from date of birth (dob)
-  int calculateAge(String dob) {
-    if (dob == null || dob.isEmpty) return 0;
-    DateTime birthDate = DateTime.tryParse(dob) ?? DateTime.now();
-    DateTime today = DateTime.now();
-    int age = today.year - birthDate.year;
-    if (today.month < birthDate.month ||
-        (today.month == birthDate.month && today.day < birthDate.day)) {
-      age--;
-    }
-    return age;
-  }
-
-  // Widget to build dropdown field
 }
