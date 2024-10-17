@@ -1,5 +1,6 @@
 import 'package:community_islamic_app/widgets/project_background.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import '../../constants/color.dart';
 import '../../controllers/gallery_controller.dart';
@@ -33,10 +34,10 @@ class GalleryImagesScreen extends StatelessWidget {
           height: 45,
           width: double.infinity,
           decoration: BoxDecoration(color: primaryColor),
-          child: const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 12),
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
             child: Text(
-              'MEET & GREET',
+              categoryName,
               style: TextStyle(
                 fontFamily: popinsSemiBold,
                 color: Colors.white,
@@ -49,7 +50,12 @@ class GalleryImagesScreen extends StatelessWidget {
         Expanded(
           child: Obx(() {
             if (galleryController.isLoading.value) {
-              return const Center(child: CircularProgressIndicator());
+              return Center(
+                child: SpinKitFadingCircle(
+                  color: primaryColor,
+                  size: 50.0,
+                ),
+              );
             }
 
             if (galleryController.galleryList.isEmpty) {
@@ -82,7 +88,12 @@ class GalleryImagesScreen extends StatelessWidget {
                         fit: BoxFit.cover,
                         loadingBuilder: (context, child, progress) {
                           if (progress == null) return child;
-                          return Center(child: CircularProgressIndicator());
+                          return Center(
+                            child: SpinKitFadingCircle(
+                              color: primaryColor,
+                              size: 50.0,
+                            ),
+                          );
                         },
                         errorBuilder: (context, error, stackTrace) {
                           return const Center(child: Icon(Icons.error));

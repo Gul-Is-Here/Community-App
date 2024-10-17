@@ -211,7 +211,7 @@ class HomeStaticBackground extends StatelessWidget {
                 builder: (context, child) => Transform.rotate(
                   angle: controller.animation.value,
                   child: Image.asset(
-                    compass,
+                    compass1,
                     height: screenHeight * 0.2,
                     width: screenWidth * 0.4,
                   ),

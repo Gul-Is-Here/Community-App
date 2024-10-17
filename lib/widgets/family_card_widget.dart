@@ -1,8 +1,14 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+
 import '../constants/color.dart';
 import '../controllers/profileController.dart';
 import '../model/class_model.dart';
+import 'profile_dropdown_widget.dart';
+import 'profile_text_widget.dart';
 
 class FamilyMemberCard extends StatefulWidget {
   final String name;
@@ -12,7 +18,6 @@ class FamilyMemberCard extends StatefulWidget {
   final String heroTag;
   final String profileImage;
   final void Function() onTap;
-
   const FamilyMemberCard({
     super.key,
     required this.onTap,
@@ -29,58 +34,14 @@ class FamilyMemberCard extends StatefulWidget {
 }
 
 class _FamilyMemberCardState extends State<FamilyMemberCard> {
-  final familyMemberController = Get.put(ProfileController());
-
   bool isExpanded = false;
-  List<Class> availableClasses = [];
-  Class? selectedAvailableClass;
-  Class? selectedEnrolledClass;
-  bool isLoading = true; // To track loading state
-  String? errorMessage; // To store any error messages
 
-  @override
-  void initState() {
-    super.initState();
-    fetchClassesData(); // Fetch available classes when widget is initialized
-  }
-
-  // Fetch class data from the API
-  void fetchClassesData() async {
-    try {
-      List<Class> classes = await familyMemberController.fetchClasses();
-      setState(() {
-        availableClasses = classes;
-        selectedAvailableClass = classes.isNotEmpty ? classes[0] : null;
-        isLoading = false; // Stop loading once data is fetched
-      });
-    } catch (error) {
-      setState(() {
-        isLoading = false; // Stop loading on error
-        errorMessage = 'Error fetching classes: $error'; // Set error message
-      });
-    }
-  }
-
-  // Enroll in a class and show confirmation
-  void enrollInClass(Class selectedClass) {
-    // Add your enrollment logic here
-    // For example, you could call an API to enroll the family member
-    // If successful:
-    setState(() {
-      selectedEnrolledClass =
-          selectedClass; // Update the selected enrolled class
-    });
-
-    // Show confirmation message
-    Get.snackbar(
-      'Success',
-      'Enrolled in ${selectedClass.className}!',
-      snackPosition: SnackPosition.BOTTOM,
-    );
-  }
+  // Controllers for text fields
 
   @override
   Widget build(BuildContext context) {
+    var familyMemberController = Get.put(ProfileController());
+
     return Stack(
       clipBehavior: Clip.none,
       children: [
@@ -96,7 +57,8 @@ class _FamilyMemberCardState extends State<FamilyMemberCard> {
               ListTile(
                 leading: CircleAvatar(
                   radius: 30,
-                  backgroundImage: NetworkImage(widget.profileImage),
+                  backgroundImage:
+                      NetworkImage(widget.profileImage), // Profile picture
                 ),
                 title: Text(
                   widget.name,
@@ -109,8 +71,13 @@ class _FamilyMemberCardState extends State<FamilyMemberCard> {
                 trailing: Container(
                   decoration: BoxDecoration(
                     color: Colors.black,
-                    border: Border.all(color: whiteColor, width: 0),
-                    borderRadius: BorderRadius.circular(30),
+                    border: Border.all(
+                      color: whiteColor,
+                      width: 0,
+                    ),
+                    borderRadius: BorderRadius.circular(
+                      30,
+                    ),
                   ),
                   child: IconButton(
                     icon: Icon(
@@ -130,220 +97,315 @@ class _FamilyMemberCardState extends State<FamilyMemberCard> {
                 Column(
                   children: [
                     const Divider(),
-                    _buildGeneralInfo(),
-                    const SizedBox(height: 20),
-                    _buildAvailableClassesDropdown(),
-                    const SizedBox(height: 20),
-                    _buildEnrolledClassesDropdown(),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          height: 28,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: primaryColor,
+                          ),
+                          child: const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 12),
+                            child: Text(
+                              'GENERAL INFORMATION',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontFamily: popinsSemiBold,
+                                fontSize: 13,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                const Text(
+                                  'Name ',
+                                  style: TextStyle(
+                                      fontFamily: popinsRegulr, fontSize: 10),
+                                ),
+                                Text(
+                                  widget.name,
+                                  style: const TextStyle(
+                                      fontFamily: popinsRegulr, fontSize: 10),
+                                ),
+                                const Text(
+                                  'Relation',
+                                  style: TextStyle(
+                                      fontFamily: popinsRegulr, fontSize: 10),
+                                ),
+                                Text(
+                                  widget.relationship,
+                                  style: const TextStyle(
+                                      fontFamily: popinsRegulr, fontSize: 10),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 10),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                const Text(
+                                  'DOB',
+                                  style: TextStyle(
+                                      fontFamily: popinsRegulr, fontSize: 10),
+                                ),
+                                Text(
+                                  widget.dob,
+                                  style: const TextStyle(
+                                      fontFamily: popinsRegulr, fontSize: 10),
+                                ),
+                                const Padding(
+                                  padding: EdgeInsets.only(right: 10),
+                                  child: Text(
+                                    'Age',
+                                    style: TextStyle(
+                                        fontFamily: popinsRegulr, fontSize: 10),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 0),
+                                  child: Text(
+                                    textAlign: TextAlign.start,
+                                    widget.age.toString(),
+                                    style: const TextStyle(
+                                        fontFamily: popinsRegulr, fontSize: 10),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          height: 28,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: primaryColor,
+                          ),
+                          child: const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 12),
+                            child: Text(
+                              'AVAILABLE CLASSES',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontFamily: popinsSemiBold,
+                                fontSize: 13,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              SizedBox(
+                                height: 30,
+                                child: Card(
+                                  margin: const EdgeInsets.all(0),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(30)),
+                                  child: Center(
+                                    child: DropdownButton<String>(
+                                      // elevation: 5,
+                                      // borderRadius: BorderRadius.circular(40),
+                                      dropdownColor: Colors.white,
+                                      underline:
+                                          Container(), // Remove default underline
+                                      items: <String>[
+                                        'View Details',
+                                        'Enrole in Class',
+                                      ].map((String value) {
+                                        return DropdownMenuItem<String>(
+                                          value: value,
+                                          child: Text(
+                                            value,
+                                            style: const TextStyle(
+                                                fontFamily: popinsRegulr,
+                                                fontSize: 13),
+                                          ),
+                                        );
+                                      }).toList(),
+                                      onChanged: (_) {},
+                                      hint: const Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 20),
+                                        child: Text(
+                                          'Class A',
+                                          style: TextStyle(
+                                              fontFamily: popinsBold,
+                                              fontSize: 13),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          height: 28,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: primaryColor,
+                          ),
+                          child: const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 12),
+                            child: Text(
+                              'CLASSES ENROLLED',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontFamily: popinsSemiBold,
+                                fontSize: 13,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8.0, vertical: 8),
+                          child: Stack(
+                            children: [
+                              // 40.heightBox,
+                              Positioned(
+                                  left: 20,
+                                  bottom: 45,
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 5),
+                                    decoration: const BoxDecoration(
+                                        color: Color(0xFFFED36A),
+                                        borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(5),
+                                            topRight: Radius.circular(5))),
+                                    child: const Padding(
+                                      padding:
+                                          EdgeInsets.symmetric(vertical: 3),
+                                      child: Text(
+                                        'waiting for Approval',
+                                        style: TextStyle(
+                                            fontFamily: popinsSemiBold,
+                                            fontSize: 8),
+                                      ),
+                                    ),
+                                  )),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  children: [
+                                    SizedBox(
+                                      height: 40,
+                                      child: Card(
+                                        color: const Color(0xFF1EC7CD),
+                                        margin: const EdgeInsets.all(0),
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(30)),
+                                        child: Center(
+                                          child: DropdownButton<String>(
+                                            // elevation: 5,
+                                            // borderRadius: BorderRadius.circular(40),
+                                            dropdownColor: Colors.white,
+                                            underline:
+                                                Container(), // Remove default underline
+                                            items: <String>[
+                                              'View Details',
+                                              'Enrole in Class',
+                                            ].map((String value) {
+                                              return DropdownMenuItem<String>(
+                                                value: value,
+                                                child: Text(
+                                                  value,
+                                                  style: const TextStyle(
+                                                      fontFamily: popinsRegulr,
+                                                      fontSize: 13),
+                                                ),
+                                              );
+                                            }).toList(),
+                                            onChanged: (_) {},
+                                            hint: const Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 20),
+                                              child: Text(
+                                                'Class A',
+                                                style: TextStyle(
+                                                    fontFamily: popinsBold,
+                                                    fontSize: 13),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    // EnrolledClassBadge(
+                                    //     'Class B', Colors.green, 'Approved'),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
-                ),
-              if (isLoading) // Show loading indicator
-                const Center(child: CircularProgressIndicator()),
-              if (errorMessage != null) // Show error message if exists
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    errorMessage!,
-                    style: const TextStyle(color: Colors.red),
-                  ),
                 ),
             ],
           ),
         ),
-        _buildFloatingButtons(),
-      ],
-    );
-  }
-
-  Widget _buildGeneralInfo() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildSectionHeader('GENERAL INFORMATION'),
-        const SizedBox(height: 8),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            _buildInfoRow('Name', widget.name),
-            _buildInfoRow('Relation', widget.relationship),
-            _buildInfoRow('DOB', widget.dob),
-            _buildInfoRow('Age', widget.age.toString()),
-          ],
+        // Positioned Edit Button, half on and half off the card
+        Positioned(
+          bottom: -20,
+          right: 120,
+          child: FloatingActionButton(
+            heroTag: widget.heroTag,
+            shape: RoundedRectangleBorder(
+                side: BorderSide(width: 2, color: whiteColor),
+                borderRadius: BorderRadius.circular(20)),
+            onPressed: () {
+              // Edit action
+            },
+            mini: true,
+            backgroundColor: Colors.red,
+            child: Icon(
+              Icons.close,
+              color: whiteColor,
+            ),
+          ),
         ),
-      ],
-    );
-  }
-
-  Widget _buildAvailableClassesDropdown() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildSectionHeader('AVAILABLE CLASSES'),
-        const SizedBox(height: 8),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: SizedBox(
-            height: 30,
-            child: Card(
-              margin: const EdgeInsets.all(0),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30)),
-              child: Center(
-                child: DropdownButton<Class>(
-                  dropdownColor: Colors.white,
-                  underline: Container(), // Remove default underline
-                  items: availableClasses.map((Class value) {
-                    return DropdownMenuItem<Class>(
-                      value: value,
-                      child: Text(
-                        value.className,
-                        style: const TextStyle(
-                            fontFamily: popinsRegulr, fontSize: 13),
-                      ),
-                    );
-                  }).toList(),
-                  onChanged: (Class? newClass) {
-                    setState(() {
-                      selectedAvailableClass = newClass;
-                    });
-                  },
-                  hint: selectedAvailableClass == null
-                      ? const Text(
-                          'Select Class',
-                          style:
-                              TextStyle(fontFamily: popinsBold, fontSize: 13),
-                        )
-                      : Text(
-                          selectedAvailableClass!.className,
-                          style: const TextStyle(
-                              fontFamily: popinsBold, fontSize: 13),
-                        ),
-                ),
-              ),
+        Positioned(
+          bottom: -20,
+          right: 165,
+          child: FloatingActionButton(
+            heroTag: widget.heroTag,
+            shape: RoundedRectangleBorder(
+                side: BorderSide(width: 2, color: whiteColor),
+                borderRadius: BorderRadius.circular(20)),
+            onPressed: widget.onTap,
+            mini: true,
+            backgroundColor: primaryColor,
+            child: Icon(
+              Icons.edit,
+              color: whiteColor,
             ),
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildEnrolledClassesDropdown() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildSectionHeader('CLASSES ENROLLED'),
-        const SizedBox(height: 8),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: SizedBox(
-            height: 40,
-            child: Card(
-              color: const Color(0xFF1EC7CD),
-              margin: const EdgeInsets.all(0),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30)),
-              child: Center(
-                child: DropdownButton<Class>(
-                  dropdownColor: Colors.white,
-                  underline: Container(), // Remove default underline
-                  items: availableClasses.map((Class value) {
-                    return DropdownMenuItem<Class>(
-                      value: value,
-                      child: Text(
-                        value.className,
-                        style: const TextStyle(
-                            fontFamily: popinsRegulr, fontSize: 13),
-                      ),
-                    );
-                  }).toList(),
-                  onChanged: (Class? newClass) {
-                    setState(() {
-                      selectedEnrolledClass = newClass;
-                    });
-                  },
-                  hint: selectedEnrolledClass == null
-                      ? const Text(
-                          'Enroll in Class',
-                          style:
-                              TextStyle(fontFamily: popinsBold, fontSize: 13),
-                        )
-                      : Text(
-                          selectedEnrolledClass!.className,
-                          style: const TextStyle(
-                              fontFamily: popinsBold, fontSize: 13),
-                        ),
-                  // Add enroll action here
-                  onTap: () {
-                    if (selectedAvailableClass != null) {
-                      enrollInClass(selectedAvailableClass!);
-                    }
-                  },
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSectionHeader(String title) {
-    return Container(
-      alignment: Alignment.centerLeft,
-      height: 28,
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: primaryColor,
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12),
-        child: Text(
-          title,
-          style: const TextStyle(
-            color: Colors.white,
-            fontFamily: popinsSemiBold,
-            fontSize: 13,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildInfoRow(String label, String value) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(fontFamily: popinsRegulr, fontSize: 10),
-        ),
-        Text(
-          value,
-          style: const TextStyle(fontFamily: popinsRegulr, fontSize: 10),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildFloatingButtons() {
-    return Positioned(
-      bottom: -20,
-      right: 120,
-      child: FloatingActionButton(
-        heroTag: widget.heroTag,
-        shape: RoundedRectangleBorder(
-            side: BorderSide(width: 2, color: whiteColor),
-            borderRadius: BorderRadius.circular(20)),
-        onPressed: () {
-          // Edit action
-        },
-        mini: true,
-        backgroundColor: Colors.red,
-        child: Icon(
-          Icons.close,
-          color: whiteColor,
-        ),
-      ),
     );
   }
 }
