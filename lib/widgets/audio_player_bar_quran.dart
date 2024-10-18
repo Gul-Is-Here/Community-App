@@ -50,7 +50,13 @@ class AudioPlayerBar2 extends StatelessWidget {
             ],
           ),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Text(
+                totalVerseCount,
+                style: TextStyle(fontFamily: popinsMedium, color: whiteColor),
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

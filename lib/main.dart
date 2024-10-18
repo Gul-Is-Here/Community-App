@@ -21,7 +21,7 @@ void main() async {
 
   await QiblahController().getLocation();
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-  HomeController();
+  // HomeController();
   DateTime today = DateTime.now();
 
   if (sharedPreferences.containsKey("prayerTimesMonth")) {

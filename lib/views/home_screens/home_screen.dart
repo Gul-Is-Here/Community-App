@@ -13,7 +13,7 @@ class HomeScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      drawer: const CustomDrawer(),
+      drawer: CustomDrawer(),
       appBar: AppBar(
           backgroundColor: primaryColor,
           iconTheme: const IconThemeData(

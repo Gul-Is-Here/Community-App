@@ -58,7 +58,10 @@ class Home extends StatelessWidget {
                             .playPreviousAudio(quranController.audioFiles),
                         onStop: () =>
                             audioController.stopAudio(), // Stop button callback
-                        totalVerseCount: '',
+                        totalVerseCount: quranController
+                            .getSurahByChapterId(
+                                audioController.currentAudio.value!.chapterId)!
+                            .name,
                       )
                     : SizedBox.shrink()),
               ),

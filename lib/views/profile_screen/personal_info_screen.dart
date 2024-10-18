@@ -137,7 +137,7 @@ class PersonalInfoScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: whiteColor,
-      endDrawer: Container(color: Colors.white, child: const CustomDrawer()),
+      endDrawer: Container(color: Colors.white, child:  CustomDrawer()),
       appBar: AppBar(
         backgroundColor: whiteColor,
         leading: IconButton(

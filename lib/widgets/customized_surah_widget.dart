@@ -2,6 +2,7 @@ import 'package:community_islamic_app/app_classes/app_class.dart';
 import 'package:community_islamic_app/constants/color.dart';
 import 'package:community_islamic_app/model/quran_audio_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -74,17 +75,17 @@ class _CustomizedSurahWidgetState extends State<CustomizedSurahWidget> {
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(25),
                 ),
-                child: GestureDetector(
-                  onTap: widget.onTap1,
-                  child: Center(
-                      child: Image.asset(
-                    widget.firstIcon,
-                    height: 35,
-                    width: 35,
-                    fit: BoxFit.cover,
-                    color: primaryColor,
-                  )),
-                ),
+                child: Center(
+                    child: IconButton(
+                        splashColor: primaryColor,
+                        onPressed: widget.onTap1,
+                        icon: Image.asset(
+                          widget.firstIcon,
+                          height: 35,
+                          width: 35,
+                          fit: BoxFit.cover,
+                          color: primaryColor,
+                        ))),
               ),
             ),
           ),
@@ -106,10 +107,11 @@ class _CustomizedSurahWidgetState extends State<CustomizedSurahWidget> {
                     child: audioController.isLoading.value &&
                             audioController.currentAudio.value?.chapterId ==
                                 widget.audioFile.chapterId
-                        ? CircularProgressIndicator(
+                        ? SpinKitFadingCircle(
                             color: primaryColor,
                           )
                         : IconButton(
+                            splashColor: primaryColor,
                             onPressed: () async {
                               if (widget.audioFile.audioUrl.isNotEmpty) {
                                 await audioController

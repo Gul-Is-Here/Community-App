@@ -58,8 +58,9 @@ const banner7 = "assets/images/bg7.png";
 const banner8 = "assets/images/bg8.png";
 // Compass List Icons
 const compass1 = "assets/home_icon/compass1.png";
-const compass2 = "assets/home_icon/compass2.png";
+const compass2 = "assets/home_icon/compass2.jpg";
 final List<String> imageOptions = [
+  compass2,
   updatedCompass2,
   qiblaIcon2,
   qiblaIcon4,

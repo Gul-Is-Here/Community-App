@@ -65,8 +65,8 @@ class QiblahScreen extends StatelessWidget {
             ),
           ),
           Positioned(
-            top: screenHeight * 0.12,
-            left: screenWidth * 0.19,
+            top: screenHeight * 0.10,
+            left: screenWidth * 0.20,
             child: Text(
               'Qiblah Locator',
               style: TextStyle(
@@ -178,9 +178,9 @@ class QiblahScreen extends StatelessWidget {
                       Text(
                         "Qiblah Direction: ${qiblahDirection.qiblah.toStringAsFixed(2)}°",
                         style: TextStyle(
-                          fontSize: screenHeight * 0.03,
+                          fontSize: screenHeight * 0.02,
                           fontWeight: FontWeight.bold,
-                          fontFamily: popinsBold,
+                          fontFamily: popinsRegulr,
                           color: Colors.black,
                         ),
                       ),
