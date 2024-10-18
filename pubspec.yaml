@@ -23,7 +23,7 @@ dependencies:
   url_launcher: ^6.3.0
   flutter_local_notifications: ^17.2.1+2
   timezone: ^0.9.4
-  audioplayers: ^6.0.0
+  audioplayers: ^6.1.0
   just_audio: ^0.9.39
   audio_service: ^0.18.15
   shared_preferences: ^2.3.1
