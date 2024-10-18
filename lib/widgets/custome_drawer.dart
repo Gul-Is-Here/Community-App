@@ -15,22 +15,21 @@ import 'package:velocity_x/velocity_x.dart';
 import '../hijri_calendar.dart';
 import '../views/home_screens/home.dart';
 
+// ignore: must_be_immutable
 class CustomDrawer extends StatelessWidget {
   CustomDrawer({super.key});
-  var isLoggedIn = true.obs;
+  final isLoggedIn = true.obs;
+  final loginController = Get.find<LoginController>();
+  final profileController = Get.put(ProfileController());
+
   Future<void> handleProfileNavigation() async {
-    final loginController = Get.find<LoginController>();
     isLoggedIn.value = await loginController.isLoggedIn();
   }
 
-  final loginController = Get.find<LoginController>();
-  final profileController = Get.put(ProfileController());
   @override
   Widget build(BuildContext context) {
-    print('Login Status: ${loginController.isLoggedIn()}');
     profileController.fetchUserData2();
     handleProfileNavigation();
-    print('Drawer Pressed');
 
     return Drawer(
       width: 250,
@@ -54,48 +53,56 @@ class CustomDrawer extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(left: 25),
               child: Obx(() {
-                return Text(
-                  isLoggedIn.value
-                      ? 'Hello, ${profileController.userData['user']['name']}'
-                      : 'Guest',
-                  style: const TextStyle(
+                if (profileController.isLoading.value) {
+                  // Show a loading animation while data is being fetched
+                  return Text(
+                    'Loading',
+                    style: TextStyle(fontFamily: popinsRegulr, fontSize: 12),
+                  );
+                } else if (profileController.userData.isEmpty ||
+                    profileController.userData['user'] == null) {
+                  // If userData is null or empty, show default text
+                  return const Text(
+                    'Guest',
+                    style: TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.bold,
-                      fontSize: 14),
-                );
+                      fontSize: 14,
+                    ),
+                  );
+                } else {
+                  // Show the user's name if userData is loaded and valid
+                  return Text(
+                    'Hello, ${profileController.userData['user']['name']}',
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                  );
+                }
               }),
             ),
             Obx(
               () => isLoggedIn.value
                   ? Padding(
-                      padding: const EdgeInsets.only(left: 12),
+                      padding: const EdgeInsets.only(left: 25),
                       child: const Text(
                         'View Profile',
                         style: TextStyle(
-                            textBaseline: TextBaseline.alphabetic,
                             color: Colors.black,
                             fontSize: 12,
                             fontFamily: popinsRegulr),
                       ).onTap(() async {
-                        await Get.to(() => const ProfileScreen());
+                        await Get.to(() => ProfileScreen());
                       }),
                     )
                   : const SizedBox(),
             ),
-
             const Divider(color: Colors.black),
-
-            // ListTile(
-            //   leading: Icon(Icons.home, color: primaryColor),
-            //   title: const Text('Home',
-            //       style: TextStyle(fontFamily: popinsRegulr, fontSize: 14)),
-            //   onTap: () {
-            //     Get.to(() => const Home());
-            //   },
-            // ),
             ListTile(
               leading: Icon(Icons.calendar_month, color: primaryColor),
-              title: const Text('Hijri Calender',
+              title: const Text('Hijri Calendar',
                   style: TextStyle(fontFamily: popinsRegulr, fontSize: 14)),
               onTap: () {
                 Get.to(() => const HijriCalendarExample());
@@ -144,13 +151,12 @@ class CustomDrawer extends StatelessWidget {
                 Get.to(() => const AzanSettingsScreen());
               },
             ),
-            // const Divider(),
             ListTile(
               leading: Icon(Icons.share, color: primaryColor),
               title: const Text('Share the App',
                   style: TextStyle(fontFamily: popinsRegulr, fontSize: 14)),
               onTap: () {
-                Get.to(() => const AzanSettingsScreen());
+                // Handle app sharing
               },
             ),
             ListTile(
@@ -158,7 +164,7 @@ class CustomDrawer extends StatelessWidget {
               title: const Text('Our Promise',
                   style: TextStyle(fontFamily: popinsRegulr, fontSize: 14)),
               onTap: () {
-                Get.to(() => const AzanSettingsScreen());
+                // Navigate to a proper screen for "Our Promise"
               },
             ),
             ListTile(

@@ -56,11 +56,120 @@ class NamazTimingsScreen extends StatelessWidget {
               "Today's Prayer Timings",
               style: TextStyle(fontFamily: popinsSemiBold),
             ),
+            Row(
+              children: [
+                Expanded(
+                  child: Card(
+                    elevation: 3,
+                    color: whiteColor,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        gradient: LinearGradient(
+                          colors: [Colors.white, Colors.grey.shade100],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                      ),
+                      child: Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.access_time_filled,
+                                color: primaryColor,
+                                size: 24,
+                              ),
+                              10.widthBox,
+                              Column(
+                                children: [
+                                  Text(
+                                    'Sunrise',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontFamily: popinsSemiBold,
+                                      fontWeight: FontWeight.bold,
+                                      color: primaryColor,
+                                    ),
+                                  ),
+                                  Text(
+                                    formatPrayerTime(
+                                      sunrise,
+                                    ),
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.black87,
+                                      fontFamily: popinsRegulr,
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Card(
+                    elevation: 3,
+                    color: whiteColor,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        gradient: LinearGradient(
+                          colors: [Colors.white, Colors.grey.shade100],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                      ),
+                      child: Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.access_time_filled,
+                                color: primaryColor,
+                                size: 24,
+                              ),
+                              10.widthBox,
+                              Column(
+                                children: [
+                                  Text(
+                                    'Sunset',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontFamily: popinsSemiBold,
+                                      fontWeight: FontWeight.bold,
+                                      color: primaryColor,
+                                    ),
+                                  ),
+                                  Text(
+                                    formatPrayerTime(sunset),
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.black87,
+                                      fontFamily: popinsRegulr,
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
             5.heightBox,
             _buildPrayerTile(
                 'Fajr', timings.fajr, iqamatimes['Fajr']!, currentPrayer),
-            5.heightBox,
-            _buildPrayerTile('Sunrise', sunrise, '', currentPrayer),
+
             5.heightBox,
             _buildPrayerTile(
                 'Dhuhr', timings.dhuhr, iqamatimes['Dhuhr']!, currentPrayer),
@@ -72,9 +181,6 @@ class NamazTimingsScreen extends StatelessWidget {
                 _calculateIqamaTime(timings.maghrib), currentPrayer),
 
             5.heightBox,
-            _buildPrayerTile('Sunset', sunset, '', currentPrayer),
-
-            5.heightBox,
             _buildPrayerTile(
                 'Isha', timings.isha, iqamatimes['Isha']!, currentPrayer),
 
@@ -84,6 +190,7 @@ class NamazTimingsScreen extends StatelessWidget {
             10.heightBox,
             ElevatedButton(
                 style: ElevatedButton.styleFrom(
+                    backgroundColor: whiteColor,
                     elevation: 5,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10))),
@@ -98,6 +205,7 @@ class NamazTimingsScreen extends StatelessWidget {
             10.heightBox,
             ElevatedButton(
                 style: ElevatedButton.styleFrom(
+                    backgroundColor: whiteColor,
                     elevation: 5,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10))),

@@ -22,6 +22,7 @@ class HomeController extends GetxController {
   var timePrayer = ''.obs;
   var jummaTimes = Jumma().obs;
   var isLoading = true.obs;
+  RxString currentTime = ''.obs;
   int storeMonthPrayerTimes = 0;
   var prayerTimess;
   String? currentPrayerTime;
@@ -38,6 +39,10 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    _timer = Timer.periodic(Duration(seconds: 1), (_) {
+      updateCurrentTime();
+    });
+    updateCurrentTime();
     notchBottomBarController =
         NotchBottomBarController(index: selectedIndex.value);
     fetchJummaTimes();
@@ -124,7 +129,7 @@ class HomeController extends GetxController {
     int minutes = duration.inMinutes.remainder(60);
     int seconds = duration.inSeconds.remainder(60);
 
-    return '${hours.toString().padLeft(2, '0')}h ${minutes.toString().padLeft(2, '0')}m ${seconds.toString().padLeft(2, '0')}s';
+    return '${hours.toString().padLeft(2, '0')}: ${minutes.toString().padLeft(2, '0')}: ${seconds.toString().padLeft(2, '0')}';
   }
 
   Future<void> getPrayers() async {
@@ -421,10 +426,47 @@ class HomeController extends GetxController {
   // Function to format prayer time
   String formatPrayerTime(String time) {
     try {
+      // Parsing the input time string in "HH:mm:ss" format
       final dateTime = DateFormat("HH:mm").parse(time);
-      return DateFormat("h:mm a").format(dateTime);
+      // Formatting the time in "h:mm:ss a" format to include seconds and AM/PM
+      return DateFormat("h:mm:ss a").format(dateTime);
     } catch (e) {
+      // If parsing fails, return the original input time
       return time;
     }
   }
+
+  // Method to update current time
+  void updateCurrentTime() {
+    final now = DateTime.now();
+    currentTime.value = getCurrentFormattedTime(now); // Pass DateTime object
+  }
+
+  String getCurrentFormattedTime(DateTime now) {
+    // Formatting the current time to "h:mm:ss a" format
+    return DateFormat('h:mm:s a').format(now);
+  }
+
+  // Method to format the Duration into a string "HH:mm:ss"
+  String formatDurationRemaing(Duration duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, "0");
+    final hours = twoDigits(duration.inHours);
+    final minutes = twoDigits(duration.inMinutes.remainder(60));
+    final seconds = twoDigits(duration.inSeconds.remainder(60));
+
+    // Return formatted string in "HH:mm:ss" format
+    return "$hours:$minutes:$seconds";
+  }
+  String formatPrayerTimeToAmPm(String time) {
+  try {
+    // Parse the input time from "HH:mm" format
+    final dateTime = DateFormat("HH:mm").parse(time);
+    // Format it to "hh:mm a" format
+    return DateFormat("hh:mm a").format(dateTime);
+  } catch (e) {
+    print('Error parsing time: $e');
+    return 'Invalid time'; // Return a default message for invalid input
+  }
+}
+
 }

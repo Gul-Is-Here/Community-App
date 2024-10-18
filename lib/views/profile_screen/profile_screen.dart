@@ -15,12 +15,13 @@ import 'update_password_screen.dart';
 import 'personal_info_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
-
+  ProfileScreen({super.key});
+  final ProfileController profileController = Get.put(ProfileController());
   @override
   Widget build(BuildContext context) {
+    profileController.fetchUserData();
     final LoginController loginController = Get.find<LoginController>();
-    final ProfileController profileController = Get.put(ProfileController());
+
     print(globals.accessToken.value);
 
     final screenWidth = MediaQuery.of(context).size.width;
@@ -28,7 +29,7 @@ class ProfileScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      endDrawer:  CustomDrawer(),
+      endDrawer: CustomDrawer(),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,

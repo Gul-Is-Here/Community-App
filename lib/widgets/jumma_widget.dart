@@ -28,16 +28,20 @@ class JummaPrayerTile extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 10),
-          buildJummaTile(
-            'Jumuah Khutba',
-            formatPrayerTime(jummaTimes.prayerTiming),
-            Icons.mic,
-          ),
-          const SizedBox(height: 10),
-          buildJummaTile(
-            'Jumuah Prayer',
-            formatPrayerTime(jummaTimes.iqamahTiming),
-            Icons.access_time,
+          Row(
+            children: [
+              buildJummaTile(
+                'Jumuah Khutba',
+                formatPrayerTime(jummaTimes.prayerTiming),
+                Icons.mic,
+              ),
+              const SizedBox(width: 10),
+              buildJummaTile(
+                'Jumuah Prayer',
+                formatPrayerTime(jummaTimes.iqamahTiming),
+                Icons.access_time,
+              ),
+            ],
           ),
         ],
       );

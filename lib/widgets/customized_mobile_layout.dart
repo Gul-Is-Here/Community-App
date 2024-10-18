@@ -1,7 +1,9 @@
 import 'package:community_islamic_app/controllers/login_controller.dart';
+import 'package:community_islamic_app/model/prayer_model.dart';
 import 'package:community_islamic_app/views/Gallery_Events/galler_screen.dart';
 import 'package:community_islamic_app/views/about_us/about_us.dart';
 import 'package:community_islamic_app/views/project/project_screen.dart';
+import 'package:community_islamic_app/widgets/customized_prayertext_widget.dart';
 import 'package:community_islamic_app/widgets/social_media_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -37,19 +39,75 @@ class CustomizedMobileLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     final LoginController loginController = Get.put(LoginController());
     final screenHeight1 = MediaQuery.of(context).size.height;
-
+    // Get Azan and Iqama times
+    var iqamatimes = getAllIqamaTimes();
+    final timings = homeController.prayerTime.value.data!.timings;
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Stack(
           children: [
             HomeStaticBackground(
-              screenHeight: screenHeight,
-              // dateTime: homeController.prayerTimes.value.data!.date.readable,
+                // screenHeight: screenHeight,
+                // dateTime: homeController.prayerTimes.value.data!.date.readable,
+                ),
+            Padding(
+              padding: const EdgeInsets.only(top: 185.0),
+              child: SizedBox(
+                width: double.infinity,
+                height: 106,
+                child: Card(
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        PrayerTimeWidget(
+                          namazName: 'Fajr',
+                          timings: timings.fajr,
+                          iqamatimes: iqamatimes,
+                          name: 'Fajr',
+                        ),
+                        PrayerTimeWidget(
+                          namazName: 'Dhuhr',
+                          timings: homeController
+                              .formatPrayerTimeToAmPm(timings.dhuhr),
+                          iqamatimes: iqamatimes,
+                          name: 'Dhuhr',
+                        ),
+                        PrayerTimeWidget(
+                          namazName: 'Asr',
+                          timings: homeController
+                              .formatPrayerTimeToAmPm(timings.asr),
+                          iqamatimes: iqamatimes,
+                          name: 'Asr',
+                        ),
+                        PrayerTimeWidget(
+                          namazName: 'Maghrib',
+                          timings: homeController
+                              .formatPrayerTimeToAmPm(timings.maghrib),
+                          iqamatimes: {
+                            // Ensure this is a Map<String, String>
+                            'Maghrib': addMinutesToPrayerTime(timings.maghrib,
+                                5), // Add 5 minutes to Maghrib Azan time
+                          },
+                          name: 'Maghrib',
+                        ),
+                        PrayerTimeWidget(
+                          namazName: 'Isha',
+                          timings: homeController
+                              .formatPrayerTimeToAmPm(timings.isha),
+                          iqamatimes: iqamatimes,
+                          name: 'Isha',
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
             ),
             Padding(
               padding: EdgeInsets.only(
-                  top: MediaQuery.of(context).size.height * .22),
+                  top: MediaQuery.of(context).size.height * .36),
               child: Align(
                 alignment: Alignment.bottomCenter,
                 child: Padding(
@@ -58,137 +116,142 @@ class CustomizedMobileLayout extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Card(
-                        elevation: 10,
-                        color: const Color(0xFFEAF3F2),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Column(
-                                children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      Get.to(() => AboutUsScreen());
-                                    },
-                                    child: Card(
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(15)),
-                                      elevation: 10,
-                                      color: const Color(0xFF06313F),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Image.asset(
-                                          aboutUsIcon,
-                                          height: 40,
-                                          width: 40,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  const Text(
-                                    'About',
-                                    style: TextStyle(
-                                        fontFamily: popinsMedium, fontSize: 11),
-                                  )
-                                ],
-                              ),
-                              Column(
-                                children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      Get.to(() => ServicesScreen());
-                                    },
-                                    child: Card(
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(15)),
-                                      elevation: 10,
-                                      color: const Color(0xFF06313F),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Image.asset(
-                                          aboutUsIcon,
-                                          height: 40,
-                                          width: 40,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  const Text(
-                                    'Services',
-                                    style: TextStyle(
-                                        fontFamily: popinsMedium, fontSize: 11),
-                                  )
-                                ],
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  Get.to(() => const ProjectScreen());
-                                },
-                                child: Column(
+                      SizedBox(
+                        height: 119,
+                        child: Card(
+                          elevation: 10,
+                          color: const Color(0xFFEAF3F2),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Column(
                                   children: [
-                                    Card(
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(15)),
-                                      elevation: 10,
-                                      color: const Color(0xFF06313F),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Image.asset(
-                                          aboutUsIcon,
-                                          height: 40,
-                                          width: 40,
-                                          fit: BoxFit.cover,
+                                    GestureDetector(
+                                      onTap: () {
+                                        Get.to(() => AboutUsScreen());
+                                      },
+                                      child: Card(
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(15)),
+                                        elevation: 10,
+                                        color: const Color(0xFF06313F),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Image.asset(
+                                            aboutUsIcon,
+                                            height: 40,
+                                            width: 40,
+                                            fit: BoxFit.cover,
+                                          ),
                                         ),
                                       ),
                                     ),
                                     const Text(
-                                      'Project',
+                                      'About',
                                       style: TextStyle(
                                           fontFamily: popinsMedium,
                                           fontSize: 11),
                                     )
                                   ],
                                 ),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  Get.to(() => GalleyScreen());
-                                },
-                                child: Column(
+                                Column(
                                   children: [
-                                    Card(
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(15)),
-                                      elevation: 10,
-                                      color: const Color(0xFF06313F),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Image.asset(
-                                          aboutUsIcon,
-                                          height: 40,
-                                          width: 40,
-                                          fit: BoxFit.cover,
+                                    GestureDetector(
+                                      onTap: () {
+                                        Get.to(() => ServicesScreen());
+                                      },
+                                      child: Card(
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(15)),
+                                        elevation: 10,
+                                        color: const Color(0xFF06313F),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Image.asset(
+                                            aboutUsIcon,
+                                            height: 40,
+                                            width: 40,
+                                            fit: BoxFit.cover,
+                                          ),
                                         ),
                                       ),
                                     ),
                                     const Text(
-                                      'Gallery',
+                                      'Services',
                                       style: TextStyle(
                                           fontFamily: popinsMedium,
                                           fontSize: 11),
                                     )
                                   ],
                                 ),
-                              ),
-                            ],
+                                GestureDetector(
+                                  onTap: () {
+                                    Get.to(() => const ProjectScreen());
+                                  },
+                                  child: Column(
+                                    children: [
+                                      Card(
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(15)),
+                                        elevation: 10,
+                                        color: const Color(0xFF06313F),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Image.asset(
+                                            aboutUsIcon,
+                                            height: 40,
+                                            width: 40,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ),
+                                      const Text(
+                                        'Project',
+                                        style: TextStyle(
+                                            fontFamily: popinsMedium,
+                                            fontSize: 11),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    Get.to(() => GalleyScreen());
+                                  },
+                                  child: Column(
+                                    children: [
+                                      Card(
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(15)),
+                                        elevation: 10,
+                                        color: const Color(0xFF06313F),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Image.asset(
+                                            aboutUsIcon,
+                                            height: 40,
+                                            width: 40,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ),
+                                      const Text(
+                                        'Gallery',
+                                        style: TextStyle(
+                                            fontFamily: popinsMedium,
+                                            fontSize: 11),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -360,13 +423,108 @@ class CustomizedMobileLayout extends StatelessWidget {
   }
 }
 
+class PrayerTimeWidget extends StatelessWidget {
+  const PrayerTimeWidget({
+    super.key,
+    required this.namazName,
+    required this.name,
+    required this.timings,
+    required this.iqamatimes,
+  });
+
+  final String name; // Prayer name (e.g., Fajr, Dhuhr)
+  final String namazName; // Specific namaz name for Iqama lookup
+  final String timings; // Azan time (in "HH:mm" format)
+  final Map<String, String> iqamatimes; // Iqama times
+
+  @override
+  Widget build(BuildContext context) {
+    // Default Iqama time
+    String iqamaTime = iqamatimes[namazName] ?? 'Not available';
+
+    // Check if the prayer is Maghrib and adjust the Iqama time accordingly
+    if (namazName == 'Maghrib') {
+      iqamaTime = formatPrayerTimeToAmPm(
+          addMinutesToPrayerTime(timings, 5)); // Add and format
+    } else {
+      iqamaTime =
+          formatPrayerTimeToAmPm(iqamaTime); // Format the existing Iqama time
+    }
+
+    return SizedBox(
+      width: 76,
+      height: 83,
+      child: Card(
+        color: const Color(0xFF5B7B79),
+        child: Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: Column(
+            children: [
+              Text(
+                name,
+                style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: popinsMedium,
+                    color: whiteColor),
+              ),
+              const SizedBox(height: 10), // Use SizedBox for spacing
+              Text(
+                formatPrayerTimeToAmPm(timings), // Format Azan time
+                style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: popinsMedium,
+                    color: whiteColor),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                iqamaTime, // Already formatted Iqama time
+                style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: popinsMedium,
+                    color: whiteColor),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// Function to format prayer time
+String formatPrayerTime(String time) {
+  try {
+    final dateTime = DateFormat("HH:mm").parse(time);
+    return DateFormat("h:mm a")
+        .format(dateTime); // This line formats to h:mm a (12-hour format)
+  } catch (e) {
+    return 'Invalid time';
+  }
+}
+
+// Function to add minutes to a prayer time
 String addMinutesToPrayerTime(String prayerTime, int minutesToAdd) {
   try {
     final dateTime = DateFormat("HH:mm").parse(prayerTime);
     DateTime updatedTime = dateTime.add(Duration(minutes: minutesToAdd));
-    return DateFormat('h:mm a').format(updatedTime);
+    return DateFormat('HH:mm') // Keep returning in HH:mm format for processing
+        .format(updatedTime);
+  } catch (e) {
+    return 'Invalid time'; // Return a default message for invalid input
+  }
+}
+
+String formatPrayerTimeToAmPm(String time) {
+  try {
+    // Parse the input time from "HH:mm" format
+    final dateTime = DateFormat("HH:mm").parse(time);
+    // Format it to "hh:mm a" format
+    return DateFormat("hh:mm a").format(dateTime);
   } catch (e) {
     print('Error parsing time: $e');
-    return 'Invalid time';
+    return 'Invalid time'; // Return a default message for invalid input
   }
 }

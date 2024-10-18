@@ -56,6 +56,10 @@ const banner5 = "assets/images/bg5.png";
 const banner6 = "assets/images/bg6.png";
 const banner7 = "assets/images/bg7.png";
 const banner8 = "assets/images/bg8.png";
+const clock = "assets/home_icon/Clock.png";
+const mosque = "assets/home_icon/mosque.png";
+const homeUpBh = "assets/home_icon/homeUpBg.png";
+const homeBgUp2 = "assets/home_icon/homeBgUp2.png";
 // Compass List Icons
 const compass1 = "assets/home_icon/compass1.png";
 const compass2 = "assets/home_icon/compass2.jpg";
