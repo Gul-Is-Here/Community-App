@@ -4,14 +4,16 @@ import 'package:community_islamic_app/model/quran_model.dart';
 import 'package:community_islamic_app/views/quran_screen.dart/surah_details.dart';
 import 'package:community_islamic_app/widgets/customized_surah_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
-import 'package:just_audio/just_audio.dart';
+// import 'package:just_audio/just_audio.dart';
 import 'package:velocity_x/velocity_x.dart';
 import '../../constants/image_constants.dart';
 import '../../controllers/audio_controller.dart';
 import '../../controllers/login_controller.dart';
 import '../../model/quran_audio_model.dart';
-import '../../widgets/audio_player_bar_quran.dart';
+// import '../../widgets/audio_player_bar_quran.dart';
+import 'player_bar_screen.dart';
 import 'surah_audio_detail_screen.dart';
 
 class QuranScreen extends StatefulWidget {
@@ -25,18 +27,13 @@ var loginConrtroller = Get.find<LoginController>();
 
 class _QuranScreenState extends State<QuranScreen> {
   final QuranController quranController = Get.put(QuranController());
-
   final AudioPlayerController audioController =
       Get.put(AudioPlayerController());
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
+    var screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
       appBar: AppBar(
@@ -45,14 +42,17 @@ class _QuranScreenState extends State<QuranScreen> {
       ),
       body: Obx(() {
         if (quranController.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return Center(
+            child: SpinKitFadingCircle(
+              color: primaryColor,
+            ),
+          );
         }
 
         if (quranController.chapters.isEmpty) {
           return const Center(
-              child: Center(
             child: CircularProgressIndicator(),
-          ));
+          );
         }
 
         return Column(
@@ -88,15 +88,15 @@ class _QuranScreenState extends State<QuranScreen> {
                     ),
                   ),
                   Positioned(
-                    top: screenHeight * 0.10,
-                    left: screenHeight * 0.15,
+                    top: screenHeight * 0.09,
+                    left: screenWidth * 0.30,
                     child: Text(
                       'Quran',
                       style: TextStyle(
-                          color: Colors.white,
-                          fontSize: screenHeight * 0.05,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: popinsBold),
+                        color: Colors.white,
+                        fontSize: screenHeight * 0.05,
+                        fontFamily: popinsBold,
+                      ),
                     ),
                   ),
                 ],
@@ -123,10 +123,6 @@ class _QuranScreenState extends State<QuranScreen> {
                       ),
                     );
 
-                    // if (players.length <= index) {
-                    //   players.add(AudioPlayer());
-                    // }
-
                     return SizedBox(
                       height: 70,
                       child: Card(
@@ -136,7 +132,6 @@ class _QuranScreenState extends State<QuranScreen> {
                             surahNameEng: surah!.englishName,
                             audioFile: audioFile,
                             onTap1: () async {
-                              print('----Surah-------');
                               await quranController
                                   .fetchTranslationData(chapter.id);
                               Get.to(
@@ -196,15 +191,18 @@ class _QuranScreenState extends State<QuranScreen> {
                     audioPlayerController: audioController,
                     isPlaying: audioController.isPlaying.value,
                     currentAudio: audioController.currentAudio.value,
+                    // Display Surah name based on current audio
+                    surahName: quranController
+                        .getSurahByChapterId(
+                            audioController.currentAudio.value!.chapterId)!
+                        .name,
                     onPlayPause: () => audioController
                         .playOrPauseAudio(audioController.currentAudio.value!),
                     onNext: () => audioController
                         .playNextAudio(quranController.audioFiles),
                     onPrevious: () => audioController
                         .playPreviousAudio(quranController.audioFiles),
-                    onStop: () =>
-                        audioController.stopAudio(), // Stop button callback
-                    totalVerseCount: '',
+                    onStop: () => audioController.stopAudio(),
                   )
                 : SizedBox.shrink()),
           ],

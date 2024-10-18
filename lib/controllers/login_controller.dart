@@ -12,12 +12,16 @@ class LoginController extends GetxController {
   var email = ''.obs;
   var password = ''.obs;
   var isLoading = false.obs;
+  // var isLoggedIn = ''.obs; // Observable login state
 
   var profileImage = Rx<File?>(null);
   var relationAvatar = 'male.png'.obs;
   @override
   void onInit() {
     super.onInit();
+    // Check login status when controller initializes
+    // isLoggedInd();
+    isLoggedIn();
     _loadAuthToken();
     _loadaId();
   }
@@ -81,6 +85,7 @@ class LoginController extends GetxController {
     await prefs.remove('userid');
     globals.userId.value = '';
     globals.accessToken.value = '';
+    await prefs.setBool('isLoggedIn', false);
 
     Get.snackbar("Success", "Logged out successfully.");
     Get.offAll(() => LoginScreen()); // Navigate back to login screen
@@ -89,6 +94,7 @@ class LoginController extends GetxController {
   Future<bool> isLoggedIn() async {
     // Check login status from SharedPreferences
     SharedPreferences prefs = await SharedPreferences.getInstance();
+
     return prefs.getBool('isLoggedIn') ?? false;
   }
 

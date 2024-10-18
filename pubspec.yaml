@@ -13,9 +13,9 @@ dependencies:
   cupertino_icons: ^1.0.6
   get: ^4.6.6
   velocity_x: ^4.2.1
-  flutter_qiblah: ^3.0.3
+  flutter_qiblah: ^3.0.4
   geocoding: ^3.0.0
-  geolocator: ^11.1.0
+  geolocator: ^13.0.1
   permission_handler: ^11.3.1
   intl: ^0.19.0
   http: ^1.2.2
@@ -33,7 +33,7 @@ dependencies:
   rxdart: ^0.28.0
   flutter_polyline_points: ^2.1.0
   google_maps_flutter: ^2.9.0
-  location: ^7.0.0
+  location: ^7.0.1
   flutter_svg: ^2.0.10+1
   firebase_core: ^3.3.0
   firebase_messaging: ^15.0.4

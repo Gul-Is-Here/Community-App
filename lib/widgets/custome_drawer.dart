@@ -1,6 +1,7 @@
 import 'package:community_islamic_app/constants/color.dart';
 import 'package:community_islamic_app/constants/image_constants.dart';
 import 'package:community_islamic_app/controllers/login_controller.dart';
+import 'package:community_islamic_app/controllers/profileController.dart';
 import 'package:community_islamic_app/views/auth_screens/login_screen.dart';
 import 'package:community_islamic_app/views/auth_screens/registration_screen.dart';
 import 'package:community_islamic_app/views/azan_settings/azan_settings_screen.dart';
@@ -15,23 +16,21 @@ import '../hijri_calendar.dart';
 import '../views/home_screens/home.dart';
 
 class CustomDrawer extends StatelessWidget {
-  const CustomDrawer({super.key});
-
-  Future<void> _handleProfileNavigation() async {
+  CustomDrawer({super.key});
+  var isLoggedIn = true.obs;
+  Future<void> handleProfileNavigation() async {
     final loginController = Get.find<LoginController>();
-    final isLoggedIn = await loginController.isLoggedIn();
-
-    if (isLoggedIn) {
-      Get.to(() => ProfileScreen());
-    } else {
-      Get.to(() => LoginScreen());
-    }
+    isLoggedIn.value = await loginController.isLoggedIn();
   }
 
+  final loginController = Get.find<LoginController>();
+  final profileController = Get.put(ProfileController());
   @override
   Widget build(BuildContext context) {
-    // Ensure you are using the same instance of LoginController that was used for the check
-    final loginController = Get.find<LoginController>();
+    print('Login Status: ${loginController.isLoggedIn()}');
+    profileController.fetchUserData2();
+    handleProfileNavigation();
+    print('Drawer Pressed');
 
     return Drawer(
       width: 250,
@@ -40,27 +39,24 @@ class CustomDrawer extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Logo at the Top
             20.heightBox,
             Container(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.only(top: 16, left: 16),
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Image.asset(
-                  aboutUsIcon, // Path to your logo image
+                  aboutUsIcon,
                   width: 80,
                   height: 80,
                 ),
               ),
             ),
-
-            // Optionally display user info if logged in
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
+              padding: const EdgeInsets.only(left: 25),
               child: Obx(() {
                 return Text(
-                  loginController.email.value.isNotEmpty
-                      ? 'Hello, ${loginController.email.value}'
+                  isLoggedIn.value
+                      ? 'Hello, ${profileController.userData['user']['name']}'
                       : 'Guest',
                   style: const TextStyle(
                       color: Colors.black,
@@ -69,39 +65,34 @@ class CustomDrawer extends StatelessWidget {
                 );
               }),
             ),
+            Obx(
+              () => isLoggedIn.value
+                  ? Padding(
+                      padding: const EdgeInsets.only(left: 12),
+                      child: const Text(
+                        'View Profile',
+                        style: TextStyle(
+                            textBaseline: TextBaseline.alphabetic,
+                            color: Colors.black,
+                            fontSize: 12,
+                            fontFamily: popinsRegulr),
+                      ).onTap(() async {
+                        await Get.to(() => const ProfileScreen());
+                      }),
+                    )
+                  : const SizedBox(),
+            ),
 
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 12),
-              child: Text(
-                'View Profile',
-                style: TextStyle(color: Colors.black, fontSize: 12),
-              ),
-            ).onTap(() async {
-              await _handleProfileNavigation();
-            }),
+            const Divider(color: Colors.black),
 
-            const Divider(
-              color: Colors.black,
-            ),
-            //Prayer Notification
-            ListTile(
-              leading: Icon(Icons.timelapse, color: primaryColor),
-              title: const Text('Notification',
-                  style: TextStyle(fontSize: 14, fontFamily: popinsRegulr)),
-              onTap: () {
-                Get.to(() => const AzanSettingsScreen());
-              },
-            ),
-            // Home
-            ListTile(
-              leading: Icon(Icons.home, color: primaryColor),
-              title: const Text('Home',
-                  style: TextStyle(fontFamily: popinsRegulr, fontSize: 14)),
-              onTap: () {
-                Get.to(() => const Home());
-              },
-            ),
-            // Hijiri Calendar
+            // ListTile(
+            //   leading: Icon(Icons.home, color: primaryColor),
+            //   title: const Text('Home',
+            //       style: TextStyle(fontFamily: popinsRegulr, fontSize: 14)),
+            //   onTap: () {
+            //     Get.to(() => const Home());
+            //   },
+            // ),
             ListTile(
               leading: Icon(Icons.calendar_month, color: primaryColor),
               title: const Text('Hijri Calender',
@@ -110,26 +101,50 @@ class CustomDrawer extends StatelessWidget {
                 Get.to(() => const HijriCalendarExample());
               },
             ),
-            const Divider(), // Divider lin
-            //Settings
+            const Divider(),
+            Obx(() => isLoggedIn.value
+                ? const SizedBox()
+                : ListTile(
+                    leading: Icon(Icons.app_registration, color: primaryColor),
+                    title: const Text('Register',
+                        style:
+                            TextStyle(fontFamily: popinsRegulr, fontSize: 14)),
+                    onTap: () {
+                      Get.to(() => RegistrationScreen());
+                    },
+                  )),
+            Obx(() {
+              return isLoggedIn.value
+                  ? ListTile(
+                      leading: Icon(Icons.logout, color: primaryColor),
+                      title: const Text('Logout',
+                          style: TextStyle(
+                              fontFamily: popinsRegulr, fontSize: 14)),
+                      onTap: () async {
+                        await loginController.logoutUser();
+                        Get.to(() => LoginScreen());
+                      },
+                    )
+                  : ListTile(
+                      leading: Icon(Icons.login, color: primaryColor),
+                      title: const Text('Login',
+                          style: TextStyle(
+                              fontFamily: popinsRegulr, fontSize: 14)),
+                      onTap: () {
+                        Get.to(() => LoginScreen());
+                      },
+                    );
+            }),
+            const Divider(),
             ListTile(
-              leading: Icon(Icons.app_registration, color: primaryColor),
-              title: const Text('Register',
-                  style: TextStyle(fontFamily: popinsRegulr, fontSize: 14)),
+              leading: Icon(Icons.timelapse, color: primaryColor),
+              title: const Text('Notification',
+                  style: TextStyle(fontSize: 14, fontFamily: popinsRegulr)),
               onTap: () {
-                Get.to(() => RegistrationScreen());
+                Get.to(() => const AzanSettingsScreen());
               },
             ),
-            // Login
-            ListTile(
-              leading: Icon(Icons.login, color: primaryColor),
-              title: const Text('Login',
-                  style: TextStyle(fontFamily: popinsRegulr, fontSize: 14)),
-              onTap: () {
-                Get.to(() => LoginScreen());
-              },
-            ),
-            const Divider(), // Divider lin
+            // const Divider(),
             ListTile(
               leading: Icon(Icons.share, color: primaryColor),
               title: const Text('Share the App',
@@ -154,17 +169,8 @@ class CustomDrawer extends StatelessWidget {
                 Get.to(() => const ContactUsScreen());
               },
             ),
-            ListTile(
-              leading: Icon(Icons.logout, color: primaryColor),
-              title: const Text('Logout',
-                  style: TextStyle(fontFamily: popinsRegulr, fontSize: 14)),
-              onTap: () async {
-                await loginController.logoutUser();
-                Get.to(() => LoginScreen());
-              },
-            ),
-            const Spacer(), // Pushes items to the top
-            const Divider(), // Divider line
+            const Spacer(),
+            const Divider(),
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Text(
