@@ -21,6 +21,7 @@ class MonthlyNamazTimeScreen extends StatelessWidget {
     int daysInMonth = getDaysInMonth(now.year, now.month);
 
     return Scaffold(
+      backgroundColor: whiteColor,
       appBar: AppBar(
         leading: IconButton(
           onPressed: () {
@@ -68,6 +69,7 @@ class MonthlyNamazTimeScreen extends StatelessWidget {
               padding: const EdgeInsets.all(8),
               itemBuilder: (context, index) {
                 return Card(
+                  color: whiteColor,
                   elevation: 4,
                   margin: const EdgeInsets.symmetric(vertical: 8),
                   shape: RoundedRectangleBorder(

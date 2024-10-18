@@ -73,31 +73,54 @@ class IqamaChangeTimeTable extends StatelessWidget {
               padding: const EdgeInsets.all(8),
               itemBuilder: (context, index) {
                 final timing = iqamahTimings[index];
+
+                // Decide background color based on the index
+                final bool isEven = index % 2 == 1;
+                final BoxDecoration boxDecoration = isEven
+                    ? BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        color: primaryColor.withOpacity(.5))
+                    : BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                      );
+
                 return Card(
                   elevation: 4,
                   margin: const EdgeInsets.symmetric(vertical: 8),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        _buildPrayerTimeText(formatDate(timing.startDate),
-                            fontSize: 11, fontWeight: FontWeight.bold),
-                        _buildPrayerTimeText(timing.fjar),
-                        // _buildPrayerTimeText(timing.zuhr),
-                        _buildPrayerTimeText(timing.asr),
-                        // _buildPrayerTimeText(timing.magrib),
-                        _buildPrayerTimeText(timing.isha),
-                      ],
+                  child: Container(
+                    decoration: boxDecoration,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(left: 15),
+                            child: _buildPrayerTimeText(
+                              formatDate(timing.startDate),
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 25),
+                            child: _buildPrayerTimeText(timing.fjar),
+                          ),
+                          _buildPrayerTimeText(timing.asr),
+                          _buildPrayerTimeText(timing.isha),
+                        ],
+                      ),
                     ),
                   ),
                 );
               },
             ),
           ),
+
           10.heightBox,
           Card(
             child: Column(
