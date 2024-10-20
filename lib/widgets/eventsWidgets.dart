@@ -33,19 +33,19 @@ class EventsWidget extends StatelessWidget {
           children: [
             if (eventsController.isLoading.value)
               SizedBox(
-                height: 100,
+                height: 90,
                 width: 320,
                 child: Center(
                   child: SpinKitFadingCircle(
-                        color: primaryColor,
-                        size: 50.0,
-                      ), // Loading indicator
+                    color: primaryColor,
+                    size: 50.0,
+                  ), // Loading indicator
                 ),
               )
             else if (eventsController.events.value == null ||
                 eventsController.events.value!.data.events.isEmpty)
               const SizedBox(
-                height: 100,
+                height: 90,
                 width: 320,
                 child: Center(
                   child: Text(
@@ -82,26 +82,28 @@ class EventsWidget extends StatelessWidget {
                             child: Container(
                               width: 320,
                               height: 90,
-                              decoration: const BoxDecoration(
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(20),
-                                  topRight: Radius.circular(20),
-                                ),
-                              ),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(30),
+                                      topRight: Radius.circular(30),
+                                      bottomLeft: Radius.circular(30),
+                                      bottomRight: Radius.circular(30)),
+                                  border: Border.all(
+                                      width: 2, color: secondaryColor)),
                               child: Card(
                                 margin: const EdgeInsets.all(0),
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(40),
+                                  borderRadius: BorderRadius.circular(30),
                                 ),
                                 elevation: 10,
                                 child: Container(
                                   decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(40),
-                                    color: primaryColor,
-                                    image: DecorationImage(
-                                      fit: BoxFit.contain,
-                                      image: AssetImage(bannerList[index]),
-                                    ),
+                                    borderRadius: BorderRadius.circular(30),
+                                    color: whiteColor,
+                                    // image: DecorationImage(
+                                    //   fit: BoxFit.contain,
+                                    //   image: AssetImage(bannerList[index]),
+                                    // ),
                                   ),
                                   child: Row(
                                     children: [
@@ -113,17 +115,28 @@ class EventsWidget extends StatelessWidget {
                                           ),
                                           child: Column(
                                             mainAxisAlignment:
-                                                MainAxisAlignment.center,
+                                                MainAxisAlignment.start,
                                             crossAxisAlignment:
-                                                CrossAxisAlignment.center,
+                                                CrossAxisAlignment.start,
                                             children: [
-                                              Center(
-                                                child: Text(
-                                                  eventData.events[index]
-                                                      .eventDetail,
-                                                  style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontFamily: popinsSemiBold,
+                                              SizedBox(
+                                                height: 21,
+                                                width: 64,
+                                                child: Card(
+                                                  color: secondaryColor,
+                                                  margin:
+                                                      const EdgeInsets.all(0),
+                                                  child: Center(
+                                                    child: Text(
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      "Events",
+                                                      style: TextStyle(
+                                                          color: whiteColor,
+                                                          fontSize: 10,
+                                                          fontFamily:
+                                                              popinsRegulr),
+                                                    ),
                                                   ),
                                                 ),
                                               ),
@@ -140,46 +153,56 @@ class EventsWidget extends StatelessWidget {
                                                                   .toString());
                                                   return Text(
                                                     formattedDate,
-                                                    style: const TextStyle(
-                                                      fontSize: 14,
-                                                      color: Colors.white,
-                                                      fontFamily:
-                                                          popinsSemiBold,
+                                                    style: TextStyle(
+                                                      fontSize: 18,
+                                                      color: secondaryColor,
+                                                      fontFamily: popinsRegulr,
                                                     ),
                                                   );
                                                 } else {
                                                   return const Text('');
                                                 }
                                               }),
+                                              Center(
+                                                child: Text(
+                                                  eventData.events[index]
+                                                      .eventDetail,
+                                                  maxLines: 1,
+                                                  style: TextStyle(
+                                                      color: secondaryColor,
+                                                      fontFamily: popinsRegulr,
+                                                      fontSize: 14),
+                                                ),
+                                              ),
                                             ],
                                           ),
                                         ),
                                       ),
-                                      SizedBox(
-                                        height: 100,
-                                        width: 60,
-                                        child: Card(
-                                            margin: const EdgeInsets.all(0),
-                                            shape: const RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.only(
-                                                topRight: Radius.circular(40),
-                                                bottomRight:
-                                                    Radius.circular(40),
-                                                topLeft: Radius.circular(40),
-                                                bottomLeft: Radius.circular(40),
-                                              ),
-                                            ),
-                                            color: primaryColor,
-                                            child: IconButton(
-                                                onPressed: () {
-                                                  AppClass().launchURL(eventData
-                                                      .events[index].eventLink);
-                                                },
-                                                icon: const Icon(
-                                                  Icons.location_city_rounded,
-                                                  color: Colors.white,
-                                                ))),
-                                      ),
+                                      // SizedBox(
+                                      //   height: 100,
+                                      //   width: 60,
+                                      //   child: Card(
+                                      //       margin: const EdgeInsets.all(0),
+                                      //       shape: const RoundedRectangleBorder(
+                                      //         borderRadius: BorderRadius.only(
+                                      //           topRight: Radius.circular(40),
+                                      //           bottomRight:
+                                      //               Radius.circular(40),
+                                      //           topLeft: Radius.circular(40),
+                                      //           bottomLeft: Radius.circular(40),
+                                      //         ),
+                                      //       ),
+                                      //       color: primaryColor,
+                                      //       child: IconButton(
+                                      //           onPressed: () {
+                                      //             AppClass().launchURL(eventData
+                                      //                 .events[index].eventLink);
+                                      //           },
+                                      //           icon: const Icon(
+                                      //             Icons.location_city_rounded,
+                                      //             color: Colors.white,
+                                      //           ))),
+                                      // ),
                                     ],
                                   ),
                                 ),
@@ -190,44 +213,50 @@ class EventsWidget extends StatelessWidget {
                       },
                     ),
                   ),
-                  SizedBox(height: 5),
-                  Center(
-                    child: SmoothPageIndicator(
-                      controller: _pageController,
-                      count: eventsController.events.value!.data.events.length,
-                      effect: ExpandingDotsEffect(
-                        activeDotColor: primaryColor,
-                        dotColor: Colors.grey,
-                        dotHeight: 8,
-                        dotWidth: 8,
-                        expansionFactor: 3,
-                      ),
-                    ),
-                  ),
+                  // SizedBox(height: 5),
+                  // Center(
+                  //   child: SmoothPageIndicator(
+                  //     controller: _pageController,
+                  //     count: eventsController.events.value!.data.events.length,
+                  //     effect: ExpandingDotsEffect(
+                  //       activeDotColor: primaryColor,
+                  //       dotColor: Colors.grey,
+                  //       dotHeight: 8,
+                  //       dotWidth: 8,
+                  //       expansionFactor: 3,
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
-            GestureDetector(
-              onTap: () {
-                Get.to(() => EventsScreen());
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  const Text(
-                    'View Events & Activities',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontFamily: popinsSemiBold,
+            SizedBox(
+              height: 15,
+              child: GestureDetector(
+                onTap: () {
+                  Get.to(() => EventsScreen());
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    const Text(
+                      'View Events & Activities',
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.black,
+                        fontFamily: popinsRegulr,
+                      ),
                     ),
-                  ),
-                  IconButton(
-                    onPressed: () {},
-                    icon: const Icon(
-                      Icons.arrow_forward,
-                      color: Colors.black,
+                    IconButton(
+                      onPressed: () {},
+                      icon: const Icon(
+                        size: 10,
+                        Icons.arrow_forward,
+                        color: Colors.black,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ],

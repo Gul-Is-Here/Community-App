@@ -73,9 +73,9 @@ class HomeEventsController extends GetxController {
     // Parse the input date string
     DateTime dateTime = DateTime.parse(dateString);
 
-    // Define the desired format
-    String formattedDate = DateFormat('MMMM d, y').format(dateTime);
+    // Define the desired format for both date and time
+    String formattedDate = DateFormat('MMMM d, y (h a)').format(dateTime);
 
-    return formattedDate; // e.g., "September 10, 2024"
+    return formattedDate; // e.g., "September 10, 2024 - 2:00 PM"
   }
 }

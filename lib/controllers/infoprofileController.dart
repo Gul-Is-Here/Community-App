@@ -1,5 +1,7 @@
 import 'dart:io';
+import 'package:community_islamic_app/constants/color.dart';
 import 'package:community_islamic_app/controllers/profileController.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
@@ -25,8 +27,44 @@ class Infoprofilecontroller extends GetxController {
     if (image != null) {
       profileImage.value = File(image.path);
       selectedAvatar.value = null; // Clear avatar when image is selected
-      await uploadProfileImage(
-          userId); // Automatically upload after picking image
+
+      // Show confirmation dialog
+      bool? confirmUpload = await Get.dialog<bool>(
+        AlertDialog(
+          title: Text(
+            'Confirm Upload',
+            style: TextStyle(fontFamily: popinsBold, color: primaryColor),
+          ),
+          content: const Text(
+            'Are you sure you want to upload this picture?',
+            style: TextStyle(fontFamily: popinsMedium),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Get.back(result: false), // User pressed No
+              child: const Text(
+                'No',
+                style: TextStyle(fontFamily: popinsMedium, color: Colors.red),
+              ),
+            ),
+            TextButton(
+              onPressed: () => Get.back(result: true), // User pressed Yes
+              child: Text(
+                'Yes',
+                style: TextStyle(fontFamily: popinsMedium, color: primaryColor),
+              ),
+            ),
+          ],
+        ),
+      );
+
+      // If the user confirmed the upload, proceed to upload the image
+      if (confirmUpload == true) {
+        await uploadProfileImage(userId);
+      } else {
+        // If the user did not confirm, clear the selected image
+        profileImage.value = null;
+      }
     }
   }
 

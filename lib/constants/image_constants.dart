@@ -32,6 +32,11 @@ const icInstagram = "assets/home_icon/instagram.png";
 const icWhatsapp = "assets/home_icon/icwhatsapp.png";
 const updatedCompase = "assets/home_icon/compassIcon.jpg";
 const updatedCompass2 = "assets/home_icon/compassnewimages.png";
+const morningIcon = "assets/home_icon/PartlyCloudyDay.png";
+const afternoon = "assets/home_icon/afternoon.png";
+const dayandNight = "assets/home_icon/DayandNight.png";
+const night = "assets/home_icon/Night.png";
+const locationIcon = "assets/home_icon/location.png";
 
 ///      Project sccreen dummy image
 const projectBg = 'assets/home_icon/project_bg1.png';

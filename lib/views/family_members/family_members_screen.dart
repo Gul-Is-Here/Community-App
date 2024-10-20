@@ -162,7 +162,7 @@ class _FamilyMemberScreenState extends State<FamilyMemberScreen> {
               List<dynamic> relations =
                   profileController.userData['relations'] ?? [];
               return ListView.builder(
-                shrinkWrap: true,
+                shrinkWrap: true, padding: EdgeInsets.all(0),
                 physics:
                     NeverScrollableScrollPhysics(), // Disable internal scrolling
                 itemCount: relations.length,
