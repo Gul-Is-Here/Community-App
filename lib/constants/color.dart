@@ -5,6 +5,7 @@ Color containerConlor = Color(0xFF061F32);
 Color asColor = Color(0xFFEDAE33);
 const buttonColorP = Color(0XFF123443);
 Color whiteColor = Colors.white;
+Color secondaryColor = Color(0xFF5B7B79);
 
 /// Arabic Fonts
 const jameelNori1 = 'JameelNori1';
@@ -13,5 +14,5 @@ const popinsRegulr = 'Poppins-Regular';
 const popinsBold = 'Poppins-Bold';
 const popinsSemiBold = 'Poppins-SemiBold';
 const popinsMedium = 'Poppins-Medium';
-const gradianColor1=Color(0xFF3DC0C0);
-const gradianColor2=Color.fromRGBO(4,40,56,1);
+const gradianColor1 = Color(0xFF3DC0C0);
+const gradianColor2 = Color.fromRGBO(4, 40, 56, 1);

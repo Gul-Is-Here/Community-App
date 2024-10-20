@@ -20,6 +20,7 @@ class HomeController extends GetxController {
   var selectedIndex = 0.obs;
   var prayerTime = Prayer().obs;
   var timePrayer = ''.obs;
+  var timmngs = ''.obs;
   var jummaTimes = Jumma().obs;
   var isLoading = true.obs;
   RxString currentTime = ''.obs;
@@ -457,16 +458,19 @@ class HomeController extends GetxController {
     // Return formatted string in "HH:mm:ss" format
     return "$hours:$minutes:$seconds";
   }
-  String formatPrayerTimeToAmPm(String time) {
-  try {
-    // Parse the input time from "HH:mm" format
-    final dateTime = DateFormat("HH:mm").parse(time);
-    // Format it to "hh:mm a" format
-    return DateFormat("hh:mm a").format(dateTime);
-  } catch (e) {
-    print('Error parsing time: $e');
-    return 'Invalid time'; // Return a default message for invalid input
-  }
-}
 
+  String formatPrayerTimeToAmPm(String time) {
+    try {
+      // Parse the input time from "HH:mm" format (24-hour format)
+      final dateTime = DateFormat("HH:mm").parse(time);
+
+      // Format it to "hh:mm a" (12-hour format with AM/PM)
+      String formattedTime = DateFormat("hh:mm a").format(dateTime);
+
+      return formattedTime;
+    } catch (e) {
+      print('Error parsing time: $e');
+      return 'Invalid time'; // Return a default message for invalid input
+    }
+  }
 }

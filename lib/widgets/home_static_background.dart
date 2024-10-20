@@ -14,8 +14,9 @@ import 'package:velocity_x/velocity_x.dart';
 import '../views/namaz_timmings/namaztimmings.dart';
 
 class HomeStaticBackground extends StatelessWidget {
-  HomeStaticBackground({super.key,});
-
+  HomeStaticBackground({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +29,7 @@ class HomeStaticBackground extends StatelessWidget {
         Column(
           children: [
             Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage(homeUpBh),
                   fit: BoxFit.cover,
@@ -86,14 +87,19 @@ class HomeStaticBackground extends StatelessWidget {
                               elevation: 5,
                               color: const Color(0xFF5B7B79),
                               child: Center(
-                                child: Text(
-                                  '${hijri.day} ${hijri.month.en} ${hijri.year}\n'
-                                  '${gregorian.weekday.en},${gregorian.day} ${gregorian.month.en} ${gregorian.year}',
-                                  style: TextStyle(
-                                    fontFamily: GoogleFonts.roboto().debugLabel,
-                                    color: whiteColor,
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 10,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 20),
+                                  child: Text(
+                                    '${hijri.day} ${hijri.month.en} ${hijri.year}\n'
+                                    '${gregorian.weekday.en},${gregorian.day} ${gregorian.month.en} ${gregorian.year}',
+                                    style: TextStyle(
+                                      fontFamily:
+                                          GoogleFonts.roboto().debugLabel,
+                                      color: whiteColor,
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 10,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -235,7 +241,7 @@ class HomeStaticBackground extends StatelessWidget {
   Widget _buildQiblahIndicator(BuildContext context, double screenWidth,
       QiblahController controller, HomeController homeController) {
     return SizedBox(
-      width: 160,
+      width: 140,
       height: 167.72,
       child: Stack(
         alignment: Alignment.center, // Center all elements in the Stack
