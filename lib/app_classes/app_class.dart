@@ -17,7 +17,7 @@ class AppClass {
     }
   }
 
-   int calculateAge(String dob) {
+  int calculateAge(String dob) {
     if (dob == null || dob.isEmpty) return 0;
 
     try {
@@ -46,5 +46,56 @@ class AppClass {
       print("Error parsing date: $e");
       return 0;
     }
+  }
+
+  String formatDate(String date) {
+    // Split the date string into year, month, and day
+    List<String> dateParts = date.split('-');
+    int year = int.parse(dateParts[0]);
+    int month = int.parse(dateParts[1]);
+    int day = int.parse(dateParts[2]);
+
+    // Create a list of month names
+    List<String> monthNames = [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December'
+    ];
+
+    // Format the date into "Month Day, Year"
+    return "${monthNames[month - 1]} $day, $year"; // Month is 0-based in the list
+  }
+
+  String formatTime(String time) {
+    // Split the input string into hours, minutes, and seconds
+    List<String> timeParts = time.split(':');
+
+    // Parse the parts as integers
+    int hour = int.parse(timeParts[0]);
+    int minute = int.parse(timeParts[1]);
+    int second = int.parse(timeParts[2]);
+
+    // Determine AM/PM period
+    String period = hour >= 12 ? 'PM' : 'AM';
+
+    // Convert to 12-hour format
+    int formattedHour = hour % 12;
+    formattedHour =
+        formattedHour == 0 ? 12 : formattedHour; // Handle midnight as 12 AM
+
+    // Format minutes and seconds to always show two digits
+    String formattedMinute = minute.toString().padLeft(2, '0');
+    String formattedSecond = second.toString().padLeft(2, '0');
+
+    return "$formattedHour:$formattedMinute:$formattedSecond $period";
   }
 }

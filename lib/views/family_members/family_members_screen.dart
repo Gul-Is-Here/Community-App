@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:community_islamic_app/app_classes/app_class.dart';
 import 'package:community_islamic_app/constants/globals.dart';
+import 'package:community_islamic_app/controllers/family_controller.dart';
+import 'package:community_islamic_app/views/family_members/classdropdown_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
@@ -19,15 +21,24 @@ class FamilyMemberScreen extends StatefulWidget {
 
 class _FamilyMemberScreenState extends State<FamilyMemberScreen> {
   final ProfileController profileController = Get.put(ProfileController());
+  final FamilyController familyController = Get.put(FamilyController());
 
   TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
   TextEditingController dobController = TextEditingController();
 
   String selectedRelation = 'Brother';
+  List<bool> isExpandedList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    List<dynamic> relations = profileController.userData['relations'] ?? [];
+    isExpandedList = List.generate(relations.length, (index) => false);
+  }
 
   File? _profileImage;
-
+  // bool isExpanded = false; // Individual state for each widget
   bool isLoading = false; // Loading state
 
   final List<String> relation = [
@@ -162,13 +173,16 @@ class _FamilyMemberScreenState extends State<FamilyMemberScreen> {
               List<dynamic> relations =
                   profileController.userData['relations'] ?? [];
               return ListView.builder(
-                shrinkWrap: true, padding: EdgeInsets.all(0),
+                shrinkWrap: true, padding: const EdgeInsets.all(0),
                 physics:
-                    NeverScrollableScrollPhysics(), // Disable internal scrolling
+                    const NeverScrollableScrollPhysics(), // Disable internal scrolling
                 itemCount: relations.length,
                 itemBuilder: (context, index) {
                   final member = relations[index];
+
                   if (member == null) {
+                    isExpandedList =
+                        List.generate(member.lenght, (index) => false);
                     return const Center(
                       child: Text(
                         'No Family Member Added Yet',
@@ -178,15 +192,392 @@ class _FamilyMemberScreenState extends State<FamilyMemberScreen> {
                   } else {
                     return Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: FamilyMemberCard(
-                        heroTag: 'btn$index',
-                        name: member['name'] ?? 'Unknown',
-                        relationship: member['relation_type'] ?? 'Unknown',
-                        dob: member['dob'] ?? 'N/A',
-                        age: AppClass().calculateAge(member['dob']),
-                        profileImage:
-                            member['profile_image'] ?? 'default_image_path',
-                        onTap: () => _showEditMemberDialog(context, member),
+                      // child: FamilyMemberCard(
+                      //   heroTag: 'btn$index',
+                      //   name: member['name'] ?? 'Unknown',
+                      //   relationship: member['relation_type'] ?? 'Unknown',
+                      //   dob: member['dob'] ?? 'N/A',
+                      //   age: AppClass().calculateAge(member['dob']),
+                      //   profileImage:
+                      //       member['profile_image'] ?? 'default_image_path',
+                      //   onTap: () => _showEditMemberDialog(context, member),
+                      // ),
+                      child: Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          Card(
+                            color: whiteColor,
+                            elevation: 4,
+                            margin: const EdgeInsets.symmetric(vertical: 10),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Column(
+                              children: [
+                                ListTile(
+                                  leading: CircleAvatar(
+                                    radius: 30,
+                                    backgroundImage: NetworkImage(member[
+                                            'profile_image'] ??
+                                        'default_image_path'), // Profile picture
+                                  ),
+                                  title: Text(
+                                    member['name'],
+                                    style: const TextStyle(
+                                        fontFamily: popinsBold, fontSize: 13),
+                                  ),
+                                  subtitle: Text(
+                                    '${member['relation_type'] ?? 'Unknown'} - ${member['dob'] ?? 'N/A'} - ${AppClass().calculateAge(member['dob'])} Years',
+                                    style: const TextStyle(
+                                        fontFamily: popinsBold, fontSize: 10),
+                                  ),
+                                  trailing: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.black,
+                                      border: Border.all(
+                                        color: whiteColor,
+                                        width: 0,
+                                      ),
+                                      borderRadius: BorderRadius.circular(
+                                        30,
+                                      ),
+                                    ),
+                                    child: IconButton(
+                                      icon: Icon(
+                                        isExpandedList[index]
+                                            ? Icons.expand_less
+                                            : Icons.expand_more,
+                                        color: whiteColor,
+                                        size: 35,
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          isExpandedList[index] =
+                                              !isExpandedList[index];
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                ),
+                                if (isExpandedList[index]) ...[
+                                  const Divider(),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        alignment: Alignment.centerLeft,
+                                        height: 28,
+                                        width: double.infinity,
+                                        decoration: BoxDecoration(
+                                          color: primaryColor,
+                                        ),
+                                        child: const Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 12),
+                                          child: Text(
+                                            'GENERAL INFORMATION',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontFamily: popinsSemiBold,
+                                              fontSize: 13,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceEvenly,
+                                            children: [
+                                              const Text(
+                                                'Name ',
+                                                style: TextStyle(
+                                                    fontFamily: popinsRegulr,
+                                                    fontSize: 10),
+                                              ),
+                                              Text(
+                                                member['name'],
+                                                style: const TextStyle(
+                                                    fontFamily: popinsRegulr,
+                                                    fontSize: 10),
+                                              ),
+                                              const Text(
+                                                'Relation',
+                                                style: TextStyle(
+                                                    fontFamily: popinsRegulr,
+                                                    fontSize: 10),
+                                              ),
+                                              Text(
+                                                member['relation_type'],
+                                                style: const TextStyle(
+                                                    fontFamily: popinsRegulr,
+                                                    fontSize: 10),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 10),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceEvenly,
+                                            children: [
+                                              const Text(
+                                                'DOB',
+                                                style: TextStyle(
+                                                    fontFamily: popinsRegulr,
+                                                    fontSize: 10),
+                                              ),
+                                              Text(
+                                                member['dob'],
+                                                style: const TextStyle(
+                                                    fontFamily: popinsRegulr,
+                                                    fontSize: 10),
+                                              ),
+                                              const Padding(
+                                                padding:
+                                                    EdgeInsets.only(right: 10),
+                                                child: Text(
+                                                  'Age',
+                                                  style: TextStyle(
+                                                      fontFamily: popinsRegulr,
+                                                      fontSize: 10),
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    right: 0),
+                                                child: Text(
+                                                  textAlign: TextAlign.start,
+                                                  AppClass()
+                                                      .calculateAge(
+                                                          member['dob'])
+                                                      .toString(),
+                                                  style: const TextStyle(
+                                                      fontFamily: popinsRegulr,
+                                                      fontSize: 10),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 20),
+                                      Container(
+                                        alignment: Alignment.centerLeft,
+                                        height: 28,
+                                        width: double.infinity,
+                                        decoration: BoxDecoration(
+                                          color: primaryColor,
+                                        ),
+                                        child: const Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 12),
+                                          child: Text(
+                                            'AVAILABLE CLASSES',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontFamily: popinsSemiBold,
+                                              fontSize: 13,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 8),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            ClassDropdown(
+                                                classesList: familyController
+                                                    .classesList,
+                                                member: member)
+//
+                                          ],
+                                        ),
+                                      ),
+                                      const SizedBox(height: 20),
+                                      Container(
+                                        alignment: Alignment.centerLeft,
+                                        height: 28,
+                                        width: double.infinity,
+                                        decoration: BoxDecoration(
+                                          color: primaryColor,
+                                        ),
+                                        child: const Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 12),
+                                          child: Text(
+                                            'CLASSES ENROLLED',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontFamily: popinsSemiBold,
+                                              fontSize: 13,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 8.0, vertical: 8),
+                                        child: Stack(
+                                          children: [
+                                            // 40.heightBox,
+                                            Positioned(
+                                                left: 20,
+                                                bottom: 45,
+                                                child: Container(
+                                                  padding: const EdgeInsets
+                                                      .symmetric(horizontal: 5),
+                                                  decoration: const BoxDecoration(
+                                                      color: Color(0xFFFED36A),
+                                                      borderRadius:
+                                                          BorderRadius.only(
+                                                              topLeft: Radius
+                                                                  .circular(5),
+                                                              topRight: Radius
+                                                                  .circular(
+                                                                      5))),
+                                                  child: const Padding(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                            vertical: 3),
+                                                    child: Text(
+                                                      'waiting for Approval',
+                                                      style: TextStyle(
+                                                          fontFamily:
+                                                              popinsSemiBold,
+                                                          fontSize: 8),
+                                                    ),
+                                                  ),
+                                                )),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Row(
+                                                children: [
+                                                  SizedBox(
+                                                    height: 40,
+                                                    child: Card(
+                                                      color: const Color(
+                                                          0xFF1EC7CD),
+                                                      margin:
+                                                          const EdgeInsets.all(
+                                                              0),
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          30)),
+                                                      child: Center(
+                                                        child: DropdownButton<
+                                                            String>(
+                                                          // elevation: 5,
+                                                          // borderRadius: BorderRadius.circular(40),
+                                                          dropdownColor:
+                                                              Colors.white,
+                                                          underline:
+                                                              Container(), // Remove default underline
+                                                          items: <String>[
+                                                            'View Details',
+                                                            'Enrole in Class',
+                                                          ].map((String value) {
+                                                            return DropdownMenuItem<
+                                                                String>(
+                                                              value: value,
+                                                              child: Text(
+                                                                value,
+                                                                style: const TextStyle(
+                                                                    fontFamily:
+                                                                        popinsRegulr,
+                                                                    fontSize:
+                                                                        13),
+                                                              ),
+                                                            );
+                                                          }).toList(),
+                                                          onChanged: (_) {},
+                                                          hint: const Padding(
+                                                            padding: EdgeInsets
+                                                                .symmetric(
+                                                                    horizontal:
+                                                                        20),
+                                                            child: Text(
+                                                              'Class A',
+                                                              style: TextStyle(
+                                                                  fontFamily:
+                                                                      popinsBold,
+                                                                  fontSize: 13),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(width: 10),
+                                                  // EnrolledClassBadge(
+                                                  //     'Class B', Colors.green, 'Approved'),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ],
+                            ),
+                          ),
+                          // Positioned Edit Button, half on and half off the card
+                          Positioned(
+                            bottom: -20,
+                            right: 120,
+                            child: FloatingActionButton(
+                              heroTag: 'btn+$index',
+                              shape: RoundedRectangleBorder(
+                                  side: BorderSide(width: 2, color: whiteColor),
+                                  borderRadius: BorderRadius.circular(20)),
+                              onPressed: () {
+                                // Edit action
+                              },
+                              mini: true,
+                              backgroundColor: Colors.red,
+                              child: Icon(
+                                Icons.close,
+                                color: whiteColor,
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            bottom: -20,
+                            right: 165,
+                            child: FloatingActionButton(
+                              heroTag: 'btn+$index',
+                              shape: RoundedRectangleBorder(
+                                  side: BorderSide(width: 2, color: whiteColor),
+                                  borderRadius: BorderRadius.circular(20)),
+                              onPressed: () {
+                                _showEditMemberDialog(context, member);
+                              },
+                              mini: true,
+                              backgroundColor: primaryColor,
+                              child: Icon(
+                                Icons.edit,
+                                color: whiteColor,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     );
                   }
