@@ -1,5 +1,4 @@
 // import 'package:alarm/alarm.dart';
-import 'package:community_islamic_app/controllers/home_controller.dart';
 import 'package:community_islamic_app/controllers/qibla_controller.dart';
 import 'package:community_islamic_app/firebase_options.dart';
 import 'package:community_islamic_app/views/auth_screens/splash_screen.dart';

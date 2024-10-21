@@ -244,26 +244,5 @@ class ProfileController extends GetxController {
     }
   }
 
-  // Get  Classes Data Method
-  Future<List<Class>> fetchClasses() async {
-    const String apiUrl =
-        "http://rosenbergcommunitycenter.org/api/ClassApi?access=7b150e45-e0c1-43bc-9290-3c0bf6473a51332";
 
-    try {
-      final response = await http.get(Uri.parse(apiUrl));
-
-      if (response.statusCode == 200) {
-        // Parse the JSON
-        final classesModel = ClassesModel.fromRawJson(response.body);
-
-        print(classesModel.data.classes);
-        // Return the list of classes
-        return classesModel.data.classes;
-      } else {
-        throw Exception('Failed to load classes');
-      }
-    } catch (e) {
-      throw Exception('Error fetching classes: $e');
-    }
-  }
 }
