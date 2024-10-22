@@ -17,6 +17,7 @@ class NamazTimingsScreen extends StatelessWidget {
     final HomeController homeController = Get.find();
 
     return Scaffold(
+      backgroundColor: whiteColor,
       appBar: AppBar(
         leading: IconButton(
           onPressed: () {

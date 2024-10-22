@@ -1,5 +1,11 @@
+import 'package:community_islamic_app/constants/globals.dart';
+import 'package:community_islamic_app/controllers/family_controller.dart';
+import 'package:community_islamic_app/views/family_members/add_enrolment_widget.dart';
 import 'package:community_islamic_app/views/qibla_screen/qibla_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:get/get.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 import '../../app_classes/app_class.dart';
@@ -25,6 +31,8 @@ class _ClassDropdownState extends State<ClassDropdown> {
 
   @override
   Widget build(BuildContext context) {
+    FamilyController familyController = Get.put(FamilyController());
+
     return Column(
       children: widget.classesList.map((classData) {
         // Get the member's age based on their DOB
@@ -51,6 +59,7 @@ class _ClassDropdownState extends State<ClassDropdown> {
               color: whiteColor,
               height: 30,
               child: Card(
+                color: whiteColor,
                 margin: const EdgeInsets.all(0),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),
@@ -85,7 +94,8 @@ class _ClassDropdownState extends State<ClassDropdown> {
                         _showDetailsDialog(classData);
                       } else if (selectedOption == 'Enroll in Class') {
                         // Show enrollment dialog or process
-                        _showEnrollDialog(classData);
+                        _showEnrollDialog(
+                            classData, familyController, widget.member);
                       }
                     },
 
@@ -217,13 +227,12 @@ class _ClassDropdownState extends State<ClassDropdown> {
               color: Colors.black87,
             ),
           ),
-          content: SingleChildScrollView(
-            child: Text(
-              description,
-              style: TextStyle(
-                fontFamily: popinsRegulr,
-                fontSize: 14,
-                color: Colors.black54,
+          content: SizedBox(
+            height: 500,
+            width: 120,
+            child: SingleChildScrollView(
+              child: Html(
+                data: description,
               ),
             ),
           ),
@@ -274,31 +283,311 @@ class _ClassDropdownState extends State<ClassDropdown> {
     );
   }
 
-  // Function to show enrollment dialog
-  void _showEnrollDialog(dynamic classData) {
+  void _showEnrollDialog(
+      dynamic classData, FamilyController familyController, dynamic member) {
+    bool isAllergic = false;
+    bool isAcknowledged = false;
+    bool isLoading = false;
+    TextEditingController allergiesController = TextEditingController();
+    TextEditingController emergencyContactController = TextEditingController();
+    TextEditingController emergencyContactNameController =
+        TextEditingController();
+
+    final GlobalKey<FormState> _formKey = GlobalKey<FormState>(); // Form key
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Enroll in ${classData['class_name']}'),
-          content: const Text('Do you want to enroll in this class?'),
-          actions: [
-            TextButton(
-              child: const Text('Enroll'),
-              onPressed: () {
-                // Enroll logic here
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: const Text('Cancel'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return AlertDialog(
+              backgroundColor: whiteColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              title: Container(
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(20),
+                      bottomRight: Radius.circular(20)),
+                  color: primaryColor,
+                ),
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      'ENROLLMENT FORM',
+                      style:
+                          TextStyle(fontFamily: popinsBold, color: whiteColor),
+                    ),
+                  ),
+                ),
+              ),
+              content: SingleChildScrollView(
+                child: Form(
+                  // Wrap with Form widget
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const SizedBox(height: 10),
+                      _PasswordTextField(
+                        label: 'Emergency Contact',
+                        controller: emergencyContactController,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter emergency contact';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 10),
+                      _PasswordTextField(
+                        label: 'Emergency Contact Name',
+                        controller: emergencyContactNameController,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter emergency contact name';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 10),
+                      Card(
+                        elevation: 5,
+                        color: whiteColor,
+                        child: DropdownButtonFormField<String>(
+                          decoration: InputDecoration(
+                            label: Text(
+                              'Allergic',
+                              style: TextStyle(
+                                  fontFamily: popinsSemiBold,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                            labelStyle: TextStyle(
+                              color: Colors.grey.shade700,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            border: InputBorder.none,
+                            contentPadding:
+                                const EdgeInsets.symmetric(horizontal: 16),
+                          ),
+                          items: const [
+                            DropdownMenuItem(value: 'YES', child: Text('YES')),
+                            DropdownMenuItem(value: 'NO', child: Text('NO')),
+                          ],
+                          onChanged: (value) {
+                            setState(() {
+                              isAllergic = value == 'YES';
+                            });
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      if (isAllergic)
+                        PasswordTextField(
+                          label: 'Allergic Details',
+                          controller: allergiesController,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please provide allergic details';
+                            }
+                            return null;
+                          },
+                        ),
+                      const SizedBox(height: 10),
+                      GestureDetector(
+                        onTap: () {
+                          _showDisclaimerDialog(
+                              context,
+                              classData['class_has_disclaimer']
+                                  ['disclaimer_title'],
+                              classData['class_has_disclaimer']
+                                  ['disclaimer_description']);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: Text(
+                            'Disclaimer: Please view carefully.',
+                            style: TextStyle(
+                              color: Colors.grey[600],
+                              fontStyle: FontStyle.italic,
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Row(
+                        children: [
+                          Checkbox(
+                            activeColor: primaryColor,
+                            value: isAcknowledged,
+                            onChanged: (value) {
+                              setState(() {
+                                isAcknowledged = value ?? false;
+                              });
+                            },
+                          ),
+                          const Expanded(
+                            child: Text(
+                              'I Acknowledge That I Have Read, Understood And Agreed To The Rosenberg Community Center Policies And Procedures',
+                              style: TextStyle(
+                                  fontSize: 12, fontFamily: popinsRegulr),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              actions: [
+                Center(
+                  child: isLoading
+                      ? SpinKitFadingCircle(color: primaryColor)
+                      : ElevatedButton(
+                          onPressed: isAcknowledged
+                              ? () async {
+                                  if (_formKey.currentState!.validate()) {
+                                    setState(() {
+                                      isLoading = true;
+                                    });
+
+                                    try {
+                                      await familyController.registerForClass(
+                                        token: globals.accessToken.value,
+                                        classId:
+                                            classData['class_id'].toString(),
+                                        id: globals.userId.value,
+                                        relationId: member['relation_id'],
+                                        emergencyContact:
+                                            emergencyContactController.text,
+                                        emergencyContactName:
+                                            emergencyContactNameController.text,
+                                        allergiesDetail:
+                                            allergiesController.text,
+                                      );
+                                      Navigator.of(context).pop();
+                                    } catch (error) {
+                                      // Handle the error
+                                      print("Error: $error");
+                                    } finally {
+                                      setState(() {
+                                        isLoading = false;
+                                      });
+                                    }
+                                  }
+                                }
+                              : null,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: primaryColor,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 60, vertical: 10),
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.elliptical(30, 30),
+                                bottomLeft: Radius.circular(5),
+                                bottomRight: Radius.elliptical(30, 30),
+                                topRight: Radius.circular(5),
+                              ),
+                            ),
+                            shadowColor:
+                                const Color.fromARGB(255, 252, 254, 255),
+                            elevation: 8,
+                          ),
+                          child: Text(
+                            'ENROLL IN CLASS',
+                            style: TextStyle(
+                                fontFamily: popinsSemiBold, color: whiteColor),
+                          ),
+                        ),
+                ),
+              ],
+            );
+          },
         );
       },
+    );
+  }
+}
+
+class _PasswordTextField extends StatelessWidget {
+  final String label;
+  final TextEditingController controller;
+  final String? Function(String?)? validator; // Added validator
+
+  const _PasswordTextField({
+    required this.label,
+    required this.controller,
+    this.validator, // Pass the validator
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 60,
+      child: Card(
+        elevation: 8,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(5),
+        ),
+        color: Colors.white,
+        shadowColor: Colors.grey.shade300,
+        child: TextFormField(
+          controller: controller,
+          decoration: InputDecoration(
+            labelText: label,
+            labelStyle: TextStyle(
+              color: Colors.grey.shade700,
+              fontWeight: FontWeight.w500,
+            ),
+            border: InputBorder.none,
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+          ),
+          validator: validator, // Apply validator
+        ),
+      ),
+    );
+  }
+}
+
+class PasswordTextField extends StatelessWidget {
+  final String label;
+  final TextEditingController controller;
+  final String? Function(String?)? validator; // Added validator
+
+  const PasswordTextField({
+    required this.label,
+    required this.controller,
+    this.validator, // Pass the validator
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 8,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(5),
+      ),
+      color: Colors.white,
+      shadowColor: Colors.grey.shade300,
+      child: TextFormField(
+        maxLines: 3,
+        controller: controller,
+        decoration: InputDecoration(
+          labelText: label,
+          labelStyle: TextStyle(
+            color: Colors.grey.shade700,
+            fontWeight: FontWeight.w500,
+          ),
+          border: InputBorder.none,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+        ),
+        validator: validator, // Apply validator
+      ),
     );
   }
 }
