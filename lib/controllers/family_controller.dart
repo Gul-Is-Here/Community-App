@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 
 class FamilyController extends GetxController {
   List<dynamic> classesList = [];
+  var isLoading = false.obs; // Observable loading state
 
   @override
   void onInit() {
@@ -45,6 +46,7 @@ class FamilyController extends GetxController {
     required String emergencyContactName,
     required String allergiesDetail,
   }) async {
+    isLoading(true); // Start loading
     const String url =
         'https://rosenbergcommunitycenter.org/api/RegisterClassApi';
 
@@ -59,7 +61,7 @@ class FamilyController extends GetxController {
       'id': id, // Ensure id is a String
       'relation_id': relationId, // Ensure relationId is a String
       'emergency_contact': emergencyContact,
-      'emergency_contact_name': emergencyContactName,
+      'emergencycontact_name': emergencyContactName,
       'allergies_detail': allergiesDetail,
     };
 
@@ -83,6 +85,8 @@ class FamilyController extends GetxController {
     } catch (e) {
       // Handle network or other errors
       print('An error occurred: $e');
+    } finally {
+      isLoading(false); // Stop loading
     }
   }
 }

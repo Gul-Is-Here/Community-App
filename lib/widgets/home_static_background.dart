@@ -327,12 +327,14 @@ class HomeStaticBackground extends StatelessWidget {
           ),
           Positioned(
             bottom: 75, // Adjust according to your design
-            child: Text(
-              homeController.getCurrentPrayer(),
-              style: GoogleFonts.montserrat(
-                fontWeight: FontWeight.w700,
-                color: primaryColor,
-                fontSize: 13,
+            child: Obx(
+              () => Text(
+                homeController.getCurrentPrayer(),
+                style: GoogleFonts.montserrat(
+                  fontWeight: FontWeight.w700,
+                  color: primaryColor,
+                  fontSize: 13,
+                ),
               ),
             ),
           ),

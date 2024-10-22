@@ -172,6 +172,7 @@ class _FamilyMemberScreenState extends State<FamilyMemberScreen> {
               }
               List<dynamic> relations =
                   profileController.userData['relations'] ?? [];
+
               return ListView.builder(
                 shrinkWrap: true, padding: const EdgeInsets.all(0),
                 physics:
@@ -180,6 +181,9 @@ class _FamilyMemberScreenState extends State<FamilyMemberScreen> {
                 itemBuilder: (context, index) {
                   final member = relations[index];
 
+                  final inrolment =
+                      relations[0]; // Using first relation for this example
+                  List<dynamic> inrolments = inrolment['hasenrollments'] ?? [];
                   if (member == null) {
                     isExpandedList =
                         List.generate(member.lenght, (index) => false);
@@ -430,6 +434,7 @@ class _FamilyMemberScreenState extends State<FamilyMemberScreen> {
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: 8.0, vertical: 8),
                                         child: Stack(
+                                          clipBehavior: Clip.none,
                                           children: [
                                             // 40.heightBox,
                                             Positioned(
@@ -437,27 +442,128 @@ class _FamilyMemberScreenState extends State<FamilyMemberScreen> {
                                                 bottom: 45,
                                                 child: Container(
                                                   padding: const EdgeInsets
-                                                      .symmetric(horizontal: 5),
-                                                  decoration: const BoxDecoration(
-                                                      color: Color(0xFFFED36A),
-                                                      borderRadius:
-                                                          BorderRadius.only(
-                                                              topLeft: Radius
-                                                                  .circular(5),
-                                                              topRight: Radius
-                                                                  .circular(
-                                                                      5))),
-                                                  child: const Padding(
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                            vertical: 3),
-                                                    child: Text(
-                                                      'waiting for Approval',
-                                                      style: TextStyle(
-                                                          fontFamily:
-                                                              popinsSemiBold,
-                                                          fontSize: 8),
+                                                      .symmetric(
+                                                      horizontal: 10),
+                                                  decoration: BoxDecoration(
+                                                    color: () {
+                                                      if (inrolments
+                                                              .isNotEmpty &&
+                                                          index <
+                                                              inrolments
+                                                                  .length) {
+                                                        String status = inrolments[
+                                                                    index][
+                                                                'enrollmenthasmanyclasses']
+                                                            ['_active'];
+
+                                                        if (status == '0') {
+                                                          return const Color(
+                                                              0xFFFED36A); // Waiting for Approval (original color)
+                                                        } else if (status ==
+                                                            '1') {
+                                                          return const Color(
+                                                              0xFF1EC7CD); // Approved (new color)
+                                                        } else if (status ==
+                                                            '2') {
+                                                          return const Color(
+                                                              0xFFFED36A); // Hold On (example color, change as needed)
+                                                        } else if (status ==
+                                                            '3') {
+                                                          return const Color(
+                                                              0xFFFED36A); // Rejected (example color, change as needed)
+                                                        } else {
+                                                          Color(
+                                                              0xFFFED36A); // Unknown status (fallback color)
+                                                        }
+                                                      } else {
+                                                        return Color(
+                                                            0xFFFED36A); // No enrollments found (fallback color)
+                                                      }
+                                                    }(),
+                                                    borderRadius:
+                                                        const BorderRadius.only(
+                                                      topLeft:
+                                                          Radius.circular(15),
+                                                      topRight:
+                                                          Radius.circular(15),
                                                     ),
+                                                  ),
+                                                  child: Padding(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        vertical: 4,
+                                                        horizontal: 5),
+                                                    child: () {
+                                                      if (inrolments
+                                                              .isNotEmpty &&
+                                                          index <
+                                                              inrolments
+                                                                  .length) {
+                                                        String status = inrolments[
+                                                                    index][
+                                                                'enrollmenthasmanyclasses']
+                                                            ['_active'];
+
+                                                        if (status == '0') {
+                                                          return const Text(
+                                                            'Waiting for Approval',
+                                                            style: TextStyle(
+                                                              fontFamily:
+                                                                  popinsSemiBold,
+                                                              fontSize: 8,
+                                                            ),
+                                                          );
+                                                        } else if (status ==
+                                                            '1') {
+                                                          return const Text(
+                                                            'Approved',
+                                                            style: TextStyle(
+                                                              fontFamily:
+                                                                  popinsSemiBold,
+                                                              fontSize: 8,
+                                                            ),
+                                                          );
+                                                        } else if (status ==
+                                                            '2') {
+                                                          return const Text(
+                                                            'Hold On',
+                                                            style: TextStyle(
+                                                              fontFamily:
+                                                                  popinsSemiBold,
+                                                              fontSize: 8,
+                                                            ),
+                                                          );
+                                                        } else if (status ==
+                                                            '3') {
+                                                          return const Text(
+                                                            'Rejected',
+                                                            style: TextStyle(
+                                                              fontFamily:
+                                                                  popinsSemiBold,
+                                                              fontSize: 8,
+                                                            ),
+                                                          );
+                                                        } else {
+                                                          return const Text(
+                                                            'Unknown Status',
+                                                            style: TextStyle(
+                                                              fontFamily:
+                                                                  popinsSemiBold,
+                                                              fontSize: 8,
+                                                            ),
+                                                          );
+                                                        }
+                                                      } else {
+                                                        return const Text(
+                                                          'No Enrollments Found',
+                                                          style: TextStyle(
+                                                            fontFamily:
+                                                                popinsSemiBold,
+                                                            fontSize: 8,
+                                                          ),
+                                                        );
+                                                      }
+                                                    }(),
                                                   ),
                                                 )),
                                             Padding(
@@ -490,7 +596,6 @@ class _FamilyMemberScreenState extends State<FamilyMemberScreen> {
                                                               Container(), // Remove default underline
                                                           items: <String>[
                                                             'View Details',
-                                                            'Enrole in Class',
                                                           ].map((String value) {
                                                             return DropdownMenuItem<
                                                                 String>(
@@ -501,23 +606,49 @@ class _FamilyMemberScreenState extends State<FamilyMemberScreen> {
                                                                     fontFamily:
                                                                         popinsRegulr,
                                                                     fontSize:
-                                                                        13),
+                                                                        10),
                                                               ),
                                                             );
                                                           }).toList(),
                                                           onChanged: (_) {},
-                                                          hint: const Padding(
-                                                            padding: EdgeInsets
-                                                                .symmetric(
+                                                          hint: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .symmetric(
                                                                     horizontal:
                                                                         20),
-                                                            child: Text(
-                                                              'Class A',
-                                                              style: TextStyle(
-                                                                  fontFamily:
-                                                                      popinsBold,
-                                                                  fontSize: 13),
-                                                            ),
+                                                            child: inrolments
+                                                                        .isNotEmpty &&
+                                                                    index <
+                                                                        inrolments
+                                                                            .length
+                                                                ?
+                                                                // Access the 'class_name' safely
+                                                                Text(
+                                                                    inrolments[index]['enrollmenthasmanyclasses']
+                                                                            [
+                                                                            'class_name'] ??
+                                                                        'No Class Name',
+                                                                    style:
+                                                                        const TextStyle(
+                                                                      fontFamily:
+                                                                          popinsBold,
+                                                                      fontSize:
+                                                                          13,
+                                                                    ),
+                                                                  )
+                                                                :
+                                                                // Handle the case where there are no enrollments
+                                                                const Text(
+                                                                    'No Enrollment Found',
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontFamily:
+                                                                          popinsBold,
+                                                                      fontSize:
+                                                                          13,
+                                                                    ),
+                                                                  ),
                                                           ),
                                                         ),
                                                       ),

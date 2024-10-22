@@ -65,75 +65,82 @@ class CustomizedMobileLayout extends StatelessWidget {
                 ),
             // homeController.prayerTime.value.data != null
             Padding(
-              padding: const EdgeInsets.only(top: 185.0, left: 5),
-              child: SizedBox(
-                width: double.infinity,
-                height: 106,
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Obx(
-                    () => homeController.prayerTime.value.data == null
-                        ? Center(child: Text(''))
-                        : Center(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                PrayerTimeWidget(
-                                  namazName: 'Fajr',
-                                  timings: homeController
-                                      .prayerTime.value.data!.timings.fajr,
-                                  iqamatimes: iqamatimes,
-                                  name: 'Fajr',
-                                  currentPrayer:
-                                      getCurrentPrayer(), // Pass the current prayer name
-                                  imageIcon: morningIcon, // Your icon asset
-                                ),
-                                PrayerTimeWidget(
-                                  currentPrayer: getCurrentPrayer(),
-                                  imageIcon: afternoon,
-                                  namazName: 'Dhuhr',
-                                  timings: homeController
-                                      .prayerTime.value.data!.timings.dhuhr,
-                                  iqamatimes: iqamatimes,
-                                  name: 'Dhuhr',
-                                ),
-                                PrayerTimeWidget(
-                                  currentPrayer: getCurrentPrayer(),
-                                  imageIcon: morningIcon,
-                                  namazName: 'Asr',
-                                  timings: homeController
-                                      .prayerTime.value.data!.timings.asr,
-                                  iqamatimes: iqamatimes,
-                                  name: 'Asr',
-                                ),
-                                PrayerTimeWidget(
-                                  currentPrayer: getCurrentPrayer(),
-                                  imageIcon: dayandNight,
-                                  namazName: 'Maghrib',
-                                  timings: homeController
-                                      .prayerTime.value.data!.timings.maghrib,
-                                  iqamatimes: {
-                                    // Ensure this is a Map<String, String>
-                                    'Maghrib': addMinutesToPrayerTime(
-                                        homeController.prayerTime.value.data!
-                                            .timings.dhuhr,
-                                        5), // Add 5 minutes to Maghrib Azan time
-                                  },
-                                  name: 'Maghrib',
-                                ),
-                                PrayerTimeWidget(
-                                  currentPrayer: getCurrentPrayer(),
-                                  imageIcon: night,
-                                  namazName: 'Isha',
-                                  timings: homeController
-                                      .prayerTime.value.data!.timings.isha,
-                                  iqamatimes: iqamatimes,
-                                  name: 'Isha',
-                                ),
-                              ],
+              padding: const EdgeInsets.only(top: 185.0, left: 17),
+              child: Center(
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 106,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Obx(
+                      () => homeController.prayerTime.value.data == null
+                          ? Center(child: Text(''))
+                          : Center(
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                // crossAxisAlignment: CrossAxisAlignment.baseline,
+                                children: [
+                                  PrayerTimeWidget(
+                                    namazName: 'Fajr',
+                                    timings: homeController
+                                        .prayerTime.value.data!.timings.fajr,
+                                    iqamatimes: iqamatimes,
+                                    name: 'Fajr',
+                                    currentPrayer:
+                                        getCurrentPrayer(), // Pass the current prayer name
+                                    imageIcon: morningIcon, // Your icon asset
+                                  ),
+                                  2.widthBox,
+                                  PrayerTimeWidget(
+                                    currentPrayer: getCurrentPrayer(),
+                                    imageIcon: afternoon,
+                                    namazName: 'Dhuhr',
+                                    timings: homeController
+                                        .prayerTime.value.data!.timings.dhuhr,
+                                    iqamatimes: iqamatimes,
+                                    name: 'Dhuhr',
+                                  ),
+                                  2.widthBox,
+                                  PrayerTimeWidget(
+                                    currentPrayer: getCurrentPrayer(),
+                                    imageIcon: morningIcon,
+                                    namazName: 'Asr',
+                                    timings: homeController
+                                        .prayerTime.value.data!.timings.asr,
+                                    iqamatimes: iqamatimes,
+                                    name: 'Asr',
+                                  ),
+                                  2.widthBox,
+                                  PrayerTimeWidget(
+                                    currentPrayer: getCurrentPrayer(),
+                                    imageIcon: dayandNight,
+                                    namazName: 'Maghrib',
+                                    timings: homeController
+                                        .prayerTime.value.data!.timings.maghrib,
+                                    iqamatimes: {
+                                      // Ensure this is a Map<String, String>
+                                      'Maghrib': addMinutesToPrayerTime(
+                                          homeController.prayerTime.value.data!
+                                              .timings.dhuhr,
+                                          5), // Add 5 minutes to Maghrib Azan time
+                                    },
+                                    name: 'Maghrib',
+                                  ),
+                                  2.widthBox,
+                                  PrayerTimeWidget(
+                                    currentPrayer: getCurrentPrayer(),
+                                    imageIcon: night,
+                                    namazName: 'Isha',
+                                    timings: homeController
+                                        .prayerTime.value.data!.timings.isha,
+                                    iqamatimes: iqamatimes,
+                                    name: 'Isha',
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
+                    ),
                   ),
                 ),
               ),

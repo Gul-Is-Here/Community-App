@@ -7,6 +7,7 @@ import 'package:community_islamic_app/views/auth_screens/registration_screen.dar
 import 'package:community_islamic_app/views/azan_settings/azan_settings_screen.dart';
 import 'package:community_islamic_app/views/contact_us/contact_us_screen.dart';
 import 'package:community_islamic_app/views/home_screens/home_screen.dart';
+import 'package:community_islamic_app/views/namaz_timmings/namaztimmings.dart';
 import 'package:community_islamic_app/views/profile_screen/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -106,6 +107,14 @@ class CustomDrawer extends StatelessWidget {
                   style: TextStyle(fontFamily: popinsRegulr, fontSize: 14)),
               onTap: () {
                 Get.to(() => const HijriCalendarExample());
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.calendar_month, color: primaryColor),
+              title: const Text('View Times',
+                  style: TextStyle(fontFamily: popinsRegulr, fontSize: 14)),
+              onTap: () {
+                Get.to(() => const NamazTimingsScreen());
               },
             ),
             const Divider(),
