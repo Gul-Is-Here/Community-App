@@ -458,10 +458,10 @@ class _ClassDropdownState extends State<ClassDropdown> {
 
                                     try {
                                       await familyController.registerForClass(
+                                        context: context,
                                         token: globals.accessToken.value,
-                                        classId:
-                                            classData['class_id'].toString(),
-                                        id: globals.userId.value,
+                                        classId: classData['class_id'],
+                                        id: member['id'],
                                         relationId: member['relation_id'],
                                         emergencyContact:
                                             emergencyContactController.text,

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:community_islamic_app/constants/globals.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
@@ -38,9 +39,10 @@ class FamilyController extends GetxController {
   }
 
   Future<void> registerForClass({
+    required BuildContext context,
     required String token,
-    required String classId,
-    required String id,
+    required int classId,
+    required int id,
     required String relationId,
     required String emergencyContact,
     required String emergencyContactName,
@@ -76,9 +78,22 @@ class FamilyController extends GetxController {
       // Check if the request was successful
       if (response.statusCode == 200) {
         // Request was successful
-        print('Successfully registered for class: ${response.body}');
-      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Successfully enrolled for the class.'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      } else if (response.statusCode == 423) {
         // Handle the error
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Already enrolled in this class.'),
+            backgroundColor: Colors.orange,
+          ),
+        );
+      } else {
+        // Handle other status codes
         print('Failed to register. Status code: ${response.statusCode}');
         print('Response body: ${response.body}');
       }
