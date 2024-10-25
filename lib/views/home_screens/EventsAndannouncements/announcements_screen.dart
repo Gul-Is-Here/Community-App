@@ -52,7 +52,7 @@ class AnnouncementsScreen extends StatelessWidget {
                   Get.to(() => AnnouncementsDetailsScreen(
                       controller: controller,
                       title: feed.feedTitle,
-                      image: feed.feedImage,
+                      details: feed.feedImage,
                       createdDate: feed.createdAt.toString(),
                       description: '',
                       postedDate: feed.feedDate.toString()));
