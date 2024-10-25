@@ -1,5 +1,6 @@
 import 'package:community_islamic_app/constants/color.dart';
 import 'package:community_islamic_app/widgets/custome_drawer.dart';
+import 'package:community_islamic_app/widgets/social_media_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:community_islamic_app/widgets/customized_mobile_layout.dart';
 import 'package:auto_scroll_text/auto_scroll_text.dart';
@@ -25,8 +26,10 @@ class HomeScreen extends StatelessWidget {
             style: TextStyle(
                 color: Colors.white, fontFamily: popinsMedium, fontSize: 18),
           )),
-      body: Column(
+      body: Stack(
+        clipBehavior: Clip.none,
         children: [
+          const SocialMediaFloatingButton(),
           CustomizedMobileLayout(
             screenHeight: screenHeight,
           ),

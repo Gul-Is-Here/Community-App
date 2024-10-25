@@ -43,13 +43,13 @@ class AnnouncementWidget extends StatelessWidget {
                       ), // Loading indicator
                     ),
                   )
-                else if (eventsController.feedsList.isEmpty)
+                else if (eventsController.alertsList.isEmpty)
                   const SizedBox(
                     height: 117,
                     width: 320,
                     child: Center(
                       child: Text(
-                        'No Feeds found',
+                        'No Alerts found',
                         style: TextStyle(fontFamily: popinsRegulr),
                       ),
                     ),
@@ -63,14 +63,14 @@ class AnnouncementWidget extends StatelessWidget {
                         child: PageView.builder(
                           controller:
                               pageController, // Assign the PageController
-                          itemCount: eventsController.feedsList.length,
+                          itemCount: eventsController.alertsList.length,
                           scrollDirection: Axis.horizontal,
                           onPageChanged: (index) {
                             eventsController.currentIndex.value =
                                 index; // Update current index
                           },
                           itemBuilder: (context, index) {
-                            var feedsData = eventsController.feedsList[index];
+                            var alertsData = eventsController.alertsList[index];
                             return Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 12),
@@ -78,13 +78,13 @@ class AnnouncementWidget extends StatelessWidget {
                                 onTap: () {
                                   Get.to(() => AnnouncementsDetailsScreen(
                                       controller: eventsController,
-                                      title: feedsData.feedTitle,
-                                      image: feedsData.feedImage,
+                                      title: alertsData.alertTitle,
+                                      details: alertsData.alertDescription,
                                       createdDate:
-                                          feedsData.createdAt.toString(),
+                                          alertsData.createdAt.toString(),
                                       description: '',
                                       postedDate:
-                                          feedsData.feedDate.toString()));
+                                          alertsData.updatedAt.toString()));
                                 },
                                 child: Container(
                                   width: 320,
@@ -150,8 +150,8 @@ class AnnouncementWidget extends StatelessWidget {
                                                       final formattedDate =
                                                           eventsController
                                                               .formatDateString(
-                                                                  feedsData
-                                                                      .feedDate
+                                                                  alertsData
+                                                                      .updatedAt
                                                                       .toString());
                                                       return Text(
                                                         formattedDate,
@@ -169,7 +169,7 @@ class AnnouncementWidget extends StatelessWidget {
                                                     }
                                                   }),
                                                   Text(
-                                                    feedsData.feedTitle,
+                                                    alertsData.alertTitle,
                                                     style: const TextStyle(
                                                       fontSize: 14,
                                                       color: Colors.white,

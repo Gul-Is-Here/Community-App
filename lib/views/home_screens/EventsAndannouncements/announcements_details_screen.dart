@@ -9,13 +9,13 @@ class AnnouncementsDetailsScreen extends StatelessWidget {
   final String createdDate;
   final String postedDate;
   final String description;
-  final String image;
+  final String details;
 
   AnnouncementsDetailsScreen({
     Key? key,
     required this.controller,
     required this.title,
-    required this.image,
+    required this.details,
     required this.createdDate,
     required this.description,
     required this.postedDate,
@@ -58,7 +58,7 @@ class AnnouncementsDetailsScreen extends StatelessWidget {
               height: 250.0,
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: NetworkImage(image),
+                  image: NetworkImage(''),
                   fit: BoxFit.cover,
                 ),
               ),
