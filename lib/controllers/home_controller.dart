@@ -430,7 +430,7 @@ class HomeController extends GetxController {
       // Parsing the input time string in "HH:mm:ss" format
       final dateTime = DateFormat("HH:mm").parse(time);
       // Formatting the time in "h:mm:ss a" format to include seconds and AM/PM
-      return DateFormat("h:mm:ss a").format(dateTime);
+      return DateFormat("h:mm a").format(dateTime);
     } catch (e) {
       // If parsing fails, return the original input time
       return time;

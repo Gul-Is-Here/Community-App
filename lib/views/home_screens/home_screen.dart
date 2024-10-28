@@ -26,10 +26,9 @@ class HomeScreen extends StatelessWidget {
             style: TextStyle(
                 color: Colors.white, fontFamily: popinsMedium, fontSize: 18),
           )),
-      body: Stack(
-        clipBehavior: Clip.none,
+      body: Column(
+        // clipBehavior: Clip.none,
         children: [
-          const SocialMediaFloatingButton(),
           CustomizedMobileLayout(
             screenHeight: screenHeight,
           ),

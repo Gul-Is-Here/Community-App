@@ -1,7 +1,10 @@
 import 'package:community_islamic_app/constants/image_constants.dart';
+import 'package:community_islamic_app/views/home_screens/EventsAndannouncements/events_details_screen_all.dart';
+import 'package:community_islamic_app/views/qibla_screen/qibla_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
+import 'package:velocity_x/velocity_x.dart';
 
 import '../constants/color.dart';
 import '../controllers/home_controller.dart';
@@ -34,7 +37,7 @@ class AnnouncementWidget extends StatelessWidget {
               children: [
                 if (eventsController.isLoading.value)
                   SizedBox(
-                    height: 90,
+                    height: 60,
                     width: 320,
                     child: Center(
                       child: SpinKitFadingCircle(
@@ -45,7 +48,7 @@ class AnnouncementWidget extends StatelessWidget {
                   )
                 else if (eventsController.alertsList.isEmpty)
                   const SizedBox(
-                    height: 117,
+                    height: 60,
                     width: 320,
                     child: Center(
                       child: Text(
@@ -59,7 +62,7 @@ class AnnouncementWidget extends StatelessWidget {
                   Column(
                     children: [
                       SizedBox(
-                        height: 90,
+                        height: 70,
                         child: PageView.builder(
                           controller:
                               pageController, // Assign the PageController
@@ -88,7 +91,7 @@ class AnnouncementWidget extends StatelessWidget {
                                 },
                                 child: Container(
                                   width: 320,
-                                  height: 90,
+                                  height: 60,
                                   decoration: const BoxDecoration(
                                     borderRadius: BorderRadius.only(
                                       topLeft: Radius.circular(20),
@@ -144,30 +147,31 @@ class AnnouncementWidget extends StatelessWidget {
                                                       ),
                                                     ),
                                                   ),
-                                                  Obx(() {
-                                                    if (eventsController
-                                                        .feedsList.isNotEmpty) {
-                                                      final formattedDate =
-                                                          eventsController
-                                                              .formatDateString(
-                                                                  alertsData
-                                                                      .updatedAt
-                                                                      .toString());
-                                                      return Text(
-                                                        formattedDate,
-                                                        style: const TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                          fontSize: 16,
-                                                          color: Colors.white,
-                                                          fontFamily:
-                                                              popinsRegulr,
-                                                        ),
-                                                      );
-                                                    } else {
-                                                      return const Text('');
-                                                    }
-                                                  }),
+                                                  5.heightBox,
+                                                  // Obx(() {
+                                                  //   if (eventsController
+                                                  //       .feedsList.isNotEmpty) {
+                                                  //     final formattedDate =
+                                                  //         eventsController
+                                                  //             .formatDateString(
+                                                  //                 alertsData
+                                                  //                     .updatedAt
+                                                  //                     .toString());
+                                                  //     return Text(
+                                                  //       formattedDate,
+                                                  //       style: const TextStyle(
+                                                  //         fontWeight:
+                                                  //             FontWeight.w400,
+                                                  //         fontSize: 16,
+                                                  //         color: Colors.white,
+                                                  //         fontFamily:
+                                                  //             popinsRegulr,
+                                                  //       ),
+                                                  //     );
+                                                  //   } else {
+                                                  //     return const Text('');
+                                                  //   }
+                                                  // }),
                                                   Text(
                                                     alertsData.alertTitle,
                                                     style: const TextStyle(
@@ -233,32 +237,45 @@ class AnnouncementWidget extends StatelessWidget {
                       // ),
                     ],
                   ),
-
+                5.heightBox,
                 SizedBox(
-                  height: 20,
+                  height: 30,
                   child: GestureDetector(
                     onTap: () {
-                      Get.to(() => AnnouncementsScreen());
+                      Get.to(() => AllEventsDatesScreen());
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
-                      // crossAxisAlignment: Co,
                       children: [
-                        const Text(
-                          'View All Alerts',
-                          style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.black,
-                            fontFamily: popinsRegulr,
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: () {},
-                          icon: Icon(
-                            Icons.arrow_forward,
-                            color: Colors.black,
-                            size: 10,
+                        Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: Colors.black),
+                          child: Row(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  'View All',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w700,
+                                    color: whiteColor,
+                                    fontFamily: popinsRegulr,
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 10),
+                                child: IconButton(
+                                    onPressed: () {},
+                                    icon: Icon(
+                                      Icons.arrow_forward,
+                                      color: whiteColor,
+                                      size: 20,
+                                    )),
+                              )
+                            ],
                           ),
                         ),
                       ],

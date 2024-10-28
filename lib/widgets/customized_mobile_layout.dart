@@ -148,7 +148,7 @@ class CustomizedMobileLayout extends StatelessWidget {
 
             Padding(
               padding: EdgeInsets.only(
-                  top: MediaQuery.of(context).size.height * .36),
+                  top: MediaQuery.of(context).size.height * .33),
               child: Align(
                 alignment: Alignment.bottomCenter,
                 child: Padding(
@@ -291,6 +291,54 @@ class CustomizedMobileLayout extends StatelessWidget {
                                     ],
                                   ),
                                 ),
+                                GestureDetector(
+                                  onTap: () {
+                                    Get.to(() => GalleyScreen());
+                                  },
+                                  child: Stack(
+                                    children: [
+                                      Column(
+                                        children: [
+                                          Card(
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(15)),
+                                            elevation: 10,
+                                            color: const Color(0xFF06313F),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Image.asset(
+                                                aboutUsIcon,
+                                                height: 40,
+                                                width: 40,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          ),
+                                          const Text(
+                                            'RCC Live',
+                                            style: TextStyle(
+                                                fontFamily: popinsMedium,
+                                                fontSize: 11),
+                                          )
+                                        ],
+                                      ),
+                                      Positioned(
+                                        top: 5,
+                                        left: 45,
+                                        child: Container(
+                                          height: 15,
+                                          width: 15,
+                                          decoration: BoxDecoration(
+                                              color: Colors.red,
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
                               ],
                             ),
                           ),
@@ -299,10 +347,10 @@ class CustomizedMobileLayout extends StatelessWidget {
                       10.heightBox,
                       Column(
                         children: [
-                          EventsWidget(
+                          AnnouncementWidget(
                               eventsController: eventsController,
                               homeController: homeController),
-                          AnnouncementWidget(
+                          EventsWidget(
                               eventsController: eventsController,
                               homeController: homeController),
                         ],
@@ -315,7 +363,7 @@ class CustomizedMobileLayout extends StatelessWidget {
             10.heightBox,
             Padding(
               padding: EdgeInsets.only(
-                  top: screenHeight1 * .22, right: screenHeight1 * .37),
+                  top: screenHeight1 * .3, right: screenHeight1 * .36),
               child: const SizedBox(
                   height: 450,
                   width: double.infinity,
@@ -545,6 +593,17 @@ class PrayerTimeWidget extends StatelessWidget {
             ),
           ),
         ),
+        // Positioned(
+        //   top: -16, // Adjust the vertical position of the icon
+        //   left: 0, // Adjust horizontal position if needed
+        //   right: 0, // Center the icon horizontally
+        //   child: Image.asset(
+        //     cardCircle,
+        //     height: 24,
+        //     width: 24,
+        //     color: Colors.red, // Icon color
+        //   ),
+        // ),
         Positioned(
           top: -17, // Adjust the vertical position of the icon
           left: 0, // Adjust horizontal position if needed

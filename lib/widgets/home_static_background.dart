@@ -14,6 +14,14 @@ import 'package:velocity_x/velocity_x.dart';
 import '../views/namaz_timmings/namaztimmings.dart';
 
 class HomeStaticBackground extends StatelessWidget {
+  // final String azanTime;
+  // final String iqamaTime;
+  // final String sunset;
+  // final String sunshine;
+  // final String imageAzan;
+  // final String imageIqama;
+  // final String imageSunset;
+  // final String imageSunshine;
   HomeStaticBackground({
     super.key,
   });
@@ -38,8 +46,11 @@ class HomeStaticBackground extends StatelessWidget {
               child: Row(
                 children: [
                   _buildDateAndCompassExpanded(homeController),
-                  _buildQiblahIndicator(
-                      context, screenWidth, qiblahController, homeController),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 25, right: 10),
+                    child: _buildQiblahIndicator(
+                        context, screenWidth, qiblahController, homeController),
+                  ),
                 ],
               ),
             ),
@@ -81,7 +92,7 @@ class HomeStaticBackground extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(horizontal: 20.0),
                           child: SizedBox(
                             width: 192,
-                            height: 50,
+                            height: 64,
                             child: Card(
                               margin: const EdgeInsets.all(0),
                               elevation: 5,
@@ -89,13 +100,12 @@ class HomeStaticBackground extends StatelessWidget {
                               child: Center(
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(
-                                      horizontal: 20),
+                                      horizontal: 10),
                                   child: Text(
                                     '${hijri.day} ${hijri.month.en} ${hijri.year}\n'
-                                    '${gregorian.weekday.en},${gregorian.day} ${gregorian.month.en} ${gregorian.year}',
+                                    '${gregorian.day} ${gregorian.month.en} ${gregorian.year}',
                                     style: TextStyle(
-                                      fontFamily:
-                                          GoogleFonts.roboto().debugLabel,
+                                      fontFamily: popinsRegulr,
                                       color: whiteColor,
                                       fontWeight: FontWeight.w700,
                                       fontSize: 10,
@@ -125,99 +135,204 @@ class HomeStaticBackground extends StatelessWidget {
                       ],
                     ),
                     SizedBox(height: 10), // Space between elements
-                    Stack(
-                      clipBehavior: Clip.none,
+
+                    Row(
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                          child: SizedBox(
-                            width: 120,
-                            height: 34,
-                            child: Card(
-                              margin: const EdgeInsets.all(0),
-                              elevation: 5,
-                              color: const Color(0xFF5B7B79),
-                              child: Center(
-                                child: Obx(
-                                  () => Text(
-                                    homeController.currentTime.value,
-                                    style: TextStyle(
-                                      fontFamily: popinsSemiBold,
-                                      color: whiteColor,
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 10,
+                        Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 20.0),
+                              child: SizedBox(
+                                width: 71,
+                                height: 34,
+                                child: Card(
+                                  margin: const EdgeInsets.all(0),
+                                  elevation: 5,
+                                  color: const Color(0xFF5B7B79),
+                                  child: Center(
+                                    child: Obx(
+                                      () => Text(
+                                        homeController.formatPrayerTime(
+                                            homeController
+                                                .getPrayerTimes()
+                                                .toString()),
+                                        style: TextStyle(
+                                          fontFamily: popinsSemiBold,
+                                          color: whiteColor,
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 10,
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
+                            Positioned(
+                              left: 15,
+                              bottom: 20,
+                              child: Container(
+                                  width: 20.51,
+                                  height: 20.51,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5),
+                                      color: primaryColor),
+                                  child: Image.asset(azanlogo)),
+                            ),
+                          ],
                         ),
-                        Positioned(
-                          left: 15,
-                          bottom: 20,
-                          child: Container(
-                              width: 20.51,
-                              height: 20.51,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5),
-                                  color: primaryColor),
-                              child: Image.asset(clock)),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 10), // Space between elements
-                    Stack(
-                      clipBehavior: Clip.none,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                          child: SizedBox(
-                            width: 100,
-                            height: 34,
-                            child: Card(
-                              margin: const EdgeInsets.all(0),
-                              elevation: 5,
-                              color: const Color(0xFF5B7B79),
-                              child: Center(
-                                child: Obx(
-                                  () => Text(
-                                    homeController.formatPrayerTime(
-                                        homeController
-                                            .getPrayerTimes()
-                                            .toString()),
-                                    style: TextStyle(
-                                      fontFamily: popinsRegulr,
-                                      color: whiteColor,
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 10,
+                        Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            SizedBox(
+                              width: 71,
+                              height: 34,
+                              child: Card(
+                                margin: const EdgeInsets.all(0),
+                                elevation: 5,
+                                color: const Color(0xFF5B7B79),
+                                child: Center(
+                                  child: Obx(
+                                    () => Text(
+                                      homeController.formatPrayerTime(
+                                          homeController.getCurrentIqamaTime()),
+                                      style: TextStyle(
+                                        fontFamily: popinsRegulr,
+                                        color: whiteColor,
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 10,
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                        ),
-                        Positioned(
-                          left: 15,
-                          bottom: 20,
-                          child: Container(
-                              width: 20.51,
-                              height: 20.51,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5),
-                                  color: primaryColor),
-                              child: Padding(
-                                padding: const EdgeInsets.all(3.0),
-                                child: Image.asset(
-                                  mosque,
-                                  height: 12.4,
-                                  width: 12.4,
-                                ),
-                              )),
+                            Positioned(
+                              left: -5,
+                              bottom: 20,
+                              child: Container(
+                                  width: 20.51,
+                                  height: 20.51,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5),
+                                      color: primaryColor),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(3.0),
+                                    child: Image.asset(
+                                      iqamalogo,
+                                      height: 12.4,
+                                      width: 12.4,
+                                    ),
+                                  )),
+                            ),
+                          ],
                         ),
                       ],
                     ),
+                    10.heightBox,
+                    Row(
+                      children: [
+                        Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 20.0),
+                              child: SizedBox(
+                                width: 71,
+                                height: 34,
+                                child: Card(
+                                  margin: const EdgeInsets.all(0),
+                                  elevation: 5,
+                                  color: const Color(0xFF5B7B79),
+                                  child: Center(
+                                    child: Obx(
+                                      () => Text(
+                                        homeController.formatPrayerTime(
+                                          homeController.prayerTime.value.data!
+                                              .timings.sunrise,
+                                        ),
+                                        style: TextStyle(
+                                          fontFamily: popinsSemiBold,
+                                          color: whiteColor,
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 10,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              left: 15,
+                              bottom: 20,
+                              child: Container(
+                                  width: 20.51,
+                                  height: 20.51,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5),
+                                      color: primaryColor),
+                                  child: Image.asset(
+                                    sunrise,
+                                    color: whiteColor,
+                                  )),
+                            ),
+                          ],
+                        ),
+                        Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            SizedBox(
+                              width: 71,
+                              height: 34,
+                              child: Card(
+                                margin: const EdgeInsets.all(0),
+                                elevation: 5,
+                                color: const Color(0xFF5B7B79),
+                                child: Center(
+                                  child: Obx(
+                                    () => Text(
+                                      homeController.formatPrayerTime(
+                                        homeController.prayerTime.value.data!
+                                            .timings.sunset,
+                                      ),
+                                      style: TextStyle(
+                                        fontFamily: popinsRegulr,
+                                        color: whiteColor,
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 10,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              left: -5,
+                              bottom: 20,
+                              child: Container(
+                                  width: 20.51,
+                                  height: 20.51,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5),
+                                      color: primaryColor),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(3.0),
+                                    child: Image.asset(
+                                      sunset,
+                                      height: 12.4,
+                                      width: 12.4,
+                                    ),
+                                  )),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    20.heightBox,
                   ],
                 );
               } else {
@@ -240,11 +355,13 @@ class HomeStaticBackground extends StatelessWidget {
 
   Widget _buildQiblahIndicator(BuildContext context, double screenWidth,
       QiblahController controller, HomeController homeController) {
+    const Duration countdownDuration = Duration(hours: 1, minutes: 5);
+
     return SizedBox(
-      width: 140,
-      height: 167.72,
+      width: 170,
+      height: 180.72,
       child: Stack(
-        alignment: Alignment.center, // Center all elements in the Stack
+        alignment: Alignment.center,
         children: [
           StreamBuilder<QiblahDirection>(
             stream: FlutterQiblah.qiblahStream,
@@ -261,7 +378,6 @@ class HomeStaticBackground extends StatelessWidget {
               if (snapshot.hasData) {
                 final qiblahDirection = snapshot.data!;
 
-                // Avoid recreating the animation and controller in every build
                 if (controller.animation == null ||
                     controller.begin != qiblahDirection.qiblah) {
                   controller.animation = Tween(
@@ -271,7 +387,6 @@ class HomeStaticBackground extends StatelessWidget {
 
                   controller.begin = (qiblahDirection.qiblah * (pi / 180) * -1);
 
-                  // Start animation
                   controller.animationController.forward(from: 0);
                 }
 
@@ -283,16 +398,17 @@ class HomeStaticBackground extends StatelessWidget {
                       alignment: Alignment.center,
                       children: [
                         Image.asset(
-                          compass1,
-                          width: 155.7, // Scale the image size appropriately
-                          height: 167.72, // Adjust height based on design
+                          qiblaCircleIcon2,
+                          width: 170.7,
+                          height: 180.72,
                           fit: BoxFit.contain,
                         ),
-                        Image.asset(
-                          homeBgUp2,
-                          width: screenWidth * 0.4,
-                          height: 120,
-                          fit: BoxFit.contain,
+                        Positioned(
+                          top: 0,
+                          // bottom: 0,
+                          child: Image.asset(
+                            qiblaMainIcon,
+                          ),
                         ),
                       ],
                     ),
@@ -312,8 +428,25 @@ class HomeStaticBackground extends StatelessWidget {
               }
             },
           ),
+
+          // Static watch image
+          Image.asset(
+            watch,
+            width: 137,
+            height: 137,
+            fit: BoxFit.contain,
+          ),
+
+          // Progress bar overlay
+
+          // Duration remainingTime =
+          //     homeController.timeUntilNextPrayerDuration.value;
+          // double progressRatio =
+          //     remainingTime.inSeconds / countdownDuration.inSeconds;
+
+          // Remaining time display
           Positioned(
-            top: 90, // Adjust according to your design
+            top: 100,
             child: Obx(() {
               return Text(
                 homeController.timeUntilNextPrayer.value,
@@ -325,30 +458,31 @@ class HomeStaticBackground extends StatelessWidget {
               );
             }),
           ),
+
           Positioned(
-            bottom: 75, // Adjust according to your design
+            bottom: 75,
             child: Obx(
               () => Text(
                 homeController.getCurrentPrayer(),
                 style: GoogleFonts.montserrat(
                   fontWeight: FontWeight.w700,
                   color: primaryColor,
-                  fontSize: 13,
+                  fontSize: 12,
                 ),
               ),
             ),
           ),
-          // This part remains fixed in the center
+
           Positioned(
-            bottom: 95, // Adjust according to your design
+            bottom: 95,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Text(
-                'Time Remaining in',
+                'Time Remaining',
                 style: GoogleFonts.montserrat(
                   color: Colors.black,
                   fontWeight: FontWeight.w500,
-                  fontSize: 9,
+                  fontSize: 10,
                 ),
               ),
             ),
