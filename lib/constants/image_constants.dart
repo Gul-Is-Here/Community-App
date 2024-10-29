@@ -68,6 +68,16 @@ const homeBgUp2 = "assets/home_icon/homeBgUp2.png";
 // Compass List Icons
 const compass1 = "assets/home_icon/compass1.png";
 const compass2 = "assets/home_icon/compass2.jpg";
+const qiblaCircleIcon = "assets/home_icon/qiblacicle.png";
+const qiblaCircleIcon2 = "assets/home_icon/qiblacircle2.png";
+const qiblaMainIcon = "assets/home_icon/qiblaicon.png";
+const iqamalogo = "assets/home_icon/iqamalogo.png";
+const azanlogo = "assets/home_icon/azanlogo.png";
+const sunrise = "assets/home_icon/Sunrise.png";
+const sunset = "assets/home_icon/Sunset.png";
+const watch = "assets/home_icon/watch.png";
+const cardCircle = "assets/home_icon/cardcircle.png";
+
 final List<String> imageOptions = [
   compass2,
   updatedCompass2,

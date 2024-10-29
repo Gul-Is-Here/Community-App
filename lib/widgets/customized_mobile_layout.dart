@@ -40,6 +40,7 @@ class CustomizedMobileLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     final LoginController loginController = Get.put(LoginController());
     final screenHeight1 = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
     // if (homeController.prayerTime.value.data == null) {
     // Show loading indicator while fetching data
     //   return Center(
@@ -65,7 +66,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                 ),
             // homeController.prayerTime.value.data != null
             Padding(
-              padding: const EdgeInsets.only(top: 185.0, left: 17),
+              padding: const EdgeInsets.only(top: 180.0, left: 17),
               child: Center(
                 child: SizedBox(
                   width: double.infinity,
@@ -76,68 +77,82 @@ class CustomizedMobileLayout extends StatelessWidget {
                       () => homeController.prayerTime.value.data == null
                           ? Center(child: Text(''))
                           : Center(
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                // crossAxisAlignment: CrossAxisAlignment.baseline,
-                                children: [
-                                  PrayerTimeWidget(
-                                    namazName: 'Fajr',
-                                    timings: homeController
-                                        .prayerTime.value.data!.timings.fajr,
-                                    iqamatimes: iqamatimes,
-                                    name: 'Fajr',
-                                    currentPrayer:
-                                        getCurrentPrayer(), // Pass the current prayer name
-                                    imageIcon: morningIcon, // Your icon asset
-                                  ),
-                                  2.widthBox,
-                                  PrayerTimeWidget(
-                                    currentPrayer: getCurrentPrayer(),
-                                    imageIcon: afternoon,
-                                    namazName: 'Dhuhr',
-                                    timings: homeController
-                                        .prayerTime.value.data!.timings.dhuhr,
-                                    iqamatimes: iqamatimes,
-                                    name: 'Dhuhr',
-                                  ),
-                                  2.widthBox,
-                                  PrayerTimeWidget(
-                                    currentPrayer: getCurrentPrayer(),
-                                    imageIcon: morningIcon,
-                                    namazName: 'Asr',
-                                    timings: homeController
-                                        .prayerTime.value.data!.timings.asr,
-                                    iqamatimes: iqamatimes,
-                                    name: 'Asr',
-                                  ),
-                                  2.widthBox,
-                                  PrayerTimeWidget(
-                                    currentPrayer: getCurrentPrayer(),
-                                    imageIcon: dayandNight,
-                                    namazName: 'Maghrib',
-                                    timings: homeController
-                                        .prayerTime.value.data!.timings.maghrib,
-                                    iqamatimes: {
-                                      // Ensure this is a Map<String, String>
-                                      'Maghrib': addMinutesToPrayerTime(
-                                          homeController.prayerTime.value.data!
-                                              .timings.dhuhr,
-                                          5), // Add 5 minutes to Maghrib Azan time
-                                    },
-                                    name: 'Maghrib',
-                                  ),
-                                  2.widthBox,
-                                  PrayerTimeWidget(
-                                    currentPrayer: getCurrentPrayer(),
-                                    imageIcon: night,
-                                    namazName: 'Isha',
-                                    timings: homeController
-                                        .prayerTime.value.data!.timings.isha,
-                                    iqamatimes: iqamatimes,
-                                    name: 'Isha',
-                                  ),
-                                ],
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  // crossAxisAlignment: CrossAxisAlignment.baseline,
+                                  children: [
+                                    PrayerTimeWidget(
+                                      azanIcon: azanlogo,
+                                      iqamaIcon: iqamalogo,
+                                      namazName: 'Fajr',
+                                      timings: homeController
+                                          .prayerTime.value.data!.timings.fajr,
+                                      iqamatimes: iqamatimes,
+                                      name: 'Fajr',
+                                      currentPrayer:
+                                          getCurrentPrayer(), // Pass the current prayer name
+                                      imageIcon: morningIcon, // Your icon asset
+                                    ),
+                                    2.widthBox,
+                                    PrayerTimeWidget(
+                                      azanIcon: azanlogo,
+                                      iqamaIcon: iqamalogo,
+                                      currentPrayer: getCurrentPrayer(),
+                                      imageIcon: afternoon,
+                                      namazName: 'Dhuhr',
+                                      timings: homeController
+                                          .prayerTime.value.data!.timings.dhuhr,
+                                      iqamatimes: iqamatimes,
+                                      name: 'Dhuhr',
+                                    ),
+                                    2.widthBox,
+                                    PrayerTimeWidget(
+                                      azanIcon: azanlogo,
+                                      iqamaIcon: iqamalogo,
+                                      currentPrayer: getCurrentPrayer(),
+                                      imageIcon: morningIcon,
+                                      namazName: 'Asr',
+                                      timings: homeController
+                                          .prayerTime.value.data!.timings.asr,
+                                      iqamatimes: iqamatimes,
+                                      name: 'Asr',
+                                    ),
+                                    2.widthBox,
+                                    PrayerTimeWidget(
+                                      azanIcon: azanlogo,
+                                      iqamaIcon: iqamalogo,
+                                      currentPrayer: getCurrentPrayer(),
+                                      imageIcon: dayandNight,
+                                      namazName: 'Maghrib',
+                                      timings: homeController.prayerTime.value
+                                          .data!.timings.maghrib,
+                                      iqamatimes: {
+                                        // Ensure this is a Map<String, String>
+                                        'Maghrib': addMinutesToPrayerTime(
+                                            homeController.prayerTime.value
+                                                .data!.timings.dhuhr,
+                                            5), // Add 5 minutes to Maghrib Azan time
+                                      },
+                                      name: 'Maghrib',
+                                    ),
+                                    2.widthBox,
+                                    PrayerTimeWidget2(
+                                      azanIcon: azanlogo,
+                                      iqamaIcon: iqamalogo,
+                                      currentPrayer: getCurrentPrayer(),
+                                      imageIcon: night,
+                                      namazName: 'Isha',
+                                      timings: homeController
+                                          .prayerTime.value.data!.timings.isha,
+                                      iqamatimes: iqamatimes,
+                                      name: 'Isha',
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                     ),
@@ -148,7 +163,7 @@ class CustomizedMobileLayout extends StatelessWidget {
 
             Padding(
               padding: EdgeInsets.only(
-                  top: MediaQuery.of(context).size.height * .36),
+                  top: MediaQuery.of(context).size.height * .35),
               child: Align(
                 alignment: Alignment.bottomCenter,
                 child: Padding(
@@ -158,7 +173,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       SizedBox(
-                        height: 119,
+                        height: 105,
                         child: Card(
                           elevation: 10,
                           color: const Color(0xFFEAF3F2),
@@ -291,6 +306,54 @@ class CustomizedMobileLayout extends StatelessWidget {
                                     ],
                                   ),
                                 ),
+                                GestureDetector(
+                                  onTap: () {
+                                    Get.to(() => GalleyScreen());
+                                  },
+                                  child: Stack(
+                                    children: [
+                                      Column(
+                                        children: [
+                                          Card(
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(15)),
+                                            elevation: 10,
+                                            color: const Color(0xFF06313F),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Image.asset(
+                                                aboutUsIcon,
+                                                height: 40,
+                                                width: 40,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          ),
+                                          const Text(
+                                            'RCC Live',
+                                            style: TextStyle(
+                                                fontFamily: popinsMedium,
+                                                fontSize: 11),
+                                          )
+                                        ],
+                                      ),
+                                      Positioned(
+                                        top: 5,
+                                        left: 45,
+                                        child: Container(
+                                          height: 15,
+                                          width: 15,
+                                          decoration: BoxDecoration(
+                                              color: Colors.red,
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
                               ],
                             ),
                           ),
@@ -299,10 +362,10 @@ class CustomizedMobileLayout extends StatelessWidget {
                       10.heightBox,
                       Column(
                         children: [
-                          EventsWidget(
+                          AnnouncementWidget(
                               eventsController: eventsController,
                               homeController: homeController),
-                          AnnouncementWidget(
+                          EventsWidget(
                               eventsController: eventsController,
                               homeController: homeController),
                         ],
@@ -315,7 +378,7 @@ class CustomizedMobileLayout extends StatelessWidget {
             10.heightBox,
             Padding(
               padding: EdgeInsets.only(
-                  top: screenHeight1 * .22, right: screenHeight1 * .37),
+                  top: screenHeight1 * .245, right: screenHeight1 * .37),
               child: const SizedBox(
                   height: 450,
                   width: double.infinity,
@@ -467,6 +530,8 @@ class CustomizedMobileLayout extends StatelessWidget {
 class PrayerTimeWidget extends StatelessWidget {
   const PrayerTimeWidget({
     super.key,
+    required this.azanIcon,
+    required this.iqamaIcon,
     required this.namazName,
     required this.name,
     required this.timings,
@@ -476,6 +541,8 @@ class PrayerTimeWidget extends StatelessWidget {
   });
 
   final String imageIcon;
+  final String azanIcon;
+  final String iqamaIcon;
   final String currentPrayer; // Current prayer time passed to compare
   final String name; // Prayer name (e.g., Fajr, Dhuhr)
   final String namazName; // Specific namaz name for Iqama lookup
@@ -484,6 +551,8 @@ class PrayerTimeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight1 = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
     // Default Iqama time
     String iqamaTime = iqamatimes[namazName] ?? 'Not available';
 
@@ -503,12 +572,14 @@ class PrayerTimeWidget extends StatelessWidget {
       clipBehavior: Clip.none, // Allow the icon to overflow
       children: [
         SizedBox(
-          width: 70,
-          height: 85,
+          width: screenWidth * .18,
+          height: screenHeight1 * .1,
           child: Card(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
             color: backgroundColor, // Background color changes dynamically
             child: Padding(
-              padding: const EdgeInsets.all(4.0),
+              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 2),
               child: Column(
                 children: [
                   Text(
@@ -521,32 +592,62 @@ class PrayerTimeWidget extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 10), // Use SizedBox for spacing
-                  Text(
-                    formatPrayerTimeToAmPm(timings), // Format Azan time
-                    style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: popinsMedium,
-                      color: whiteColor,
-                    ),
+                  Row(
+                    children: [
+                      Image.asset(
+                        iqamaIcon,
+                        width: 15,
+                        height: 10,
+                        // fit: BoxFit.contai,
+                      ),
+                      Text(
+                        formatPrayerTimeToAmPm(timings), // Format Azan time
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: popinsMedium,
+                          color: whiteColor,
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 2),
-                  Text(
-                    iqamaTime, // Already formatted Iqama time
-                    style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: popinsMedium,
-                      color: whiteColor,
-                    ),
+                  Row(
+                    children: [
+                      Image.asset(
+                        azanIcon,
+                        width: 15,
+                        height: 10,
+                      ),
+                      Text(
+                        iqamaTime, // Already formatted Iqama time
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: popinsMedium,
+                          color: whiteColor,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
             ),
           ),
         ),
+        // Positioned(
+        //   top: -16, // Adjust the vertical position of the icon
+        //   left: 0, // Adjust horizontal position if needed
+        //   right: 0, // Center the icon horizontally
+        //   child: Image.asset(
+        //     cardCircle,
+        //     height: 24,
+        //     width: 24,
+        //     color: Colors.red, // Icon color
+        //   ),
+        // ),
         Positioned(
-          top: -17, // Adjust the vertical position of the icon
+          top: -19, // Adjust the vertical position of the icon
           left: 0, // Adjust horizontal position if needed
           right: 0, // Center the icon horizontally
           child: Image.asset(
@@ -558,6 +659,236 @@ class PrayerTimeWidget extends StatelessWidget {
         ),
       ],
     );
+  }
+}
+
+// Prayer Widget 2
+
+class PrayerTimeWidget2 extends StatelessWidget {
+  const PrayerTimeWidget2({
+    super.key,
+    required this.azanIcon,
+    required this.iqamaIcon,
+    required this.namazName,
+    required this.name,
+    required this.timings,
+    required this.iqamatimes,
+    required this.currentPrayer, // Current prayer passed from the controller
+    required this.imageIcon,
+  });
+
+  final String imageIcon;
+  final String azanIcon;
+  final String iqamaIcon;
+  final String currentPrayer; // Current prayer time passed to compare
+  final String name; // Prayer name (e.g., Fajr, Dhuhr)
+  final String namazName; // Specific namaz name for Iqama lookup
+  final String timings; // Azan time (in "HH:mm" format)
+  final Map<String, String> iqamatimes; // Iqama times
+
+  @override
+  Widget build(BuildContext context) {
+    final screenHeight1 = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+    // Default Iqama time
+    String iqamaTime = iqamatimes[namazName] ?? 'Not available';
+
+    // Check if the prayer is Maghrib and adjust the Iqama time accordingly
+    if (namazName == 'Maghrib') {
+      iqamaTime = formatPrayerTimeToAmPm(
+        addMinutesToPrayerTime(timings, 5), // Add and format
+      );
+    }
+
+    // Set background color based on current prayer
+    Color backgroundColor = (currentPrayer == namazName)
+        ? Color(0xFF042838) // Highlight color for current prayer
+        : const Color(0xFF5B7B79); // Default color for other prayers
+
+    return screenWidth < 450 || screenHeight1 < 900
+        ? Stack(
+            clipBehavior: Clip.none, // Allow the icon to overflow
+            children: [
+              SizedBox(
+                width: screenWidth * .18,
+                height: screenHeight1 * .1,
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6)),
+                  color:
+                      backgroundColor, // Background color changes dynamically
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 4, horizontal: 2),
+                    child: Column(
+                      children: [
+                        Text(
+                          name,
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: popinsMedium,
+                            color: whiteColor,
+                          ),
+                        ),
+                        const SizedBox(height: 10), // Use SizedBox for spacing
+                        Row(
+                          children: [
+                            Image.asset(
+                              iqamaIcon,
+                              width: 15,
+                              height: 10,
+                              // fit: BoxFit.contai,
+                            ),
+                            Text(
+                              formatPrayerTimeToAmPm(
+                                  timings), // Format Azan time
+                              style: TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: popinsMedium,
+                                color: whiteColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 2),
+                        Row(
+                          children: [
+                            Image.asset(
+                              azanIcon,
+                              width: 15,
+                              height: 10,
+                            ),
+                            Text(
+                              iqamaTime, // Already formatted Iqama time
+                              style: TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: popinsMedium,
+                                color: whiteColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              // Positioned(
+              //   top: -16, // Adjust the vertical position of the icon
+              //   left: 0, // Adjust horizontal position if needed
+              //   right: 0, // Center the icon horizontally
+              //   child: Image.asset(
+              //     cardCircle,
+              //     height: 24,
+              //     width: 24,
+              //     color: Colors.red, // Icon color
+              //   ),
+              // ),
+              Positioned(
+                top: -17, // Adjust the vertical position of the icon
+                left: 0, // Adjust horizontal position if needed
+                right: 0, // Center the icon horizontally
+                child: Image.asset(
+                  imageIcon,
+                  height: 24,
+                  width: 24,
+                  color: Colors.black45, // Icon color
+                ),
+              ),
+            ],
+          )
+        : Stack(
+            clipBehavior: Clip.none, // Allow the icon to overflow
+            children: [
+              SizedBox(
+                width: 78,
+                height: 85,
+                child: Card(
+                  color:
+                      backgroundColor, // Background color changes dynamically
+                  child: Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Column(
+                      children: [
+                        Text(
+                          name,
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: popinsMedium,
+                            color: whiteColor,
+                          ),
+                        ),
+                        const SizedBox(height: 10), // Use SizedBox for spacing
+                        Row(
+                          children: [
+                            Image.asset(
+                              azanIcon,
+                              width: 20,
+                            ),
+                            Text(
+                              formatPrayerTimeToAmPm(
+                                  timings), // Format Azan time
+                              style: TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: popinsMedium,
+                                color: whiteColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 2),
+                        Row(
+                          children: [
+                            Image.asset(
+                              iqamaIcon,
+                              width: 20,
+                              height: 20,
+                            ),
+                            Text(
+                              iqamaTime, // Already formatted Iqama time
+                              style: TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: popinsMedium,
+                                color: whiteColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              // Positioned(
+              //   top: -16, // Adjust the vertical position of the icon
+              //   left: 0, // Adjust horizontal position if needed
+              //   right: 0, // Center the icon horizontally
+              //   child: Image.asset(
+              //     cardCircle,
+              //     height: 24,
+              //     width: 24,
+              //     color: Colors.red, // Icon color
+              //   ),
+              // ),
+              Positioned(
+                top: -17, // Adjust the vertical position of the icon
+                left: 0, // Adjust horizontal position if needed
+                right: 0, // Center the icon horizontally
+                child: Image.asset(
+                  imageIcon,
+                  height: 24,
+                  width: 24,
+                  color: Colors.black45, // Icon color
+                ),
+              ),
+            ],
+          );
   }
 }
 
@@ -589,7 +920,7 @@ String formatPrayerTimeToAmPm(String time) {
     // Parse the input time from "HH:mm" format
     final dateTime = DateFormat("HH:mm").parse(time);
     // Format it to "hh:mm a" format
-    return DateFormat("hh:mm a").format(dateTime);
+    return DateFormat("h:mm a").format(dateTime);
   } catch (e) {
     print('Error parsing time: $e');
     return 'Invalid time'; // Return a default message for invalid input

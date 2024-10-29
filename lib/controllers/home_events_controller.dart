@@ -96,6 +96,7 @@ class HomeEventsController extends GetxController {
         alertsList.assignAll(alertsNotify.data.alert);
         print('Alerts List: ${alertsList}');
       } else {
+        print('Alerts List: ${alertsList}');
         print('Failed to load alerts: ${response.statusCode}');
       }
     } catch (e) {
