@@ -51,7 +51,7 @@ class ChatWithRCCScreen extends StatelessWidget {
           150.heightBox,
           const Center(
             child: Text(
-              'COOMING SOON',
+              'COMMING SOON',
               style: TextStyle(fontFamily: popinsRegulr),
             ),
           )
