@@ -8,9 +8,11 @@ class EventsDetailsScreen extends StatelessWidget {
   final String eventDetails;
   final String eventLink;
   final String eventDate;
+  final String imageUrl;
 
   const EventsDetailsScreen({
     super.key,
+    required this.imageUrl,
     required this.eventDate,
     required this.eventDetails,
     required this.eventLink,
@@ -44,9 +46,25 @@ class EventsDetailsScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Calendar view with highlighted event date
-            CalendarWidget(
-              eventDate: parsedEventDate,
-              currentDate: currentDate,
+            ClipRRect(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(15.0),
+                topRight: Radius.circular(15.0),
+              ),
+              child: Image.network(
+                imageUrl,
+                width: double.infinity,
+                height: 180,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    height: 180,
+                    color: Colors.grey[300],
+                    child: const Icon(Icons.broken_image,
+                        size: 100, color: Colors.grey),
+                  );
+                },
+              ),
             ),
             const SizedBox(height: 20),
             // Event Details Section

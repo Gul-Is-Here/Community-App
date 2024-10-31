@@ -29,56 +29,85 @@ class CustomDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
     profileController.fetchUserData2();
     handleProfileNavigation();
 
     return Drawer(
-      width: 250,
+      width: screenWidth * .5,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            20.heightBox,
-            Container(
-              padding: const EdgeInsets.only(top: 16, left: 16),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Image.asset(
-                  aboutUsIcon,
-                  width: 80,
-                  height: 80,
+            // 20.heightBox,
+            Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Container(
+                  height: screenHeight * .1,
+                  width: double.infinity,
+                  color: primaryColor,
                 ),
-              ),
+                Positioned(
+                  left: screenWidth * .13,
+                  top: 35,
+                  child: profileController.userData.isEmpty ||
+                          profileController.userData['user'] == null
+                      ? Image.asset(
+                          aboutUsIcon,
+                          width: 80,
+                          height: 80,
+                        )
+                      : Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(
+                                50,
+                              ),
+                              border: Border.all(width: 2),
+                              color: Colors.black),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(50),
+                            child: Image.network(
+                              profileController.userData['user']
+                                  ['profile_image'],
+                              width: 80,
+                              height: 80,
+                            ),
+                          ),
+                        ),
+                ),
+              ],
             ),
             Padding(
-              padding: const EdgeInsets.only(left: 25),
+              padding: const EdgeInsets.only(left: 0, top: 50),
               child: Obx(() {
-                if (profileController.isLoading.value) {
-                  // Show a loading animation while data is being fetched
-                  return Text(
-                    'Loading',
-                    style: TextStyle(fontFamily: popinsRegulr, fontSize: 12),
-                  );
-                } else if (profileController.userData.isEmpty ||
+                if (profileController.userData.isEmpty ||
                     profileController.userData['user'] == null) {
                   // If userData is null or empty, show default text
-                  return const Text(
-                    'Guest',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
+                  return Center(
+                    child: const Text(
+                      'Guest',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: popinsSemiBold,
+                        color: Colors.black,
+                        // fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
                     ),
                   );
                 } else {
                   // Show the user's name if userData is loaded and valid
-                  return Text(
-                    'Hello, ${profileController.userData['user']['name']}',
-                    style: const TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
+                  return Center(
+                    child: Text(
+                      'Hello, ${profileController.userData['user']['name']}',
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
                     ),
                   );
                 }
@@ -88,15 +117,17 @@ class CustomDrawer extends StatelessWidget {
               () => isLoggedIn.value
                   ? Padding(
                       padding: const EdgeInsets.only(left: 25),
-                      child: const Text(
-                        'View Profile',
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 12,
-                            fontFamily: popinsRegulr),
-                      ).onTap(() async {
-                        await Get.to(() => ProfileScreen());
-                      }),
+                      child: profileController.userData['user'] == null
+                          ? SizedBox()
+                          : const Text(
+                              'View Profile',
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 12,
+                                  fontFamily: popinsRegulr),
+                            ).onTap(() async {
+                              await Get.to(() => ProfileScreen());
+                            }),
                     )
                   : const SizedBox(),
             ),
@@ -118,7 +149,8 @@ class CustomDrawer extends StatelessWidget {
               },
             ),
             const Divider(),
-            Obx(() => isLoggedIn.value
+            Obx(() => isLoggedIn.value &&
+                    profileController.userData['user'] != null
                 ? const SizedBox()
                 : ListTile(
                     leading: Icon(Icons.app_registration, color: primaryColor),
@@ -130,7 +162,8 @@ class CustomDrawer extends StatelessWidget {
                     },
                   )),
             Obx(() {
-              return isLoggedIn.value
+              return isLoggedIn.value &&
+                      profileController.userData['user'] != null
                   ? ListTile(
                       leading: Icon(Icons.logout, color: primaryColor),
                       title: const Text('Logout',

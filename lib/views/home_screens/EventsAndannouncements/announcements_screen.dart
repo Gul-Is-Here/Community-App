@@ -44,23 +44,25 @@ class AnnouncementsScreen extends StatelessWidget {
         } else {
           return ListView.builder(
             padding: EdgeInsets.all(10.0),
-            itemCount: controller.feedsList.length,
+            itemCount: controller.alertsList.length,
             itemBuilder: (context, index) {
-              final feed = controller.feedsList[index];
+              // final feed = controller.feedsList[index];
+              final alert = controller.alertsList[index];
               return AnnouncementCard(
+                alertDisc: alert.alertDescription,
                 onTap: () {
-                  Get.to(() => AnnouncementsDetailsScreen(
+                  Get.to(() => AnnouncementsDetailsScreen(alertDisc: alert.alertDescription,
                       controller: controller,
-                      title: feed.feedTitle,
-                      details: feed.feedImage,
-                      createdDate: feed.createdAt.toString(),
+                      title: alert.alertTitle,
+                      details: alert.alertDescription,
+                      createdDate: alert.createdAt.toString(),
                       description: '',
-                      postedDate: feed.feedDate.toString()));
+                      postedDate: alert.updatedAt.toString()));
                 },
-                imageUrl: feed.feedImage,
-                title: feed.feedTitle,
+               
+                title: alert.alertTitle,
                 postedDate:
-                    controller.formatDateString(feed.feedDate.toString()),
+                    controller.formatDateString(alert.createdAt.toString()),
               );
             },
           );
@@ -72,14 +74,16 @@ class AnnouncementsScreen extends StatelessWidget {
 
 class AnnouncementCard extends StatelessWidget {
   void Function() onTap;
-  final String imageUrl;
+
   final String title;
   final String postedDate;
+  final String alertDisc;
 
   AnnouncementCard({
     super.key,
+    required this.alertDisc,
     required this.onTap,
-    required this.imageUrl,
+
     required this.title,
     required this.postedDate,
   });
@@ -97,26 +101,7 @@ class AnnouncementCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ClipRRect(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(15.0),
-                topRight: Radius.circular(15.0),
-              ),
-              child: Image.network(
-                imageUrl,
-                width: double.infinity,
-                height: 180,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return Container(
-                    height: 180,
-                    color: Colors.grey[300],
-                    child:
-                        const Icon(Icons.broken_image, size: 100, color: Colors.grey),
-                  );
-                },
-              ),
-            ),
+            
             Padding(
               padding: const EdgeInsets.all(15.0),
               child: Column(

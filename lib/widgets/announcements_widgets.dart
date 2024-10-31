@@ -65,7 +65,8 @@ class AnnouncementWidget extends StatelessWidget {
                           eventsController.events.value!.data.events.isNotEmpty)
                         Column(
                           children: [
-                            SizedBox(
+                            Container(
+                              color: whiteColor,
                               height: 60,
                               child: PageView.builder(
                                 controller:
@@ -85,6 +86,8 @@ class AnnouncementWidget extends StatelessWidget {
                                     child: GestureDetector(
                                       onTap: () {
                                         Get.to(() => AnnouncementsDetailsScreen(
+                                            alertDisc:
+                                                alertsData.alertDescription,
                                             controller: eventsController,
                                             title: alertsData.alertTitle,
                                             details:
@@ -235,7 +238,7 @@ class AnnouncementWidget extends StatelessWidget {
                         height: 30,
                         child: GestureDetector(
                           onTap: () {
-                            Get.to(() => AllEventsDatesScreen());
+                            Get.to(() => AnnouncementsScreen());
                           },
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.end,
@@ -337,6 +340,8 @@ class AnnouncementWidget extends StatelessWidget {
                                     child: GestureDetector(
                                       onTap: () {
                                         Get.to(() => AnnouncementsDetailsScreen(
+                                            alertDisc:
+                                                alertsData.alertDescription,
                                             controller: eventsController,
                                             title: alertsData.alertTitle,
                                             details:
@@ -514,7 +519,7 @@ class AnnouncementWidget extends StatelessWidget {
                         height: 30,
                         child: GestureDetector(
                           onTap: () {
-                            Get.to(() => AllEventsDatesScreen());
+                            Get.to(() => ());
                           },
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.end,

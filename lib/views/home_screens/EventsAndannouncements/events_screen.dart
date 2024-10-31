@@ -49,6 +49,7 @@ class EventsScreen extends StatelessWidget {
             itemCount: eventsController.events.value!.data.events.length,
             itemBuilder: (context, index) {
               var event = eventsController.events.value!.data.events[index];
+              final feedsImages = eventsController.feedsList[index];
 
               return Padding(
                 padding: const EdgeInsets.only(bottom: 16.0),
@@ -61,6 +62,7 @@ class EventsScreen extends StatelessWidget {
                   child: InkWell(
                     onTap: () {
                       Get.to(() => EventsDetailsScreen(
+                        imageUrl: feedsImages.feedImage,
                             eventDate: event.eventDate.toString(),
                             eventDetails: event.eventDetail,
                             eventLink: event.eventLink,
