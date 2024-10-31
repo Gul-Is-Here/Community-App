@@ -10,9 +10,11 @@ class AnnouncementsDetailsScreen extends StatelessWidget {
   final String postedDate;
   final String description;
   final String details;
+  final String alertDisc;
 
   AnnouncementsDetailsScreen({
     Key? key,
+    required this.alertDisc,
     required this.controller,
     required this.title,
     required this.details,
@@ -54,27 +56,6 @@ class AnnouncementsDetailsScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // Image Section
-            Container(
-              height: 250.0,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: NetworkImage(''),
-                  fit: BoxFit.cover,
-                ),
-              ),
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Colors.black.withOpacity(0.6),
-                      Colors.transparent,
-                    ],
-                    begin: Alignment.bottomCenter,
-                    end: Alignment.topCenter,
-                  ),
-                ),
-              ),
-            ),
 
             // Announcement Details Section
             Padding(
@@ -83,71 +64,80 @@ class AnnouncementsDetailsScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Posted Date
-                  Row(
-                    children: [
-                      Icon(Icons.calendar_today, color: Colors.grey, size: 18),
-                      SizedBox(width: 8),
-                      Text(
-                        'Posted: ${controller.formatDateString(postedDate)}',
-                        style: TextStyle(
-                          color: Colors.grey[700],
-                          fontSize: 14.0,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 8.0),
+                  // Row(
+                  //   children: [
+                  //     Icon(Icons.calendar_today, color: Colors.grey, size: 18),
+                  //     SizedBox(width: 8),
+                  //     Text(
+                  //       'Posted: ${controller.formatDateString(postedDate)}',
+                  //       style: TextStyle(
+                  //         color: Colors.grey[700],
+                  //         fontSize: 14.0,
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
+                  // SizedBox(height: 8.0),
 
                   // Created Date
-                  Row(
-                    children: [
-                      Icon(Icons.date_range, color: Colors.grey, size: 18),
-                      SizedBox(width: 8),
-                      Text(
-                        'Created: ${controller.formatDateString(createdDate)}',
-                        style: TextStyle(
-                          color: Colors.grey[700],
-                          fontSize: 14.0,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 20.0),
+                  // Row(
+                  //   children: [
+                  //     Icon(Icons.date_range, color: Colors.grey, size: 18),
+                  //     SizedBox(width: 8),
+                  //     Text(
+                  //       'Created: ${controller.formatDateString(createdDate)}',
+                  //       style: TextStyle(
+                  //         color: Colors.grey[700],
+                  //         fontSize: 14.0,
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
+                  // SizedBox(height: 20.0),
 
-                  // Title
+                  // // Title
                   Text(
                     title,
                     style: TextStyle(
-                      fontSize: 24.0,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
+                      // fontSize: 24.0,
+                      fontFamily: popinsSemiBold,
+                      // color: Colors.black87,
+                    ),
+                  ),
+                  SizedBox(height: 20.0),
+                  Text(
+                    alertDisc,
+                    style: TextStyle(
+                      fontFamily: popinsMedium,
+                      // fontWeight: FontWeight.bold,
+                      // color: Colors.black87,
                     ),
                   ),
                   SizedBox(height: 20.0),
 
                   // Description with Card-like appearance
-                  Container(
-                    padding: EdgeInsets.all(16.0),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12.0),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 8.0,
-                          offset: Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: Text(
-                      description,
-                      style: TextStyle(
-                        fontSize: 16.0,
-                        height: 1.6,
-                        color: Colors.black87,
-                      ),
-                    ),
-                  ),
+                  // Container(
+                  //   padding: EdgeInsets.all(16.0),
+                  //   decoration: BoxDecoration(
+                  //     color: Colors.white,
+                  //     borderRadius: BorderRadius.circular(12.0),
+                  //     boxShadow: [
+                  //       BoxShadow(
+                  //         color: Colors.black12,
+                  //         blurRadius: 8.0,
+                  //         offset: Offset(0, 4),
+                  //       ),
+                  //     ],
+                  //   ),
+                  //   child: Text(
+                  //     description,
+                  //     style: TextStyle(
+                  //       fontSize: 16.0,
+                  //       height: 1.6,
+                  //       color: Colors.black87,
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
             ),

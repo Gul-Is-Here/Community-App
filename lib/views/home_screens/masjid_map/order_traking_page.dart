@@ -18,7 +18,7 @@ class OrderTrackingPageState extends State<OrderTrackingPage> {
   final Completer<GoogleMapController> _controller = Completer();
 
   static const LatLng destination =
-      LatLng(29.504977, -95.762822); // Masjid location
+      LatLng(29.506660, -95.762450); // Masjid location
   List<LatLng> polylineCoordinates = [];
   final Set<Polyline> _polylines = {};
   LatLng? currentLocation;
