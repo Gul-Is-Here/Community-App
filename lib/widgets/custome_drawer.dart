@@ -119,9 +119,10 @@ class CustomDrawer extends StatelessWidget {
                       padding: const EdgeInsets.only(left: 25),
                       child: profileController.userData['user'] == null
                           ? SizedBox()
-                          : const Text(
+                          : Text(
                               'View Profile',
                               style: TextStyle(
+                                  decoration: TextDecoration.underline,
                                   color: Colors.black,
                                   fontSize: 12,
                                   fontFamily: popinsRegulr),

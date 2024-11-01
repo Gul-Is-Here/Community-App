@@ -127,31 +127,31 @@ class ProfileScreen extends StatelessWidget {
                           ),
                         ),
                         SizedBox(width: screenWidth * 0.04),
-                        Expanded(
-                          child: Card(
-                            elevation: 10,
-                            child: ElevatedButton(
-                              onPressed: () {
-                                // Handle Family Member button press
-                                Get.to(() => FamilyMemberScreen());
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: buttonColorP,
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: screenWidth * 0.05,
-                                  vertical: screenHeight * 0.025,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                              ),
-                              child: const Text(
-                                'Family Member',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
-                          ),
-                        ),
+                        // Expanded(
+                        //   child: Card(
+                        //     elevation: 10,
+                        //     child: ElevatedButton(
+                        //       onPressed: () {
+                        //         // Handle Family Member button press
+                        //         Get.to(() => FamilyMemberScreen());
+                        //       },
+                        //       style: ElevatedButton.styleFrom(
+                        //         backgroundColor: buttonColorP,
+                        //         padding: EdgeInsets.symmetric(
+                        //           horizontal: screenWidth * 0.05,
+                        //           vertical: screenHeight * 0.025,
+                        //         ),
+                        //         shape: RoundedRectangleBorder(
+                        //           borderRadius: BorderRadius.circular(8),
+                        //         ),
+                        //       ),
+                        //       child: const Text(
+                        //         'Family Member',
+                        //         style: TextStyle(color: Colors.white),
+                        //       ),
+                        //     ),
+                        //   ),
+                        // ),
                       ],
                     ),
                     SizedBox(height: screenHeight * 0.03),
@@ -167,6 +167,27 @@ class ProfileScreen extends StatelessWidget {
                       },
                     ),
                     const Divider(),
+                    ListTile(
+                      leading: const Icon(Icons.person),
+                      title: Text(
+                        'Family Members',
+                        style: TextStyle(fontSize: screenWidth * 0.045),
+                      ),
+                      onTap: () {
+                        Get.to(() => FamilyMemberScreen());
+                      },
+                    ),
+                    // const Divider(),
+                    // ListTile(
+                    //   leading: const Icon(Icons.person),
+                    //   title: Text(
+                    //     'Classes',
+                    //     style: TextStyle(fontSize: screenWidth * 0.045),
+                    //   ),
+                    //   onTap: () {
+                    //     Get.to(() => FamilyMemberScreen());
+                    //   },
+                    // ),
                     // Uncomment below to add logout button if needed
                     // ListTile(
                     //   leading: const Icon(Icons.person),
