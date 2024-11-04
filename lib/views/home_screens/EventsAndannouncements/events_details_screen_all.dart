@@ -171,8 +171,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                         if (feedImage != null)
                           Image.network(
                             feedImage,
-                            fit: BoxFit.cover,
-                            height: 150,
+                            fit: BoxFit.fill,
+                            height: 350,
                             width: double.infinity,
                           ),
                       ],
@@ -235,17 +235,19 @@ class _CalendarWidgetState extends State<CalendarWidget> {
           padding: const EdgeInsets.all(8.0),
           decoration: BoxDecoration(
             color: isSelected
-                ? Colors.blue
+                ? primaryColor1
                 : isEventDay
                     ? Colors.red
                     : Colors.transparent,
             shape: BoxShape.circle,
           ),
-          child: Text(
-            day.toString(),
-            style: TextStyle(
-              color: isSelected || isEventDay ? Colors.white : Colors.black87,
-              fontWeight: FontWeight.bold,
+          child: Center(
+            child: Text(
+              day.toString(),
+              style: TextStyle(
+                color: isSelected || isEventDay ? Colors.white : Colors.black87,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ),

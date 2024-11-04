@@ -2,6 +2,7 @@ import 'package:community_islamic_app/constants/color.dart';
 import 'package:community_islamic_app/constants/image_constants.dart';
 import 'package:community_islamic_app/controllers/login_controller.dart';
 import 'package:community_islamic_app/controllers/profileController.dart';
+import 'package:community_islamic_app/views/about_us/about_us.dart';
 import 'package:community_islamic_app/views/auth_screens/login_screen.dart';
 import 'package:community_islamic_app/views/auth_screens/registration_screen.dart';
 import 'package:community_islamic_app/views/azan_settings/azan_settings_screen.dart';
@@ -192,6 +193,14 @@ class CustomDrawer extends StatelessWidget {
                   style: TextStyle(fontSize: 14, fontFamily: popinsRegulr)),
               onTap: () {
                 Get.to(() => const AzanSettingsScreen());
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.share, color: primaryColor),
+              title: const Text('About Us',
+                  style: TextStyle(fontFamily: popinsRegulr, fontSize: 14)),
+              onTap: () {
+                Get.to(() => AboutUsScreen());
               },
             ),
             ListTile(

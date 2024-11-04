@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-Color primaryColor = Color(0xFF006367);
+Color primaryColor = const Color(0xFF042838);
+Color primaryColor1 = Color(0xFF006367);
 Color containerConlor = Color(0xFF061F32);
 Color asColor = Color(0xFFEDAE33);
 const buttonColorP = Color(0XFF123443);
