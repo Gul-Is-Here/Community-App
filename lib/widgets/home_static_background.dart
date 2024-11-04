@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:blinking_text/blinking_text.dart';
 import 'package:community_islamic_app/views/azan_settings/azan_settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_qiblah/flutter_qiblah.dart';
@@ -102,7 +103,7 @@ class HomeStaticBackground extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(6)),
                               margin: const EdgeInsets.all(0),
                               elevation: 5,
-                              color: const Color(0xFF5B7B79),
+                              color: primaryColor,
                               child: Center(
                                 child: Padding(
                                   padding:
@@ -159,19 +160,20 @@ class HomeStaticBackground extends StatelessWidget {
                                   margin: const EdgeInsets.all(0),
                                   elevation: 5,
                                   color: const Color(0xFF5B7B79),
-                                  child: Center(
-                                    child: Obx(
-                                      () => Text(
+                                  child: Obx(
+                                    () => Center(
+                                      child: BlinkText(
+                                        duration: Duration(seconds: 1),
                                         homeController.formatPrayerTime(
                                             homeController
                                                 .getPrayerTimes()
                                                 .toString()),
                                         style: TextStyle(
-                                          fontFamily: popinsSemiBold,
+                                          fontSize: 11.0,
                                           color: whiteColor,
                                           fontWeight: FontWeight.w700,
-                                          fontSize: 10,
                                         ),
+                                        endColor: primaryColor1,
                                       ),
                                     ),
                                   ),
@@ -205,15 +207,15 @@ class HomeStaticBackground extends StatelessWidget {
                                 color: const Color(0xFF5B7B79),
                                 child: Center(
                                   child: Obx(
-                                    () => Text(
-                                      homeController.formatPrayerTime(
-                                          homeController.getCurrentIqamaTime()),
+                                    () => BlinkText(
+                                      homeController.getCurrentIqamaTime(),
                                       style: TextStyle(
-                                        fontFamily: popinsRegulr,
+                                        fontSize: 11.0,
                                         color: whiteColor,
                                         fontWeight: FontWeight.w700,
-                                        fontSize: 10,
                                       ),
+                                      endColor: primaryColor1,
+                                      duration: Duration(seconds: 1),
                                     ),
                                   ),
                                 ),
@@ -258,7 +260,8 @@ class HomeStaticBackground extends StatelessWidget {
                                       borderRadius: BorderRadius.circular(4)),
                                   margin: const EdgeInsets.all(0),
                                   elevation: 5,
-                                  color: const Color(0xFF5B7B79),
+                                  color:
+                                      primaryColor, // const Color(0xFF5B7B79),
                                   child: Center(
                                     child: Obx(
                                       () => Text(
@@ -305,7 +308,7 @@ class HomeStaticBackground extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(4)),
                                 margin: const EdgeInsets.all(0),
                                 elevation: 5,
-                                color: const Color(0xFF5B7B79),
+                                color: primaryColor, //const Color(0xFF5B7B79),
                                 child: Center(
                                   child: Obx(
                                     () => Text(

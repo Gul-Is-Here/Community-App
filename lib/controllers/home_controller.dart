@@ -387,7 +387,16 @@ class HomeController extends GetxController {
           case 'Fajr':
             return timing.fjar;
           case 'Dhuhr':
-            return timing.zuhr;
+            // Ensure that Zuhr time is always in PM format
+            String zuhrTime = timing.zuhr.contains('AM') ||
+                    timing.zuhr.contains('PM')
+                ? timing.zuhr
+                : "${timing.zuhr} PM"; // Append "PM" if not already specified
+
+            // Parse and format Zuhr time with "PM"
+            DateTime parsedZuhrTime = DateFormat("h:mm a").parse(zuhrTime);
+            return DateFormat("h:mm a")
+                .format(parsedZuhrTime); // Format with AM/PM
           case 'Asr':
             return timing.asr;
           case 'Maghrib':

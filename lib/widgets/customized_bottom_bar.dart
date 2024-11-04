@@ -125,3 +125,111 @@ class CustomBottomNavigationBar extends StatelessWidget {
     );
   }
 }
+// import 'package:flutter/material.dart';
+// import '../constants/image_constants.dart';
+// import '../controllers/home_controller.dart';
+
+// class CustomBottomNavigationBar extends StatelessWidget {
+//   final HomeController controller;
+//   const CustomBottomNavigationBar({super.key, required this.controller});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return BottomNavigationBar(
+//       currentIndex: controller.selectedIndex.value, // Track the current index
+//       onTap: (index) {
+//         controller.changePage(index); // Call the method to change the page
+//       },
+//       items: [
+//         BottomNavigationBarItem(
+//           icon: Image.asset(
+//             homeIcon2,
+//             height: 24,
+//             width: 24,
+//             color: controller.selectedIndex.value == 0
+//                 ? const Color(0xFF0F6467)
+//                 : Colors.grey,
+//           ),
+//           label: 'Home',
+//         ),
+//         BottomNavigationBarItem(
+//           icon: Image.asset(
+//             qiblaIconBg,
+//             height: 24,
+//             width: 24,
+//             color: controller.selectedIndex.value == 1
+//                 ? const Color(0xFF0F6467)
+//                 : Colors.grey,
+//           ),
+//           label: 'Qibla',
+//         ),
+//         BottomNavigationBarItem(
+//           icon: Image.asset(
+//             quranIcon,
+//             height: 24,
+//             width: 24,
+//             color: controller.selectedIndex.value == 2
+//                 ? const Color(0xFF0F6467)
+//                 : Colors.grey,
+//           ),
+//           label: 'Quran',
+//         ),
+//         BottomNavigationBarItem(
+//           icon: Image.asset(
+//             donationIcon2,
+//             height: 24,
+//             width: 24,
+//             color: controller.selectedIndex.value == 3
+//                 ? const Color(0xFF0F6467)
+//                 : Colors.grey,
+//           ),
+//           label: 'Donate',
+//         ),
+//         BottomNavigationBarItem(
+//           icon: Image.asset(
+//             donationIcon2,
+//             height: 24,
+//             width: 24,
+//             color: controller.selectedIndex.value == 4
+//                 ? const Color(0xFF0F6467)
+//                 : Colors.grey,
+//           ),
+//           label: 'services',
+//         ),
+//         BottomNavigationBarItem(
+//           icon: Image.asset(
+//             donationIcon2,
+//             height: 24,
+//             width: 24,
+//             color: controller.selectedIndex.value == 4
+//                 ? const Color(0xFF0F6467)
+//                 : Colors.grey,
+//           ),
+//           label: 'services',
+//         ),
+//         BottomNavigationBarItem(
+//           icon: Image.asset(
+//             donationIcon2,
+//             height: 24,
+//             width: 24,
+//             color: controller.selectedIndex.value == 4
+//                 ? const Color(0xFF0F6467)
+//                 : Colors.grey,
+//           ),
+//           label: 'services',
+//         ),
+//         BottomNavigationBarItem(
+//           icon: Image.asset(
+//             donationIcon2,
+//             height: 24,
+//             width: 24,
+//             color: controller.selectedIndex.value == 4
+//                 ? const Color(0xFF0F6467)
+//                 : Colors.grey,
+//           ),
+//           label: 'services',
+//         ),
+//       ],
+//     );
+//   }
+// }

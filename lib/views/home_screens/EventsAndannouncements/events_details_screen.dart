@@ -54,8 +54,8 @@ class EventsDetailsScreen extends StatelessWidget {
               child: Image.network(
                 imageUrl,
                 width: double.infinity,
-                height: 180,
-                fit: BoxFit.cover,
+                height: 400,
+                fit: BoxFit.fitHeight,
                 errorBuilder: (context, error, stackTrace) {
                   return Container(
                     height: 180,
