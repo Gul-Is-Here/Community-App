@@ -20,17 +20,17 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> _navigateToAppropriateScreen() async {
     // Simulate a delay (e.g., loading resources, initialization, etc.)
-    await Future.delayed(Duration(seconds: 3)); // Adjust the duration as needed
+    await Future.delayed(const Duration(seconds: 3)); // Adjust the duration as needed
 
     final prefs = await SharedPreferences.getInstance();
     final isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
 
     if (isLoggedIn) {
       // Navigate to Home screen if user is logged in
-      Get.offAll(() => Home());
+      Get.offAll(() => const Home());
     } else {
       // Navigate to Login screen if user is not logged in
-      Get.offAll(() => Home());
+      Get.offAll(() => const Home());
     }
   }
 
