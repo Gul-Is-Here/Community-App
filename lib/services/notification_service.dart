@@ -16,7 +16,7 @@ class NotificationServices {
             AndroidFlutterLocalNotificationsPlugin>();
 
     List<AndroidNotificationChannel> channels = [
-      const AndroidNotificationChannel(
+       const AndroidNotificationChannel(
         'makkah_channel',
         'Makkah Notifications',
         description:
@@ -204,8 +204,8 @@ class NotificationServices {
       uniqueId,
       title,
       body,
-      tz.TZDateTime.from(scheduleNotificationDateTime, tz.local),
-      notificationDetails(
+      tz.TZDateTime.from(scheduleNotificationDateTime, tz.local), 
+      notificationDetails(  
         title: payLoad,
       ),
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
