@@ -4,8 +4,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import '../constants/image_constants.dart';
 
-class QiblahController extends GetxController
-    with GetSingleTickerProviderStateMixin {
+class QiblahController extends GetxController with GetSingleTickerProviderStateMixin {
   var locationCountry = "".obs;
   var locationCity = "".obs;
   late Animation<double> animation;
@@ -58,9 +57,18 @@ class QiblahController extends GetxController
   void updateQiblahDirection(double newQiblahDirection) {
     double newEnd = (newQiblahDirection * (3.141592653589793 / 180) * -1);
 
-    animation = Tween(begin: begin, end: newEnd).animate(animationController);
-    begin = newEnd;
+    // Update only if there's a change in direction
+    if (newEnd != begin) {
+      animation = Tween(begin: begin, end: newEnd).animate(animationController);
+      begin = newEnd;
 
-    animationController.forward(from: 0);
+      animationController.forward(from: 0);
+    }
+  }
+
+  @override
+  void onClose() {
+    animationController.dispose();
+    super.onClose();
   }
 }

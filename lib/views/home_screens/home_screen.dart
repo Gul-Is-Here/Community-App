@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:community_islamic_app/widgets/customized_mobile_layout.dart';
 import 'package:auto_scroll_text/auto_scroll_text.dart';
 
+import '../../constants/image_constants.dart';
+
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -26,13 +28,21 @@ class HomeScreen extends StatelessWidget {
             style: TextStyle(
                 color: Colors.white, fontFamily: popinsMedium, fontSize: 18),
           )),
-      body: Column(
-        // clipBehavior: Clip.none,
-        children: [
-          CustomizedMobileLayout(
-            screenHeight: screenHeight,
+      body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(homeUpBh),
+            fit: BoxFit.cover,
           ),
-        ],
+        ),
+        child: Column(
+          // clipBehavior: Clip.none,
+          children: [
+            CustomizedMobileLayout(
+              screenHeight: screenHeight,
+            ),
+          ],
+        ),
       ),
     );
   }
