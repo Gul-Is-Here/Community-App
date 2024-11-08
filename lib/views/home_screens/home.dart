@@ -67,28 +67,31 @@ class Home extends StatelessWidget {
               ),
             ],
           )),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 40),
-        child: SizedBox(
-          height: MediaQuery.of(context).size.height * .1,
-          width: MediaQuery.of(context).size.width * .2,
-          child: FloatingActionButton(
-            isExtended: true,
-            backgroundColor: Colors.transparent,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-            onPressed: () {
-              Get.to(() => MapSplashScreen());
-            },
-            child: Image.asset(
-              masjidIcon,
-              height: 120,
-            ),
-          ),
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+    
     );
   }
 }
 // i want this floatingactionbutton move all the screen where user want it to move by 
+
+
+  // floatingActionButton: Padding(
+      //   padding: const EdgeInsets.only(bottom: 40),
+      //   child: SizedBox(
+      //     height: MediaQuery.of(context).size.height * .1,
+      //     width: MediaQuery.of(context).size.width * .2,
+      //     child: FloatingActionButton(
+      //       isExtended: true,
+      //       backgroundColor: Colors.transparent,
+      //       shape:
+      //           RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+      //       onPressed: () {
+      //         Get.to(() => MapSplashScreen());
+      //       },
+      //       child: Image.asset(
+      //         masjidIcon,
+      //         height: 120,
+      //       ),
+      //     ),
+      //   ),
+      // ),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,

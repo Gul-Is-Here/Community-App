@@ -51,15 +51,15 @@ class PrayerTimeWidget2 extends StatelessWidget {
       clipBehavior: Clip.none, // Allow the icon to overflow
       children: [
         SizedBox(
-          width: screenWidth * .3,
+          width: screenWidth * .31,
           height: screenHeight1 * .07,
           child: Container(
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15),
                 gradient: LinearGradient(
-                    colors: [Color(0xFF042838), Color(0xFF0F6467)])),
+                    colors: [Color(0xFF5B7B79), Color(0xFF5B7B79)])),
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 4),
+              padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 4),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,

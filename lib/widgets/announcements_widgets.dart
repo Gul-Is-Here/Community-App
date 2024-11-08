@@ -51,7 +51,7 @@ class AnnouncementWidget extends StatelessWidget {
                     height: 60,
                     child: Center(
                       child: Text(
-                        'No Alerts found',
+                        'No Notification found',
                         style: TextStyle(fontFamily: popinsRegulr),
                       ),
                     ),
@@ -60,12 +60,13 @@ class AnnouncementWidget extends StatelessWidget {
                   Column(
                     children: [
                       Container(
-                        color: whiteColor,
-                        height: 60,
+                        color: Colors.transparent,
+                        height: 65,
+                        width: screenWidth * 1,
                         child: ListView.builder(
                           shrinkWrap: true,
                           itemCount: eventsController.alertsList.length,
-                          scrollDirection: Axis.vertical,
+                          // scrollDirection: Axis.horizontal,
                           itemBuilder: (context, index) {
                             var alertsData = eventsController.alertsList[index];
                             print('Alert List: ${alertsData.alertTitle}');
@@ -88,7 +89,7 @@ class AnnouncementWidget extends StatelessWidget {
                                 },
                                 child: Container(
                                   width: screenWidth * .8,
-                                  height: screenHeight1 * .075,
+                                  height: screenHeight1 * .08,
                                   decoration: const BoxDecoration(
                                     borderRadius: BorderRadius.only(
                                       topLeft: Radius.circular(20),
@@ -124,23 +125,29 @@ class AnnouncementWidget extends StatelessWidget {
                                                     CrossAxisAlignment.start,
                                                 children: [
                                                   SizedBox(
-                                                    height: 21,
-                                                    width: 64,
+                                                    height: 23,
+                                                    width: 70,
                                                     child: Card(
                                                       color: primaryColor,
                                                       margin:
                                                           const EdgeInsets.all(
                                                               0),
                                                       child: Center(
-                                                        child: Text(
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          "Alert",
-                                                          style: TextStyle(
-                                                              color: whiteColor,
-                                                              fontSize: 10,
-                                                              fontFamily:
-                                                                  popinsRegulr),
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(4.0),
+                                                          child: Text(
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                            "Notification",
+                                                            style: TextStyle(
+                                                                color:
+                                                                    whiteColor,
+                                                                fontSize: 10,
+                                                                fontFamily:
+                                                                    popinsRegulr),
+                                                          ),
                                                         ),
                                                       ),
                                                     ),

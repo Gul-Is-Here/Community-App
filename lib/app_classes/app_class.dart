@@ -98,4 +98,16 @@ class AppClass {
 
     return "$formattedHour:$formattedMinute:$formattedSecond $period";
   }
+  String formatDate2(String dateString) {
+  try {
+    // Parse the input string to DateTime
+    DateTime parsedDate = DateTime.parse(dateString);
+
+    // Format the DateTime to "MMM d, yyyy"
+    return DateFormat('MMM d, yyyy').format(parsedDate);
+  } catch (e) {
+    print("Error parsing date: $e");
+    return ""; // Return an empty string or handle the error as needed
+  }
+}
 }

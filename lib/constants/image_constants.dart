@@ -67,6 +67,7 @@ const homeUpBh = "assets/home_icon/homeUpBg.png";
 const homeBgUp2 = "assets/home_icon/homeBgUp2.png";
 const sunIcon = 'assets/home_icon/Sun.png';
 const moonIcon = 'assets/home_icon/moon.png';
+const eventBg2 = 'assets/home_icon/event_bg.png';
 // Compass List Icons
 const compass1 = "assets/home_icon/compass1.png";
 const compass2 = "assets/home_icon/compass2.jpg";

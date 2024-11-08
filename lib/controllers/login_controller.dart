@@ -22,7 +22,7 @@ class LoginController extends GetxController {
     // Check login status when controller initializes
     // isLoggedInd();
     isLoggedIn();
-    _loadAuthToken();
+    loadAuthToken();
     _loadaId();
   }
 
@@ -98,7 +98,7 @@ class LoginController extends GetxController {
     return prefs.getBool('isLoggedIn') ?? false;
   }
 
-  Future<void> _loadAuthToken() async {
+  Future<void> loadAuthToken() async {
     // Retrieve the access token from SharedPreferences
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final storedToken = prefs.getString('accessToken');
