@@ -87,7 +87,7 @@ class EventsWidget extends StatelessWidget {
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(27),
                                   image: DecorationImage(
-                                    image: AssetImage(eventBg),
+                                    image: AssetImage(eventBg2),
                                     opacity: .8,
                                     fit: BoxFit.cover,
                                   ),

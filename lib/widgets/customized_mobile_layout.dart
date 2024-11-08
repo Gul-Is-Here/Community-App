@@ -83,8 +83,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                                         name: 'FAJR',
                                         currentPrayer:
                                             getCurrentPrayer(), // Pass the current prayer name
-                                        imageIcon:
-                                            sunriseIcon, // Your icon asset
+                                        imageIcon: sunIcon, // Your icon asset
                                       ),
                                     ),
                                     5.widthBox,
@@ -93,7 +92,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                                         // azanIcon: azanlogo,
                                         // iqamaIcon: iqamalogo,
                                         currentPrayer: getCurrentPrayer(),
-                                        imageIcon: sunriseIcon,
+                                        imageIcon: sunIcon,
                                         namazName: 'Dhuhr',
                                         timings: homeController.prayerTime.value
                                             .data!.timings.dhuhr,
@@ -107,7 +106,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                                         // azanIcon: azanlogo,
                                         // iqamaIcon: iqamalogo,
                                         currentPrayer: getCurrentPrayer(),
-                                        imageIcon: sunriseIcon,
+                                        imageIcon: sunIcon,
                                         namazName: 'Asr',
                                         timings: homeController
                                             .prayerTime.value.data!.timings.asr,
@@ -123,7 +122,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                                     Obx(
                                       () => PrayerTimeWidget(
                                         currentPrayer: getCurrentPrayer(),
-                                        imageIcon: sunsetIcon,
+                                        imageIcon: moonIcon,
                                         namazName: 'Maghrib',
                                         timings: homeController.prayerTime.value
                                             .data!.timings.maghrib,
@@ -141,7 +140,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                                     Obx(
                                       () => PrayerTimeWidget(
                                         currentPrayer: getCurrentPrayer(),
-                                        imageIcon: sunriseIcon,
+                                        imageIcon: moonIcon,
                                         namazName: 'Isha',
                                         timings: homeController.prayerTime.value
                                             .data!.timings.isha,
@@ -153,7 +152,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                                     Obx(
                                       () => PrayerTimeWidget2(
                                         currentPrayer: getCurrentPrayer(),
-                                        imageIcon: sunriseIcon,
+                                        imageIcon: sunIcon,
                                         namazName: 'Jumuah',
                                         timings: homeController.jummaTimes.value
                                             .data!.jumah.prayerTiming,
@@ -205,8 +204,8 @@ class CustomizedMobileLayout extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     Container(
-                      height: 80,
-                      width: 80,
+                      height: 70,
+                      width: 70,
                       margin: EdgeInsets.all(0),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
@@ -217,7 +216,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                       child: Column(
                         children: [
                           Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            padding: const EdgeInsets.symmetric(vertical: 4.0),
                             child: Text(
                               'DONATION',
                               style: TextStyle(
@@ -231,6 +230,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                             height: 40,
                             width: 40,
                           ),
+                          5.heightBox,
                         ],
                       ),
                     ),
@@ -243,8 +243,8 @@ class CustomizedMobileLayout extends StatelessWidget {
                         child: Row(
                           children: [
                             Container(
-                              height: 80,
-                              width: 80,
+                              height: 70,
+                              width: 70,
                               margin: EdgeInsets.all(0),
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
@@ -256,7 +256,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.symmetric(
-                                        vertical: 8.0),
+                                        vertical: 4.0),
                                     child: Text(
                                       'RCC LIVE',
                                       style: TextStyle(
@@ -270,6 +270,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                                     height: 40,
                                     width: 40,
                                   ),
+                                  5.heightBox,
                                 ],
                               ),
                             )
@@ -282,12 +283,12 @@ class CustomizedMobileLayout extends StatelessWidget {
                         Get.to(() => ServicesScreen());
                       },
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
                         child: Row(
                           children: [
                             Container(
-                              height: 80,
-                              width: 80,
+                              height: 70,
+                              width: 70,
                               margin: EdgeInsets.all(0),
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
@@ -324,6 +325,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                 ),
               ),
             ),
+            5.heightBox,
           ],
         ),
       ],
@@ -521,7 +523,7 @@ class PrayerTimeWidget extends StatelessWidget {
               ),
             ),
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 4),
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
