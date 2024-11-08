@@ -52,14 +52,14 @@ class PrayerTimeWidget2 extends StatelessWidget {
       children: [
         SizedBox(
           width: screenWidth * .31,
-          height: screenHeight1 * .07,
+          height: screenHeight1 * .063,
           child: Container(
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15),
                 gradient: LinearGradient(
                     colors: [Color(0xFF5B7B79), Color(0xFF5B7B79)])),
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 4),
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,

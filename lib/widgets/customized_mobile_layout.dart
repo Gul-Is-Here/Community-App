@@ -514,7 +514,7 @@ class PrayerTimeWidget extends StatelessWidget {
       children: [
         SizedBox(
           width: screenWidth * .31,
-          height: screenHeight1 * .07,
+          height: screenHeight1 * .063,
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
