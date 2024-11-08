@@ -18,10 +18,18 @@ import '../hijri_calendar.dart';
 import '../views/home_screens/home.dart';
 
 // ignore: must_be_immutable
-class CustomDrawer extends StatelessWidget {
+class CustomDrawer extends StatefulWidget {
   CustomDrawer({super.key});
+
+  @override
+  State<CustomDrawer> createState() => _CustomDrawerState();
+}
+
+class _CustomDrawerState extends State<CustomDrawer> {
   final isLoggedIn = true.obs;
+
   final loginController = Get.find<LoginController>();
+
   final profileController = Get.put(ProfileController());
 
   Future<void> handleProfileNavigation() async {
@@ -29,11 +37,19 @@ class CustomDrawer extends StatelessWidget {
   }
 
   @override
+  void initState() {
+    profileController.fetchUserData2();
+    profileController.fetchUserData();
+    handleProfileNavigation();
+    profileController.userData();
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
-    profileController.fetchUserData2();
-    handleProfileNavigation();
 
     return Drawer(
       width: screenWidth * .5,
@@ -43,43 +59,45 @@ class CustomDrawer extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // 20.heightBox,
-            Stack(
-              clipBehavior: Clip.none,
-              children: [
-                Container(
-                  height: screenHeight * .1,
-                  width: double.infinity,
-                  color: primaryColor,
-                ),
-                Positioned(
-                  left: screenWidth * .13,
-                  top: 35,
-                  child: profileController.userData.isEmpty ||
-                          profileController.userData['user'] == null
-                      ? Image.asset(
-                          aboutUsIcon,
-                          width: 80,
-                          height: 80,
-                        )
-                      : Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(
-                                50,
+            Obx(
+              () => Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Container(
+                    height: screenHeight * .1,
+                    width: double.infinity,
+                    color: primaryColor,
+                  ),
+                  Positioned(
+                    left: screenWidth * .13,
+                    top: 35,
+                    child: profileController.userData.isEmpty ||
+                            profileController.userData['user'] == null
+                        ? Image.asset(
+                            aboutUsIcon,
+                            width: 80,
+                            height: 80,
+                          )
+                        : Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(
+                                  50,
+                                ),
+                                border: Border.all(width: 2),
+                                color: Colors.black),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(50),
+                              child: Image.network(
+                                profileController.userData['user']
+                                    ['profile_image'],
+                                width: 80,
+                                height: 80,
                               ),
-                              border: Border.all(width: 2),
-                              color: Colors.black),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(50),
-                            child: Image.network(
-                              profileController.userData['user']
-                                  ['profile_image'],
-                              width: 80,
-                              height: 80,
                             ),
                           ),
-                        ),
-                ),
-              ],
+                  ),
+                ],
+              ),
             ),
             Padding(
               padding: const EdgeInsets.only(left: 0, top: 50),

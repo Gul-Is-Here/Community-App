@@ -56,6 +56,7 @@ dependencies:
   hijri: ^3.0.0
   jhijri: ^1.0.0
   blinking_text: ^1.0.4
+  convex_bottom_bar: ^3.2.0
 
 dev_dependencies:
   flutter_test:

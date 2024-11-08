@@ -25,7 +25,9 @@ class ProfileController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    globals.accessToken.value;
     fetchUserData2();
+
     fetchUserData(); // Fetch user data on initialization
   }
 
@@ -243,6 +245,4 @@ class ProfileController extends GetxController {
       isLoading(false);
     }
   }
-
-
 }

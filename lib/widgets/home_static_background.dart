@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:community_islamic_app/views/home_screens/masjid_map/map_splash_screen.dart';
 import 'package:community_islamic_app/widgets/prayer_widget.dart';
 import 'package:community_islamic_app/widgets/social_media_widget.dart';
 import 'package:flutter/material.dart';
@@ -13,94 +14,99 @@ import '../controllers/home_controller.dart';
 
 class HomeStaticBackground extends StatelessWidget {
   HomeStaticBackground({super.key});
-
+  final homeController = Get.find<HomeController>();
   @override
   Widget build(BuildContext context) {
+    homeController.prayerTime.value;
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-    final homeController = Get.find<HomeController>();
 
     return Column(
       children: [
         Column(
           children: [
-            Column(
-              children: [
-                GetBuilder<HomeController>(
-                  builder: (_) {
-                    if (homeController.prayerTime.value.data == null) {
-                      return Center(
-                        child: SpinKitFadingCircle(
-                          color: primaryColor,
-                          size: 50.0,
-                        ),
-                      );
-                    }
-                    if (homeController.prayerTime.value.data != null) {
-                      final gregorianDate =
-                          homeController.prayerTime.value.data!.date.gregorian;
-                      final hijriDate =
-                          homeController.prayerTime.value.data!.date.hijri;
+            Obx(() {
+              // Check if prayer time data is available
+              if (homeController.prayerTime.value.data == null) {
+                // No data available, show an empty container instead of a loading indicator
+                return SizedBox.shrink();
+              }
 
-                      return Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  color: primaryColor,
-                                  borderRadius: BorderRadius.circular(20)),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      '${gregorianDate.day} ${gregorianDate.month.en} ${gregorianDate.year}',
-                                      style: TextStyle(
-                                          fontFamily: popinsSemiBold,
-                                          color: whiteColor),
-                                    ),
-                                    Text(
-                                      '${hijriDate.day} ${hijriDate.month.en} ${hijriDate.year}',
-                                      style: TextStyle(
-                                          fontFamily: popinsSemiBold,
-                                          color: whiteColor),
-                                    ),
-                                  ],
-                                ),
-                              ),
+              // Display the date and prayer timings once data is loaded
+              final gregorianDate =
+                  homeController.prayerTime.value.data!.date.gregorian;
+              final hijriDate =
+                  homeController.prayerTime.value.data!.date.hijri;
+
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: primaryColor,
+                          borderRadius: BorderRadius.circular(20)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              '${gregorianDate.day} ${gregorianDate.month.en} ${gregorianDate.year}',
+                              style: TextStyle(
+                                  fontFamily: popinsSemiBold,
+                                  color: whiteColor),
                             ),
+                            Text(
+                              '${hijriDate.day} ${hijriDate.month.en} ${hijriDate.year}',
+                              style: TextStyle(
+                                  fontFamily: popinsSemiBold,
+                                  color: whiteColor),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: PrayerTimings(homeController: homeController),
+                      ),
+                      SizedBox(
+                        height: screenHeight * .2,
+                        child: SocialMediaFloatingButton(),
+                      ),
+                      Positioned(
+                        top: screenHeight * .12,
+                        left: screenWidth * .03,
+                        child: FloatingActionButton(
+                          elevation: 0,
+                          isExtended: true,
+                          backgroundColor: Colors.transparent,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(50)),
+                          onPressed: () {
+                            Get.to(() => MapSplashScreen());
+                          },
+                          child: Image.asset(
+                            masjidIcon,
+                            height: 45,
                           ),
-                          Stack(
-                            clipBehavior: Clip.none,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: PrayerTimings(
-                                    homeController: homeController),
-                              ),
-                              SizedBox(
-                                height: screenHeight * .17,
-                                child: SocialMediaFloatingButton(),
-                              ),
-                              Positioned(
-                                  left: screenWidth * .3,
-                                  child: QiblahIndicator(
-                                      homeController: homeController)),
-                            ],
-                          )
-                        ],
-                      );
-                    } else {
-                      return Text('No data available');
-                    }
-                  },
-                ),
-              ],
-            ),
+                        ),
+                      ),
+                      Positioned(
+                        left: screenWidth * .3,
+                        child: QiblahIndicator(homeController: homeController),
+                      ),
+                    ],
+                  ),
+                ],
+              );
+            }),
           ],
         ),
       ],
@@ -237,7 +243,7 @@ class QiblahIndicator extends StatelessWidget {
                   }),
                 ),
                 Positioned(
-                  bottom: 75,
+                  bottom: screenHeight * .09,
                   child: Obx(
                     () => Text(
                       homeController.getCurrentPrayer(),

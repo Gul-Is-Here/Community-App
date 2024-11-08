@@ -38,11 +38,12 @@ class HomeController extends GetxController {
   Timer? _timer;
 
   @override
-  void onInit() {
+  void onInit() async {
     super.onInit();
-    _timer = Timer.periodic(Duration(seconds: 1), (_) {
-      updateCurrentTime();
-    });
+    fetchJummaTimes();
+    notchBottomBarController =
+        NotchBottomBarController(index: selectedIndex.value);
+    fetchPrayerTimes();
     updateCurrentTime();
     notchBottomBarController =
         NotchBottomBarController(index: selectedIndex.value);
@@ -51,6 +52,9 @@ class HomeController extends GetxController {
     getPrayers();
     getPrayerTimesFromStorage();
     startNextPrayerTimer(); // Start the countdown timer
+    _timer = Timer.periodic(Duration(seconds: 1), (_) {
+      updateCurrentTime();
+    });
   }
 
   @override
