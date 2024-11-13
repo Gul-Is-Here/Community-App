@@ -35,26 +35,135 @@ class AnnouncementWidget extends StatelessWidget {
             () => Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (eventsController.isLoading.value)
-                  SizedBox(
-                    width: screenWidth * .7,
-                    height: screenHeight1 * .075,
-                    child: Center(
-                      child: SpinKitFadingCircle(
-                        color: primaryColor,
-                        size: 50.0,
+                // if (eventsController.isLoading.value)
+                //   SizedBox(
+                //     width: screenWidth * .7,
+                //     height: screenHeight1 * .075,
+                //     child: Center(
+                //       child: SpinKitFadingCircle(
+                //         color: primaryColor,
+                //         size: 50.0,
+                //       ),
+                //     ),
+                //   )
+                // else
+                if (eventsController.alertsList.isEmpty)
+                  Column(
+                    children: [
+                      Container(
+                        width: screenWidth * .9,
+                        height: screenHeight1 * .085,
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            topRight: Radius.circular(20),
+                          ),
+                        ),
+                        child: Card(
+                          margin: const EdgeInsets.all(0),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          elevation: 10,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(width: 2, color: primaryColor),
+                              borderRadius: BorderRadius.circular(30),
+                              color: whiteColor,
+                            ),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 16,
+                                      vertical: 5,
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        SizedBox(
+                                          height: 23,
+                                          width: 70,
+                                          child: Card(
+                                            color: primaryColor,
+                                            margin: const EdgeInsets.all(0),
+                                            child: Center(
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(4.0),
+                                                child: Text(
+                                                  textAlign: TextAlign.center,
+                                                  "Notification",
+                                                  style: TextStyle(
+                                                      color: whiteColor,
+                                                      fontSize: 10,
+                                                      fontFamily: popinsRegulr),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(height: 5),
+                                        Text(
+                                          "Notificaiton Comming Soon",
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: primaryColor,
+                                            fontWeight: FontWeight.w400,
+                                            fontFamily: popinsRegulr,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                  )
-                else if (eventsController.alertsList.isEmpty)
-                  SizedBox(
-                    height: 60,
-                    child: Center(
-                      child: Text(
-                        'No Notification found',
-                        style: TextStyle(fontFamily: popinsRegulr),
+                      5.heightBox,
+                      SizedBox(
+                        height: 35,
+                        child: GestureDetector(
+                          onTap: () {
+                            Get.to(() => AnnouncementsScreen());
+                          },
+                          child: Row(
+                            mainAxisAlignment:
+                                MainAxisAlignment.end, // Aligns to the right
+                            children: [
+                              Text(
+                                'View All',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w700,
+                                  color: primaryColor,
+                                  fontFamily: popinsRegulr,
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Container(
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: primaryColor,
+                                ),
+                                child: const Icon(
+                                  Icons.arrow_forward,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
                   )
                 else // If alerts exist, display them
                   Column(
@@ -64,6 +173,7 @@ class AnnouncementWidget extends StatelessWidget {
                         height: 65,
                         width: screenWidth * 1,
                         child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
                           shrinkWrap: true,
                           itemCount: eventsController.alertsList.length,
                           // scrollDirection: Axis.horizontal,
@@ -88,10 +198,11 @@ class AnnouncementWidget extends StatelessWidget {
                                       ));
                                 },
                                 child: Container(
-                                  width: screenWidth * .8,
-                                  height: screenHeight1 * .08,
-                                  decoration: const BoxDecoration(
-                                    borderRadius: BorderRadius.only(
+                                  width: screenWidth * .9,
+                                  height: screenHeight1 * .085,
+                                  decoration: BoxDecoration(
+                                    color: whiteColor,
+                                    borderRadius: const BorderRadius.only(
                                       topLeft: Radius.circular(20),
                                       topRight: Radius.circular(20),
                                     ),
@@ -152,7 +263,7 @@ class AnnouncementWidget extends StatelessWidget {
                                                       ),
                                                     ),
                                                   ),
-                                                  SizedBox(height: 5),
+                                                  const SizedBox(height: 5),
                                                   Text(
                                                     alertsData.alertTitle,
                                                     style: TextStyle(
@@ -197,14 +308,14 @@ class AnnouncementWidget extends StatelessWidget {
                                   fontFamily: popinsRegulr,
                                 ),
                               ),
-                              SizedBox(width: 8),
+                              const SizedBox(width: 8),
                               Container(
                                 padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
                                   color: primaryColor,
                                 ),
-                                child: Icon(
+                                child: const Icon(
                                   Icons.arrow_forward,
                                   color: Colors.white,
                                   size: 20,

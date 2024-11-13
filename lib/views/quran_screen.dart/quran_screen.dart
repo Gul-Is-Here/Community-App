@@ -37,7 +37,12 @@ class _QuranScreenState extends State<QuranScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 20,
+        // toolbarHeight: 20,
+        centerTitle: true,
+        title: Text(
+          'Listen/Read Quran',
+          style: TextStyle(fontFamily: popinsSemiBold, color: whiteColor),
+        ),
         backgroundColor: primaryColor,
       ),
       body: Obx(() {
@@ -58,50 +63,50 @@ class _QuranScreenState extends State<QuranScreen> {
         return Column(
           children: [
             // Header Section
-            SizedBox(
-              height: screenHeight * .25,
-              child: Stack(
-                children: [
-                  Positioned(
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    child: Card(
-                      elevation: 10,
-                      margin: EdgeInsets.zero,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(10),
-                          bottomRight: Radius.circular(10),
-                        ),
-                      ),
-                      child: Container(
-                        height: screenHeight * 0.28,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(0),
-                          image: const DecorationImage(
-                            image: AssetImage(qiblaTopBg), // Background image
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    top: screenHeight * 0.09,
-                    left: screenWidth * 0.30,
-                    child: Text(
-                      'Quran',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: screenHeight * 0.05,
-                        fontFamily: popinsBold,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            // SizedBox(
+            //   height: screenHeight * .25,
+            //   child: Stack(
+            //     children: [
+            //       Positioned(
+            //         top: 0,
+            //         left: 0,
+            //         right: 0,
+            //         child: Card(
+            //           elevation: 10,
+            //           margin: EdgeInsets.zero,
+            //           shape: const RoundedRectangleBorder(
+            //             borderRadius: BorderRadius.only(
+            //               bottomLeft: Radius.circular(10),
+            //               bottomRight: Radius.circular(10),
+            //             ),
+            //           ),
+            //           child: Container(
+            //             height: screenHeight * 0.28,
+            //             decoration: BoxDecoration(
+            //               borderRadius: BorderRadius.circular(0),
+            //               image: const DecorationImage(
+            //                 image: AssetImage(qiblaTopBg), // Background image
+            //                 fit: BoxFit.cover,
+            //               ),
+            //             ),
+            //           ),
+            //         ),
+            //       ),
+            //       Positioned(
+            //         top: screenHeight * 0.09,
+            //         left: screenWidth * 0.30,
+            //         child: Text(
+            //           'Quran',
+            //           style: TextStyle(
+            //             color: Colors.white,
+            //             fontSize: screenHeight * 0.05,
+            //             fontFamily: popinsBold,
+            //           ),
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // ),
             // List of Surahs
             Expanded(
               child: Obx(

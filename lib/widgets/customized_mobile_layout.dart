@@ -149,17 +149,15 @@ class CustomizedMobileLayout extends StatelessWidget {
                                       ),
                                     ),
                                     5.widthBox,
-                                    Obx(
-                                      () => PrayerTimeWidget2(
-                                        currentPrayer: getCurrentPrayer(),
-                                        imageIcon: sunIcon,
-                                        namazName: 'Jumuah',
-                                        timings: homeController.jummaTimes.value
-                                            .data!.jumah.prayerTiming,
-                                        iqamatimes: homeController.jummaTimes
-                                            .value.data!.jumah.iqamahTiming,
-                                        name: 'JUMUAH',
-                                      ),
+                                    PrayerTimeWidget2(
+                                      currentPrayer: getCurrentPrayer(),
+                                      imageIcon: sunIcon,
+                                      namazName: 'Jumuah',
+                                      timings: homeController.jummaTimes.value
+                                          .data!.jumah.prayerTiming,
+                                      iqamatimes: homeController.jummaTimes
+                                          .value.data!.jumah.iqamahTiming,
+                                      name: 'JUMUAH',
                                     ),
                                   ],
                                 )
@@ -289,10 +287,10 @@ class CustomizedMobileLayout extends StatelessWidget {
                             Container(
                               height: 70,
                               width: 70,
-                              margin: EdgeInsets.all(0),
+                              margin: const EdgeInsets.all(0),
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
-                                  gradient: LinearGradient(colors: [
+                                  gradient: const LinearGradient(colors: [
                                     Color(0xFF0F6467),
                                     Color(0xFF042838),
                                   ])),
@@ -513,8 +511,8 @@ class PrayerTimeWidget extends StatelessWidget {
       clipBehavior: Clip.none, // Allow the icon to overflow
       children: [
         SizedBox(
-          width: screenWidth * .31,
-          height: screenHeight1 * .063,
+          width: screenWidth * .33,
+          height: screenHeight1 * .065,
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
