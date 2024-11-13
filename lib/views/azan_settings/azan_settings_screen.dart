@@ -27,7 +27,7 @@ class _AzanSettingsScreenState extends State<AzanSettingsScreen> {
   };
 
   // Add a map to track the playing state for each Azan sound
-  Map<String, bool> _isPlaying = {
+  final Map<String, bool> _isPlaying = {
     'Adhan - Makkah': false,
     'Adhan - Madina': false,
   };

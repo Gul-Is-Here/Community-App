@@ -20,6 +20,11 @@ class DonationScreen extends StatelessWidget {
     final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
+        // centerTitle: true,
+        // title: Text(
+        //   'Donation',
+        //   style: TextStyle(fontFamily: popinsSemiBold, color: whiteColor),
+        // ),
         toolbarHeight: 20,
         backgroundColor: primaryColor,
       ),
@@ -37,30 +42,30 @@ class DonationScreen extends StatelessWidget {
             final donations = snapshot.data!.data.donate;
             return Column(
               children: [
-                Container(
-                  height: screenHeight * .25,
-                  width: double.infinity,
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(30),
-                        bottomRight: Radius.circular(30)),
-                    image: DecorationImage(
-                      image: AssetImage(qiblaTopBg),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  child: const Center(
-                    child: Text(
-                      'DONATION',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 32,
-                          fontFamily: popinsBold,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ),
-                10.heightBox,
+                // Container(
+                //   height: screenHeight * .25,
+                //   width: double.infinity,
+                //   decoration: const BoxDecoration(
+                //     borderRadius: BorderRadius.only(
+                //         bottomLeft: Radius.circular(30),
+                //         bottomRight: Radius.circular(30)),
+                //     image: DecorationImage(
+                //       image: AssetImage(qiblaTopBg),
+                //       fit: BoxFit.cover,
+                //     ),
+                //   ),
+                //   child: const Center(
+                //     child: Text(
+                //       'DONATION',
+                //       style: TextStyle(
+                //           color: Colors.white,
+                //           fontSize: 32,
+                //           fontFamily: popinsBold,
+                //           fontWeight: FontWeight.bold),
+                //     ),
+                //   ),
+                // ),
+                // 10.heightBox,
 
                 // Dynamically create donation categories
                 Expanded(
@@ -77,13 +82,15 @@ class DonationScreen extends StatelessWidget {
                             color: primaryColor,
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                donate.donationcategoryName,
-                                style: const TextStyle(
-                                    fontSize: 18,
-                                    // fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                    fontFamily: popinsBold),
+                              child: Center(
+                                child: Text(
+                                  donate.donationcategoryName,
+                                  style: const TextStyle(
+                                      fontSize: 18,
+                                      // fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                      fontFamily: popinsBold),
+                                ),
                               ),
                             ),
                           ),

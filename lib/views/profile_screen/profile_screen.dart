@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:community_islamic_app/constants/globals.dart';
 import 'package:community_islamic_app/controllers/profileController.dart';
 import 'package:community_islamic_app/views/auth_screens/login_screen.dart';
+import 'package:community_islamic_app/views/family_members/classes_screen.dart';
 import 'package:community_islamic_app/views/family_members/family_members_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -60,7 +61,7 @@ class ProfileScreen extends StatelessWidget {
                   height: screenHeight * 0.8,
                   child: Center(
                     child: Text(
-                      'Session Expire',
+                      'Session Expire Please Login again',
                       style: const TextStyle(color: Colors.red),
                     ),
                   ),
@@ -171,6 +172,17 @@ class ProfileScreen extends StatelessWidget {
                       ),
                       onTap: () {
                         Get.to(() => FamilyMemberScreen());
+                      },
+                    ),
+                    const Divider(),
+                    ListTile(
+                      leading: const Icon(Icons.class_sharp),
+                      title: Text(
+                        'Classes',
+                        style: TextStyle(fontSize: screenWidth * 0.045),
+                      ),
+                      onTap: () {
+                        Get.to(() => ClassesScreen());
                       },
                     ),
                     const Divider(),

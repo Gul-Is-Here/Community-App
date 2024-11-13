@@ -51,8 +51,8 @@ class PrayerTimeWidget2 extends StatelessWidget {
       clipBehavior: Clip.none, // Allow the icon to overflow
       children: [
         SizedBox(
-          width: screenWidth * .31,
-          height: screenHeight1 * .063,
+          width: screenWidth * .33,
+          height: screenHeight1 * .065,
           child: Container(
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15),

@@ -93,7 +93,7 @@ class HomeStaticBackground extends StatelessWidget {
                             Get.to(() => MapSplashScreen());
                           },
                           child: Image.asset(
-                            masjidIcon,
+                            aboutUsIcon,
                             height: 45,
                           ),
                         ),

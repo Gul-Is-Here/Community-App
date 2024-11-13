@@ -69,7 +69,7 @@ const sunIcon = 'assets/home_icon/Sun.png';
 const moonIcon = 'assets/home_icon/moon.png';
 const eventBg2 = 'assets/home_icon/event_bg.png';
 // Compass List Icons
-const compass1 = "assets/home_icon/compass1.png";
+const compass1 = "assets/home_icon/compass.png";
 const compass2 = "assets/home_icon/compass2.jpg";
 const qiblaCircleIcon = "assets/home_icon/qiblacicle.png";
 const qiblaCircleIcon2 = "assets/home_icon/qiblacircle2.png";
