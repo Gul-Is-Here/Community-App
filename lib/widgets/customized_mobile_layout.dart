@@ -1,3 +1,4 @@
+import 'package:community_islamic_app/app_classes/app_class.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
@@ -13,6 +14,7 @@ import '../model/prayer_times_static_model.dart';
 import '../services/notification_service.dart';
 import 'announcements_widgets.dart';
 import 'customized_asr_widget.dart';
+import 'customized_prayertext_widget.dart';
 import 'eventsWidgets.dart';
 
 // ignore: must_be_immutable
@@ -28,6 +30,7 @@ class CustomizedMobileLayout extends StatelessWidget {
   // String? currentIqamaTime;
 
   String? currentIqamaTime;
+  final appClass = AppClass();
 
   @override
   Widget build(BuildContext context) {
@@ -104,12 +107,14 @@ class CustomizedMobileLayout extends StatelessWidget {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
-                                  '1 hour 50 min left (2:00PM)',
-                                  style: TextStyle(
-                                      color: whiteColor,
-                                      fontFamily: popinsRegulr,
-                                      fontSize: 10),
+                                Obx(
+                                  () => Text(
+                                    '1 hour ${homeController.timeUntilNextPrayer} min left (${homeController.getNextPrayerTime()})',
+                                    style: TextStyle(
+                                        color: whiteColor,
+                                        fontFamily: popinsRegulr,
+                                        fontSize: 10),
+                                  ),
                                 ),
                                 Column(
                                   mainAxisAlignment: MainAxisAlignment.start,
@@ -137,7 +142,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                             Row(
                               children: [
                                 Text(
-                                  'Now : Dhuhr',
+                                  'Now : ${homeController.getCurrentPrayerCurrent()}',
                                   style: TextStyle(
                                       fontFamily: popinsBold,
                                       color: whiteColor,
@@ -163,7 +168,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                                     Row(
                                       children: [
                                         Text(
-                                          '12:09',
+                                          homeController.getCurrentPrayerTime(),
                                           style: TextStyle(
                                               fontFamily: popinsBold,
                                               color: whiteColor,
@@ -173,7 +178,8 @@ class CustomizedMobileLayout extends StatelessWidget {
                                           padding:
                                               const EdgeInsets.only(top: 4),
                                           child: Text(
-                                            'PM',
+                                            homeController
+                                                .getCurrentPrayerPeriod(),
                                             style: TextStyle(
                                                 fontFamily: popinsBold,
                                                 color: whiteColor,
@@ -270,7 +276,7 @@ class CustomizedMobileLayout extends StatelessWidget {
               ),
               10.heightBox,
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 6),
+                padding: const EdgeInsets.symmetric(horizontal: 12),
                 child: Text(
                   'Prayer Time',
                   style: TextStyle(
@@ -278,26 +284,70 @@ class CustomizedMobileLayout extends StatelessWidget {
                 ),
               ),
               10.heightBox,
-              Row(
-                children: [
-                  Obx(
-                    () => PrayerTimeWidget(
-                      currentPrayer: getCurrentPrayer(),
-                      namazName: 'Isha',
-                      timings:
-                          homeController.prayerTime.value.data!.timings.isha,
-                      iqamatimes: iqamatimes,
-                      name: 'ISHA',
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Obx(
+                      () => PrayerTimeWidget(
+                        currentPrayer: getCurrentPrayer(),
+                        namazName: 'Fajr',
+                        timings:
+                            homeController.prayerTime.value.data!.timings.isha,
+                        iqamatimes: iqamatimes,
+                        name: 'FAJR',
+                      ),
                     ),
-                  ),
-                ],
+                    Obx(
+                      () => PrayerTimeWidget(
+                        currentPrayer: getCurrentPrayer(),
+                        namazName: 'Dhuhr',
+                        timings:
+                            homeController.prayerTime.value.data!.timings.isha,
+                        iqamatimes: iqamatimes,
+                        name: 'DHUHR',
+                      ),
+                    ),
+                    Obx(
+                      () => PrayerTimeWidget(
+                        currentPrayer: getCurrentPrayer(),
+                        namazName: 'Asr',
+                        timings:
+                            homeController.prayerTime.value.data!.timings.isha,
+                        iqamatimes: iqamatimes,
+                        name: 'ASR',
+                      ),
+                    ),
+                    Obx(
+                      () => PrayerTimeWidget(
+                        currentPrayer: getCurrentPrayer(),
+                        namazName: 'Maghrib',
+                        timings:
+                            homeController.prayerTime.value.data!.timings.isha,
+                        iqamatimes: iqamatimes,
+                        name: 'MAGHRIB',
+                      ),
+                    ),
+                    Obx(
+                      () => PrayerTimeWidget(
+                        currentPrayer: getCurrentPrayer(),
+                        namazName: 'Isha',
+                        timings:
+                            homeController.prayerTime.value.data!.timings.isha,
+                        iqamatimes: iqamatimes,
+                        name: 'ISHA',
+                      ),
+                    ),
+                  ],
+                ),
               ),
               Column(
                 children: [
-                  AnnouncementWidget(
+                  EventsWidget(
                       eventsController: eventsController,
                       homeController: homeController),
-                  EventsWidget(
+                  AnnouncementWidget(
                       eventsController: eventsController,
                       homeController: homeController),
                 ],
@@ -352,11 +402,11 @@ class CustomizedMobileLayout extends StatelessWidget {
   Map<String, String> getAllIqamaTimes() {
     DateTime now = DateTime.now();
     String currentDateStr = DateFormat('d/M').format(now);
-    DateTime currentDate = parseDate(currentDateStr);
+    DateTime currentDate = appClass.parseDate(currentDateStr);
 
     for (var timing in iqamahTiming) {
-      DateTime startDate = parseDate(timing.startDate);
-      DateTime endDate = parseDate(timing.endDate);
+      DateTime startDate = appClass.parseDate(timing.startDate);
+      DateTime endDate = appClass.parseDate(timing.endDate);
 
       // Ensure the date range includes the current date
       if (currentDate.isAfter(startDate.subtract(const Duration(days: 1))) &&
@@ -386,11 +436,11 @@ class CustomizedMobileLayout extends StatelessWidget {
   Map<String, String> getAllAzanNamesForCurrentDate() {
     DateTime now = DateTime.now();
     String currentDateStr = DateFormat('d/M').format(now);
-    DateTime currentDate = parseDate(currentDateStr);
+    DateTime currentDate = appClass.parseDate(currentDateStr);
 
     for (var timing in iqamahTiming) {
-      DateTime startDate = parseDate(timing.startDate);
-      DateTime endDate = parseDate(timing.endDate);
+      DateTime startDate = appClass.parseDate(timing.startDate);
+      DateTime endDate = appClass.parseDate(timing.endDate);
 
       // Ensure the date range includes the current date
       if (currentDate.isAfter(startDate.subtract(const Duration(days: 1))) &&
@@ -416,9 +466,6 @@ class CustomizedMobileLayout extends StatelessWidget {
   }
 
 // Function to parse a date string in "d/M" format to DateTime
-  DateTime parseDate(String dateStr) {
-    return DateFormat('d/M').parse(dateStr);
-  }
 
   Object? getPrayerTimes() {
     if (homeController.currentPrayerTime == 'Fajr') {
@@ -445,181 +492,6 @@ class CustomizedMobileLayout extends StatelessWidget {
   }
 }
 
-String addMinutesToPrayerTime(String prayerTime, int minutesToAdd) {
-  try {
-    final dateTime = DateFormat("HH:mm").parse(prayerTime);
-    DateTime updatedTime = dateTime.add(Duration(minutes: minutesToAdd));
-    return DateFormat('h:mm a').format(updatedTime);
-  } catch (e) {
-    print('Error parsing time: $e');
-    return 'Invalid time';
-  }
-
-  ///
-  ///.
-  ///
-}
-
-String formatPrayerTimeToAmPm(String time) {
-  try {
-    // Parse the input time from "HH:mm" format
-    final dateTime = DateFormat("HH:mm").parse(time);
-    // Format it to "hh:mm a" format
-    return DateFormat("hh:mm a").format(dateTime);
-  } catch (e) {
-    print('Error parsing time: $e');
-    return 'Invalid time'; // Return a default message for invalid input
-  }
-}
-
 // Function to format prayer time
-String formatPrayerTime(String time) {
-  try {
-    final dateTime = DateFormat("HH:mm").parse(time);
-    return DateFormat("h:mm a").format(dateTime);
-  } catch (e) {
-    return time;
-  }
-}
 
-class PrayerTimeWidget extends StatelessWidget {
-  const PrayerTimeWidget({
-    super.key,
-    // required this.azanIcon,
-    // required this.iqamaIcon,
-    required this.namazName,
-    required this.name,
-    required this.timings,
-    required this.iqamatimes,
-    required this.currentPrayer, // Current prayer passed from the controller
-  });
 
-  // final String azanIcon;
-  // final String iqamaIcon;
-  final String currentPrayer; // Current prayer time passed to compare
-  final String name; // Prayer name (e.g., Fajr, Dhuhr)
-  final String namazName; // Specific namaz name for Iqama lookup
-  final String timings; // Azan time (in "HH:mm" format)
-  final Map<String, String> iqamatimes; // Iqama times
-
-  @override
-  Widget build(BuildContext context) {
-    final screenHeight1 = MediaQuery.of(context).size.height;
-    final screenWidth = MediaQuery.of(context).size.width;
-    // Default Iqama time
-    String iqamaTime = iqamatimes[namazName] ?? 'Not available';
-
-    // Check if the prayer is Maghrib and adjust the Iqama time accordingly
-    if (namazName == 'Maghrib') {
-      iqamaTime = formatPrayerTimeToAmPm(
-        addMinutesToPrayerTime(timings, 5), // Add and format
-      );
-    }
-
-    // Set background color based on current prayer
-    Color backgroundColor = (currentPrayer == namazName)
-            ? const Color(0xFF5B7B79)
-            : const Color(0xFF042838) // Highlight color for current prayer
-        ; // Default color for other prayers
-
-    return Stack(
-      clipBehavior: Clip.none, // Allow the icon to overflow
-      children: [
-        SizedBox(
-          width: screenWidth * .33,
-          height: screenHeight1 * .065,
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              gradient: const LinearGradient(
-                colors: [Color(0xFF042838), Color(0xFF0F6467)],
-              ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Row(
-                    children: [
-                      2.widthBox,
-                      Text(
-                        name,
-                        style: TextStyle(
-                          fontSize: 9,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: popinsMedium,
-                          color: whiteColor,
-                        ),
-                      ),
-                      const Spacer(),
-                      Column(
-                        children: [
-                          currentPrayer == namazName
-                              ? Center(
-                                  child: Text(
-                                    formatPrayerTimeToAmPm(timings),
-                                    style: TextStyle(
-                                        color: whiteColor,
-                                        fontFamily: popinsMedium,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 10),
-                                  ),
-                                )
-                              : Text(
-                                  formatPrayerTimeToAmPm(
-                                      timings), // Format Azan time
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: popinsMedium,
-                                    color: whiteColor,
-                                  ),
-                                ),
-                          5.heightBox,
-                          currentPrayer == namazName
-                              ? Center(
-                                  child: Text(
-                                    iqamaTime,
-                                    style: TextStyle(
-                                        color: whiteColor,
-                                        fontFamily: popinsMedium,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 10),
-                                  ),
-                                )
-                              : Text(
-                                  iqamaTime, // Already formatted Iqama time
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: popinsMedium,
-                                    color: whiteColor,
-                                  ),
-                                ),
-                        ],
-                      )
-                    ],
-                  ),
-                  // const SizedBox(height: 10), // Use SizedBox for spacing
-
-                  // const SizedBox(height: 2),
-                  // Row(
-                  //   children: [
-                  //     // Image.asset(
-                  //     //   azanIcon,
-                  //     //   width: 15,
-                  //     //   height: 10,
-                  //     // ),
-                  //   ],
-                  // ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}

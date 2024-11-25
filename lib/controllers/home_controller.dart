@@ -373,6 +373,42 @@ class HomeController extends GetxController {
     return 'Isha';
   }
 
+  String getCurrentPrayerCurrent() {
+    final now = DateTime.now();
+    final timeNow = DateFormat("HH:mm").format(now);
+    final currentTime = DateFormat("HH:mm").parse(timeNow);
+
+    if (prayerTime.value.data?.timings != null) {
+      final timings = prayerTime.value.data!.timings;
+
+      final fajrTime = DateFormat("HH:mm").parse(timings.fajr);
+      final dhuhrTime = DateFormat("HH:mm").parse(timings.dhuhr);
+      final asrTime = DateFormat("HH:mm").parse(timings.asr);
+      final maghribTime = DateFormat("HH:mm").parse(timings.maghrib);
+      final ishaTime = DateFormat("HH:mm").parse(timings.isha);
+
+      // Check which prayer is current based on time ranges
+      if (currentTime.isAfter(fajrTime) && currentTime.isBefore(dhuhrTime)) {
+        return 'Fajr';
+      } else if (currentTime.isAfter(dhuhrTime) &&
+          currentTime.isBefore(asrTime)) {
+        return 'Dhuhr';
+      } else if (currentTime.isAfter(asrTime) &&
+          currentTime.isBefore(maghribTime)) {
+        return 'Asr';
+      } else if (currentTime.isAfter(maghribTime) &&
+          currentTime.isBefore(ishaTime)) {
+        return 'Maghrib';
+      } else if (currentTime.isAfter(ishaTime) ||
+          currentTime.isBefore(fajrTime)) {
+        return 'Isha';
+      }
+    }
+
+    // Default value if timings are null or no prayer matches
+    return 'Fajr';
+  }
+
   // Function to find the current Iqama timings based on the current prayer time
   String getCurrentIqamaTime() {
     DateTime now = DateTime.now();
@@ -435,6 +471,83 @@ class HomeController extends GetxController {
     } else {
       return prayerTime.value.data?.timings.isha;
     }
+  }
+
+// This Method is used to get Current Prayer
+  String getCurrentPrayerTime() {
+    final now = DateTime.now();
+    final timeNow = DateFormat("HH:mm").format(now);
+    final currentTime = DateFormat("HH:mm").parse(timeNow);
+
+    if (prayerTime.value.data?.timings != null) {
+      final timings = prayerTime.value.data!.timings;
+
+      final fajrTime = DateFormat("HH:mm").parse(timings.fajr);
+      final dhuhrTime = DateFormat("HH:mm").parse(timings.dhuhr);
+      final asrTime = DateFormat("HH:mm").parse(timings.asr);
+      final maghribTime = DateFormat("HH:mm").parse(timings.maghrib);
+      final ishaTime = DateFormat("HH:mm").parse(timings.isha);
+
+      if (currentTime.isAfter(fajrTime) && currentTime.isBefore(dhuhrTime)) {
+        return DateFormat("hh:mm a").format(fajrTime);
+      } else if (currentTime.isAfter(dhuhrTime) &&
+          currentTime.isBefore(asrTime)) {
+        return DateFormat("hh:mm a").format(dhuhrTime);
+      } else if (currentTime.isAfter(asrTime) &&
+          currentTime.isBefore(maghribTime)) {
+        return DateFormat("hh:mm a").format(asrTime);
+      } else if (currentTime.isAfter(maghribTime) &&
+          currentTime.isBefore(ishaTime)) {
+        return DateFormat("hh:mm a").format(maghribTime);
+      } else if (currentTime.isAfter(ishaTime) ||
+          currentTime.isBefore(fajrTime)) {
+        return DateFormat("hh:mm a").format(ishaTime);
+      }
+    }
+
+    return 'N/A';
+  }
+
+  String getCurrentPrayerPeriod() {
+    final currentPrayerTime =
+        getCurrentPrayerTime(); // Get the formatted time, e.g., "12:40 PM"
+    if (currentPrayerTime != 'N/A') {
+      return currentPrayerTime.split(' ').last; // Extract and return AM or PM
+    }
+    return 'N/A'; // Fallback if time is not available
+  }
+
+  String getNextPrayerTime() {
+    final now = DateTime.now();
+    final timeNow = DateFormat("HH:mm").format(now);
+    final currentTime = DateFormat("HH:mm").parse(timeNow);
+
+    if (prayerTime.value.data?.timings != null) {
+      final timings = prayerTime.value.data!.timings;
+
+      final fajrTime = DateFormat("HH:mm").parse(timings.fajr);
+      final dhuhrTime = DateFormat("HH:mm").parse(timings.dhuhr);
+      final asrTime = DateFormat("HH:mm").parse(timings.asr);
+      final maghribTime = DateFormat("HH:mm").parse(timings.maghrib);
+      final ishaTime = DateFormat("HH:mm").parse(timings.isha);
+
+      if (currentTime.isBefore(fajrTime)) {
+        return DateFormat("hh:mm a").format(fajrTime);
+      } else if (currentTime.isBefore(dhuhrTime)) {
+        return DateFormat("hh:mm a").format(dhuhrTime);
+      } else if (currentTime.isBefore(asrTime)) {
+        return DateFormat("hh:mm a").format(asrTime);
+      } else if (currentTime.isBefore(maghribTime)) {
+        return DateFormat("hh:mm a").format(maghribTime);
+      } else if (currentTime.isBefore(ishaTime)) {
+        return DateFormat("hh:mm a").format(ishaTime);
+      } else {
+        return DateFormat("hh:mm a")
+            .format(fajrTime); // The next day's Fajr time
+      }
+    }
+
+    return 'N/A';
   }
 
   // Function to format prayer time

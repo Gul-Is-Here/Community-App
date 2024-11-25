@@ -98,16 +98,74 @@ class AppClass {
 
     return "$formattedHour:$formattedMinute:$formattedSecond $period";
   }
-  String formatDate2(String dateString) {
-  try {
-    // Parse the input string to DateTime
-    DateTime parsedDate = DateTime.parse(dateString);
 
-    // Format the DateTime to "MMM d, yyyy"
-    return DateFormat('MMM d, yyyy').format(parsedDate);
-  } catch (e) {
-    print("Error parsing date: $e");
-    return ""; // Return an empty string or handle the error as needed
+  String formatDate2(String dateString) {
+    try {
+      // Parse the input string to DateTime
+      DateTime parsedDate = DateTime.parse(dateString);
+
+      // Format the DateTime to "MMM d, yyyy"
+      return DateFormat('MMM d, yyyy').format(parsedDate);
+    } catch (e) {
+      print("Error parsing date: $e");
+      return ""; // Return an empty string or handle the error as needed
+    }
   }
-}
+
+  String formatPrayerTime(String time) {
+    try {
+      final dateTime = DateFormat("HH:mm").parse(time);
+      return DateFormat("h:mm a").format(dateTime);
+    } catch (e) {
+      return time;
+    }
+  }
+
+  String formatPrayerTimeToAmPm(String time) {
+    try {
+      // Parse the input time from "HH:mm" format
+      final dateTime = DateFormat("HH:mm").parse(time);
+      // Format it to "hh:mm a" format
+      return DateFormat("hh:mm a").format(dateTime);
+    } catch (e) {
+      print('Error parsing time: $e');
+      return 'Invalid time'; // Return a default message for invalid input
+    }
+  }
+
+  String addMinutesToPrayerTime(String prayerTime, int minutesToAdd) {
+    try {
+      final dateTime = DateFormat("HH:mm").parse(prayerTime);
+      DateTime updatedTime = dateTime.add(Duration(minutes: minutesToAdd));
+      return DateFormat('h:mm a').format(updatedTime);
+    } catch (e) {
+      print('Error parsing time: $e');
+      return 'Invalid time';
+    }
+
+    ///
+    ///.
+    ///
+  }
+
+  DateTime parseDate(String dateStr) {
+    return DateFormat('d/M').parse(dateStr);
+  }
+
+  // Metho 1 dec
+
+  String convertDate(String inputDate) {
+    try {
+      // Parse the date string with the given format
+      DateFormat inputFormat = DateFormat('yy-MM-dd');
+      DateTime parsedDate = inputFormat.parse(inputDate);
+
+      // Format the date to "1 MMM"
+      String formattedDate = "1 ${DateFormat('MMM').format(parsedDate)}";
+      return formattedDate;
+    } catch (e) {
+      // Handle errors if the date format is invalid
+      return 'Invalid date format';
+    }
+  }
 }

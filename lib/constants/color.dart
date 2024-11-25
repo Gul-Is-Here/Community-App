@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 Color primaryColor = Color(0xFF003231);
 Color containerConlor = Color(0xFF061F32);
 Color asColor = Color(0xFFEDAE33);
@@ -7,7 +8,8 @@ Color whiteColor = Colors.white;
 
 Color goldenColor = const Color(0xFFFDB408);
 Color goldenColor2 = const Color(0xFF956100);
-
+// Color goldenColor23 = Color.fromARGB(255, 176, 137, 64);
+Color lightColor = const Color(0xFFC4F1DD);
 
 /// Arabic Fonts
 const jameelNori1 = 'JameelNori1';

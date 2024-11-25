@@ -119,7 +119,6 @@ const icEditIcon = "assets/images/editicon.png";
 final List<String> avatarList = [icBoy, icGirl, icMen, icWomen];
 final avatarName = ['Boy', 'Girl', 'Male', 'Women'];
 
-
 /// New Design All assets
 const dailyPrayer = 'assets/services_icons/5DailyPrayers.png';
 const freeQuran = 'assets/services_icons/FreeQuranClasses1.png';
@@ -133,3 +132,4 @@ const homeNewBg = 'assets/services_icons/Background.png';
 
 const donateUs = 'assets/icons/Donate Us.png';
 const shareIcon = 'assets/icons/Share.png';
+const eventIcon = 'assets/icons/Event.png';
