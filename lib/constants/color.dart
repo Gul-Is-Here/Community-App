@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-
-Color primaryColor = const Color(0xFF042838);
-Color primaryColor1 = Color(0xFF006367);
+Color primaryColor = Color(0xFF003231);
 Color containerConlor = Color(0xFF061F32);
 Color asColor = Color(0xFFEDAE33);
 const buttonColorP = Color(0XFF123443);
 Color whiteColor = Colors.white;
-Color secondaryColor = Color(0xFF5B7B79);
+
+Color goldenColor = const Color(0xFFFDB408);
+Color goldenColor2 = const Color(0xFF956100);
+
 
 /// Arabic Fonts
 const jameelNori1 = 'JameelNori1';

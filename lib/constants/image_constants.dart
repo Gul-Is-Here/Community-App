@@ -118,3 +118,18 @@ const icEditIcon = "assets/images/editicon.png";
 
 final List<String> avatarList = [icBoy, icGirl, icMen, icWomen];
 final avatarName = ['Boy', 'Girl', 'Male', 'Women'];
+
+
+/// New Design All assets
+const dailyPrayer = 'assets/services_icons/5DailyPrayers.png';
+const freeQuran = 'assets/services_icons/FreeQuranClasses1.png';
+const girlsHaqa = 'assets/services_icons/GirlsHalaqa1.png';
+const youth1 = 'assets/services_icons/YouthProgram1.png';
+const youthseries = 'assets/services_icons/YouthSiraSeries.png';
+const youthClub = 'assets/services_icons/YouthSoccerClub.png';
+const homeNewBg = 'assets/services_icons/Background.png';
+
+// Icon Constansts
+
+const donateUs = 'assets/icons/Donate Us.png';
+const shareIcon = 'assets/icons/Share.png';

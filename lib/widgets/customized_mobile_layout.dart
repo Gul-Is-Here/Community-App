@@ -1,11 +1,5 @@
-import 'package:blinking_text/blinking_text.dart';
-import 'package:community_islamic_app/controllers/login_controller.dart';
-import 'package:community_islamic_app/views/donation_screens/donation_screen.dart';
-import 'package:community_islamic_app/views/services_screen/services_screen.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -14,17 +8,17 @@ import '../constants/color.dart';
 import '../constants/image_constants.dart';
 import '../controllers/home_controller.dart';
 import '../controllers/home_events_controller.dart';
-import '../services/notification_service.dart';
+import '../controllers/login_controller.dart';
 import '../model/prayer_times_static_model.dart';
-
+import '../services/notification_service.dart';
 import 'announcements_widgets.dart';
+import 'customized_asr_widget.dart';
 import 'eventsWidgets.dart';
-import 'home_static_background.dart';
-import 'isha_prayer_widget.dart';
 
 // ignore: must_be_immutable
 class CustomizedMobileLayout extends StatelessWidget {
   final double screenHeight;
+
   CustomizedMobileLayout({super.key, required this.screenHeight});
 
   final HomeController homeController = Get.put(HomeController());
@@ -33,300 +27,286 @@ class CustomizedMobileLayout extends StatelessWidget {
 
   // String? currentIqamaTime;
 
-  // @override
+  String? currentIqamaTime;
+
   @override
   Widget build(BuildContext context) {
     homeController.jummaTimes.value;
     final LoginController loginController = Get.put(LoginController());
     final screenHeight1 = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
-
     var iqamatimes = getAllIqamaTimes();
     var currentPrayer = homeController.getCurrentPrayer();
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Column(
-          children: [
-            HomeStaticBackground(
-                // screenHeight: screenHeight,
-                // dateTime: homeController.prayerTimes.value.data!.date.readable,
-                ),
-            5.heightBox,
-            // homeController.prayerTime.value.data != null
-            Center(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Obx(
-                  () => homeController.prayerTime.value.data == null
-                      ? Center(child: Text(''))
-                      : Center(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 0),
-                            child: Column(
+    return Container(
+      decoration: const BoxDecoration(
+        // color: primaryColor,
+        image: DecorationImage(
+          opacity: 1,
+          image: AssetImage(homeNewBg),
+          fit: BoxFit.cover, // Ensures the image covers the entire background
+        ),
+      ),
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(6),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              40.heightBox,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Flexible(
+                      child: Text(
+                        'Rosenberg Community Centre',
+                        style: TextStyle(
+                            fontFamily: popinsSemiBold,
+                            color: whiteColor,
+                            fontSize: 12),
+                      ),
+                    ),
+                  ),
+                  // 10.widthBox,
+                  TextButton.icon(
+                    onPressed: () {},
+                    label: Text(
+                      'Donate Us',
+                      style: TextStyle(
+                          color: whiteColor,
+                          fontFamily: popinsRegulr,
+                          fontSize: 14),
+                    ),
+                    icon: Image.asset(
+                      donateUs,
+                      height: 30,
+                      width: 30,
+                    ),
+                  )
+                ],
+              ),
+              // 10.heightBox,
+              Center(
+                child: SizedBox(
+                    height: 150,
+                    width: 350,
+                    child: Card(
+                      color: Colors.transparent,
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            left: 12, right: 12, top: 12, bottom: 12),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  // crossAxisAlignment: CrossAxisAlignment.baseline,
+                                Text(
+                                  '1 hour 50 min left (2:00PM)',
+                                  style: TextStyle(
+                                      color: whiteColor,
+                                      fontFamily: popinsRegulr,
+                                      fontSize: 10),
+                                ),
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Obx(
-                                      () => PrayerTimeWidget(
-                                        // azanIcon: azanlogo,
-                                        // iqamaIcon: iqamalogo,
-                                        namazName: 'Fajr',
-                                        timings: homeController.prayerTime.value
-                                            .data!.timings.fajr,
-                                        iqamatimes: iqamatimes,
-                                        name: 'FAJR',
-                                        currentPrayer:
-                                            getCurrentPrayer(), // Pass the current prayer name
-                                        imageIcon: sunIcon, // Your icon asset
-                                      ),
+                                    Text(
+                                      'Suhur : 6:54 AM',
+                                      style: TextStyle(
+                                          color: whiteColor,
+                                          fontFamily: popinsRegulr,
+                                          fontSize: 10),
                                     ),
-                                    5.widthBox,
-                                    Obx(
-                                      () => PrayerTimeWidget(
-                                        // azanIcon: azanlogo,
-                                        // iqamaIcon: iqamalogo,
-                                        currentPrayer: getCurrentPrayer(),
-                                        imageIcon: sunIcon,
-                                        namazName: 'Dhuhr',
-                                        timings: homeController.prayerTime.value
-                                            .data!.timings.dhuhr,
-                                        iqamatimes: iqamatimes,
-                                        name: 'DHUHR',
-                                      ),
-                                    ),
-                                    5.widthBox,
-                                    Obx(
-                                      () => PrayerTimeWidget(
-                                        // azanIcon: azanlogo,
-                                        // iqamaIcon: iqamalogo,
-                                        currentPrayer: getCurrentPrayer(),
-                                        imageIcon: sunIcon,
-                                        namazName: 'Asr',
-                                        timings: homeController
-                                            .prayerTime.value.data!.timings.asr,
-                                        iqamatimes: iqamatimes,
-                                        name: 'ASR',
-                                      ),
+                                    // 5.heightBox,
+                                    Text(
+                                      'Iftar : 5:24 PM',
+                                      style: TextStyle(
+                                          color: whiteColor,
+                                          fontFamily: popinsRegulr,
+                                          fontSize: 10),
                                     ),
                                   ],
                                 ),
-                                5.heightBox,
-                                Row(
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Text(
+                                  'Now : Dhuhr',
+                                  style: TextStyle(
+                                      fontFamily: popinsBold,
+                                      color: whiteColor,
+                                      fontSize: 28),
+                                ),
+                                10.widthBox,
+                                Container(
+                                  height: 10,
+                                  width: 10,
+                                  decoration: BoxDecoration(
+                                      color: Color(0xFF6CFD74),
+                                      borderRadius: BorderRadius.circular(20)),
+                                )
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Obx(
-                                      () => PrayerTimeWidget(
-                                        currentPrayer: getCurrentPrayer(),
-                                        imageIcon: moonIcon,
-                                        namazName: 'Maghrib',
-                                        timings: homeController.prayerTime.value
-                                            .data!.timings.maghrib,
-                                        iqamatimes: {
-                                          // Ensure this is a Map<String, String>
-                                          'Maghrib': addMinutesToPrayerTime(
-                                              homeController.prayerTime.value
-                                                  .data!.timings.dhuhr,
-                                              5), // Add 5 minutes to Maghrib Azan time
-                                        },
-                                        name: 'MAGHRIB',
-                                      ),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          '12:09',
+                                          style: TextStyle(
+                                              fontFamily: popinsBold,
+                                              color: whiteColor,
+                                              fontSize: 24),
+                                        ),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 4),
+                                          child: Text(
+                                            'PM',
+                                            style: TextStyle(
+                                                fontFamily: popinsBold,
+                                                color: whiteColor,
+                                                fontSize: 16),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 4),
+                                          child: Text(
+                                            ' (Start Time)',
+                                            style: TextStyle(
+                                                fontFamily: popinsRegulr,
+                                                color: whiteColor,
+                                                fontSize: 11),
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    5.widthBox,
-                                    Obx(
-                                      () => PrayerTimeWidget(
-                                        currentPrayer: getCurrentPrayer(),
-                                        imageIcon: moonIcon,
-                                        namazName: 'Isha',
-                                        timings: homeController.prayerTime.value
-                                            .data!.timings.isha,
-                                        iqamatimes: iqamatimes,
-                                        name: 'ISHA',
-                                      ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      // crossAxisAlignment:
+                                      //     CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          'Education ',
+                                          style: TextStyle(
+                                              fontFamily: popinsRegulr,
+                                              color: whiteColor,
+                                              fontSize: 11),
+                                        ),
+                                        Text(
+                                          ' Calendar',
+                                          style: TextStyle(
+                                              fontFamily: popinsRegulr,
+                                              color: whiteColor,
+                                              fontSize: 11),
+                                        ),
+                                        Text(
+                                          '  Story Time',
+                                          style: TextStyle(
+                                              fontFamily: popinsRegulr,
+                                              color: whiteColor,
+                                              fontSize: 11),
+                                        ),
+                                        Text(
+                                          ' Today Goal',
+                                          style: TextStyle(
+                                              fontFamily: popinsRegulr,
+                                              color: whiteColor,
+                                              fontSize: 11),
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                                Column(
+                                  children: [
+                                    Image.asset(
+                                      shareIcon,
+                                      width: 30,
+                                      height: 30,
                                     ),
-                                    5.widthBox,
-                                    PrayerTimeWidget2(
-                                      currentPrayer: getCurrentPrayer(),
-                                      imageIcon: sunIcon,
-                                      namazName: 'Jumuah',
-                                      timings: homeController.jummaTimes.value
-                                          .data!.jumah.prayerTiming,
-                                      iqamatimes: homeController.jummaTimes
-                                          .value.data!.jumah.iqamahTiming,
-                                      name: 'JUMUAH',
+                                    ShaderMask(
+                                      shaderCallback: (bounds) =>
+                                          LinearGradient(
+                                        colors: [
+                                          goldenColor,
+                                          goldenColor2
+                                        ], // Define your gradient colors
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                      ).createShader(bounds),
+                                      child: const Text(
+                                        'Share',
+                                        style: TextStyle(
+                                          fontFamily: popinsRegulr,
+                                          fontSize: 12,
+                                          color: Colors
+                                              .white, // Set a base color (ignored in ShaderMask)
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
                                     ),
                                   ],
                                 )
                               ],
                             ),
-                          ),
-                        ),
-                ),
-              ),
-            ),
-
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    10.heightBox,
-                    Column(
-                      children: [
-                        AnnouncementWidget(
-                            eventsController: eventsController,
-                            homeController: homeController),
-                        EventsWidget(
-                            eventsController: eventsController,
-                            homeController: homeController),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            GestureDetector(
-              onTap: () {
-                Get.to(() => DonationScreen());
-              },
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Container(
-                      height: 70,
-                      width: 70,
-                      margin: EdgeInsets.all(0),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          gradient: LinearGradient(colors: [
-                            Color(0xFF0F6467),
-                            Color(0xFF042838),
-                          ])),
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 4.0),
-                            child: Text(
-                              'DONATION',
-                              style: TextStyle(
-                                  color: whiteColor,
-                                  fontFamily: popinsSemiBold,
-                                  fontSize: 10),
-                            ),
-                          ),
-                          Image.asset(
-                            aboutUsIcon,
-                            height: 40,
-                            width: 40,
-                          ),
-                          5.heightBox,
-                        ],
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        Get.to(() => DonationScreen());
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: Row(
-                          children: [
-                            Container(
-                              height: 70,
-                              width: 70,
-                              margin: EdgeInsets.all(0),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  gradient: LinearGradient(colors: [
-                                    Color(0xFF0F6467),
-                                    Color(0xFF042838),
-                                  ])),
-                              child: Column(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 4.0),
-                                    child: Text(
-                                      'RCC LIVE',
-                                      style: TextStyle(
-                                          color: whiteColor,
-                                          fontFamily: popinsSemiBold,
-                                          fontSize: 10),
-                                    ),
-                                  ),
-                                  Image.asset(
-                                    aboutUsIcon,
-                                    height: 40,
-                                    width: 40,
-                                  ),
-                                  5.heightBox,
-                                ],
-                              ),
-                            )
                           ],
                         ),
                       ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        Get.to(() => ServicesScreen());
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 4),
-                        child: Row(
-                          children: [
-                            Container(
-                              height: 70,
-                              width: 70,
-                              margin: const EdgeInsets.all(0),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  gradient: const LinearGradient(colors: [
-                                    Color(0xFF0F6467),
-                                    Color(0xFF042838),
-                                  ])),
-                              child: Column(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 8.0),
-                                    child: Text(
-                                      'SERVICE',
-                                      style: TextStyle(
-                                          color: whiteColor,
-                                          fontFamily: popinsSemiBold,
-                                          fontSize: 10),
-                                    ),
-                                  ),
-                                  Image.asset(
-                                    aboutUsIcon,
-                                    height: 40,
-                                    width: 40,
-                                  ),
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    )
-                  ],
+                    )),
+              ),
+              10.heightBox,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 6),
+                child: Text(
+                  'Prayer Time',
+                  style: TextStyle(
+                      fontFamily: popinsBold, fontSize: 16, color: whiteColor),
                 ),
               ),
-            ),
-            5.heightBox,
-          ],
+              10.heightBox,
+              Row(
+                children: [
+                  Obx(
+                    () => PrayerTimeWidget(
+                      currentPrayer: getCurrentPrayer(),
+                      namazName: 'Isha',
+                      timings:
+                          homeController.prayerTime.value.data!.timings.isha,
+                      iqamatimes: iqamatimes,
+                      name: 'ISHA',
+                    ),
+                  ),
+                ],
+              ),
+              Column(
+                children: [
+                  AnnouncementWidget(
+                      eventsController: eventsController,
+                      homeController: homeController),
+                  EventsWidget(
+                      eventsController: eventsController,
+                      homeController: homeController),
+                ],
+              ),
+              10.heightBox,
+            ],
+          ),
         ),
-      ],
+      ),
     );
   }
 
@@ -465,6 +445,43 @@ class CustomizedMobileLayout extends StatelessWidget {
   }
 }
 
+String addMinutesToPrayerTime(String prayerTime, int minutesToAdd) {
+  try {
+    final dateTime = DateFormat("HH:mm").parse(prayerTime);
+    DateTime updatedTime = dateTime.add(Duration(minutes: minutesToAdd));
+    return DateFormat('h:mm a').format(updatedTime);
+  } catch (e) {
+    print('Error parsing time: $e');
+    return 'Invalid time';
+  }
+
+  ///
+  ///.
+  ///
+}
+
+String formatPrayerTimeToAmPm(String time) {
+  try {
+    // Parse the input time from "HH:mm" format
+    final dateTime = DateFormat("HH:mm").parse(time);
+    // Format it to "hh:mm a" format
+    return DateFormat("hh:mm a").format(dateTime);
+  } catch (e) {
+    print('Error parsing time: $e');
+    return 'Invalid time'; // Return a default message for invalid input
+  }
+}
+
+// Function to format prayer time
+String formatPrayerTime(String time) {
+  try {
+    final dateTime = DateFormat("HH:mm").parse(time);
+    return DateFormat("h:mm a").format(dateTime);
+  } catch (e) {
+    return time;
+  }
+}
+
 class PrayerTimeWidget extends StatelessWidget {
   const PrayerTimeWidget({
     super.key,
@@ -475,10 +492,8 @@ class PrayerTimeWidget extends StatelessWidget {
     required this.timings,
     required this.iqamatimes,
     required this.currentPrayer, // Current prayer passed from the controller
-    required this.imageIcon,
   });
 
-  final String imageIcon;
   // final String azanIcon;
   // final String iqamaIcon;
   final String currentPrayer; // Current prayer time passed to compare
@@ -528,13 +543,6 @@ class PrayerTimeWidget extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Image.asset(
-                        imageIcon,
-                        fit: BoxFit.cover,
-                        height: 20,
-                        width: 19,
-                        color: whiteColor,
-                      ),
                       2.widthBox,
                       Text(
                         name,
@@ -550,15 +558,13 @@ class PrayerTimeWidget extends StatelessWidget {
                         children: [
                           currentPrayer == namazName
                               ? Center(
-                                  child: BlinkText(
+                                  child: Text(
                                     formatPrayerTimeToAmPm(timings),
                                     style: TextStyle(
                                         color: whiteColor,
                                         fontFamily: popinsMedium,
                                         fontWeight: FontWeight.bold,
                                         fontSize: 10),
-                                    endColor: primaryColor,
-                                    duration: const Duration(seconds: 4),
                                   ),
                                 )
                               : Text(
@@ -574,15 +580,13 @@ class PrayerTimeWidget extends StatelessWidget {
                           5.heightBox,
                           currentPrayer == namazName
                               ? Center(
-                                  child: BlinkText(
+                                  child: Text(
                                     iqamaTime,
                                     style: TextStyle(
                                         color: whiteColor,
                                         fontFamily: popinsMedium,
                                         fontWeight: FontWeight.bold,
                                         fontSize: 10),
-                                    endColor: primaryColor,
-                                    duration: const Duration(seconds: 4),
                                   ),
                                 )
                               : Text(
@@ -617,42 +621,5 @@ class PrayerTimeWidget extends StatelessWidget {
         ),
       ],
     );
-  }
-}
-
-// Prayer Widget 2
-
-// Function to format prayer time
-String formatPrayerTime(String time) {
-  try {
-    final dateTime = DateFormat("HH:mm").parse(time);
-    return DateFormat("h:mm a")
-        .format(dateTime); // This line formats to h:mm a (12-hour format)
-  } catch (e) {
-    return 'Invalid time';
-  }
-}
-
-// Function to add minutes to a prayer time
-String addMinutesToPrayerTime(String prayerTime, int minutesToAdd) {
-  try {
-    final dateTime = DateFormat("HH:mm").parse(prayerTime);
-    DateTime updatedTime = dateTime.add(Duration(minutes: minutesToAdd));
-    return DateFormat('HH:mm') // Keep returning in HH:mm format for processing
-        .format(updatedTime);
-  } catch (e) {
-    return 'Invalid time'; // Return a default message for invalid input
-  }
-}
-
-String formatPrayerTimeToAmPm(String time) {
-  try {
-    // Parse the input time from "HH:mm" format
-    final dateTime = DateFormat("HH:mm").parse(time);
-    // Format it to "hh:mm a" format
-    return DateFormat("hh:mm a").format(dateTime);
-  } catch (e) {
-    print('Error parsing time: $e');
-    return 'Invalid time'; // Return a default message for invalid input
   }
 }

@@ -1,4 +1,5 @@
 // import 'package:alarm/alarm.dart';
+import 'package:community_islamic_app/controllers/home_controller.dart';
 import 'package:community_islamic_app/controllers/qibla_controller.dart';
 import 'package:community_islamic_app/firebase_options.dart';
 import 'package:community_islamic_app/views/auth_screens/splash_screen.dart';
@@ -18,9 +19,9 @@ void main() async {
   tz.initializeTimeZones();
   await NotificationServices().initializeNotification();
 
-  await QiblahController().getLocation();
+  // await QiblahController().getLocation();
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-  // HomeController();
+  HomeController();
   DateTime today = DateTime.now();
 
   if (sharedPreferences.containsKey("prayerTimesMonth")) {
@@ -65,6 +66,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     EasyLoading.instance.maskType = EasyLoadingMaskType.black;
     return GetMaterialApp(
+      debugShowCheckedModeBanner: false,
       home: SplashScreen(),
       builder: EasyLoading.init(),
     );

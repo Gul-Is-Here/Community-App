@@ -1,11 +1,8 @@
 import 'package:community_islamic_app/constants/color.dart';
 import 'package:community_islamic_app/widgets/custome_drawer.dart';
-import 'package:community_islamic_app/widgets/social_media_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:community_islamic_app/widgets/customized_mobile_layout.dart';
 import 'package:auto_scroll_text/auto_scroll_text.dart';
-
-import '../../constants/image_constants.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -15,34 +12,27 @@ class HomeScreen extends StatelessWidget {
     final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: primaryColor,
       drawer: CustomDrawer(),
-      appBar: AppBar(
-          backgroundColor: primaryColor,
-          iconTheme: const IconThemeData(
-            color: Colors.white, // Set the drawer icon color to white
+      // appBar: AppBar(
+      //     backgroundColor: primaryColor,
+      //     iconTheme: const IconThemeData(
+      //       color: Colors.white, // Set the drawer icon color to white
+      //     ),
+      //     title: Text('Rosenberg')
+      //     // const AutoScrollText(
+      //     //   intervalSpaces: 60,
+      //     //   'Rosenberg Community Center - First Islamic Dawah center in Rosenberg Texas',
+      //     //   style: TextStyle(
+      //     //       color: Colors.white, fontFamily: popinsMedium, fontSize: 18),
+      //     // ),
+      //     ),
+      body: Column(
+        children: [
+          CustomizedMobileLayout(
+            screenHeight: screenHeight,
           ),
-          title: const AutoScrollText(
-            intervalSpaces: 60,
-            'Rosenberg Community Center - First Islamic Dawah center in Rosenberg Texas',
-            style: TextStyle(
-                color: Colors.white, fontFamily: popinsMedium, fontSize: 18),
-          )),
-      body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(homeUpBh),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: Column(
-          // clipBehavior: Clip.none,
-          children: [
-            CustomizedMobileLayout(
-              screenHeight: screenHeight,
-            ),
-          ],
-        ),
+        ],
       ),
     );
   }

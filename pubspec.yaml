@@ -70,6 +70,8 @@ flutter:
     - assets/social_icon/
     - assets/splash_icon/
     - assets/images/
+    - assets/services_icons/
+    - assets/icons/
 
   #   - images/a_dot_ham.jpeg
 
