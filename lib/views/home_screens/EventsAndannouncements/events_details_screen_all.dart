@@ -235,7 +235,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
           padding: const EdgeInsets.all(8.0),
           decoration: BoxDecoration(
             color: isSelected
-                ? primaryColor1
+                ? primaryColor
                 : isEventDay
                     ? Colors.red
                     : Colors.transparent,

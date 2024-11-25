@@ -1,53 +1,164 @@
 import 'package:flutter/material.dart';
+import 'package:velocity_x/velocity_x.dart';
 
+import '../app_classes/app_class.dart';
 import '../constants/color.dart';
 
-class CustomizedPrayerTextWidget extends StatelessWidget {
-  final String prayerName;
-  final String title;
-  final Color color;
-  final Color iconColor;
-  final IconData? icon; // Changed to IconData type
-
-  const CustomizedPrayerTextWidget({
+class PrayerTimeWidget extends StatelessWidget {
+  const PrayerTimeWidget({
     super.key,
-    required this.color,
-    required this.iconColor,
-    required this.prayerName,
-    required this.title,
-    this.icon, // Optional parameter
+    // required this.azanIcon,
+    // required this.iqamaIcon,
+    required this.namazName,
+    required this.name,
+    required this.timings,
+    required this.iqamatimes,
+    required this.currentPrayer, // Current prayer passed from the controller
   });
+
+  // final String azanIcon;
+  // final String iqamaIcon;
+  final String currentPrayer; // Current prayer time passed to compare
+  final String name; // Prayer name (e.g., Fajr, Dhuhr)
+  final String namazName; // Specific namaz name for Iqama lookup
+  final String timings; // Azan time (in "HH:mm" format)
+  final Map<String, String> iqamatimes; // Iqama times
 
   @override
   Widget build(BuildContext context) {
-    final double screenHeight = MediaQuery.of(context).size.height;
+    final appClass = AppClass();
+    final screenHeight1 = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+    // Default Iqama time
+    String iqamaTime = iqamatimes[namazName] ?? 'Not available';
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          title,
-          style: TextStyle(
-              color: color,
-              fontSize: screenHeight * 0.014, // Adjust font size
-              fontWeight: FontWeight.bold,
-              fontFamily: popinsRegulr),
-        ),
-        if (icon != null)
-          Icon(
-            icon,
-            size: screenHeight * 0.02,
-            color: iconColor,
-          ), // Adjust icon size
-        Text(
-          prayerName,
-          style: TextStyle(
-              color: color,
-              fontSize: screenHeight * 0.015,
-              fontFamily: popinsRegulr // Adjust font size
-              ),
-        ),
-      ],
+    // Check if the prayer is Maghrib and adjust the Iqama time accordingly
+    if (namazName == 'Maghrib') {
+      iqamaTime = appClass.formatPrayerTimeToAmPm(
+        appClass.addMinutesToPrayerTime(timings, 5), // Add and format
+      );
+    }
+
+    // Set background color based on current prayer
+    Color backgroundColor = (currentPrayer == namazName)
+            ? goldenColor
+            : const Color(0xFFC4F1DD) // Highlight color for current prayer
+        ; // Default color for other prayers
+
+    return SizedBox(
+      width: screenWidth * .15,
+      height: screenHeight1 * .075,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          2.widthBox,
+          currentPrayer == namazName
+              ? Container(
+                  height: 10,
+                  width: 10,
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                          colors: [goldenColor, goldenColor2],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter),
+                      borderRadius: BorderRadius.circular(20)),
+                )
+              : Container(
+                  height: 10,
+                  width: 10,
+                  decoration: BoxDecoration(
+                      gradient:
+                          LinearGradient(colors: [lightColor, lightColor]),
+                      borderRadius: BorderRadius.circular(20)),
+                ),
+          currentPrayer == namazName
+              ? ShaderMask(
+                  shaderCallback: (bounds) => LinearGradient(
+                          colors: [
+                        goldenColor,
+                        goldenColor2
+                      ], // Define your gradient colors
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter)
+                      .createShader(bounds),
+                  child: Text(
+                    name,
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontFamily: popinsBold,
+                      color: whiteColor,
+                    ),
+                  ),
+                )
+              : Text(
+                  name,
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontFamily: popinsBold,
+                    color: lightColor,
+                  ),
+                ),
+          // const Spacer(),
+          5.heightBox,
+          Column(
+            children: [
+              currentPrayer == namazName
+                  ? ShaderMask(
+                      shaderCallback: (bounds) => LinearGradient(
+                                  colors: [
+                                goldenColor,
+                                goldenColor
+                              ], // Define your gradient colors
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter)
+                              .createShader(bounds),
+                      child: Text(
+                        appClass.formatPrayerTimeToAmPm(timings),
+                        style: TextStyle(
+                            color: whiteColor,
+                            fontFamily: popinsRegulr,
+                            // fontWeight: FontWeight.bold,
+                            fontSize: 10),
+                      ))
+                  : Text(
+                      appClass.formatPrayerTimeToAmPm(timings),
+                      style: TextStyle(
+                          color: lightColor,
+                          fontFamily: popinsRegulr,
+                          // fontWeight: FontWeight.bold,
+                          fontSize: 10),
+                    ),
+              currentPrayer == namazName
+                  ? ShaderMask(
+                      shaderCallback: (bounds) => LinearGradient(
+                            colors: [
+                              goldenColor,
+                              goldenColor
+                            ], // Define your gradient colors
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                          ).createShader(bounds),
+                      child: Text(
+                        iqamaTime,
+                        style: TextStyle(
+                            color: whiteColor,
+                            fontFamily: popinsRegulr,
+                            // fontWeight: FontWeight,
+                            fontSize: 10),
+                      ))
+                  : Text(
+                      iqamaTime, // Already formatted Iqama time
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontFamily: popinsRegulr,
+                        color: lightColor,
+                      ),
+                    ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

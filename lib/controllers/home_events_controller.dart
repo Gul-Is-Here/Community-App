@@ -115,4 +115,18 @@ class HomeEventsController extends GetxController {
 
     return formattedDate; // e.g., "September 10, 2024 - 2:00 PM"
   }
+
+  var selectedIndex = 0.obs;
+var selectedIndexAnnouncment = 0.obs;
+void updateSelectedIndex(int index) {
+  selectedIndex.value = index;
+}
+
+// Second Method Update Announcement Index
+
+
+void updateSelectedAnnouncementIndex(int index) {
+  selectedIndexAnnouncment.value = index;
+}
+
 }

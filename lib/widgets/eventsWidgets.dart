@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:velocity_x/velocity_x.dart';
-
+import 'package:carousel_slider/carousel_slider.dart';
 import '../constants/color.dart';
 import '../controllers/home_controller.dart';
 import '../controllers/home_events_controller.dart';
@@ -32,332 +32,369 @@ class EventsWidget extends StatelessWidget {
         () => Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // if (eventsController.isLoading.value)
-            //   SizedBox(
-            //     width: screenWidth,
-            //     height: screenHeight1 * .075,
-            //     child: Center(
-            //       child: SpinKitFadingCircle(
-            //         color: primaryColor,
-            //         size: 50.0,
-            //       ),
-            //     ),
-            //   )
-            // else
             if (eventsController.events.value == null ||
                 eventsController.events.value!.data.events.isEmpty)
-              Column(
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      // Get.to(() => EventsDetailsScreen(
-                      //     imageUrl: feedsImages,
-                      //     eventDate: eventData.events[index].eventDate
-                      //         .toString(),
-                      //     eventDetails:
-                      //         eventData.events[index].eventDetail,
-                      //     eventLink:
-                      //         eventData.events[index].eventLink));
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 5),
-                      child: Container(
-                        width: screenWidth * .9,
-                        height: 89,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(27),
-                          image: DecorationImage(
-                            image: AssetImage(eventBg2),
-                            opacity: .8,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        child: Row(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 12, vertical: 8),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 4, horizontal: 4),
-                                    child: Text(
-                                      "Event",
-                                      style: TextStyle(
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
-                                        fontFamily: popinsBold,
-                                      ),
-                                    ),
-                                  ),
-                                  5.heightBox,
-                                  Text(
-                                    AppClass()
-                                        .formatDate2(DateTime.now().toString()),
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.white,
-                                      fontFamily: popinsSemiBold,
-                                    ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  SizedBox(
-                                    width: screenWidth * .6,
-                                    child: Text(
-                                      maxLines: 1,
-
-                                      'Event Comming Soon',
-                                      style: TextStyle(
-                                        overflow: TextOverflow.ellipsis,
-                                        fontSize: 16,
-                                        color: Colors.white,
-                                        fontFamily: popinsSemiBold,
-                                      ),
-                                      // maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Spacer(),
-                            Container(
-                              alignment: Alignment.center,
-                              height: double.infinity,
-                              width: 60,
-                              decoration: const BoxDecoration(
-                                  // color: primaryColor,
-                                  gradient: LinearGradient(colors: [
-                                    Color(0xFF042838),
-                                    Color(0xFF0F6467)
-                                  ]),
-                                  borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(30),
-                                      bottomLeft: Radius.circular(30),
-                                      topRight: Radius.circular(
-                                        30,
-                                      ),
-                                      bottomRight: Radius.circular(30))),
-                              child: Image.asset(
-                                locationIcon,
-                                height: 40,
-                                width: 40,
-                              ),
-                            ),
-                          ],
-                        ),
+              // Fallback static design
+              SizedBox(
+                height: 185,
+                child: Column(
+                  children: [
+                    CarouselSlider.builder(
+                      options: CarouselOptions(
+                        height: 169, // Adjust height as needed
+                        viewportFraction: 0.8,
+                        enableInfiniteScroll: false,
+                        enlargeCenterPage: true,
+                        scrollDirection: Axis.horizontal,
                       ),
-                    ),
-                  ),
-                  5.heightBox,
-                  SizedBox(
-                    height: 35,
-                    child: GestureDetector(
-                      onTap: () {
-                        Get.to(() => AllEventsDatesScreen());
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Text(
-                            'View All',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w700,
-                              color: primaryColor,
-                              fontFamily: popinsRegulr,
-                            ),
-                          ),
-                          SizedBox(width: 8),
-                          Container(
-                            padding: const EdgeInsets.all(8),
+                      itemCount: 3, // Number of static placeholder items
+                      itemBuilder: (context, index, realIndex) {
+                        // Static placeholder data
+                        final placeholderData = [
+                          {
+                            "imageUrl": eventBg2,
+                            "eventDate": "2024-01-01",
+                            "eventDetail": "Static Event 1"
+                          },
+                          {
+                            "imageUrl": eventBg2,
+                            "eventDate": "2024-02-15",
+                            "eventDetail": "Static Event 2"
+                          },
+                          {
+                            "imageUrl": eventBg2,
+                            "eventDate": "2024-03-20",
+                            "eventDetail": "Static Event 3"
+                          },
+                        ];
+
+                        final item = placeholderData[index];
+
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 5),
+                          child: Container(
+                            width: 275,
                             decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: primaryColor,
+                              borderRadius: BorderRadius.circular(10),
+                              image: DecorationImage(
+                                image: AssetImage(item['imageUrl']!),
+                                opacity: .6,
+                                fit: BoxFit.cover,
+                              ),
                             ),
-                            child: Icon(
-                              Icons.arrow_forward,
-                              color: Colors.white,
-                              size: 20,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              )
-            else
-              Column(
-                children: [
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      // mainAxisAlignment: MainAxisAlignment.spaceBetween,crossAxisAlignment: ,
-                      children: List.generate(
-                        eventsController.events.value!.data.events.length,
-                        (index) {
-                          var eventData = eventsController.events.value!.data;
-                          final feedsImages = bannerList[index];
-                          return GestureDetector(
-                            onTap: () {
-                              Get.to(() => EventsDetailsScreen(
-                                  imageUrl: feedsImages,
-                                  eventDate: eventData.events[index].eventDate
-                                      .toString(),
-                                  eventDetails:
-                                      eventData.events[index].eventDetail,
-                                  eventLink:
-                                      eventData.events[index].eventLink));
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 8, vertical: 5),
-                              child: Container(
-                                width: screenWidth * .9,
-                                height: 89,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(27),
-                                  image: DecorationImage(
-                                    image: AssetImage(eventBg2),
-                                    opacity: .8,
-                                    fit: BoxFit.cover,
+                            child: Row(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 12,
+                                    horizontal: 12,
                                   ),
-                                ),
-                                child: Row(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 12, vertical: 8),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          const Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                vertical: 4, horizontal: 4),
-                                            child: Text(
-                                              "Event",
-                                              style: TextStyle(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 4, horizontal: 4),
+                                        child: Row(
+                                          children: [
+                                            Image.asset(
+                                              eventIcon,
+                                              height: 14,
+                                              width: 14,
+                                            ),
+                                            10.widthBox,
+                                            Text(
+                                              AppClass().formatDate2(
+                                                  item['eventDate']!),
+                                              style: const TextStyle(
                                                 fontSize: 10,
-                                                fontWeight: FontWeight.bold,
                                                 color: Colors.white,
-                                                fontFamily: popinsBold,
+                                                fontFamily: popinsRegulr,
                                               ),
-                                            ),
-                                          ),
-                                          5.heightBox,
-                                          Text(
-                                            AppClass().formatDate2(eventData
-                                                .events[index].eventDate
-                                                .toString()),
-                                            style: const TextStyle(
-                                              fontSize: 16,
-                                              color: Colors.white,
-                                              fontFamily: popinsSemiBold,
-                                            ),
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                          SizedBox(
-                                            width: screenWidth * .6,
-                                            child: Text(
                                               maxLines: 1,
-
-                                              eventData
-                                                  .events[index].eventDetail,
-                                              style: TextStyle(
-                                                overflow: TextOverflow.ellipsis,
-                                                fontSize: 16,
-                                                color: Colors.white,
-                                                fontFamily: popinsSemiBold,
-                                              ),
-                                              // maxLines: 2,
                                               overflow: TextOverflow.ellipsis,
                                             ),
+                                          ],
+                                        ),
+                                      ),
+                                      5.heightBox,
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 4),
+                                        child: Text(
+                                          item['eventDetail']!,
+                                          style: const TextStyle(
+                                            overflow: TextOverflow.ellipsis,
+                                            fontSize: 16,
+                                            color: Colors.white,
+                                            fontFamily: popinsSemiBold,
                                           ),
-                                        ],
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
                                       ),
-                                    ),
-                                    Spacer(),
-                                    Container(
-                                      alignment: Alignment.center,
-                                      height: double.infinity,
-                                      width: 60,
-                                      decoration: const BoxDecoration(
-                                          // color: primaryColor,
-                                          gradient: LinearGradient(colors: [
-                                            Color(0xFF042838),
-                                            Color(0xFF0F6467)
-                                          ]),
-                                          borderRadius: BorderRadius.only(
-                                              topLeft: Radius.circular(30),
-                                              bottomLeft: Radius.circular(30),
-                                              topRight: Radius.circular(
-                                                30,
-                                              ),
-                                              bottomRight:
-                                                  Radius.circular(30))),
-                                      child: Image.asset(
-                                        locationIcon,
-                                        height: 40,
-                                        width: 40,
-                                      ),
-                                    ),
-                                  ],
+                                      Spacer(),
+                                      GestureDetector(
+                                        onTap: () {
+                                          Get.to(() => AllEventsDatesScreen());
+                                        },
+                                        child: Card(
+                                          color: whiteColor,
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(2)),
+                                          child: const Padding(
+                                            padding: EdgeInsets.all(8.0),
+                                            child: Text(
+                                              'Details',
+                                              style: TextStyle(
+                                                  fontFamily: popinsRegulr,
+                                                  fontSize: 12,
+                                                  color: Colors.black),
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
                                 ),
-                              ),
+                              ],
                             ),
-                          );
-                        },
+                          ),
+                        );
+                      },
+                    ),
+                    5.heightBox,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(
+                        3, // Number of static placeholder items
+                        (index) => Container(
+                          width: 8,
+                          height: 8,
+                          margin: const EdgeInsets.symmetric(horizontal: 4),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: index == 0
+                                ? whiteColor // Active dot for static
+                                : Colors.grey, // Inactive dot
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                  5.heightBox,
-                  SizedBox(
-                    height: 35,
-                    child: GestureDetector(
-                      onTap: () {
-                        Get.to(() => AllEventsDatesScreen());
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Text(
+                  ],
+                ),
+              )
+            else
+              // Dynamic data design
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Events',
+                          style: TextStyle(
+                              fontFamily: popinsBold,
+                              color: whiteColor,
+                              fontSize: 16),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            Get.to(() => AllEventsDatesScreen());
+                          },
+                          child: Text(
                             'View All',
                             style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w700,
-                              color: primaryColor,
-                              fontFamily: popinsRegulr,
-                            ),
+                                fontFamily: popinsRegulr,
+                                color: whiteColor,
+                                fontSize: 12),
                           ),
-                          SizedBox(width: 8),
-                          Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: primaryColor,
+                        )
+                      ],
+                    ),
+                    SizedBox(
+                      height: 185,
+                      child: Column(
+                        children: [
+                          CarouselSlider.builder(
+                            options: CarouselOptions(
+                              height: 169,
+                              viewportFraction: 0.8,
+                              enableInfiniteScroll: false,
+                              enlargeCenterPage: true,
+                              scrollDirection: Axis.horizontal,
+                              onPageChanged: (index, reason) {
+                                eventsController.updateSelectedIndex(index);
+                              },
                             ),
-                            child: Icon(
-                              Icons.arrow_forward,
-                              color: Colors.white,
-                              size: 20,
-                            ),
+                            itemCount: eventsController
+                                .events.value!.data.events.length,
+                            itemBuilder: (context, index, realIndex) {
+                              var eventData =
+                                  eventsController.events.value!.data;
+                              final feedsImages = bannerList[index];
+                              final feedImage =
+                                  eventsController.feedsList.length > index
+                                      ? eventsController
+                                          .feedsList[index].feedImage
+                                      : null;
+
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 5),
+                                child: Container(
+                                  width: 275,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    image: DecorationImage(
+                                      image: NetworkImage(feedImage!),
+                                      opacity: .6,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 12,
+                                          horizontal: 12,
+                                        ),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 4,
+                                                      horizontal: 4),
+                                              child: Row(
+                                                children: [
+                                                  Image.asset(
+                                                    eventIcon,
+                                                    height: 14,
+                                                    width: 14,
+                                                  ),
+                                                  10.widthBox,
+                                                  Text(
+                                                    AppClass().formatDate2(
+                                                        eventData.events[index]
+                                                            .eventDate
+                                                            .toString()),
+                                                    style: const TextStyle(
+                                                      fontSize: 10,
+                                                      color: Colors.white,
+                                                      fontFamily: popinsRegulr,
+                                                    ),
+                                                    maxLines: 1,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            5.heightBox,
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 4),
+                                              child: Text(
+                                                eventData
+                                                    .events[index].eventDetail,
+                                                style: const TextStyle(
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  fontSize: 16,
+                                                  color: Colors.white,
+                                                  fontFamily: popinsSemiBold,
+                                                ),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                            Spacer(),
+                                            GestureDetector(
+                                              onTap: () {
+                                                Get.to(() =>
+                                                    EventsDetailsScreen(
+                                                        imageUrl: feedsImages,
+                                                        eventDate: eventData
+                                                            .events[index]
+                                                            .eventDate
+                                                            .toString(),
+                                                        eventDetails: eventData
+                                                            .events[index]
+                                                            .eventDetail,
+                                                        eventLink: eventData
+                                                            .events[index]
+                                                            .eventLink));
+                                              },
+                                              child: Card(
+                                                color: whiteColor,
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            2)),
+                                                child: const Padding(
+                                                  padding: EdgeInsets.all(8.0),
+                                                  child: Text(
+                                                    'Details',
+                                                    style: TextStyle(
+                                                        fontFamily:
+                                                            popinsRegulr,
+                                                        fontSize: 12,
+                                                        color: Colors.black),
+                                                  ),
+                                                ),
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
                           ),
+                          5.heightBox,
+                          Obx(() {
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: List.generate(
+                                eventsController
+                                    .events.value!.data.events.length,
+                                (index) => Container(
+                                  width: 8,
+                                  height: 8,
+                                  margin:
+                                      const EdgeInsets.symmetric(horizontal: 4),
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color:
+                                        eventsController.selectedIndex.value ==
+                                                index
+                                            ? whiteColor
+                                            : Colors.grey,
+                                  ),
+                                ),
+                              ),
+                            );
+                          }),
                         ],
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
           ],
         ),
@@ -365,8 +402,6 @@ class EventsWidget extends StatelessWidget {
     );
   }
 }
-
-
 
 
 
