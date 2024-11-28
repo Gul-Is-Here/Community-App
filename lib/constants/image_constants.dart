@@ -15,10 +15,10 @@ const qiblaTopBg = "assets/home_icon/qiblatopBg.png";
 const namazQiblaBg = "assets/home_icon/namaz&iqamahbackground.png";
 const sunriseIcon = "assets/home_icon/sunriseicon.png";
 const donationIcon2 = "assets/home_icon/Donationicon.png";
-const homeIcon = "assets/home_icon/homeicon.png";
-const homeIcon2 = "assets/home_icon/homeicon2.png";
+// const  = "assets/home_icon/.png";
+// const 2 = "assets/home_icon/2.png";
 const masjidIcon = "assets/home_icon/masjidicon.png";
-const quranIcon = "assets/home_icon/Quranicon.png";
+// const  = "assets/home_icon/.png";
 const donationIcon3 = "assets/home_icon/donationIcon3.png";
 const donationIcon4 = "assets/home_icon/donationIcon4.png";
 const donationIcon5 = "assets/home_icon/donationIcon5.png";
@@ -133,3 +133,28 @@ const homeNewBg = 'assets/services_icons/Background.png';
 const donateUs = 'assets/icons/Donate Us.png';
 const shareIcon = 'assets/icons/Share.png';
 const eventIcon = 'assets/icons/Event.png';
+
+// Feature Icons
+const quranIcon = 'assets/icons/Quran.png';
+const azkarIcon = 'assets/icons/Azkar-1.png';
+const donateICon = 'assets/icons/Donate.png';
+const donateIcon2 = 'assets/icons/Donate-1.png';
+const duaIcon = 'assets/icons/Dua-1.png';
+const duaIcon2 = 'assets/icons/Dua-2.png';
+const tasbihIcon = 'assets/icons/Tasbih-1.png';
+const homeIcon = 'assets/icons/Home.png';
+const prayerIcon = 'assets/icons/Prayers.png';
+const haditIcon = 'assets/icons/Hadith-1.png';
+const qiblaIcon = 'assets/icons/Qibla-1.png';
+
+// Service Backgound Images
+const dailyPrayes = 'assets/services_icons/5DailyPrayers.png';
+const freeQuranClasses = 'assets/services_icons/FreeQuranClasses.png';
+const qirlsHaqa = 'assets/services_icons/GirlsHalaqa1.png';
+const youthProgram = 'assets/services_icons/YouthProgram1.png';
+const youthSeraSeries = 'assets/services_icons/YouthSiraSeries.png';
+const youthsoccorClub = 'assets/services_icons/YouthSoccerClub.png';
+
+// Bottom Navigaiton bar Items
+
+const mosqueIcon = 'assets/icons/Mosque.png';

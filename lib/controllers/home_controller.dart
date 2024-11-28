@@ -489,32 +489,35 @@ class HomeController extends GetxController {
       final ishaTime = DateFormat("HH:mm").parse(timings.isha);
 
       if (currentTime.isAfter(fajrTime) && currentTime.isBefore(dhuhrTime)) {
-        return DateFormat("hh:mm a").format(fajrTime);
+        return DateFormat("hh:mm ").format(fajrTime);
       } else if (currentTime.isAfter(dhuhrTime) &&
           currentTime.isBefore(asrTime)) {
-        return DateFormat("hh:mm a").format(dhuhrTime);
+        return DateFormat("hh:mm").format(dhuhrTime);
       } else if (currentTime.isAfter(asrTime) &&
           currentTime.isBefore(maghribTime)) {
-        return DateFormat("hh:mm a").format(asrTime);
+        return DateFormat("hh:mm").format(asrTime);
       } else if (currentTime.isAfter(maghribTime) &&
           currentTime.isBefore(ishaTime)) {
-        return DateFormat("hh:mm a").format(maghribTime);
+        return DateFormat("hh:mm").format(maghribTime);
       } else if (currentTime.isAfter(ishaTime) ||
           currentTime.isBefore(fajrTime)) {
-        return DateFormat("hh:mm a").format(ishaTime);
+        return DateFormat("hh:mm").format(ishaTime);
       }
     }
 
-    return 'N/A';
+    return '6:30';
   }
 
-  String getCurrentPrayerPeriod() {
-    final currentPrayerTime =
-        getCurrentPrayerTime(); // Get the formatted time, e.g., "12:40 PM"
-    if (currentPrayerTime != 'N/A') {
-      return currentPrayerTime.split(' ').last; // Extract and return AM or PM
+  String formateAMandPM(DateTime prayerTime, bool isFajr) {
+    // Format time as hh:mm AM/PM
+    String formattedTime = DateFormat("hh:mm a").format(prayerTime);
+
+    if (isFajr) {
+      // For Fajr, ensure it shows AM even if it's after midnight
+      formattedTime = formattedTime.replaceAll('PM', 'AM');
     }
-    return 'N/A'; // Fallback if time is not available
+
+    return formattedTime;
   }
 
   String getNextPrayerTime() {

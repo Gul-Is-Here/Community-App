@@ -22,6 +22,7 @@ class HomeEventsController extends GetxController {
     fetchEventsData(); // Fetch events when the controller is initialized
     fetchFeedsData(); // Fetch feeds when the controller is initialized
     fetchAlertsData();
+    feedsList;
   }
 
   // Method to fetch events and update the state
@@ -117,16 +118,14 @@ class HomeEventsController extends GetxController {
   }
 
   var selectedIndex = 0.obs;
-var selectedIndexAnnouncment = 0.obs;
-void updateSelectedIndex(int index) {
-  selectedIndex.value = index;
-}
+  var selectedIndexAnnouncment = 0.obs;
+  void updateSelectedIndex(int index) {
+    selectedIndex.value = index;
+  }
 
 // Second Method Update Announcement Index
 
-
-void updateSelectedAnnouncementIndex(int index) {
-  selectedIndexAnnouncment.value = index;
-}
-
+  void updateSelectedAnnouncementIndex(int index) {
+    selectedIndexAnnouncment.value = index;
+  }
 }
