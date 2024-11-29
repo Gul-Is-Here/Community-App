@@ -36,16 +36,48 @@ class EventsWidget extends StatelessWidget {
                 eventsController.events.value!.data.events.isEmpty)
               // Fallback static design
               SizedBox(
-                height: 185,
+                height: 225,
                 child: Column(
                   children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 12),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Events',
+                            style: TextStyle(
+                                fontFamily: popinsBold,
+                                color: whiteColor,
+                                fontSize: 16),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              Get.to(() => AllEventsDatesScreen());
+                            },
+                            child: Text(
+                              'View All',
+                              style: TextStyle(
+                                  fontFamily: popinsRegulr,
+                                  color: whiteColor,
+                                  fontSize: 12),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
                     CarouselSlider.builder(
                       options: CarouselOptions(
+                        scrollPhysics: const ScrollPhysics(),
                         height: 169, // Adjust height as needed
-                        viewportFraction: 0.8,
+                        //  viewportFraction:
+                        // 0.8, // Adjust  this to control the visible portion of the next item
                         enableInfiniteScroll: false,
-                        enlargeCenterPage: true,
+                        enlargeCenterPage:
+                            false, // Disable enlarging the center page
                         scrollDirection: Axis.horizontal,
+                        initialPage: 1, // Start at the first item
                       ),
                       itemCount: 3, // Number of static placeholder items
                       itemBuilder: (context, index, realIndex) {
@@ -54,17 +86,17 @@ class EventsWidget extends StatelessWidget {
                           {
                             "imageUrl": eventBg2,
                             "eventDate": "2024-01-01",
-                            "eventDetail": "Static Event 1"
+                            "eventDetail": "Event coming soon"
                           },
                           {
                             "imageUrl": eventBg2,
                             "eventDate": "2024-02-15",
-                            "eventDetail": "Static Event 2"
+                            "eventDetail": "Event coming soon"
                           },
                           {
                             "imageUrl": eventBg2,
                             "eventDate": "2024-03-20",
-                            "eventDetail": "Static Event 3"
+                            "eventDetail": "Event coming soon"
                           },
                         ];
 
@@ -79,7 +111,6 @@ class EventsWidget extends StatelessWidget {
                               borderRadius: BorderRadius.circular(10),
                               image: DecorationImage(
                                 image: AssetImage(item['imageUrl']!),
-                                opacity: .6,
                                 fit: BoxFit.cover,
                               ),
                             ),
@@ -87,9 +118,7 @@ class EventsWidget extends StatelessWidget {
                               children: [
                                 Padding(
                                   padding: const EdgeInsets.symmetric(
-                                    vertical: 12,
-                                    horizontal: 12,
-                                  ),
+                                      vertical: 12, horizontal: 12),
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     crossAxisAlignment:
@@ -223,109 +252,127 @@ class EventsWidget extends StatelessWidget {
                       height: 185,
                       child: Column(
                         children: [
-                          CarouselSlider.builder(
-                            options: CarouselOptions(
-                              height: 169,
-                              viewportFraction: 0.8,
-                              enableInfiniteScroll: false,
-                              enlargeCenterPage: true,
-                              scrollDirection: Axis.horizontal,
-                              onPageChanged: (index, reason) {
-                                eventsController.updateSelectedIndex(index);
-                              },
-                            ),
-                            itemCount: eventsController
-                                .events.value!.data.events.length,
-                            itemBuilder: (context, index, realIndex) {
-                              var eventData =
-                                  eventsController.events.value!.data;
-                              final feedsImages = bannerList[index];
-                              final feedImage =
-                                  eventsController.feedsList.length > index
-                                      ? eventsController
-                                          .feedsList[index].feedImage
-                                      : null;
+                          // CarouselSlider.builder with null checks for event data
+                          Obx(() {
+                            if (eventsController.events.value?.data.events ==
+                                    null ||
+                                eventsController
+                                    .events.value!.data!.events.isEmpty) {
+                              return Container(
+                                child:
+                                    Center(child: Text("No Events Available")),
+                              );
+                            }
 
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 8, vertical: 5),
-                                child: Container(
-                                  width: 275,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    image: DecorationImage(
-                                      image: NetworkImage(feedImage!),
-                                      opacity: .6,
-                                      fit: BoxFit.cover,
+                            return CarouselSlider.builder(
+                              options: CarouselOptions(
+                                height: 169,
+                                viewportFraction: 0.8,
+                                enableInfiniteScroll: false,
+                                enlargeCenterPage: true,
+                                scrollDirection: Axis.horizontal,
+                                onPageChanged: (index, reason) {
+                                  eventsController.updateSelectedIndex(index);
+                                },
+                              ),
+                              itemCount: eventsController
+                                  .events.value!.data!.events.length,
+                              itemBuilder: (context, index, realIndex) {
+                                var eventData =
+                                    eventsController.events.value!.data;
+                                final feedsImages = bannerList.isNotEmpty
+                                    ? bannerList[index]
+                                    : ''; // Null check for bannerList
+                                final feedImage =
+                                    eventsController.feedsList.length > index
+                                        ? eventsController
+                                            .feedsList[index].feedImage
+                                        : null;
+
+                                // Check if feedImage is null, use a placeholder
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8, vertical: 5),
+                                  child: Container(
+                                    width: 275,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      image: feedImage != null
+                                          ? DecorationImage(
+                                              image: NetworkImage(feedImage),
+                                              opacity: .6,
+                                              fit: BoxFit.cover,
+                                            )
+                                          : null, // Fallback if feedImage is null
                                     ),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          vertical: 12,
-                                          horizontal: 12,
-                                        ),
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 4,
-                                                      horizontal: 4),
-                                              child: Row(
-                                                children: [
-                                                  Image.asset(
-                                                    eventIcon,
-                                                    height: 14,
-                                                    width: 14,
-                                                  ),
-                                                  10.widthBox,
-                                                  Text(
-                                                    AppClass().formatDate2(
-                                                        eventData.events[index]
-                                                            .eventDate
-                                                            .toString()),
-                                                    style: const TextStyle(
-                                                      fontSize: 10,
-                                                      color: Colors.white,
-                                                      fontFamily: popinsRegulr,
+                                    child: Row(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 12, horizontal: 12),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 4,
+                                                        horizontal: 4),
+                                                child: Row(
+                                                  children: [
+                                                    Image.asset(
+                                                      eventIcon,
+                                                      height: 14,
+                                                      width: 14,
                                                     ),
-                                                    maxLines: 1,
+                                                    10.widthBox,
+                                                    Text(
+                                                      AppClass().formatDate2(
+                                                          eventData
+                                                              .events[index]
+                                                              .eventDate
+                                                              .toString()),
+                                                      style: const TextStyle(
+                                                        fontSize: 10,
+                                                        color: Colors.white,
+                                                        fontFamily:
+                                                            popinsRegulr,
+                                                      ),
+                                                      maxLines: 1,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              5.heightBox,
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 4),
+                                                child: Text(
+                                                  eventData.events[index]
+                                                      .eventDetail,
+                                                  style: const TextStyle(
                                                     overflow:
                                                         TextOverflow.ellipsis,
+                                                    fontSize: 16,
+                                                    color: Colors.white,
+                                                    fontFamily: popinsSemiBold,
                                                   ),
-                                                ],
-                                              ),
-                                            ),
-                                            5.heightBox,
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 4),
-                                              child: Text(
-                                                eventData
-                                                    .events[index].eventDetail,
-                                                style: const TextStyle(
+                                                  maxLines: 1,
                                                   overflow:
                                                       TextOverflow.ellipsis,
-                                                  fontSize: 16,
-                                                  color: Colors.white,
-                                                  fontFamily: popinsSemiBold,
                                                 ),
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
                                               ),
-                                            ),
-                                            Spacer(),
-                                            GestureDetector(
-                                              onTap: () {
-                                                Get.to(() =>
-                                                    EventsDetailsScreen(
+                                              Spacer(),
+                                              GestureDetector(
+                                                onTap: () {
+                                                  Get.to(() =>
+                                                      EventsDetailsScreen(
                                                         imageUrl: feedsImages,
                                                         eventDate: eventData
                                                             .events[index]
@@ -336,43 +383,55 @@ class EventsWidget extends StatelessWidget {
                                                             .eventDetail,
                                                         eventLink: eventData
                                                             .events[index]
-                                                            .eventLink));
-                                              },
-                                              child: Card(
-                                                color: whiteColor,
-                                                shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            2)),
-                                                child: const Padding(
-                                                  padding: EdgeInsets.all(8.0),
-                                                  child: Text(
-                                                    'Details',
-                                                    style: TextStyle(
-                                                        fontFamily:
-                                                            popinsRegulr,
-                                                        fontSize: 12,
-                                                        color: Colors.black),
+                                                            .eventLink,
+                                                      ));
+                                                },
+                                                child: Card(
+                                                  color: whiteColor,
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              2)),
+                                                  child: const Padding(
+                                                    padding:
+                                                        EdgeInsets.all(8.0),
+                                                    child: Text(
+                                                      'Details',
+                                                      style: TextStyle(
+                                                          fontFamily:
+                                                              popinsRegulr,
+                                                          fontSize: 12,
+                                                          color: Colors.black),
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                            )
-                                          ],
+                                              )
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              );
-                            },
-                          ),
+                                );
+                              },
+                            );
+                          }),
+
                           5.heightBox,
+
+                          // Dot indicators for the carousel slider with null checks
                           Obx(() {
+                            if (eventsController.events.value?.data.events ==
+                                    null ||
+                                eventsController
+                                    .events.value!.data!.events.isEmpty) {
+                              return Container();
+                            }
                             return Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: List.generate(
                                 eventsController
-                                    .events.value!.data.events.length,
+                                    .events.value!.data!.events.length,
                                 (index) => Container(
                                   width: 8,
                                   height: 8,

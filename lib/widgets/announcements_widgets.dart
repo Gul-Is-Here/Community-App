@@ -37,15 +37,185 @@ class AnnouncementWidget extends StatelessWidget {
             () {
               if (eventsController.isLoading.value) {
                 // Show loading spinner while fetching data
-                return SizedBox(
-                  width: screenWidth * .7,
-                  height: screenHeight1 * .075,
-                  child: Center(
-                    child: SpinKitFadingCircle(
-                      color: primaryColor,
-                      size: 50.0,
+                return Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 8),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Announcement',
+                            style: TextStyle(
+                                fontFamily: popinsBold,
+                                color: whiteColor,
+                                fontSize: 16),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              // Get.to(() => AnnouncementsScreen());
+                            },
+                            child: Text(
+                              'View All',
+                              style: TextStyle(
+                                  fontFamily: popinsRegulr,
+                                  color: whiteColor,
+                                  fontSize: 12),
+                            ),
+                          )
+                        ],
+                      ),
                     ),
-                  ),
+                    Container(
+                      color: Colors.transparent,
+                      height: 49,
+                      width: screenWidth * 1,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        shrinkWrap: true,
+                        itemCount: 3,
+                        itemBuilder: (context, index) {
+                          // var alertsData = eventsController.alertsList[index];
+
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            child: GestureDetector(
+                              onTap: () {
+                                // Navigate to AnnouncementsDetailsScreen
+                                // eventsController
+                                //     .selectedIndexAnnouncment.value = index;
+                                // Get.to(() => AnnouncementsDetailsScreen(
+                                //       alertDisc: alertsData.alertDescription,
+                                //       controller: eventsController,
+                                //       title: alertsData.alertTitle,
+                                //       details: alertsData.alertDescription,
+                                //       createdDate:
+                                //           alertsData.createdAt.toString(),
+                                //       description: '',
+                                //       postedDate:
+                                //           alertsData.updatedAt.toString(),
+                                //     ));
+                              },
+                              child: Container(
+                                margin: EdgeInsets.all(0),
+                                width: 225,
+                                height: screenHeight1 * .08,
+                                decoration: const BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(
+                                      30,
+                                    ),
+                                    topRight: Radius.circular(30),
+                                  ),
+                                ),
+                                child: Card(
+                                  margin: const EdgeInsets.all(0),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
+                                  elevation: 10,
+                                  child: Container(
+                                    margin: EdgeInsets.all(0),
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        width: 1,
+                                        color: lightColor,
+                                      ),
+                                      borderRadius: const BorderRadius.only(
+                                        topRight: Radius.circular(20),
+                                        topLeft: Radius.circular(35),
+                                        bottomLeft: Radius.circular(35),
+                                        bottomRight: Radius.circular(20),
+                                      ),
+                                      color: const Color(0xFF1E5045),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          height: 47,
+                                          width: 47,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(30),
+                                            color: lightColor,
+                                          ),
+                                          child: const Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                textAlign: TextAlign.center,
+                                                '2 Mar',
+                                                style: TextStyle(
+                                                    fontFamily: popinsSemiBold,
+                                                    fontSize: 10),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 16,
+                                              vertical: 5,
+                                            ),
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                const SizedBox(height: 5),
+                                                Text(
+                                                  maxLines: 2,
+                                                  'Announcements are coming soon',
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  style: TextStyle(
+                                                    fontSize: 11,
+                                                    color: whiteColor,
+                                                    fontFamily: popinsSemiBold,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    10.heightBox,
+                    Obx(
+                      () => Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(
+                          3,
+                          (index) => Container(
+                            width: 8,
+                            height: 8,
+                            margin: const EdgeInsets.symmetric(horizontal: 4),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color:
+                                  eventsController.selectedIndex.value == index
+                                      ? whiteColor
+                                      : Colors.grey,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 );
               }
 
@@ -53,83 +223,182 @@ class AnnouncementWidget extends StatelessWidget {
                 // Show "Notification Coming Soon" if the list is empty
                 return Column(
                   children: [
-                    Container(
-                      width: screenWidth * .9,
-                      height: screenHeight1 * .085,
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(20),
-                          topRight: Radius.circular(20),
-                        ),
-                      ),
-                      child: Card(
-                        margin: const EdgeInsets.all(0),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        elevation: 10,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(width: 2, color: primaryColor),
-                            borderRadius: BorderRadius.circular(30),
-                            color: whiteColor,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 8),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Announcement',
+                            style: TextStyle(
+                                fontFamily: popinsBold,
+                                color: whiteColor,
+                                fontSize: 16),
                           ),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 16,
-                                    vertical: 5,
+                          GestureDetector(
+                            onTap: () {
+                              Get.to(() => AnnouncementsScreen());
+                            },
+                            child: Text(
+                              'View All',
+                              style: TextStyle(
+                                  fontFamily: popinsRegulr,
+                                  color: whiteColor,
+                                  fontSize: 12),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    Container(
+                      color: Colors.transparent,
+                      height: 49,
+                      width: screenWidth * 1,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        shrinkWrap: true,
+                        itemCount: 3,
+                        itemBuilder: (context, index) {
+                          // var alertsData = eventsController.alertsList[index];
+
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            child: GestureDetector(
+                              onTap: () {
+                                // Navigate to AnnouncementsDetailsScreen
+                                // eventsController
+                                //     .selectedIndexAnnouncment.value = index;
+                                // Get.to(() => AnnouncementsDetailsScreen(
+                                //       alertDisc: alertsData.alertDescription,
+                                //       controller: eventsController,
+                                //       title: alertsData.alertTitle,
+                                //       details: alertsData.alertDescription,
+                                //       createdDate:
+                                //           alertsData.createdAt.toString(),
+                                //       description: '',
+                                //       postedDate:
+                                //           alertsData.updatedAt.toString(),
+                                //     ));
+                              },
+                              child: Container(
+                                margin: EdgeInsets.all(0),
+                                width: 225,
+                                height: screenHeight1 * .08,
+                                decoration: const BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(
+                                      30,
+                                    ),
+                                    topRight: Radius.circular(30),
                                   ),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      SizedBox(
-                                        height: 23,
-                                        width: 70,
-                                        child: Card(
-                                          color: primaryColor,
-                                          margin: const EdgeInsets.all(0),
-                                          child: Center(
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(4.0),
-                                              child: Text(
+                                ),
+                                child: Card(
+                                  margin: const EdgeInsets.all(0),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
+                                  elevation: 10,
+                                  child: Container(
+                                    margin: EdgeInsets.all(0),
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        width: 1,
+                                        color: lightColor,
+                                      ),
+                                      borderRadius: const BorderRadius.only(
+                                        topRight: Radius.circular(20),
+                                        topLeft: Radius.circular(35),
+                                        bottomLeft: Radius.circular(35),
+                                        bottomRight: Radius.circular(20),
+                                      ),
+                                      color: const Color(0xFF1E5045),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          height: 47,
+                                          width: 47,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(30),
+                                            color: lightColor,
+                                          ),
+                                          child: const Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              Text(
                                                 textAlign: TextAlign.center,
-                                                "Notification",
+                                                '2 Mar',
                                                 style: TextStyle(
-                                                  color: whiteColor,
-                                                  fontSize: 10,
-                                                  fontFamily: popinsRegulr,
+                                                    fontFamily: popinsSemiBold,
+                                                    fontSize: 10),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 16,
+                                              vertical: 5,
+                                            ),
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                const SizedBox(height: 5),
+                                                Text(
+                                                  maxLines: 2,
+                                                  'Announcemnets are coming soon',
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  style: TextStyle(
+                                                    fontSize: 11,
+                                                    color: whiteColor,
+                                                    fontFamily: popinsSemiBold,
+                                                  ),
                                                 ),
-                                              ),
+                                              ],
                                             ),
                                           ),
                                         ),
-                                      ),
-                                      const SizedBox(height: 5),
-                                      Text(
-                                        "Notification Coming Soon",
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: primaryColor,
-                                          fontWeight: FontWeight.w400,
-                                          fontFamily: popinsRegulr,
-                                        ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
-                            ],
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    10.heightBox,
+                    Obx(
+                      () => Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(
+                          3,
+                          (index) => Container(
+                            width: 8,
+                            height: 8,
+                            margin: const EdgeInsets.symmetric(horizontal: 4),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color:
+                                  eventsController.selectedIndex.value == index
+                                      ? whiteColor
+                                      : Colors.grey,
+                            ),
                           ),
                         ),
                       ),
                     ),
-                    5.heightBox,
                   ],
                 );
               }
@@ -292,7 +561,7 @@ class AnnouncementWidget extends StatelessWidget {
                       },
                     ),
                   ),
-                  5.heightBox,
+                  10.heightBox,
                 ],
               );
             },

@@ -27,12 +27,14 @@ class HomeScreen extends StatelessWidget {
       //     //       color: Colors.white, fontFamily: popinsMedium, fontSize: 18),
       //     // ),
       //     ),
-      body: Column(
-        children: [
-          CustomizedMobileLayout(
-            screenHeight: screenHeight,
-          ),
-        ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            CustomizedMobileLayout(
+              screenHeight: screenHeight,
+            ),
+          ],
+        ),
       ),
     );
   }

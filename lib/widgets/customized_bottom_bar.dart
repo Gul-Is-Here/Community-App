@@ -27,7 +27,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.only(right: 10),
                   child: Image.asset(
-                    homeIcon2,
+                    homeIcon,
                     height: 50, // Adjusted icon size
                     width: 40, // Adjusted icon size
                     color: const Color(0xFF0F6467),
@@ -37,7 +37,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
               inActiveItem: Align(
                 alignment: Alignment.center,
                 child: Image.asset(
-                  homeIcon2,
+                  homeIcon,
                   height: 50, // Adjusted icon size
                   width: 50, // Adjusted icon size
                   color: Colors.grey,
@@ -50,8 +50,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.only(right: 10),
                   child: Image.asset(
-                    qiblaIconBg,
-                    height: 50, // Adjusted icon size
+                    mosqueIcon, height: 50, // Adjusted icon size
                     width: 50, // Adjusted icon size
                     color: const Color(0xFF0F6467),
                   ),
@@ -60,7 +59,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
               inActiveItem: Align(
                 alignment: Alignment.center,
                 child: Image.asset(
-                  qiblaIconBg,
+                  mosqueIcon,
                   height: 50, // Adjusted icon size
                   width: 50, // Adjusted icon size
                   color: Colors.grey,
