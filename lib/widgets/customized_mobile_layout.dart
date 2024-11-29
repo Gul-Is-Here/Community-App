@@ -67,14 +67,12 @@ class CustomizedMobileLayout extends StatelessWidget {
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Flexible(
-                    child: Text(
-                      'Rosenberg Community Centre',
-                      style: TextStyle(
-                          fontFamily: popinsSemiBold,
-                          color: whiteColor,
-                          fontSize: 12),
-                    ),
+                  child: Text(
+                    'Rosenberg Community Centre',
+                    style: TextStyle(
+                        fontFamily: popinsSemiBold,
+                        color: whiteColor,
+                        fontSize: 12),
                   ),
                 ),
                 // 10.widthBox,
