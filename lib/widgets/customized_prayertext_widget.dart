@@ -47,7 +47,7 @@ class PrayerTimeWidget extends StatelessWidget {
 
     return SizedBox(
       width: screenWidth * .15,
-      height: screenHeight1 * .075,
+      height: screenHeight1 * .082,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -72,6 +72,7 @@ class PrayerTimeWidget extends StatelessWidget {
                           LinearGradient(colors: [lightColor, lightColor]),
                       borderRadius: BorderRadius.circular(20)),
                 ),
+          5.heightBox,
           currentPrayer == namazName
               ? ShaderMask(
                   shaderCallback: (bounds) => LinearGradient(
@@ -100,7 +101,7 @@ class PrayerTimeWidget extends StatelessWidget {
                   ),
                 ),
           // const Spacer(),
-          5.heightBox,
+          2.heightBox,
           Column(
             children: [
               currentPrayer == namazName

@@ -67,6 +67,7 @@ class EventsWidget extends StatelessWidget {
                         ],
                       ),
                     ),
+                    5.heightBox,
                     CarouselSlider.builder(
                       options: CarouselOptions(
                         scrollPhysics: const ScrollPhysics(),
@@ -248,6 +249,7 @@ class EventsWidget extends StatelessWidget {
                         )
                       ],
                     ),
+                    5.heightBox,
                     SizedBox(
                       height: 185,
                       child: Column(
@@ -296,11 +298,13 @@ class EventsWidget extends StatelessWidget {
                                   child: Container(
                                     width: 275,
                                     decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                          colors: [Colors.black, Colors.black]),
                                       borderRadius: BorderRadius.circular(10),
                                       image: feedImage != null
                                           ? DecorationImage(
                                               image: NetworkImage(feedImage),
-                                              opacity: .6,
+                                              opacity: .3,
                                               fit: BoxFit.cover,
                                             )
                                           : null, // Fallback if feedImage is null

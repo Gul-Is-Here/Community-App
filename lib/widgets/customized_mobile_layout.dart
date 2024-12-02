@@ -1,4 +1,5 @@
 import 'package:community_islamic_app/app_classes/app_class.dart';
+import 'package:community_islamic_app/views/donation_screens/donation_screen.dart';
 import 'package:community_islamic_app/widgets/featureWidgetIcons.dart';
 import 'package:community_islamic_app/widgets/our_services_widget.dart';
 import 'package:flutter/material.dart';
@@ -77,7 +78,9 @@ class CustomizedMobileLayout extends StatelessWidget {
                 ),
                 // 10.widthBox,
                 TextButton.icon(
-                  onPressed: () {},
+                  onPressed: () {
+                    Get.to(() => DonationScreen());
+                  },
                   label: Text(
                     'Donate Us',
                     style: TextStyle(
@@ -117,26 +120,58 @@ class CustomizedMobileLayout extends StatelessWidget {
                                       fontSize: 10),
                                 ),
                               ),
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Suhur : 6:54 AM',
-                                    style: TextStyle(
-                                        color: whiteColor,
-                                        fontFamily: popinsRegulr,
-                                        fontSize: 10),
-                                  ),
-                                  // 5.heightBox,
-                                  Text(
-                                    'Iftar : 5:24 PM',
-                                    style: TextStyle(
-                                        color: whiteColor,
-                                        fontFamily: popinsRegulr,
-                                        fontSize: 10),
-                                  ),
-                                ],
+                              Obx(
+                                () => Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    homeController.prayerTime.value.data !=
+                                                null &&
+                                            homeController
+                                                .prayerTime
+                                                .value
+                                                .data!
+                                                .timings
+                                                .sunrise
+                                                .isNotEmpty
+                                        ? Text(
+                                            'Suhur : ${homeController.formatPrayerTime(homeController.prayerTime.value.data!.timings.sunrise)}',
+                                            style: TextStyle(
+                                              color: whiteColor,
+                                              fontFamily: popinsRegulr,
+                                              fontSize: 10,
+                                            ),
+                                          )
+                                        : Text(
+                                            'Suhur : 6:54 AM',
+                                            style: TextStyle(
+                                              color: whiteColor,
+                                              fontFamily: popinsRegulr,
+                                              fontSize: 10,
+                                            ),
+                                          ),
+
+                                    // 5.heightBox,
+                                    homeController.prayerTime.value.data !=
+                                                null &&
+                                            homeController.prayerTime.value
+                                                .data!.timings.sunset.isNotEmpty
+                                        ? Text(
+                                            'Iftar : ${homeController.formatPrayerTime(homeController.prayerTime.value.data!.timings.sunset)}',
+                                            style: TextStyle(
+                                                color: whiteColor,
+                                                fontFamily: popinsRegulr,
+                                                fontSize: 10),
+                                          )
+                                        : Text(
+                                            'Iftar : ',
+                                            style: TextStyle(
+                                                color: whiteColor,
+                                                fontFamily: popinsRegulr,
+                                                fontSize: 10),
+                                          ),
+                                  ],
+                                ),
                               ),
                             ],
                           ),
@@ -510,7 +545,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       OurServicesWidget(
                         title: 'GIRLS HALAQA',
