@@ -1,6 +1,7 @@
 import 'package:community_islamic_app/controllers/quran_controller.dart';
 import 'package:community_islamic_app/views/home_screens/home_screen.dart';
 import 'package:community_islamic_app/views/home_screens/masjid_map/map_splash_screen.dart';
+import 'package:community_islamic_app/views/prayer_screens/prayer_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -29,6 +30,7 @@ class Home extends StatelessWidget {
       const HomeScreen(),
       QiblahScreen(),
       const QuranScreen(),
+      const PrayerScreen(),
       DonationScreen()
     ];
 
@@ -67,7 +69,6 @@ class Home extends StatelessWidget {
               ),
             ],
           )),
-    
     );
   }
 }

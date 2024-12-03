@@ -434,6 +434,7 @@ class AnnouncementWidget extends StatelessWidget {
                       ],
                     ),
                   ),
+                  5.heightBox,
                   Container(
                     color: Colors.transparent,
                     height: 49,

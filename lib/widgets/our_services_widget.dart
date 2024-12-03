@@ -15,26 +15,31 @@ class OurServicesWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenwidth = MediaQuery.of(context).size.width;
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        alignment: Alignment.topLeft,
-        height: 113,
-        width: 113,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(image),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 2.0),
+        child: Container(
+          alignment: Alignment.topLeft,
+          height: screenHeight * .15,
+          width: screenwidth * .288,
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(image),
+            ),
           ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            vertical: 9.33,
-            horizontal: 6.5,
-          ),
-          child: Text(
-            title,
-            style: TextStyle(
-                fontSize: 11, fontFamily: popinsSemiBold, color: whiteColor),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 9.33,
+              horizontal: 6.5,
+            ),
+            child: Text(
+              title,
+              style: TextStyle(
+                  fontSize: 11, fontFamily: popinsSemiBold, color: whiteColor),
+            ),
           ),
         ),
       ),

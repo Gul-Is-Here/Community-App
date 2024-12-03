@@ -98,16 +98,16 @@ final List<String> bannerList = [
   banner3,
   banner4
 ];
-final List<String> bannerList2 = [
-  banner5,
-  banner6,
-  banner7,
-  banner8,
-  banner5,
-  banner6,
-  banner7,
-  banner8
-];
+// final List<String> bannerList2 = [
+//   banner5,
+//   banner6,
+//   banner7,
+//   banner8,
+//   banner5,
+//   banner6,
+//   banner7,
+//   banner8
+// ];
 
 // Avatar List
 const icGirl = "assets/images/girl.png";
@@ -158,3 +158,7 @@ const youthsoccorClub = 'assets/services_icons/YouthSoccerClub.png';
 // Bottom Navigaiton bar Items
 
 const mosqueIcon = 'assets/icons/Mosque.png';
+const bDonationIcon = 'assets/icons/Donate-1.png';
+const bDuaIcon = 'assets/icons/Dua-3.png';
+const bPrayerIcon = 'assets/icons/Prayers-1.png';
+const bHomeIcon = 'assets/icons/Home-1.png';
