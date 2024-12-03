@@ -14,19 +14,6 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: primaryColor,
       drawer: CustomDrawer(),
-      // appBar: AppBar(
-      //     backgroundColor: primaryColor,
-      //     iconTheme: const IconThemeData(
-      //       color: Colors.white, // Set the drawer icon color to white
-      //     ),
-      //     title: Text('Rosenberg')
-      //     // const AutoScrollText(
-      //     //   intervalSpaces: 60,
-      //     //   'Rosenberg Community Center - First Islamic Dawah center in Rosenberg Texas',
-      //     //   style: TextStyle(
-      //     //       color: Colors.white, fontFamily: popinsMedium, fontSize: 18),
-      //     // ),
-      //     ),
       body: SingleChildScrollView(
         child: Column(
           children: [

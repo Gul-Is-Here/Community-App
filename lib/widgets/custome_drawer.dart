@@ -152,23 +152,23 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   : const SizedBox(),
             ),
             const Divider(color: Colors.black),
-            ListTile(
-              leading: Icon(Icons.calendar_month, color: primaryColor),
-              title: const Text('Hijri Calendar',
-                  style: TextStyle(fontFamily: popinsRegulr, fontSize: 14)),
-              onTap: () {
-                Get.to(() => const HijriCalendarExample());
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.calendar_month, color: primaryColor),
-              title: const Text('View Times',
-                  style: TextStyle(fontFamily: popinsRegulr, fontSize: 14)),
-              onTap: () {
-                Get.to(() => const NamazTimingsScreen());
-              },
-            ),
-            const Divider(),
+            // ListTile(
+            //   leading: Icon(Icons.calendar_month, color: primaryColor),
+            //   title: const Text('Hijri Calendar',
+            //       style: TextStyle(fontFamily: popinsRegulr, fontSize: 14)),
+            //   onTap: () {
+            //     Get.to(() => const HijriCalendarExample());
+            //   },
+            // ),
+            // ListTile(
+            //   leading: Icon(Icons.calendar_month, color: primaryColor),
+            //   title: const Text('View Times',
+            //       style: TextStyle(fontFamily: popinsRegulr, fontSize: 14)),
+            //   onTap: () {
+            //     Get.to(() => const NamazTimingsScreen());
+            //   },
+            // ),
+            // const Divider(),
             Obx(() => isLoggedIn.value &&
                     profileController.userData['user'] != null
                 ? const SizedBox()

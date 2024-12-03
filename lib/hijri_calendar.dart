@@ -35,9 +35,7 @@ class _HijriCalendarExampleState extends State<HijriCalendarExample> {
         child: IslamicHijriCalendar(
           isHijriView:
               true, //allowing users to set either the English calendar only or display the Hijri calendar alongside the English calendar
-          highlightBorder: Theme.of(context)
-              .colorScheme
-              .primary, // Set selected date border color
+          highlightBorder: primaryColor, // Set selected date border color
           defaultBorder: Theme.of(context)
               .colorScheme
               .onSurface
