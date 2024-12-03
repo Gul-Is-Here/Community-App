@@ -299,7 +299,14 @@ class EventsWidget extends StatelessWidget {
                                     width: 275,
                                     decoration: BoxDecoration(
                                       gradient: LinearGradient(
-                                          colors: [Colors.black, Colors.black]),
+                                          colors: [
+                                            Colors.black,
+                                            const Color.fromARGB(
+                                                255, 189, 188, 188),
+                                            Colors.black
+                                          ],
+                                          begin: Alignment.centerLeft,
+                                          end: Alignment.centerRight),
                                       borderRadius: BorderRadius.circular(10),
                                       image: feedImage != null
                                           ? DecorationImage(

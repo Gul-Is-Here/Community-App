@@ -55,10 +55,10 @@ class CustomizedMobileLayout extends StatelessWidget {
     homeController.getCurrentPrayer();
 
     return Container(
-      decoration: const BoxDecoration(
-        // color: primaryColor,
+      decoration: BoxDecoration(
+        color: primaryColor,
         image: DecorationImage(
-          opacity: .3,
+          opacity: .02,
           image: AssetImage(homeNewBg),
           fit: BoxFit.cover, // Ensures the image covers the entire background
         ),
