@@ -36,7 +36,7 @@ class EventsWidget extends StatelessWidget {
                 eventsController.events.value!.data.events.isEmpty)
               // Fallback static design
               SizedBox(
-                height: 225,
+                height: 226,
                 child: Column(
                   children: [
                     Padding(
@@ -107,7 +107,7 @@ class EventsWidget extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 8, vertical: 5),
                           child: Container(
-                            width: 275,
+                            width: 287,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
                               image: DecorationImage(
@@ -259,17 +259,17 @@ class EventsWidget extends StatelessWidget {
                             if (eventsController.events.value?.data.events ==
                                     null ||
                                 eventsController
-                                    .events.value!.data!.events.isEmpty) {
-                              return Container(
-                                child:
-                                    Center(child: Text("No Events Available")),
-                              );
+                                    .events.value!.data.events.isEmpty) {
+                              return const Center(
+                                  child: Text("No Events Available"));
                             }
 
                             return CarouselSlider.builder(
                               options: CarouselOptions(
+                                autoPlay: true,
+                                autoPlayInterval: Duration(seconds: 3),
                                 height: 169,
-                                viewportFraction: 0.8,
+                                viewportFraction: 1,
                                 enableInfiniteScroll: false,
                                 enlargeCenterPage: true,
                                 scrollDirection: Axis.horizontal,
@@ -278,7 +278,7 @@ class EventsWidget extends StatelessWidget {
                                 },
                               ),
                               itemCount: eventsController
-                                  .events.value!.data!.events.length,
+                                  .events.value!.data.events.length,
                               itemBuilder: (context, index, realIndex) {
                                 var eventData =
                                     eventsController.events.value!.data;
@@ -296,15 +296,10 @@ class EventsWidget extends StatelessWidget {
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 8, vertical: 5),
                                   child: Container(
-                                    width: 275,
+                                    width: screenWidth * 1,
                                     decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                          colors: [
-                                            Colors.black,
-                                            const Color.fromARGB(
-                                                255, 189, 188, 188),
-                                            Colors.black
-                                          ],
+                                      gradient: const LinearGradient(
+                                          colors: [Colors.black, Colors.black],
                                           begin: Alignment.centerLeft,
                                           end: Alignment.centerRight),
                                       borderRadius: BorderRadius.circular(10),
@@ -320,7 +315,7 @@ class EventsWidget extends StatelessWidget {
                                       children: [
                                         Padding(
                                           padding: const EdgeInsets.symmetric(
-                                              vertical: 12, horizontal: 12),
+                                              vertical: 7, horizontal: 12),
                                           child: Column(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.start,
@@ -361,22 +356,26 @@ class EventsWidget extends StatelessWidget {
                                               ),
                                               5.heightBox,
                                               Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 4),
-                                                child: Text(
-                                                  eventData.events[index]
-                                                      .eventDetail,
-                                                  style: const TextStyle(
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 4),
+                                                child: SizedBox(
+                                                  height: 50,
+                                                  width: 200,
+                                                  child: Text(
+                                                    eventData.events[index]
+                                                        .eventDetail,
+                                                    style: const TextStyle(
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      fontSize: 16,
+                                                      color: Colors.white,
+                                                      fontFamily:
+                                                          popinsSemiBold,
+                                                    ),
+                                                    maxLines: 2,
                                                     overflow:
                                                         TextOverflow.ellipsis,
-                                                    fontSize: 16,
-                                                    color: Colors.white,
-                                                    fontFamily: popinsSemiBold,
                                                   ),
-                                                  maxLines: 1,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
                                                 ),
                                               ),
                                               Spacer(),
@@ -442,7 +441,7 @@ class EventsWidget extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: List.generate(
                                 eventsController
-                                    .events.value!.data!.events.length,
+                                    .events.value!.data.events.length,
                                 (index) => Container(
                                   width: 8,
                                   height: 8,

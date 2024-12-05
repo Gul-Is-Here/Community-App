@@ -1,16 +1,11 @@
 import 'package:community_islamic_app/app_classes/app_class.dart';
-import 'package:community_islamic_app/views/donation_screens/donation_screen.dart';
 import 'package:community_islamic_app/views/namaz_timmings/namaztimmings.dart';
-import 'package:community_islamic_app/widgets/custome_drawer.dart';
 import 'package:community_islamic_app/widgets/featureWidgetIcons.dart';
 import 'package:community_islamic_app/widgets/our_services_widget.dart';
-import 'package:community_islamic_app/widgets/social_media_widget.dart';
-import 'package:community_islamic_app/widgets/social_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 import '../constants/color.dart';
@@ -21,10 +16,7 @@ import '../controllers/login_controller.dart';
 import '../hijri_calendar.dart';
 import '../model/prayer_times_static_model.dart';
 import '../services/notification_service.dart';
-import '../views/Gallery_Events/ask_imam_screen.dart';
-import '../views/Gallery_Events/chat_with_Rcc.dart';
 import 'announcements_widgets.dart';
-import 'customized_asr_widget.dart';
 import 'customized_prayertext_widget.dart';
 import 'eventsWidgets.dart';
 
@@ -71,11 +63,11 @@ class CustomizedMobileLayout extends StatelessWidget {
           children: [
             40.heightBox,
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 6),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -85,7 +77,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                         height: 32,
                         width: 32,
                       ),
-                      40.widthBox,
+                      2.widthBox,
                       Text(
                         'Rosenberg Community Centre',
                         style: TextStyle(
@@ -93,19 +85,17 @@ class CustomizedMobileLayout extends StatelessWidget {
                             color: whiteColor,
                             fontSize: 12),
                       ),
-                      19.widthBox,
-                      IconButton(
-                          onPressed: () {
-                            Scaffold.of(context).openDrawer();
-                          },
-                          icon: Icon(
-                            Icons.menu,
-                            color: whiteColor,
-                          ))
                     ],
                   ),
                 ),
-                // 10.widthBox,
+                IconButton(
+                    onPressed: () {
+                      Scaffold.of(context).openDrawer();
+                    },
+                    icon: Icon(
+                      Icons.menu,
+                      color: whiteColor,
+                    ))
               ],
             ),
             // 10.heightBox,
@@ -471,7 +461,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                     );
                   }),
                   Obx(() {
-                    if (homeController.prayerTime.value.data == null) {
+                    if (homeController.jummaTimes.value.data == null) {
                       return PrayerTimeWidget(
                         currentPrayer: getCurrentPrayer(),
                         namazName: 'Dhuhr',
@@ -504,7 +494,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                     homeController: homeController),
               ],
             ),
-            10.heightBox,
+            // 10.heightBox,
 
             Column(
               mainAxisAlignment: MainAxisAlignment.start,
