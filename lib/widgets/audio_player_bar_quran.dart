@@ -37,10 +37,10 @@ class AudioPlayerBar2 extends StatelessWidget {
       return Padding(
         padding: const EdgeInsets.only(left: 8, right: 8, bottom: 90),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10.0),
           decoration: BoxDecoration(
             color: primaryColor,
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(10.0),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.2),
