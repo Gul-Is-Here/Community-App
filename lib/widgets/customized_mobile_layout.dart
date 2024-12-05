@@ -16,6 +16,7 @@ import '../controllers/login_controller.dart';
 import '../hijri_calendar.dart';
 import '../model/prayer_times_static_model.dart';
 import '../services/notification_service.dart';
+import '../views/azan_settings/azan_settings_screen.dart';
 import 'announcements_widgets.dart';
 import 'customized_prayertext_widget.dart';
 import 'eventsWidgets.dart';
@@ -115,7 +116,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                             children: [
                               Obx(
                                 () => Text(
-                                  'Hours ${homeController.timeUntilNextPrayer} min left (${homeController.getNextPrayerTime()})',
+                                  '${homeController.timeUntilNextPrayer} (${homeController.getNextPrayerTime()})',
                                   style: TextStyle(
                                       color: whiteColor,
                                       fontFamily: popinsRegulr,
@@ -193,7 +194,21 @@ class CustomizedMobileLayout extends StatelessWidget {
                                 decoration: BoxDecoration(
                                     color: const Color(0xFF6CFD74),
                                     borderRadius: BorderRadius.circular(20)),
-                              )
+                              ),
+                              Spacer(),
+                              Padding(
+                                padding: const EdgeInsets.only(right: 12.0),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Get.to(() => AzanSettingsScreen());
+                                  },
+                                  child: Image.asset(
+                                    notificationICon,
+                                    width: 25,
+                                    height: 25,
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
                           Row(
@@ -244,6 +259,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                                               fontSize: 11),
                                         ),
                                       ),
+                                      //
                                     ],
                                   ),
                                   Row(
@@ -317,7 +333,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                                         end: Alignment.bottomRight,
                                       ).createShader(bounds),
                                       child: const Text(
-                                        'Share',
+                                        'Connect',
                                         style: TextStyle(
                                           fontFamily: popinsRegulr,
                                           fontSize: 12,

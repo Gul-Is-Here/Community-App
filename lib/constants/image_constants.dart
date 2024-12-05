@@ -133,7 +133,7 @@ const homeNewBg = 'assets/services_icons/Background.png';
 const donateUs = 'assets/icons/Donate Us.png';
 const shareIcon = 'assets/icons/Share.png';
 const eventIcon = 'assets/icons/Event.png';
-
+const notificationICon = 'assets/icons/Notification.png';
 // Feature Icons
 const quranIcon = 'assets/icons/Quran.png';
 const azkarIcon = 'assets/icons/Azkar-1.png';
