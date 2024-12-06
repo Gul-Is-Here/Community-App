@@ -25,7 +25,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
             context,
             index: 1,
             icon: mosqueIcon,
-            label: "Mosque",
+            label: "Qibla",
           ),
           _buildNavItem(
             context,

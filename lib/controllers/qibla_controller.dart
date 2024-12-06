@@ -12,7 +12,7 @@ class QiblahController extends GetxController with GetSingleTickerProviderStateM
   double begin = 0.0;
 
   // Reactive variable to track the selected image
-  Rx<String> selectedImage = (imageOptions[0]).obs;
+  // Rx<String> selectedImage = (imageOptions[0]).obs;
 
   @override
   void onInit() {
