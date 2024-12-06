@@ -1,8 +1,11 @@
 import 'package:community_islamic_app/views/Gallery_Events/ask_imam_screen.dart';
+import 'package:community_islamic_app/views/contact_us/contact_us_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:velocity_x/velocity_x.dart';
 
 import '../constants/color.dart';
 import '../constants/image_constants.dart';
@@ -180,126 +183,166 @@ class AppClass {
 // Method For Social Media Links
 
   void showSocialMediaDialog(BuildContext context) {
-    print('Pressed');
+    PageController pageController = PageController();
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: primaryColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
-          title: Text(
-            'Connect with RCC',
-            style: TextStyle(
-              fontFamily: popinsSemiBold,
-              fontSize: 18,
-              color: primaryColor,
+          contentPadding: EdgeInsets.zero,
+          titlePadding: const EdgeInsets.all(16),
+          title: Center(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: Text(
+                'Connect with RCC',
+                style: TextStyle(
+                  fontFamily: popinsSemiBold,
+                  fontSize: 16,
+                  color: whiteColor,
+                ),
+              ),
             ),
           ),
-          content: SingleChildScrollView(
-            child: SizedBox(
-              width: double.maxFinite,
-              child: GridView.count(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                crossAxisCount: 3,
-                crossAxisSpacing: 15.0,
-                mainAxisSpacing: 15.0,
-                children: [
-                  buildSocialMediaButton(
-                    icon: Image.asset(askImamIcon),
-                    label: 'Ask Imam',
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      Get.to(() => AskImamScreen());
-                    },
-                  ),
-                  buildSocialMediaButton(
-                    icon: Icon(Icons.email, color: primaryColor),
-                    label: 'Email Us',
-                    onPressed: () async {
-                      Navigator.of(context).pop();
-                      final Uri emailLaunchUri = Uri(
-                        scheme: 'mailto',
-                        path: 'admin@rosenbergcommunitycenter.org',
-                      );
-                      await launchUrl(emailLaunchUri);
-                    },
-                  ),
-                  buildSocialMediaButton(
-                    icon: const Icon(Icons.call, color: Colors.greenAccent),
-                    label: 'Call Us',
-                    onPressed: () async {
-                      Navigator.of(context).pop();
-                      final Uri phoneUri = Uri(
-                        scheme: 'tel',
-                        path: '+1 (281) 303-1758',
-                      );
-                      await launchUrl(phoneUri);
-                    },
-                  ),
-                  buildSocialMediaButton(
-                    icon: Image.asset(icWhatsapp),
-                    label: 'WhatsApp',
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      showWhatsAppDialog(
-                          context); // New dialog for WhatsApp options
-                    },
-                  ),
-                  buildSocialMediaButton(
-                    icon: const Icon(Icons.facebook, color: Colors.blueAccent),
-                    label: 'Facebook',
-                    onPressed: () async {
-                      Navigator.of(context).pop();
-                      await launchUrl(Uri.parse(
-                          'https://www.facebook.com/rosenbergcommunitycenter/'));
-                    },
-                  ),
-                  buildSocialMediaButton(
-                    icon: Image.asset(
-                      fit: BoxFit.cover,
-                      icyoutube,
+          content: SizedBox(
+            width: 335, // Fixed width
+            height: 280, // Fixed height
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: PageView(
+                      controller: pageController,
+                      children: [
+                        // Page 1 with 8 icons in 2 rows
+                        buildSocialMediaPage(context, [
+                          buildSocialMediaButton(
+                            context: context,
+                            image: icFacebook,
+                            label: 'Facebook',
+                            onPressed: () async {
+                              Navigator.of(context).pop();
+                              final Uri emailLaunchUri = Uri(
+                                scheme: 'mailto',
+                                path: 'admin@rosenbergcommunitycenter.org',
+                              );
+                              await launchUrl(emailLaunchUri);
+                            },
+                          ),
+                          buildSocialMediaButton(
+                            context: context,
+                            image: icInsta,
+                            label: 'Instagram',
+                            onPressed: () async {
+                              Navigator.of(context).pop();
+                              final Uri phoneUri = Uri(
+                                scheme: 'tel',
+                                path: '+1 (281) 303-1758',
+                              );
+                              await launchUrl(phoneUri);
+                            },
+                          ),
+                          buildSocialMediaButton(
+                            context: context,
+                            image: icYoutube,
+                            label: 'Youtube',
+                            onPressed: () async {
+                              Navigator.of(context).pop();
+                              await launchUrl(Uri.parse(
+                                  'https://www.facebook.com/rosenbergcommunitycenter/'));
+                            },
+                          ),
+                          buildSocialMediaButton(
+                            context: context,
+                            image: icWhatsApp,
+                            label: 'WhatsApp',
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              // WhatsApp action
+                            },
+                          ),
+                          buildSocialMediaButton(
+                            context: context,
+                            image: icNewsLetter,
+                            label: 'Newsletters',
+                            onPressed: () async {
+                              Navigator.of(context).pop();
+                              await launchUrl(Uri.parse(
+                                  'https://www.youtube.com/channel/UCBvcBiS7SvA7NDn6oI1Qu5Q'));
+                            },
+                          ),
+                          buildSocialMediaButton(
+                            context: context,
+                            image: icGmail,
+                            label: 'Email Us',
+                            onPressed: () async {
+                              Navigator.of(context).pop();
+                              await launchUrl(Uri.parse(
+                                  'https://www.instagram.com/rosenbergcommunitycenter'));
+                            },
+                          ),
+                          buildSocialMediaButton(
+                            context: context,
+                            image: icCall,
+                            label: 'Newsletters',
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              // Newsletter action
+                            },
+                          ),
+                          buildSocialMediaButton(
+                            context: context,
+                            image: icChat,
+                            label: 'RCC Chat',
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              // Chat action
+                            },
+                          ),
+                        ]),
+                        // Page 2 with 1 icon
+                        Align(
+                          alignment: Alignment.topLeft,
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: buildSocialMediaButton(
+                              context: context,
+                              image: icAskImam,
+                              label: 'Ask Imam',
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                                // Ask Imam action
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                    label: 'YouTube',
-                    onPressed: () async {
-                      Navigator.of(context).pop();
-                      await launchUrl(Uri.parse(
-                          'https://www.youtube.com/channel/UCBvcBiS7SvA7NDn6oI1Qu5Q'));
-                    },
                   ),
-                  buildSocialMediaButton(
-                    icon: Image.asset(icInstagram),
-                    label: 'Instagram',
-                    onPressed: () async {
-                      Navigator.of(context).pop();
-                      await launchUrl(Uri.parse(
-                          'https://www.instagram.com/rosenbergcommunitycenter/?igshid=MmIzYWVlNDQ5Yg%3D%3D'));
-                    },
-                  ),
-                  buildSocialMediaButton(
-                    icon: Icon(
-                      Icons.newspaper,
-                      color: primaryColor,
+                ),
+                Align(
+                  alignment: Alignment.center,
+                  child: SmoothPageIndicator(
+                    controller: pageController,
+                    count: 2, // Total pages
+                    effect: WormEffect(
+                      dotHeight: 9.0,
+                      dotWidth: 9.0,
+                      activeDotColor: Color(0xFF44A63C),
+                      dotColor: Color(0xFF335B5A),
                     ),
-                    label: 'Newsletters',
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
                   ),
-                  buildSocialMediaButton(
-                    icon: Icon(
-                      Icons.chat,
-                      color: primaryColor,
-                    ),
-                    label: 'RCC Chat',
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      Get.to(() => const ChatWithRCCScreen());
-                    },
-                  ),
-                ],
-              ),
+                ),
+                20.heightBox,
+              ],
             ),
           ),
         );
@@ -307,54 +350,54 @@ class AppClass {
     );
   }
 
-  void showWhatsAppDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          title: Text(
-            'Join WhatsApp Group',
-            style: TextStyle(
-              fontFamily: popinsSemiBold,
-              fontSize: 18,
-              color: primaryColor,
+  Widget buildSocialMediaPage(BuildContext context, List<Widget> buttons) {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: buttons.take(4).toList(),
+        ),
+        const SizedBox(height: 20),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: buttons.skip(4).take(4).toList(),
+        ),
+      ],
+    );
+  }
+
+  Widget buildSocialMediaButton({
+    required BuildContext context,
+    required String image,
+    required String label,
+    required VoidCallback onPressed,
+  }) {
+    return GestureDetector(
+      onTap: onPressed,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CircleAvatar(
+            radius: 28,
+            backgroundColor: lightColor,
+            child: Image.asset(
+              image,
+              width: 24,
+              height: 24,
             ),
           ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                leading: Image.asset(icWhatsapp),
-                title: Text(
-                  'RCC Brothers',
-                  style: TextStyle(fontFamily: popinsRegulr),
-                ),
-                onTap: () async {
-                  Navigator.of(context).pop();
-                  await launchUrl(Uri.parse(
-                      'https://chat.whatsapp.com/C558smdW2bc2asAJIeoS6t'));
-                },
-              ),
-              const Divider(),
-              ListTile(
-                leading: Image.asset(icWhatsapp),
-                title: const Text(
-                  'RCC Sisters',
-                  style: TextStyle(fontFamily: popinsRegulr),
-                ),
-                onTap: () async {
-                  Navigator.of(context).pop();
-                  await launchUrl(Uri.parse(
-                      'https://chat.whatsapp.com/JwNn9RLPj4kFcrOLW4ANgW'));
-                },
-              ),
-            ],
+          const SizedBox(height: 8),
+          Text(
+            label,
+            style: TextStyle(
+              fontFamily: popinsRegulr,
+              fontSize: 12,
+              color: whiteColor,
+            ),
+            textAlign: TextAlign.center,
           ),
-        );
-      },
+        ],
+      ),
     );
   }
 }

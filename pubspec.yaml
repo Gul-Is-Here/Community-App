@@ -72,6 +72,7 @@ flutter:
     - assets/images/
     - assets/services_icons/
     - assets/icons/
+    - assets/ConnectIcons/
 
   #   - images/a_dot_ham.jpeg
 

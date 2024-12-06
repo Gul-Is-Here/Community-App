@@ -70,24 +70,10 @@ const moonIcon = 'assets/home_icon/moon.png';
 const eventBg2 = 'assets/home_icon/event_bg.png';
 // Compass List Icons
 const compass1 = "assets/home_icon/compass.png";
-const compass2 = "assets/home_icon/compass2.jpg";
-const qiblaCircleIcon = "assets/home_icon/qiblacicle.png";
-const qiblaCircleIcon2 = "assets/home_icon/qiblacircle2.png";
-const qiblaMainIcon = "assets/home_icon/qiblaicon.png";
-const iqamalogo = "assets/home_icon/iqamalogo.png";
-const azanlogo = "assets/home_icon/azanlogo.png";
-const sunrise = "assets/home_icon/Sunrise.png";
-const sunset = "assets/home_icon/Sunset.png";
-const watch = "assets/home_icon/watch.png";
+
 const cardCircle = "assets/home_icon/cardcircle.png";
 
-final List<String> imageOptions = [
-  compass2,
-  updatedCompass2,
-  qiblaIcon2,
-  qiblaIcon4,
-  qiblaIcon5,
-];
+
 final List<String> bannerList = [
   banner1,
   banner2,
@@ -98,16 +84,7 @@ final List<String> bannerList = [
   banner3,
   banner4
 ];
-// final List<String> bannerList2 = [
-//   banner5,
-//   banner6,
-//   banner7,
-//   banner8,
-//   banner5,
-//   banner6,
-//   banner7,
-//   banner8
-// ];
+
 
 // Avatar List
 const icGirl = "assets/images/girl.png";
@@ -162,3 +139,15 @@ const bDonationIcon = 'assets/icons/Donate-1.png';
 const bDuaIcon = 'assets/icons/Dua-3.png';
 const bPrayerIcon = 'assets/icons/Prayers-1.png';
 const bHomeIcon = 'assets/icons/Home-1.png';
+
+// Social Media Icons
+
+const icFacebook = 'assets/ConnectIcons/Facebook.png';
+const icInsta = 'assets/ConnectIcons/Instagram.png';
+const icChat = 'assets/ConnectIcons/Chat.png';
+const icGmail = 'assets/ConnectIcons/Gmail.png';
+const icNewsLetter = 'assets/ConnectIcons/Newsletter.png';
+const icYoutube = 'assets/ConnectIcons/Youtube.png';
+const icWhatsApp = 'assets/ConnectIcons/Whatsapp.png';
+const icCall = 'assets/ConnectIcons/Call.png';
+const icAskImam = 'assets/ConnectIcons/Ask Imam.png';
