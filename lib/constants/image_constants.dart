@@ -69,10 +69,20 @@ const sunIcon = 'assets/home_icon/Sun.png';
 const moonIcon = 'assets/home_icon/moon.png';
 const eventBg2 = 'assets/home_icon/event_bg.png';
 // Compass List Icons
-const compass1 = "assets/home_icon/compass.png";
-
+const qiblaCircle = 'assets/ConnectIcons/circle.png';
+const qiblaCompass = 'assets/ConnectIcons/compass.png';
+const kabba = 'assets/ConnectIcons/kaaba.png';
 const cardCircle = "assets/home_icon/cardcircle.png";
+const compassBg = 'assets/ConnectIcons/compassBg.png';
 
+// Drawer ICons List
+
+const dNotificationIcon = '';
+const dAboutUsIcon = '';
+const dShareIcon = '';
+const dourPromise = '';
+const dContactUs = '';
+const dLogout = '';
 
 final List<String> bannerList = [
   banner1,
@@ -84,7 +94,6 @@ final List<String> bannerList = [
   banner3,
   banner4
 ];
-
 
 // Avatar List
 const icGirl = "assets/images/girl.png";
