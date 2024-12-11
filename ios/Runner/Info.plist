@@ -45,5 +45,15 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>We need access to your location to determine the Qibla direction.</string>
+	<key>UIRequiredDeviceCapabilities</key>
+	<array>
+    <string>location-services</string>
+    <string>gps</string>
+    <string>magnetometer</string>
+	</array>
+
+
 </dict>
 </plist>

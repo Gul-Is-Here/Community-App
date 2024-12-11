@@ -77,12 +77,12 @@ const compassBg = 'assets/ConnectIcons/compassBg.png';
 
 // Drawer ICons List
 
-const dNotificationIcon = '';
-const dAboutUsIcon = '';
-const dShareIcon = '';
-const dourPromise = '';
-const dContactUs = '';
-const dLogout = '';
+const dNotificationIcon = 'assets/icons/Notification.png';
+const dAboutUsIcon = 'assets/ConnectIcons/about_us.png';
+const dShareIcon = 'assets/ConnectIcons/share.png';
+const dourPromise = 'assets/ConnectIcons/promise.png';
+const dContactUs = 'assets/ConnectIcons/contact_us.png';
+const dLogout = 'assets/ConnectIcons/logout.png';
 
 final List<String> bannerList = [
   banner1,
