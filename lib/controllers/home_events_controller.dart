@@ -15,7 +15,8 @@ class HomeEventsController extends GetxController {
   var currentIndex = 0.obs;
   final String baseUrl = 'https://rosenbergcommunitycenter.org/api/allevents';
   final String accessKey = '7b150e45-e0c1-43bc-9290-3c0bf6473a51332';
-
+  RxBool isHiddenFeature = false.obs;
+  RxBool isHiddenServices = false.obs;
   @override
   void onInit() {
     super.onInit();

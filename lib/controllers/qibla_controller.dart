@@ -2,41 +2,46 @@ import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
-import '../constants/image_constants.dart';
 
-class QiblahController extends GetxController with GetSingleTickerProviderStateMixin {
+class QiblahController extends GetxController
+    with GetSingleTickerProviderStateMixin {
   var locationCountry = "".obs;
   var locationCity = "".obs;
+
   late Animation<double> animation;
   late AnimationController animationController;
-  double begin = 0.0;
 
-  // Reactive variable to track the selected image
-  // Rx<String> selectedImage = (imageOptions[0]).obs;
+  double begin = 0.0; // Initial rotation value in radians
 
   @override
   void onInit() {
     super.onInit();
     animationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 500), // Smooth 0.5 sec transition
+      duration:
+          const Duration(milliseconds: 500), // Smooth 0.5-second animation
     );
     animation = Tween(begin: 0.0, end: 0.0).animate(animationController);
-    getLocation(); // Get location on init
+    getLocation(); // Fetch location data on initialization
   }
 
+  /// Fetches the user's location and updates the city and country names.
   Future<void> getLocation() async {
-    LocationPermission permission = await Geolocator.requestPermission();
-    if (permission == LocationPermission.denied ||
-        permission == LocationPermission.deniedForever) {
-      // Show a message to the user if permission is denied
-      Get.snackbar('Location Permission', 'Please grant location permission.');
-      return;
-    }
-
     try {
+      LocationPermission permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied ||
+          permission == LocationPermission.deniedForever) {
+        // Inform the user about missing permissions
+        Get.snackbar(
+          'Location Permission',
+          'Please grant location permissions to determine Qiblah direction.',
+          snackPosition: SnackPosition.BOTTOM,
+        );
+        return;
+      }
+
       Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.best,
+        desiredAccuracy: LocationAccuracy.high,
       );
 
       List<Placemark> placemarks = await placemarkFromCoordinates(
@@ -45,24 +50,33 @@ class QiblahController extends GetxController with GetSingleTickerProviderStateM
       );
 
       if (placemarks.isNotEmpty) {
-        locationCountry.value = placemarks[0].country ?? "";
-        locationCity.value = placemarks[0].locality ?? "";
+        locationCountry.value = placemarks[0].country ?? "Unknown Country";
+        locationCity.value = placemarks[0].locality ?? "Unknown City";
       }
     } catch (e) {
-      Get.snackbar('Location Error', 'Failed to get location');
+      Get.snackbar(
+        'Location Error',
+        'Unable to determine location. Please try again.',
+        snackPosition: SnackPosition.BOTTOM,
+      );
     }
   }
 
-  // Call this function to update the Qiblah direction
+  /// Updates the Qiblah direction and smoothly animates the compass rotation.
   void updateQiblahDirection(double newQiblahDirection) {
-    double newEnd = (newQiblahDirection * (3.141592653589793 / 180) * -1);
+    // Convert the new Qiblah direction to radians
+    double newEnd = newQiblahDirection * (-3.141592653589793 / 180);
 
-    // Update only if there's a change in direction
+    // Update animation only if the direction changes
     if (newEnd != begin) {
-      animation = Tween(begin: begin, end: newEnd).animate(animationController);
-      begin = newEnd;
-
-      animationController.forward(from: 0);
+      animation = Tween(begin: begin, end: newEnd).animate(
+        CurvedAnimation(
+          parent: animationController,
+          curve: Curves.easeInOut, // Smoother transition
+        ),
+      );
+      begin = newEnd; // Update the start position for the next change
+      animationController.forward(from: 0); // Start the animation
     }
   }
 

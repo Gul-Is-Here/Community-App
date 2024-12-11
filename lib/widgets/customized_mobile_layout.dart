@@ -365,138 +365,146 @@ class CustomizedMobileLayout extends StatelessWidget {
             10.heightBox,
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Obx(() {
-                    // Check if the prayerTime data is null before accessing it
-                    if (homeController.prayerTime.value.data == null) {
-                      return PrayerTimeWidget(
-                        currentPrayer: getCurrentPrayer(),
-                        namazName: 'Fajr',
-                        timings:
-                            '6:33 AM', // Default value when prayerTime data is null
-                        iqamatimes: iqamatimes,
-                        name: 'FAJR',
-                      );
-                    }
+              child: Card(
+                elevation: 0,
+                margin: const EdgeInsets.all(0),
+                color: const Color(0xFF315B5A),
+                child: Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Obx(() {
+                        // Check if the prayerTime data is null before accessing it
+                        if (homeController.prayerTime.value.data == null) {
+                          return PrayerTimeWidget(
+                            currentPrayer: getCurrentPrayer(),
+                            namazName: 'Fajr',
+                            timings:
+                                '6:33 AM', // Default value when prayerTime data is null
+                            iqamatimes: iqamatimes,
+                            name: 'FAJR',
+                          );
+                        }
 
-                    // If the data is not null, use the actual prayer time
-                    return PrayerTimeWidget(
-                      currentPrayer: getCurrentPrayer(),
-                      namazName: 'Fajr',
-                      timings:
-                          homeController.prayerTime.value.data!.timings.fajr,
-                      iqamatimes: iqamatimes,
-                      name: 'FAJR',
-                    );
-                  }),
+                        // If the data is not null, use the actual prayer time
+                        return PrayerTimeWidget(
+                          currentPrayer: getCurrentPrayer(),
+                          namazName: 'Fajr',
+                          timings: homeController
+                              .prayerTime.value.data!.timings.fajr,
+                          iqamatimes: iqamatimes,
+                          name: 'FAJR',
+                        );
+                      }),
 
-                  // Similarly handle the other prayer times to prevent null errors
-                  Obx(() {
-                    if (homeController.prayerTime.value.data == null) {
-                      return PrayerTimeWidget(
-                        currentPrayer: getCurrentPrayer(),
-                        namazName: 'Dhuhr',
-                        timings:
-                            '12:10 PM', // Default value when prayerTime data is null
-                        iqamatimes: iqamatimes,
-                        name: 'DHUHR',
-                      );
-                    }
-                    return PrayerTimeWidget(
-                      currentPrayer: getCurrentPrayer(),
-                      namazName: 'Dhuhr',
-                      timings:
-                          homeController.prayerTime.value.data!.timings.dhuhr,
-                      iqamatimes: iqamatimes,
-                      name: 'DHUHR',
-                    );
-                  }),
+                      // Similarly handle the other prayer times to prevent null errors
+                      Obx(() {
+                        if (homeController.prayerTime.value.data == null) {
+                          return PrayerTimeWidget(
+                            currentPrayer: getCurrentPrayer(),
+                            namazName: 'Dhuhr',
+                            timings:
+                                '12:10 PM', // Default value when prayerTime data is null
+                            iqamatimes: iqamatimes,
+                            name: 'DHUHR',
+                          );
+                        }
+                        return PrayerTimeWidget(
+                          currentPrayer: getCurrentPrayer(),
+                          namazName: 'Dhuhr',
+                          timings: homeController
+                              .prayerTime.value.data!.timings.dhuhr,
+                          iqamatimes: iqamatimes,
+                          name: 'DHUHR',
+                        );
+                      }),
 
-                  Obx(() {
-                    if (homeController.prayerTime.value.data == null) {
-                      return PrayerTimeWidget(
-                        currentPrayer: getCurrentPrayer(),
-                        namazName: 'Asr',
-                        timings:
-                            '03:04 PM', // Default value when prayerTime data is null
-                        iqamatimes: iqamatimes,
-                        name: 'ASR',
-                      );
-                    }
-                    return PrayerTimeWidget(
-                      currentPrayer: getCurrentPrayer(),
-                      namazName: 'Asr',
-                      timings:
-                          homeController.prayerTime.value.data!.timings.asr,
-                      iqamatimes: iqamatimes,
-                      name: 'ASR',
-                    );
-                  }),
+                      Obx(() {
+                        if (homeController.prayerTime.value.data == null) {
+                          return PrayerTimeWidget(
+                            currentPrayer: getCurrentPrayer(),
+                            namazName: 'Asr',
+                            timings:
+                                '03:04 PM', // Default value when prayerTime data is null
+                            iqamatimes: iqamatimes,
+                            name: 'ASR',
+                          );
+                        }
+                        return PrayerTimeWidget(
+                          currentPrayer: getCurrentPrayer(),
+                          namazName: 'Asr',
+                          timings:
+                              homeController.prayerTime.value.data!.timings.asr,
+                          iqamatimes: iqamatimes,
+                          name: 'ASR',
+                        );
+                      }),
 
-                  Obx(() {
-                    if (homeController.prayerTime.value.data == null) {
-                      return PrayerTimeWidget(
-                        currentPrayer: getCurrentPrayer(),
-                        namazName: 'Maghrib',
-                        timings:
-                            '05:23 PM', // Default value when prayerTime data is null
-                        iqamatimes: iqamatimes,
-                        name: 'MAGHRIB',
-                      );
-                    }
-                    return PrayerTimeWidget(
-                      currentPrayer: getCurrentPrayer(),
-                      namazName: 'Maghrib',
-                      timings:
-                          homeController.prayerTime.value.data!.timings.maghrib,
-                      iqamatimes: iqamatimes,
-                      name: 'MAGHRIB',
-                    );
-                  }),
+                      Obx(() {
+                        if (homeController.prayerTime.value.data == null) {
+                          return PrayerTimeWidget(
+                            currentPrayer: getCurrentPrayer(),
+                            namazName: 'Maghrib',
+                            timings:
+                                '05:23 PM', // Default value when prayerTime data is null
+                            iqamatimes: iqamatimes,
+                            name: 'MAGHRIB',
+                          );
+                        }
+                        return PrayerTimeWidget(
+                          currentPrayer: getCurrentPrayer(),
+                          namazName: 'Maghrib',
+                          timings: homeController
+                              .prayerTime.value.data!.timings.maghrib,
+                          iqamatimes: iqamatimes,
+                          name: 'MAGHRIB',
+                        );
+                      }),
 
-                  Obx(() {
-                    if (homeController.prayerTime.value.data == null) {
-                      return PrayerTimeWidget(
-                        currentPrayer: getCurrentPrayer(),
-                        namazName: 'Isha',
-                        timings:
-                            '06:33 PM', // Default value when prayerTime data is null
-                        iqamatimes: iqamatimes,
-                        name: 'ISHA',
-                      );
-                    }
-                    return PrayerTimeWidget(
-                      currentPrayer: getCurrentPrayer(),
-                      namazName: 'Isha',
-                      timings:
-                          homeController.prayerTime.value.data!.timings.isha,
-                      iqamatimes: iqamatimes,
-                      name: 'ISHA',
-                    );
-                  }),
-                  Obx(() {
-                    if (homeController.jummaTimes.value.data == null) {
-                      return PrayerTimeWidget(
-                        currentPrayer: getCurrentPrayer(),
-                        namazName: 'Dhuhr',
-                        timings:
-                            '12:10 PM', // Default value when prayerTime data is null
-                        iqamatimes: iqamatimes,
-                        name: 'JUMUAH',
-                      );
-                    }
-                    return PrayerTimeWidget(
-                      currentPrayer: getCurrentPrayer(),
-                      namazName: 'Dhuhr',
-                      timings: homeController
-                          .jummaTimes.value.data!.jumah.prayerTiming,
-                      iqamatimes: iqamatimes,
-                      name: 'JUMUAH',
-                    );
-                  }),
-                ],
+                      Obx(() {
+                        if (homeController.prayerTime.value.data == null) {
+                          return PrayerTimeWidget(
+                            currentPrayer: getCurrentPrayer(),
+                            namazName: 'Isha',
+                            timings:
+                                '06:33 PM', // Default value when prayerTime data is null
+                            iqamatimes: iqamatimes,
+                            name: 'ISHA',
+                          );
+                        }
+                        return PrayerTimeWidget(
+                          currentPrayer: getCurrentPrayer(),
+                          namazName: 'Isha',
+                          timings: homeController
+                              .prayerTime.value.data!.timings.isha,
+                          iqamatimes: iqamatimes,
+                          name: 'ISHA',
+                        );
+                      }),
+                      Obx(() {
+                        if (homeController.jummaTimes.value.data == null) {
+                          return PrayerTimeWidget(
+                            currentPrayer: getCurrentPrayer(),
+                            namazName: 'Dhuhr',
+                            timings:
+                                '12:10 PM', // Default value when prayerTime data is null
+                            iqamatimes: iqamatimes,
+                            name: 'JUMUAH',
+                          );
+                        }
+                        return PrayerTimeWidget(
+                          currentPrayer: getCurrentPrayer(),
+                          namazName: 'Dhuhr',
+                          timings: homeController
+                              .jummaTimes.value.data!.jumah.prayerTiming,
+                          iqamatimes: iqamatimes,
+                          name: 'JUMUAH',
+                        );
+                      }),
+                    ],
+                  ),
+                ),
               ),
             ),
 
@@ -529,48 +537,45 @@ class CustomizedMobileLayout extends StatelessWidget {
                             color: whiteColor,
                             fontSize: 16),
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          // Get.to(() => AnnouncementsScreen());
-                        },
-                        child: Text(
-                          'View All',
-                          style: TextStyle(
-                              fontFamily: popinsRegulr,
-                              color: whiteColor,
-                              fontSize: 12),
-                        ),
+                      Obx(
+                        () => IconButton(
+                            onPressed: () {
+                              eventsController.isHiddenFeature.value =
+                                  !eventsController.isHiddenFeature.value;
+                            },
+                            icon: eventsController.isHiddenFeature.value
+                                ? Icon(
+                                    Icons.keyboard_arrow_down,
+                                    color: whiteColor,
+                                  )
+                                : Icon(
+                                    Icons.keyboard_arrow_up,
+                                    color: whiteColor,
+                                  )),
                       )
                     ],
                   ),
                 ),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      FeatureWidgeticons(icons: quranIcon, onTap: () {}),
-                      FeatureWidgeticons(icons: azkarIcon, onTap: () {}),
-                      FeatureWidgeticons(icons: haditIcon, onTap: () {}),
-                      FeatureWidgeticons(icons: duaIcon, onTap: () {}),
-                      FeatureWidgeticons(icons: tasbihIcon, onTap: () {}),
-                      FeatureWidgeticons(icons: qiblaIcon, onTap: () {})
-                    ],
-                  ),
-                ),
-                5.heightBox,
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  child: Text(
-                    'Our Services',
-                    style: TextStyle(
-                        fontFamily: popinsBold,
-                        color: whiteColor,
-                        fontSize: 16),
-                  ),
-                ),
+                Obx(() {
+                  if (!eventsController.isHiddenFeature.value) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 8),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          FeatureWidgeticons(icons: quranIcon, onTap: () {}),
+                          FeatureWidgeticons(icons: azkarIcon, onTap: () {}),
+                          FeatureWidgeticons(icons: haditIcon, onTap: () {}),
+                          FeatureWidgeticons(icons: duaIcon, onTap: () {}),
+                          FeatureWidgeticons(icons: tasbihIcon, onTap: () {}),
+                          FeatureWidgeticons(icons: qiblaIcon, onTap: () {})
+                        ],
+                      ),
+                    );
+                  }
+                  return SizedBox();
+                }),
                 5.heightBox,
                 Padding(
                   padding:
@@ -578,48 +583,91 @@ class CustomizedMobileLayout extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      OurServicesWidget(
-                        title: '5 DAILY\PRAYERS',
-                        image: dailyPrayer,
-                        onTap: () {},
+                      Text(
+                        'Our Services',
+                        style: TextStyle(
+                            fontFamily: popinsBold,
+                            color: whiteColor,
+                            fontSize: 16),
                       ),
-                      OurServicesWidget(
-                        title: 'FREE QURAN CLASSES',
-                        image: freeQuranClasses,
-                        onTap: () {},
-                      ),
-                      OurServicesWidget(
-                        title: 'YOUTH SIRA SERIES',
-                        image: youthSeraSeries,
-                        onTap: () {},
+                      Obx(
+                        () => IconButton(
+                            onPressed: () {
+                              eventsController.isHiddenServices.value =
+                                  !eventsController.isHiddenServices.value;
+                            },
+                            icon: eventsController.isHiddenServices.value
+                                ? Icon(
+                                    Icons.keyboard_arrow_down,
+                                    color: whiteColor,
+                                  )
+                                : Icon(
+                                    Icons.keyboard_arrow_up,
+                                    color: whiteColor,
+                                  )),
                       ),
                     ],
                   ),
                 ),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      OurServicesWidget(
-                        title: 'GIRLS HALAQA',
-                        image: girlsHaqa,
-                        onTap: () {},
+                5.heightBox,
+                Obx(() {
+                  if (!eventsController.isHiddenServices.value) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 8),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          OurServicesWidget(
+                            title: '5 DAILY\PRAYERS',
+                            image: dailyPrayer,
+                            onTap: () {},
+                          ),
+                          OurServicesWidget(
+                            title: 'FREE QURAN CLASSES',
+                            image: freeQuranClasses,
+                            onTap: () {},
+                          ),
+                          OurServicesWidget(
+                            title: 'YOUTH SIRA SERIES',
+                            image: youthSeraSeries,
+                            onTap: () {},
+                          ),
+                        ],
                       ),
-                      OurServicesWidget(
-                        title: 'YOUTH PROGRAM',
-                        image: youthProgram,
-                        onTap: () {},
+                    );
+                  }
+                  return const SizedBox();
+                }),
+                Obx(() {
+                  if (!eventsController.isHiddenServices.value) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 8),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          OurServicesWidget(
+                            title: 'GIRLS HALAQA',
+                            image: girlsHaqa,
+                            onTap: () {},
+                          ),
+                          OurServicesWidget(
+                            title: 'YOUTH PROGRAM',
+                            image: youthProgram,
+                            onTap: () {},
+                          ),
+                          OurServicesWidget(
+                            title: 'YOUTH SOCCER CLUB',
+                            image: youthsoccorClub,
+                            onTap: () {},
+                          ),
+                        ],
                       ),
-                      OurServicesWidget(
-                        title: 'YOUTH SOCCER CLUB',
-                        image: youthsoccorClub,
-                        onTap: () {},
-                      ),
-                    ],
-                  ),
-                )
+                    );
+                  }
+                  return SizedBox();
+                })
               ],
             ),
             100.heightBox,
