@@ -1,3 +1,4 @@
+import 'package:community_islamic_app/constants/image_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -181,7 +182,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                 ),
                 IconButton(
                   onPressed: () => _pageController.nextPage(
-                    duration: Duration(milliseconds: 300),
+                    duration: const Duration(milliseconds: 300),
                     curve: Curves.ease,
                   ),
                   icon: const Icon(Icons.arrow_forward_ios, size: 15),
@@ -218,25 +219,77 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 
                           return Padding(
                             padding: const EdgeInsets.symmetric(vertical: 8.0),
-                            child: Card(
-                              child: Column(
-                                children: [
-                                  ListTile(
-                                    title: Text(
-                                      event.eventDetail,
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        color: primaryColor,
-                                        fontFamily: popinsMedium,
-                                      ),
-                                    ),
-                                    subtitle: Text(
-                                      DateFormat('MMMM d, yyyy h:mm a')
-                                          .format(event.eventDate),
-                                    ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  DateFormat('d MMMM yyyy h:mm a')
+                                      .format(event.eventDate),
+                                  style: TextStyle(
+                                      fontFamily: popinsRegulr, fontSize: 20),
+                                ),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 8.0),
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        height: 54,
+                                        decoration: BoxDecoration(
+                                            color: const Color(0xFFD5CEFB),
+                                            borderRadius:
+                                                BorderRadius.circular(5)),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: Image.asset(icMale,
+                                                      filterQuality:
+                                                          FilterQuality.high,
+                                                      fit: BoxFit.cover),
+                                                ),
+                                                Text(
+                                                  event.eventTitle,
+                                                  style: TextStyle(
+                                                    fontSize: 16,
+                                                    color: primaryColor,
+                                                    fontFamily: popinsMedium,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: event.paid == '0'
+                                                  ? Text(
+                                                      'Free Event',
+                                                      style: TextStyle(
+                                                          fontFamily:
+                                                              popinsMedium,
+                                                          fontSize: 16,
+                                                          color: event.paid ==
+                                                                  '1'
+                                                              ? Color(
+                                                                  0xFF735BF2)
+                                                              : const Color(
+                                                                  0xFF0095FF)),
+                                                    )
+                                                  : Text('Paid Event'),
+                                            )
+                                          ],
+                                        ),
+                                      )
+                                    ],
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                           );
                         },
@@ -333,8 +386,10 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                     width: 6.0,
                     height: 6.0,
                     decoration: BoxDecoration(
-                      color: isSelected ? Colors.red : primaryColor,
-                      shape: BoxShape.circle,
+                      borderRadius: BorderRadius.circular(30),
+                      border: isEventDay 
+                          ? Border.all(color: Color(0xFF00A53C))
+                          : Border.all(color: whiteColor),
                     ),
                   ),
                 ),

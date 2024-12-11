@@ -160,3 +160,9 @@ const icYoutube = 'assets/ConnectIcons/Youtube.png';
 const icWhatsApp = 'assets/ConnectIcons/Whatsapp.png';
 const icCall = 'assets/ConnectIcons/Call.png';
 const icAskImam = 'assets/ConnectIcons/Ask Imam.png';
+
+// Events Details Screen ICons
+
+const icFemale = 'assets/ConnectIcons/icFemale.png';
+const icFamily = 'assets/ConnectIcons/icFamily.png';
+const icMale = 'assets/ConnectIcons/male.png';
