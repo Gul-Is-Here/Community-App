@@ -83,6 +83,7 @@ const dShareIcon = 'assets/ConnectIcons/share.png';
 const dourPromise = 'assets/ConnectIcons/promise.png';
 const dContactUs = 'assets/ConnectIcons/contact_us.png';
 const dLogout = 'assets/ConnectIcons/logout.png';
+const icLocation = 'assets/ConnectIcons/location.png';
 
 final List<String> bannerList = [
   banner1,

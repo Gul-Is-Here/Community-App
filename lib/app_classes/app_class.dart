@@ -400,4 +400,173 @@ class AppClass {
       ),
     );
   }
+
+  // ---- Show Model Bottom Sheet of Events Details Page
+  Future<dynamic> EventDetailsShowModelBottomSheet(BuildContext context) {
+    return showModalBottomSheet(
+      isScrollControlled: true,
+      backgroundColor: Color(0xFFB3E8DA),
+      context: context,
+      builder: (context) => FractionallySizedBox(
+        heightFactor: .75,
+        child: Container(
+          // height: 600,
+          width: double.infinity,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SizedBox(
+                      width: 250,
+                      child: Text(
+                        maxLines: 2,
+                        'Lorem Ipsum is simply dummy text of the printing.',
+                        style: TextStyle(
+                            overflow: TextOverflow.ellipsis,
+                            fontSize: 18,
+                            fontFamily: popinsSemiBold,
+                            color: Color(0xFF00A53C)),
+                      ),
+                    ),
+                    Image.asset(
+                      shareIcon,
+                      height: 30,
+                      width: 30,
+                    )
+                  ],
+                ),
+                10.heightBox,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Event Time',
+                          style: TextStyle(
+                              fontFamily: popinsSemiBold,
+                              fontSize: 16,
+                              color: secondaryColor),
+                        ),
+                        10.heightBox,
+                        Text(
+                          'Start: 12:00 pm',
+                          style: TextStyle(
+                              fontFamily: popinsRegulr,
+                              color: Colors.black,
+                              fontSize: 12),
+                        ),
+                        10.heightBox,
+                        Text(
+                          'ENd: 02:00 pm',
+                          style: TextStyle(
+                              fontFamily: popinsRegulr,
+                              color: Colors.black,
+                              fontSize: 12),
+                        )
+                      ],
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Event',
+                          style: TextStyle(
+                              fontFamily: popinsSemiBold,
+                              fontSize: 16,
+                              color: secondaryColor),
+                        ),
+                        10.heightBox,
+                        Text(
+                          'Type: Female',
+                          style: TextStyle(
+                              fontFamily: popinsRegulr,
+                              color: Colors.black,
+                              fontSize: 12),
+                        ),
+                        10.heightBox,
+                        Text(
+                          'Entry: Paid',
+                          style: TextStyle(
+                              fontFamily: popinsRegulr,
+                              color: Colors.black,
+                              fontSize: 12),
+                        )
+                      ],
+                    )
+                  ],
+                ),
+                20.heightBox,
+                Text(
+                  'Event Date',
+                  style: TextStyle(
+                      fontFamily: popinsSemiBold,
+                      fontSize: 16,
+                      color: secondaryColor),
+                ),
+                10.heightBox,
+                Text(
+                  'Saturday, 09 December, 2024',
+                  style: TextStyle(
+                      fontFamily: popinsRegulr,
+                      color: Colors.black,
+                      fontSize: 12),
+                ),
+                20.heightBox,
+                Text(
+                  'Details',
+                  style: TextStyle(
+                      fontFamily: popinsSemiBold,
+                      fontSize: 16,
+                      color: secondaryColor),
+                ),
+                10.heightBox,
+                Text(
+                  maxLines: 8,
+                  "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+                  style: TextStyle(
+                      overflow: TextOverflow.ellipsis,
+                      fontSize: 16,
+                      fontFamily: popinsRegulr,
+                      color: Colors.black),
+                ),
+                20.heightBox,
+                Row(
+                  children: [
+                    Image.asset(icLocation),
+                    10.widthBox,
+                    Text(
+                      'Details',
+                      style: TextStyle(
+                          fontFamily: popinsSemiBold,
+                          fontSize: 16,
+                          color: secondaryColor),
+                    ),
+                  ],
+                ),
+                10.heightBox,
+                const Text(
+                    maxLines: 4,
+                    'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+                    style: TextStyle(
+                        overflow: TextOverflow.ellipsis,
+                        fontSize: 16,
+                        fontFamily: popinsRegulr,
+                        color: Colors.black))
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }

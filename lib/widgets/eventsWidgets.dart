@@ -1,7 +1,7 @@
 import 'package:community_islamic_app/app_classes/app_class.dart';
 import 'package:community_islamic_app/constants/image_constants.dart';
 import 'package:community_islamic_app/views/home_screens/EventsAndannouncements/events_details_screen.dart';
-import 'package:community_islamic_app/views/home_screens/EventsAndannouncements/events_details_screen_all.dart';
+import 'package:community_islamic_app/views/home_screens/EventsAndannouncements/allEvents.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
@@ -282,14 +282,7 @@ class EventsWidget extends StatelessWidget {
                               itemBuilder: (context, index, realIndex) {
                                 var eventData =
                                     eventsController.events.value!.data;
-                                final feedsImages = bannerList.isNotEmpty
-                                    ? bannerList[index]
-                                    : ''; // Null check for bannerList
-                                final feedImage =
-                                    eventsController.feedsList.length > index
-                                        ? eventsController
-                                            .feedsList[index].feedImage
-                                        : null;
+                                // Null check for bannerList
 
                                 // Check if feedImage is null, use a placeholder
                                 return Padding(
@@ -298,19 +291,23 @@ class EventsWidget extends StatelessWidget {
                                   child: Container(
                                     width: screenWidth * 1,
                                     decoration: BoxDecoration(
-                                      gradient: const LinearGradient(
-                                          colors: [Colors.black, Colors.black],
-                                          begin: Alignment.centerLeft,
-                                          end: Alignment.centerRight),
-                                      borderRadius: BorderRadius.circular(10),
-                                      image: feedImage != null
-                                          ? DecorationImage(
-                                              image: NetworkImage(feedImage),
-                                              opacity: .3,
-                                              fit: BoxFit.cover,
-                                            )
-                                          : null, // Fallback if feedImage is null
-                                    ),
+                                        gradient: const LinearGradient(
+                                            colors: [
+                                              Colors.black,
+                                              Colors.black
+                                            ],
+                                            begin: Alignment.centerLeft,
+                                            end: Alignment.centerRight),
+                                        borderRadius: BorderRadius.circular(10),
+                                        image: DecorationImage(
+                                          image: NetworkImage(
+                                            eventData.events[index].eventImage,
+                                          ),
+                                          opacity: .3,
+                                          fit: BoxFit.cover,
+                                        )
+                                        // Fallback if feedImage is null
+                                        ),
                                     child: Row(
                                       children: [
                                         Padding(
@@ -363,7 +360,7 @@ class EventsWidget extends StatelessWidget {
                                                   width: 200,
                                                   child: Text(
                                                     eventData.events[index]
-                                                        .eventDetail,
+                                                        .eventTitle,
                                                     style: const TextStyle(
                                                       overflow:
                                                           TextOverflow.ellipsis,
@@ -383,7 +380,9 @@ class EventsWidget extends StatelessWidget {
                                                 onTap: () {
                                                   Get.to(() =>
                                                       EventsDetailsScreen(
-                                                        imageUrl: feedsImages,
+                                                        imageUrl: eventData
+                                                            .events[index]
+                                                            .eventImage,
                                                         eventDate: eventData
                                                             .events[index]
                                                             .eventDate
@@ -434,7 +433,7 @@ class EventsWidget extends StatelessWidget {
                             if (eventsController.events.value?.data.events ==
                                     null ||
                                 eventsController
-                                    .events.value!.data!.events.isEmpty) {
+                                    .events.value!.data.events.isEmpty) {
                               return Container();
                             }
                             return Row(

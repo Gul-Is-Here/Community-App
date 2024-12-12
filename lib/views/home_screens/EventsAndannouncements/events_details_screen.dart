@@ -24,6 +24,7 @@ class EventsDetailsScreen extends StatelessWidget {
     DateTime parsedEventDate = DateTime.parse(eventDate);
 
     return Scaffold(
+      backgroundColor: Color(0xFFB3E8DA),
       appBar: AppBar(
         backgroundColor: primaryColor,
         elevation: 0,
@@ -46,26 +47,7 @@ class EventsDetailsScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Calendar view with highlighted event date
-            ClipRRect(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(15.0),
-                topRight: Radius.circular(15.0),
-              ),
-              child: Image.network(
-                imageUrl,
-                width: double.infinity,
-                height: 400,
-                fit: BoxFit.fitHeight,
-                errorBuilder: (context, error, stackTrace) {
-                  return Container(
-                    height: 180,
-                    color: Colors.grey[300],
-                    child: const Icon(Icons.broken_image,
-                        size: 100, color: Colors.grey),
-                  );
-                },
-              ),
-            ),
+
             const SizedBox(height: 20),
             // Event Details Section
             const Text(
