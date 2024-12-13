@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import '../model/home_events_model.dart';
 
 class HomeEventsController extends GetxController {
+  RxInt? selectedEventType;
   var isLoading = false.obs; // Observable to track loading state
   var events = Rxn<Events>(); // Observable to store the fetched events
   var feedsList = <Feed>[].obs; // Observable list to store the fetched feeds
@@ -23,6 +24,7 @@ class HomeEventsController extends GetxController {
     fetchEventsData(); // Fetch events when the controller is initialized
     fetchFeedsData(); // Fetch feeds when the controller is initialized
     fetchAlertsData();
+
     feedsList;
   }
 
@@ -129,4 +131,6 @@ class HomeEventsController extends GetxController {
   void updateSelectedAnnouncementIndex(int index) {
     selectedIndexAnnouncment.value = index;
   }
+
+  
 }
