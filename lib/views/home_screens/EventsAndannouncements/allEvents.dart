@@ -1,4 +1,6 @@
+import 'package:community_islamic_app/constants/globals.dart';
 import 'package:community_islamic_app/constants/image_constants.dart';
+import 'package:community_islamic_app/controllers/all_event_controller.dart';
 import 'package:community_islamic_app/views/home_screens/EventsAndannouncements/events_details_screen.dart';
 import 'package:community_islamic_app/widgets/eventsWidgets.dart';
 import 'package:flutter/material.dart';
@@ -13,9 +15,15 @@ import '../../../app_classes/app_class.dart';
 
 class AllEventsDatesScreen extends StatelessWidget {
   final HomeEventsController eventsController = Get.put(HomeEventsController());
+  final EventTypeController eventTypeController =
+      Get.put(EventTypeController());
 
   @override
   Widget build(BuildContext context) {
+    // Event Type Filter
+
+    RxInt selectedEventType = 1.obs;
+
     return Scaffold(
       backgroundColor: whiteColor,
       appBar: AppBar(
@@ -38,7 +46,15 @@ class AllEventsDatesScreen extends StatelessWidget {
         } else {
           Map<DateTime, List<Event>> eventDates = {};
 
-          for (var event in eventsController.events.value!.data.events) {
+          // Filter events based on selected event type
+          List<Event> filteredEvents = eventsController
+              .events.value!.data.events
+              .where((event) =>
+                  selectedEventType.value == 1 ||
+                  event.eventhastype.eventtypeId == selectedEventType.value)
+              .toList();
+
+          for (var event in filteredEvents) {
             DateTime eventDay = DateTime(
               event.eventDate.year,
               event.eventDate.month,
@@ -56,87 +72,56 @@ class AllEventsDatesScreen extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
+                // Event Type Selector
                 SizedBox(
-                    height: 40,
-                    child: ListView.builder(
-                        // itemExtent: 70,
-                        scrollDirection: Axis.horizontal,
-                        itemCount:
-                            eventsController.events.value!.data.events.length,
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: const EdgeInsets.only(left: 8.0, right: 2),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                eventsController
-                                                .events
-                                                .value!
-                                                .data
-                                                .events[index]
-                                                .eventhastype
-                                                .eventtypeName ==
-                                            'Boys and Girls (Under 16)' ||
-                                        eventsController
-                                                .events
-                                                .value!
-                                                .data
-                                                .events[index]
-                                                .eventhastype
-                                                .eventtypeName ==
-                                            'Sisters Only'
-                                    ? Container(
-                                        alignment: Alignment.center,
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(5),
-                                            color: Color(0xFFB9EED2)),
-                                        height: 41,
-                                        width: 80,
-                                        child: Center(
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 4.0),
-                                            child: Text(
-                                              eventsController
-                                                  .events
-                                                  .value!
-                                                  .data
-                                                  .events[index]
-                                                  .eventhastype
-                                                  .eventtypeName,
-                                              style: TextStyle(
-                                                  fontFamily: popinsMedium),
-                                            ),
-                                          ),
-                                        ),
-                                      )
-                                    : Container(
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(5),
-                                            color: Color(0xFFB9EED2)),
-                                        height: 41,
-                                        width: 59,
-                                        child: Center(
-                                          child: Text(
-                                            eventsController
-                                                .events
-                                                .value!
-                                                .data
-                                                .events[index]
-                                                .eventhastype
-                                                .eventtypeName,
-                                            style: TextStyle(
-                                                fontFamily: popinsMedium),
-                                          ),
-                                        ),
-                                      ),
-                              ],
-                            ),
-                          );
-                        })),
+                  height: 40,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: eventTypeController.eventTypes.length,
+                    itemBuilder: (context, index) {
+                      final eventType = eventTypeController.eventTypes[index];
+                      final isMatched = eventsController
+                          .events.value!.data.events
+                          .any((event) {
+                        return event.eventhastype.eventtypeId ==
+                            eventType.eventtypeId;
+                      });
+                      return GestureDetector(
+                        onTap: () {
+                          selectedEventType.value = eventType.eventtypeId;
+                        },
+                        child: isMatched
+                            ? Container(
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 8.0, horizontal: 16.0),
+                                decoration: BoxDecoration(
+                                  color: selectedEventType.value ==
+                                          eventType.eventtypeId
+                                      ? primaryColor
+                                      : const Color(0xFFB9EED2),
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    eventType.eventtypeName,
+                                    style: TextStyle(
+                                      color: selectedEventType.value ==
+                                              eventType.eventtypeId
+                                          ? whiteColor
+                                          : Colors.black,
+                                      fontFamily: popinsMedium,
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : SizedBox(),
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(height: 16),
                 Expanded(
                   child: CalendarWidget(
                     initialDate: DateTime.now(),
@@ -181,18 +166,31 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   }
 
   void _initializeSelectedDateAndEvents() {
-    if (widget.eventDates.containsKey(_currentDate)) {
-      _selectedDate = _currentDate;
+    if (widget.eventDates.isNotEmpty) {
+      if (widget.eventDates.containsKey(_currentDate)) {
+        _selectedDate = _currentDate;
+      } else {
+        _selectedDate = widget.eventDates.keys.first;
+      }
+      _updateSelectedEvents(null); // Show all events
     } else {
-      _selectedDate = widget.eventDates.keys.first;
+      // Handle the case when there are no events
+      _selectedDate = null; // Or assign some default value if needed
+      _selectedEvents = [];
     }
-    _updateSelectedEvents(_selectedDate!);
   }
 
-  void _updateSelectedEvents(DateTime date) {
+  void _updateSelectedEvents(DateTime? date) {
     setState(() {
       _selectedDate = date;
-      _selectedEvents = widget.eventDates[date] ?? [];
+      if (date == null) {
+        // Show all events if no specific date is selected
+        _selectedEvents =
+            widget.eventDates.values.expand((events) => events).toList();
+      } else {
+        // Show events for the selected date
+        _selectedEvents = widget.eventDates[date] ?? [];
+      }
     });
   }
 
@@ -205,52 +203,51 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final HomeEventsController eventsController =
-        Get.put(HomeEventsController());
     int daysInMonth =
         DateTime(_currentDate.year, _currentDate.month + 1, 0).day;
 
     return Column(
       children: [
         Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IconButton(
-                  onPressed: () => _pageController.previousPage(
-                    duration: Duration(milliseconds: 300),
-                    curve: Curves.ease,
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              IconButton(
+                onPressed: () => _pageController.previousPage(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.ease,
+                ),
+                icon: const Icon(Icons.arrow_back_ios, size: 15),
+                color: primaryColor,
+              ),
+              Column(
+                children: [
+                  Text(
+                    DateFormat('MMMM').format(_currentDate),
+                    style:
+                        const TextStyle(fontSize: 20, fontFamily: popinsMedium),
                   ),
-                  icon: const Icon(Icons.arrow_back_ios, size: 15),
-                  color: primaryColor,
-                ),
-                Column(
-                  children: [
-                    Text(
-                      DateFormat('MMMM').format(_currentDate),
-                      style: const TextStyle(
-                          fontSize: 20, fontFamily: popinsMedium),
-                    ),
-                    Text(
-                      DateFormat('yyyy').format(_currentDate),
-                      style: TextStyle(
-                          color: Color(0xFFB9C0CF),
-                          fontSize: 12,
-                          fontFamily: popinsMedium),
-                    ),
-                  ],
-                ),
-                IconButton(
-                  onPressed: () => _pageController.nextPage(
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.ease,
+                  Text(
+                    DateFormat('yyyy').format(_currentDate),
+                    style: TextStyle(
+                        color: const Color(0xFFB9C0CF),
+                        fontSize: 12,
+                        fontFamily: popinsMedium),
                   ),
-                  icon: const Icon(Icons.arrow_forward_ios, size: 15),
-                  color: primaryColor,
+                ],
+              ),
+              IconButton(
+                onPressed: () => _pageController.nextPage(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.ease,
                 ),
-              ],
-            )),
+                icon: const Icon(Icons.arrow_forward_ios, size: 15),
+                color: primaryColor,
+              ),
+            ],
+          ),
+        ),
         Expanded(
           child: PageView.builder(
             controller: _pageController,
@@ -259,20 +256,6 @@ class _CalendarWidgetState extends State<CalendarWidget> {
             itemBuilder: (context, index) {
               DateTime currentPageDate =
                   DateTime(DateTime.now().year, index + 1, 1);
-
-              // Group events by date
-              final Map<DateTime, List<Event>> groupedEvents = {};
-              for (var event in _selectedEvents ?? []) {
-                final date = DateTime(
-                  event.eventDate.year,
-                  event.eventDate.month,
-                  event.eventDate.day,
-                );
-                if (!groupedEvents.containsKey(date)) {
-                  groupedEvents[date] = [];
-                }
-                groupedEvents[date]!.add(event);
-              }
 
               return Column(
                 children: [
@@ -289,121 +272,47 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                   if (_selectedEvents != null && _selectedEvents!.isNotEmpty)
                     Expanded(
                       child: ListView.builder(
-                        itemCount: groupedEvents.keys.length,
-                        itemBuilder: (context, groupIndex) {
-                          final date = groupedEvents.keys.elementAt(groupIndex);
-                          final events = groupedEvents[date]!;
-
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // Display the date only once
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 8.0),
-                                child: Text(
-                                  DateFormat('d MMMM yyyy').format(date),
-                                  style: TextStyle(
-                                    fontFamily: popinsRegulr,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
+                        itemCount: _selectedEvents!.length,
+                        itemBuilder: (context, eventIndex) {
+                          Event event = _selectedEvents![eventIndex];
+                          return GestureDetector(
+                            onTap: () {
+                              AppClass()
+                                  .EventDetailsShowModelBottomSheet(context);
+                            },
+                            child: Container(
+                              margin: const EdgeInsets.symmetric(vertical: 8.0),
+                              padding: const EdgeInsets.all(12.0),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFD5CEFB),
+                                borderRadius: BorderRadius.circular(5),
                               ),
-                              // Display events for the date
-                              ...events.map((event) {
-                                return Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 8.0),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      GestureDetector(
-                                        onTap: () {
-                                          AppClass()
-                                              .EventDetailsShowModelBottomSheet(
-                                                  context);
-                                          // Get.to(() => EventsDetailsScreen(
-                                          //       imageUrl: event.eventImage,
-                                          //       eventDate: event.eventDate
-                                          //           .toString(),
-                                          //       eventDetails:
-                                          //           event.eventDetail,
-                                          //       eventLink: event.eventLink,
-                                          //     ));
-                                        },
-                                        child: Column(
-                                          children: [
-                                            Container(
-                                              height: 54,
-                                              decoration: BoxDecoration(
-                                                color: const Color(0xFFD5CEFB),
-                                                borderRadius:
-                                                    BorderRadius.circular(5),
-                                              ),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Row(
-                                                    children: [
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(8.0),
-                                                        child: Image.asset(
-                                                            icMale,
-                                                            filterQuality:
-                                                                FilterQuality
-                                                                    .high,
-                                                            fit: BoxFit.cover),
-                                                      ),
-                                                      Text(
-                                                        event.eventTitle,
-                                                        style: TextStyle(
-                                                          fontSize: 16,
-                                                          color: primaryColor,
-                                                          fontFamily:
-                                                              popinsMedium,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            8.0),
-                                                    child: event.paid == '0'
-                                                        ? Text(
-                                                            'Free Event',
-                                                            style: TextStyle(
-                                                              fontFamily:
-                                                                  popinsMedium,
-                                                              fontSize: 16,
-                                                              color: event.paid ==
-                                                                      '1'
-                                                                  ? Color(
-                                                                      0xFF735BF2)
-                                                                  : const Color(
-                                                                      0xFF0095FF),
-                                                            ),
-                                                          )
-                                                        : Text('Paid Event'),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    event.eventTitle,
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontFamily: popinsMedium,
+                                        color: primaryColor),
                                   ),
-                                );
-                              }).toList(),
-                            ],
+                                  Text(
+                                    event.paid == '0'
+                                        ? 'Free Event'
+                                        : 'Paid Event',
+                                    style: TextStyle(
+                                      fontFamily: popinsMedium,
+                                      fontSize: 14,
+                                      color: event.paid == '0'
+                                          ? Colors.green
+                                          : Colors.red,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           );
                         },
                       ),
@@ -433,7 +342,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
               child: Text(
                 day,
                 style: TextStyle(
-                    fontFamily: popinsMedium, color: Color(0xFF8F9BB3)),
+                    fontFamily: popinsMedium, color: const Color(0xFF8F9BB3)),
               ),
             ))
         .toList());
@@ -466,7 +375,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
               height: 40,
               padding: const EdgeInsets.all(8.0),
               decoration: BoxDecoration(
-                gradient: isSelected
+                gradient: isSelected || isEventDay
                     ? const LinearGradient(
                         colors: [Color(0xFF00A559), Color(0xFF006627)])
                     : LinearGradient(colors: [
@@ -481,7 +390,9 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                   Text(
                     day.toString(),
                     style: TextStyle(
-                      color: isSelected ? Colors.white : Colors.black87,
+                      color: isSelected || isEventDay
+                          ? Colors.white
+                          : Colors.black87,
                       fontFamily: popinsMedium,
                     ),
                   ),
