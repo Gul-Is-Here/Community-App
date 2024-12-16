@@ -50,7 +50,7 @@ class CustomizedMobileLayout extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: primaryColor,
-        image: DecorationImage(
+        image: const DecorationImage(
           opacity: .02,
           image: AssetImage(homeNewBg),
           fit: BoxFit.cover, // Ensures the image covers the entire background
@@ -195,12 +195,12 @@ class CustomizedMobileLayout extends StatelessWidget {
                                     color: const Color(0xFF6CFD74),
                                     borderRadius: BorderRadius.circular(20)),
                               ),
-                              Spacer(),
+                              const Spacer(),
                               Padding(
                                 padding: const EdgeInsets.only(right: 12.0),
                                 child: GestureDetector(
                                   onTap: () {
-                                    Get.to(() => AzanSettingsScreen());
+                                    Get.to(() => const AzanSettingsScreen());
                                   },
                                   child: Image.asset(
                                     notificationICon,
@@ -277,7 +277,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                                       // ),
                                       GestureDetector(
                                         onTap: () {
-                                          Get.to(() => HijriCalendarExample());
+                                          Get.to(() => const HijriCalendarExample());
                                         },
                                         child: Text(
                                           ' Calendar',
@@ -290,7 +290,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                                       2.widthBox,
                                       GestureDetector(
                                         onTap: () {
-                                          Get.to(() => NamazTimingsScreen());
+                                          Get.to(() => const NamazTimingsScreen());
                                         },
                                         child: Text(
                                           '  View Times',
@@ -574,7 +574,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                       ),
                     );
                   }
-                  return SizedBox();
+                  return const SizedBox();
                 }),
                 5.heightBox,
                 Padding(
@@ -666,7 +666,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                       ),
                     );
                   }
-                  return SizedBox();
+                  return const SizedBox();
                 })
               ],
             ),

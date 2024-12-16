@@ -3,9 +3,11 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import '../model/eventType_model.dart';
+import '../model/home_events_model.dart';
 
 class EventTypeController extends GetxController {
   // RxList to hold the event types
+  RxList<Event>? selectedEvents = <Event>[].obs;
   var eventTypes = <Eventtype>[].obs;
 
   @override
@@ -37,6 +39,30 @@ class EventTypeController extends GetxController {
       }
     } catch (e) {
       Get.snackbar("Error", "An error occurred: $e");
+    }
+  }
+
+  List<Event> updateDisplayedEvents({
+    required DateTime? selectedDate,
+    required Map<DateTime, List<Event>> eventDates,
+    required int selectedEventType,
+  }) {
+    if (selectedDate == null) {
+      // Show all events if no specific date is selected
+      return eventDates.values
+          .expand((events) => events)
+          .where((event) =>
+              selectedEventType == 1 ||
+              event.eventhastype.eventtypeId == selectedEventType)
+          .toList();
+    } else {
+      // Show events for the selected date
+      return eventDates[selectedDate]
+              ?.where((event) =>
+                  selectedEventType == 1 ||
+                  event.eventhastype.eventtypeId == selectedEventType)
+              .toList() ??
+          [];
     }
   }
 }

@@ -59,9 +59,9 @@ class QiblahScreen extends StatelessWidget {
             controller.updateQiblahDirection(qiblahDirection.qiblah);
 
             // Calculate the rotation angle for compass
-            double rotationAngle = qiblahDirection.direction * (pi / 180);
-            double compassRotation =
-                qiblahDirection.direction * (pi / 180) * -1;
+            // double rotationAngle = qiblahDirection.direction * (pi / 180) * -1;
+            // double compassRotation =
+            //     qiblahDirection.direction * (pi / 180) * -1;
 
             return Center(
               child: Column(
@@ -120,8 +120,9 @@ class QiblahScreen extends StatelessWidget {
                       ),
                       // Rotating Cardinal Compass Inside the Circle
                       Transform.rotate(
-                        angle:
-                            compassRotation, // Rotate based on magnetic north
+                        angle: (qiblahDirection.direction *
+                            (pi / 180) *
+                            -1), // Rotate based on magnetic north
                         child: Image.asset(
                           qiblaCompass, // Compass asset with N, S, E, W directions
                           height: 200,
@@ -132,8 +133,9 @@ class QiblahScreen extends StatelessWidget {
 
                       // Rotating Kaaba Icon Around the Edge of the Circle
                       Transform.rotate(
-                        angle:
-                            rotationAngle, // Rotation angle based on Qibla direction
+                        angle: (qiblahDirection.qiblah *
+                            (pi / 180) *
+                            -1), // Rotation angle based on Qibla direction
                         child: Transform.translate(
                           offset: const Offset(
                               0, -130), // Offset to place the icon on the edge
@@ -143,6 +145,15 @@ class QiblahScreen extends StatelessWidget {
                             width: 34,
                             fit: BoxFit.cover,
                           ),
+                        ),
+                      ),
+                      Text(
+                        "${qiblahDirection.qiblah.toStringAsFixed(0)}°",
+                        style: TextStyle(
+                          fontSize: 16,
+                          // fontWeight: FontWeight.bold,
+                          fontFamily: popinsMedium,
+                          color: whiteColor,
                         ),
                       ),
                     ],

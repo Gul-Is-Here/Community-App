@@ -229,11 +229,8 @@ class AppClass {
                             label: 'Facebook',
                             onPressed: () async {
                               Navigator.of(context).pop();
-                              final Uri emailLaunchUri = Uri(
-                                scheme: 'mailto',
-                                path: 'admin@rosenbergcommunitycenter.org',
-                              );
-                              await launchUrl(emailLaunchUri);
+                              await launchUrl(Uri.parse(
+                                  'https://www.facebook.com/rosenbergcommunitycenter/'));
                             },
                           ),
                           buildSocialMediaButton(
@@ -241,6 +238,27 @@ class AppClass {
                             image: icInsta,
                             label: 'Instagram',
                             onPressed: () async {
+                              Navigator.of(context).pop();
+                              await launchUrl(Uri.parse(
+                                  'https://www.instagram.com/rosenbergcommunitycenter'));
+                            },
+                          ),
+                          buildSocialMediaButton(
+                            context: context,
+                            image: icYoutube,
+                            label: 'Youtube',
+                            onPressed: () async {
+                              Navigator.of(context).pop();
+                              await launchUrl(Uri.parse(
+                                  'https://www.youtube.com/channel/UCBvcBiS7SvA7NDn6oI1Qu5Q'));
+                            },
+                          ),
+                          buildSocialMediaButton(
+                            context: context,
+                            image: icWhatsApp,
+                            label: 'WhatsApp',
+                            onPressed: () async {
+                              Navigator.of(context).pop();
                               Navigator.of(context).pop();
                               final Uri phoneUri = Uri(
                                 scheme: 'tel',
@@ -251,32 +269,9 @@ class AppClass {
                           ),
                           buildSocialMediaButton(
                             context: context,
-                            image: icYoutube,
-                            label: 'Youtube',
-                            onPressed: () async {
-                              Navigator.of(context).pop();
-                              await launchUrl(Uri.parse(
-                                  'https://www.facebook.com/rosenbergcommunitycenter/'));
-                            },
-                          ),
-                          buildSocialMediaButton(
-                            context: context,
-                            image: icWhatsApp,
-                            label: 'WhatsApp',
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                              // WhatsApp action
-                            },
-                          ),
-                          buildSocialMediaButton(
-                            context: context,
                             image: icNewsLetter,
                             label: 'Newsletters',
-                            onPressed: () async {
-                              Navigator.of(context).pop();
-                              await launchUrl(Uri.parse(
-                                  'https://www.youtube.com/channel/UCBvcBiS7SvA7NDn6oI1Qu5Q'));
-                            },
+                            onPressed: () async {},
                           ),
                           buildSocialMediaButton(
                             context: context,
@@ -284,8 +279,11 @@ class AppClass {
                             label: 'Email Us',
                             onPressed: () async {
                               Navigator.of(context).pop();
-                              await launchUrl(Uri.parse(
-                                  'https://www.instagram.com/rosenbergcommunitycenter'));
+                              final Uri emailLaunchUri = Uri(
+                                scheme: 'mailto',
+                                path: 'admin@rosenbergcommunitycenter.org',
+                              );
+                              await launchUrl(emailLaunchUri);
                             },
                           ),
                           buildSocialMediaButton(
@@ -319,6 +317,7 @@ class AppClass {
                               label: 'Ask Imam',
                               onPressed: () {
                                 Navigator.of(context).pop();
+                                Get.to(() => AskImamPage());
                                 // Ask Imam action
                               },
                             ),
@@ -333,7 +332,7 @@ class AppClass {
                   child: SmoothPageIndicator(
                     controller: pageController,
                     count: 2, // Total pages
-                    effect: WormEffect(
+                    effect: const WormEffect(
                       dotHeight: 9.0,
                       dotWidth: 9.0,
                       activeDotColor: Color(0xFF44A63C),
@@ -402,10 +401,20 @@ class AppClass {
   }
 
   // ---- Show Model Bottom Sheet of Events Details Page
-  Future<dynamic> EventDetailsShowModelBottomSheet(BuildContext context) {
+  Future<dynamic> EventDetailsShowModelBottomSheet(
+      BuildContext context,
+      String title,
+      String sTime,
+      String endTime,
+      String eventType,
+      String entry,
+      String eventDate,
+      String eventDetails,
+      String imageLink,
+      String locatinD) {
     return showModalBottomSheet(
       isScrollControlled: true,
-      backgroundColor: Color(0xFFB3E8DA),
+      backgroundColor: const Color(0xFFB3E8DA),
       context: context,
       builder: (context) => FractionallySizedBox(
         heightFactor: .75,
@@ -425,8 +434,8 @@ class AppClass {
                       width: 250,
                       child: Text(
                         maxLines: 2,
-                        'Lorem Ipsum is simply dummy text of the printing.',
-                        style: TextStyle(
+                        title,
+                        style: const TextStyle(
                             overflow: TextOverflow.ellipsis,
                             fontSize: 18,
                             fontFamily: popinsSemiBold,
@@ -458,16 +467,16 @@ class AppClass {
                         ),
                         10.heightBox,
                         Text(
-                          'Start: 12:00 pm',
-                          style: TextStyle(
+                          'Start: ${formatTimeToAMPM(sTime)}',
+                          style: const TextStyle(
                               fontFamily: popinsRegulr,
                               color: Colors.black,
                               fontSize: 12),
                         ),
                         10.heightBox,
                         Text(
-                          'ENd: 02:00 pm',
-                          style: TextStyle(
+                          'ENd:  ${formatTimeToAMPM(endTime)}',
+                          style: const TextStyle(
                               fontFamily: popinsRegulr,
                               color: Colors.black,
                               fontSize: 12),
@@ -487,16 +496,16 @@ class AppClass {
                         ),
                         10.heightBox,
                         Text(
-                          'Type: Female',
-                          style: TextStyle(
+                          'Type: $eventType',
+                          style: const TextStyle(
                               fontFamily: popinsRegulr,
                               color: Colors.black,
                               fontSize: 12),
                         ),
                         10.heightBox,
                         Text(
-                          'Entry: Paid',
-                          style: TextStyle(
+                          'Entry: $entry',
+                          style: const TextStyle(
                               fontFamily: popinsRegulr,
                               color: Colors.black,
                               fontSize: 12),
@@ -515,8 +524,8 @@ class AppClass {
                 ),
                 10.heightBox,
                 Text(
-                  'Saturday, 09 December, 2024',
-                  style: TextStyle(
+                  '${AppClass().formatDate2(eventDate)}',
+                  style: const TextStyle(
                       fontFamily: popinsRegulr,
                       color: Colors.black,
                       fontSize: 12),
@@ -532,8 +541,8 @@ class AppClass {
                 10.heightBox,
                 Text(
                   maxLines: 8,
-                  "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-                  style: TextStyle(
+                  eventDetails,
+                  style: const TextStyle(
                       overflow: TextOverflow.ellipsis,
                       fontSize: 16,
                       fontFamily: popinsRegulr,
@@ -545,7 +554,7 @@ class AppClass {
                     Image.asset(icLocation),
                     10.widthBox,
                     Text(
-                      'Details',
+                      'Venue',
                       style: TextStyle(
                           fontFamily: popinsSemiBold,
                           fontSize: 16,
@@ -554,19 +563,45 @@ class AppClass {
                   ],
                 ),
                 10.heightBox,
-                const Text(
-                    maxLines: 4,
-                    'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-                    style: TextStyle(
-                        overflow: TextOverflow.ellipsis,
-                        fontSize: 16,
-                        fontFamily: popinsRegulr,
-                        color: Colors.black))
+                GestureDetector(
+                  onTap: () {
+                    AppClass().launchURL(locatinD);
+                  },
+                  child: Text(
+                      maxLines: 4,
+                      locatinD,
+                      style: const TextStyle(
+                          overflow: TextOverflow.ellipsis,
+                          fontSize: 16,
+                          fontFamily: popinsRegulr,
+                          color: Colors.black)),
+                ),
+                10.heightBox,
+                Container(
+                    height: 200,
+                    width: double.infinity,
+                    decoration:
+                        BoxDecoration(borderRadius: BorderRadius.circular(10)),
+                    child: Image.network(
+                      imageLink,
+                      fit: BoxFit.cover,
+                    ))
               ],
             ),
           ),
         ),
       ),
     );
+  }
+
+  /// Event Details Screen time formate method
+  String formatTimeToAMPM(String time24) {
+    // Parse the input time string
+    DateTime parsedTime = DateFormat("HH:mm").parse(time24);
+
+    // Format to 12-hour time with AM/PM
+    String formattedTime = DateFormat("h:mm a").format(parsedTime);
+
+    return formattedTime; // e.g., "1:40 PM"
   }
 }

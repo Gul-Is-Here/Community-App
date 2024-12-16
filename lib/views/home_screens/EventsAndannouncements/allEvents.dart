@@ -13,17 +13,32 @@ import 'package:velocity_x/velocity_x.dart';
 
 import '../../../app_classes/app_class.dart';
 
-class AllEventsDatesScreen extends StatelessWidget {
+class AllEventsDatesScreen extends StatefulWidget {
+  @override
+  State<AllEventsDatesScreen> createState() => _AllEventsDatesScreenState();
+}
+
+class _AllEventsDatesScreenState extends State<AllEventsDatesScreen> {
   final HomeEventsController eventsController = Get.put(HomeEventsController());
   final EventTypeController eventTypeController =
       Get.put(EventTypeController());
+  RxInt selectedEventType = 1.obs;
+
+  void _updateSelectedEvents(List<Event> updatedEvents) {
+    eventTypeController.selectedEvents!.value = updatedEvents;
+  }
+
+  void _clearFilters() {
+    setState(() {
+      selectedEventType.value = 1; // Reset to "All"
+      // Ensure all events are displayed both on the calendar and below it
+      eventTypeController.selectedEvents!.value =
+          eventsController.events.value?.data.events ?? [];
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Event Type Filter
-
-    RxInt selectedEventType = 1.obs;
-
     return Scaffold(
       backgroundColor: whiteColor,
       appBar: AppBar(
@@ -72,6 +87,32 @@ class AllEventsDatesScreen extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
+                // Clear Filter Button
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    TextButton(
+                      onPressed: _clearFilters, // Clear filter action
+                      style: TextButton.styleFrom(
+                        backgroundColor: primaryColor,
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8.0, horizontal: 16.0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                      ),
+                      child: Text(
+                        'Clear Filter',
+                        style: TextStyle(
+                          color: whiteColor,
+                          fontSize: 14,
+                          fontFamily: popinsMedium,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
                 // Event Type Selector
                 SizedBox(
                   height: 40,
@@ -82,13 +123,14 @@ class AllEventsDatesScreen extends StatelessWidget {
                       final eventType = eventTypeController.eventTypes[index];
                       final isMatched = eventsController
                           .events.value!.data.events
-                          .any((event) {
-                        return event.eventhastype.eventtypeId ==
-                            eventType.eventtypeId;
-                      });
+                          .any((event) =>
+                              event.eventhastype.eventtypeId ==
+                              eventType.eventtypeId);
                       return GestureDetector(
                         onTap: () {
-                          selectedEventType.value = eventType.eventtypeId;
+                          setState(() {
+                            selectedEventType.value = eventType.eventtypeId;
+                          });
                         },
                         child: isMatched
                             ? Container(
@@ -116,7 +158,7 @@ class AllEventsDatesScreen extends StatelessWidget {
                                   ),
                                 ),
                               )
-                            : SizedBox(),
+                            : const SizedBox(),
                       );
                     },
                   ),
@@ -124,8 +166,11 @@ class AllEventsDatesScreen extends StatelessWidget {
                 const SizedBox(height: 16),
                 Expanded(
                   child: CalendarWidget(
+                    selectedEvents: eventTypeController.selectedEvents,
                     initialDate: DateTime.now(),
                     eventDates: eventDates,
+                    selectedEventType: selectedEventType,
+                    onEventsUpdated: _updateSelectedEvents, // Callback function
                   ),
                 ),
               ],
@@ -140,11 +185,17 @@ class AllEventsDatesScreen extends StatelessWidget {
 class CalendarWidget extends StatefulWidget {
   final DateTime initialDate;
   final Map<DateTime, List<Event>> eventDates;
+  final RxInt selectedEventType;
+  final List<Event>? selectedEvents;
+  final Function(List<Event>) onEventsUpdated; // Callback function
 
   const CalendarWidget({
     Key? key,
+    required this.selectedEvents,
     required this.initialDate,
     required this.eventDates,
+    required this.selectedEventType,
+    required this.onEventsUpdated,
   }) : super(key: key);
 
   @override
@@ -154,7 +205,7 @@ class CalendarWidget extends StatefulWidget {
 class _CalendarWidgetState extends State<CalendarWidget> {
   late DateTime _currentDate;
   DateTime? _selectedDate;
-  List<Event>? _selectedEvents;
+  late List<Event> _displayedEvents;
   late PageController _pageController;
 
   @override
@@ -166,39 +217,40 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   }
 
   void _initializeSelectedDateAndEvents() {
-    if (widget.eventDates.isNotEmpty) {
-      if (widget.eventDates.containsKey(_currentDate)) {
-        _selectedDate = _currentDate;
-      } else {
-        _selectedDate = widget.eventDates.keys.first;
-      }
-      _updateSelectedEvents(null); // Show all events
-    } else {
-      // Handle the case when there are no events
-      _selectedDate = null; // Or assign some default value if needed
-      _selectedEvents = [];
-    }
+    // Display all events by default
+    _selectedDate = null; // Reset selected date for "all events"
+    _updateDisplayedEvents(); // Populate _displayedEvents immediately
   }
 
-  void _updateSelectedEvents(DateTime? date) {
+  void _updateDisplayedEvents() {
     setState(() {
-      _selectedDate = date;
-      if (date == null) {
-        // Show all events if no specific date is selected
-        _selectedEvents =
-            widget.eventDates.values.expand((events) => events).toList();
+      if (_selectedDate == null) {
+        // Show all events when no specific date is selected
+        _displayedEvents = widget.eventDates.values
+            .expand((events) => events)
+            .where((event) =>
+                event.eventhastype.eventtypeId ==
+                widget.selectedEventType.value)
+            .toList();
       } else {
         // Show events for the selected date
-        _selectedEvents = widget.eventDates[date] ?? [];
+        _displayedEvents = widget.eventDates[_selectedDate!]
+                ?.where((event) =>
+                    event.eventhastype.eventtypeId ==
+                    widget.selectedEventType.value)
+                .toList() ??
+            [];
       }
     });
+    widget
+        .onEventsUpdated(_displayedEvents); // Notify parent with updated events
   }
 
   void _onPageChanged(int pageIndex) {
     setState(() {
       _currentDate = DateTime(DateTime.now().year, pageIndex + 1, 1);
     });
-    _updateSelectedEvents(DateTime(_currentDate.year, _currentDate.month, 1));
+    // _updateDisplayedEvents(); // Refresh events for the new page
   }
 
   @override
@@ -230,8 +282,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                   ),
                   Text(
                     DateFormat('yyyy').format(_currentDate),
-                    style: TextStyle(
-                        color: const Color(0xFFB9C0CF),
+                    style: const TextStyle(
+                        color: Color(0xFFB9C0CF),
                         fontSize: 12,
                         fontFamily: popinsMedium),
                   ),
@@ -254,9 +306,6 @@ class _CalendarWidgetState extends State<CalendarWidget> {
             itemCount: 12,
             onPageChanged: _onPageChanged,
             itemBuilder: (context, index) {
-              DateTime currentPageDate =
-                  DateTime(DateTime.now().year, index + 1, 1);
-
               return Column(
                 children: [
                   Table(
@@ -269,49 +318,71 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                     indent: 40,
                   ),
                   const SizedBox(height: 16.0),
-                  if (_selectedEvents != null && _selectedEvents!.isNotEmpty)
+                  if (_displayedEvents.isNotEmpty)
                     Expanded(
                       child: ListView.builder(
-                        itemCount: _selectedEvents!.length,
+                        itemCount: _displayedEvents.length,
                         itemBuilder: (context, eventIndex) {
-                          Event event = _selectedEvents![eventIndex];
+                          Event event = _displayedEvents[eventIndex];
                           return GestureDetector(
                             onTap: () {
-                              AppClass()
-                                  .EventDetailsShowModelBottomSheet(context);
+                              AppClass().EventDetailsShowModelBottomSheet(
+                                  context,
+                                  event.eventTitle,
+                                  event.eventStarttime.toString(),
+                                  event.eventEndtime.toString(),
+                                  event.eventhastype.eventtypeName,
+                                  event.paid == '0' ? 'Free Event' : 'Paid',
+                                  event.eventDate.toString(),
+                                  event.eventDetail,
+                                  event.eventImage,
+                                  event.venueName);
                             },
-                            child: Container(
-                              margin: const EdgeInsets.symmetric(vertical: 8.0),
-                              padding: const EdgeInsets.all(12.0),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFD5CEFB),
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    event.eventTitle,
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        fontFamily: popinsMedium,
-                                        color: primaryColor),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  AppClass()
+                                      .formatDate2(event.eventDate.toString()),
+                                  style: TextStyle(
+                                      fontFamily: popinsSemiBold, fontSize: 20),
+                                ),
+                                Container(
+                                  margin:
+                                      const EdgeInsets.symmetric(vertical: 8.0),
+                                  padding: const EdgeInsets.all(12.0),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFFD5CEFB),
+                                    borderRadius: BorderRadius.circular(5),
                                   ),
-                                  Text(
-                                    event.paid == '0'
-                                        ? 'Free Event'
-                                        : 'Paid Event',
-                                    style: TextStyle(
-                                      fontFamily: popinsMedium,
-                                      fontSize: 14,
-                                      color: event.paid == '0'
-                                          ? Colors.green
-                                          : Colors.red,
-                                    ),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        event.eventTitle,
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontFamily: popinsMedium,
+                                            color: primaryColor),
+                                      ),
+                                      Text(
+                                        event.paid == '0'
+                                            ? 'Free Event'
+                                            : 'Paid Event',
+                                        style: TextStyle(
+                                          fontFamily: popinsMedium,
+                                          fontSize: 14,
+                                          color: event.paid == '0'
+                                              ? Colors.green
+                                              : Colors.red,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                           );
                         },
@@ -341,8 +412,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
         .map((day) => Center(
               child: Text(
                 day,
-                style: TextStyle(
-                    fontFamily: popinsMedium, color: const Color(0xFF8F9BB3)),
+                style: const TextStyle(
+                    fontFamily: popinsMedium, color: Color(0xFF8F9BB3)),
               ),
             ))
         .toList());
@@ -362,11 +433,13 @@ class _CalendarWidgetState extends State<CalendarWidget> {
       DateTime date = DateTime(_currentDate.year, _currentDate.month, day);
       bool isEventDay = widget.eventDates.containsKey(date);
       bool isSelected = date == _selectedDate;
-      int eventCount = isEventDay ? widget.eventDates[date]!.length : 0;
 
       dayCells.add(GestureDetector(
         onTap: () {
-          _updateSelectedEvents(date);
+          setState(() {
+            _selectedDate = date;
+            _updateDisplayedEvents();
+          });
         },
         child: Column(
           children: [
@@ -375,7 +448,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
               height: 40,
               padding: const EdgeInsets.all(8.0),
               decoration: BoxDecoration(
-                gradient: isSelected || isEventDay
+                gradient: isSelected
                     ? const LinearGradient(
                         colors: [Color(0xFF00A559), Color(0xFF006627)])
                     : LinearGradient(colors: [
@@ -390,36 +463,34 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                   Text(
                     day.toString(),
                     style: TextStyle(
-                      color: isSelected || isEventDay
-                          ? Colors.white
-                          : Colors.black87,
+                      color: isSelected ? Colors.white : Colors.black87,
                       fontFamily: popinsMedium,
                     ),
                   ),
                 ],
               ),
             ),
-            if (isEventDay) ...[
-              const SizedBox(height: 4.0),
+            const SizedBox(height: 4.0),
+            if (isEventDay)
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: List.generate(
-                  eventCount,
+                  widget.eventDates[date]!.length
+                      .clamp(1, 3), // Limit to 3 dots
                   (index) => Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 2.0),
+                    margin: const EdgeInsets.symmetric(horizontal: 1.0),
                     width: 6.0,
                     height: 6.0,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30),
-                      border: isEventDay
-                          ? Border.all(color: Color(0xFF00A53C))
-                          : Border.all(color: whiteColor),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: const Color(0xFFB3E8DA),
+                      ),
                     ),
                   ),
                 ),
               ),
-              5.heightBox,
-            ],
+            5.heightBox,
           ],
         ),
       ));
@@ -430,7 +501,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
       }
     }
 
-    // Add empty cells for remaining days of the week
+    // Add empty cells for remaining days
     if (dayCells.isNotEmpty) {
       while (dayCells.length < 7) {
         dayCells.add(const SizedBox());
