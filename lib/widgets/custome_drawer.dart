@@ -330,7 +330,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       fontSize: 14,
                       color: whiteColor)),
               onTap: () {
-                Get.to(() => const ContactUsScreen());
+                Get.to(() => ContactUsPage());
               },
             ),
             const Spacer(),
