@@ -1,10 +1,12 @@
-import 'package:community_islamic_app/constants/color.dart';
-import 'package:community_islamic_app/constants/image_constants.dart';
-import 'package:community_islamic_app/views/auth_screens/login_screen.dart';
-import 'package:community_islamic_app/views/home_screens/home.dart';
+import 'package:community_islamic_app/controllers/all_event_controller.dart';
+import 'package:community_islamic_app/controllers/home_controller.dart';
+import 'package:community_islamic_app/controllers/home_events_controller.dart';
+import 'package:community_islamic_app/controllers/qibla_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:video_player/video_player.dart';
+import 'package:community_islamic_app/views/home_screens/home.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -12,26 +14,45 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  VideoPlayerController? _controller;
+
   @override
   void initState() {
     super.initState();
+    _initializeVideoPlayer();
+    HomeController();
+    QiblahController();
+    HomeEventsController();
+    EventTypeController();
     _navigateToAppropriateScreen();
   }
 
+  Future<void> _initializeVideoPlayer() async {
+    _controller = VideoPlayerController.asset('assets/video/splashvideo.mp4')
+      ..initialize().then((_) {
+        setState(() {});
+        _controller!.play();
+        _controller!.setLooping(true); // Loop video if required
+      });
+  }
+
   Future<void> _navigateToAppropriateScreen() async {
-    // Simulate a delay (e.g., loading resources, initialization, etc.)
-    await Future.delayed(const Duration(seconds: 3)); // Adjust the duration as needed
+    await Future.delayed(const Duration(seconds: 5)); // Wait for 5 seconds
 
     final prefs = await SharedPreferences.getInstance();
     final isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
 
     if (isLoggedIn) {
-      // Navigate to Home screen if user is logged in
       Get.offAll(() => const Home());
     } else {
-      // Navigate to Login screen if user is not logged in
       Get.offAll(() => const Home());
     }
+  }
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    super.dispose();
   }
 
   @override
@@ -40,31 +61,13 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          // Set the image to cover the entire screen
           Positioned.fill(
-            child: Image.asset(
-              splashBg,
-              fit: BoxFit.cover, // Ensures the image covers the whole screen
-            ),
-          ),
-          // Center the text on the screen
-          Padding(
-            padding: EdgeInsets.only(bottom: screenHeight * .4),
-            child: const Center(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Text(
-                  'First Islamic Dawah Center In Rosenberg Texas',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 24.0, // Adjust font size as per your design
-                    fontFamily: popinsMedium,
-                    color: Color(0xFF6CA3A6), // Text color
-                    // Bold text
-                  ),
-                ),
-              ),
-            ),
+            child: _controller != null && _controller!.value.isInitialized
+                ? AspectRatio(
+                    aspectRatio: _controller!.value.aspectRatio,
+                    child: VideoPlayer(_controller!),
+                  )
+                : Container(),
           ),
         ],
       ),
