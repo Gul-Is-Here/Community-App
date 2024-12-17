@@ -533,7 +533,7 @@ class AnnouncementWidget extends StatelessWidget {
                           height: 50, // Adjust height as needed
                           autoPlay: true,
                           autoPlayInterval: const Duration(seconds: 3),
-                          enlargeCenterPage: true,
+                          enlargeCenterPage: true, enlargeFactor: 10,
                           viewportFraction: 1,
                           aspectRatio: 2.0,
                           onPageChanged: (index, reason) {

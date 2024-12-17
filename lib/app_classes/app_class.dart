@@ -180,6 +180,70 @@ class AppClass {
     }
   }
 
+  void _showWhatsAppDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: primaryColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: Text(
+            'Join WhatsApp Group',
+            style: TextStyle(
+              fontFamily: popinsSemiBold,
+              fontSize: 18,
+              color: whiteColor,
+            ),
+          ),
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  buildSocialMediaButton(
+                    context: context,
+                    image: icWhatsApp,
+                    label: 'RCC Brothers',
+                    onPressed: () async {
+                      Navigator.of(context).pop();
+
+                      await launchUrl(Uri.parse(
+                          'https://chat.whatsapp.com/C558smdW2bc2asAJIeoS6t'));
+                    },
+                  ),
+                  buildSocialMediaButton(
+                    context: context,
+                    image: icWhatsApp,
+                    label: 'RCC Sisters',
+                    onPressed: () async {
+                      Navigator.of(context).pop();
+                      await launchUrl(Uri.parse(
+                          'https://chat.whatsapp.com/JwNn9RLPj4kFcrOLW4ANgW'));
+                    },
+                  ),
+                ],
+              ),
+              // ListTile(
+              //   leading: Image.asset(icWhatsapp),
+              //   title: Text(
+              //     'RCC Brothers',
+              //     style: TextStyle(fontFamily: popinsRegulr),
+              //   ),
+              //   onTap: () async {
+
+              //   },
+              // ),
+              // const Divider(),
+            ],
+          ),
+        );
+      },
+    );
+  }
 // Method For Social Media Links
 
   void showSocialMediaDialog(BuildContext context) {
@@ -259,12 +323,7 @@ class AppClass {
                             label: 'WhatsApp',
                             onPressed: () async {
                               Navigator.of(context).pop();
-                              Navigator.of(context).pop();
-                              final Uri phoneUri = Uri(
-                                scheme: 'tel',
-                                path: '+1 (281) 303-1758',
-                              );
-                              await launchUrl(phoneUri);
+                              _showWhatsAppDialog(context);
                             },
                           ),
                           buildSocialMediaButton(
@@ -289,10 +348,14 @@ class AppClass {
                           buildSocialMediaButton(
                             context: context,
                             image: icCall,
-                            label: 'Newsletters',
-                            onPressed: () {
+                            label: 'Call Us',
+                            onPressed: () async {
                               Navigator.of(context).pop();
-                              // Newsletter action
+                              final Uri phoneUri = Uri(
+                                scheme: 'tel',
+                                path: '+1 (281) 303-1758',
+                              );
+                              await launchUrl(phoneUri);
                             },
                           ),
                           buildSocialMediaButton(

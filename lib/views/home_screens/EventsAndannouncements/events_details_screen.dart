@@ -1,236 +1,234 @@
+import 'dart:core';
+import 'dart:io';
+import 'package:community_islamic_app/app_classes/app_class.dart';
 import 'package:community_islamic_app/constants/color.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:intl/intl.dart';
-import 'package:url_launcher/url_launcher.dart'; // Add this package for URL launching
+import 'package:share_plus/share_plus.dart';
+import 'package:velocity_x/velocity_x.dart';
+import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
 
-class EventsDetailsScreen extends StatelessWidget {
-  final String eventDetails;
-  final String eventLink;
+final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
+    GlobalKey<ScaffoldMessengerState>();
+
+class EventDetailPage extends StatelessWidget {
+  final String title;
+  final String sTime;
+  final String endTime;
+  final String eventType;
+  final String entry;
   final String eventDate;
-  final String imageUrl;
+  final String eventDetails;
+  final String imageLink;
+  final String locatinV;
+  final String eventVenue;
 
-  const EventsDetailsScreen({
-    super.key,
-    required this.imageUrl,
-    required this.eventDate,
-    required this.eventDetails,
-    required this.eventLink,
-  });
+  const EventDetailPage(
+      {super.key,
+      required this.title,
+      required this.sTime,
+      required this.endTime,
+      required this.entry,
+      required this.eventDate,
+      required this.eventDetails,
+      required this.eventType,
+      required this.imageLink,
+      required this.locatinV,
+      required this.eventVenue});
 
   @override
   Widget build(BuildContext context) {
-    DateTime currentDate = DateTime.now();
-    DateTime parsedEventDate = DateTime.parse(eventDate);
-
     return Scaffold(
-      backgroundColor: Color(0xFFB3E8DA),
+      backgroundColor: const Color(0xFFEFF6F0), // Light greenish background
       appBar: AppBar(
         backgroundColor: primaryColor,
-        elevation: 0,
-        centerTitle: true,
         title: const Text(
-          'Events Details ',
+          "Event Detail",
           style: TextStyle(
-            fontFamily: popinsSemiBold,
-            color: Colors.white,
-          ),
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontFamily: popinsRegulr),
         ),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Get.back(),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.of(context).pop(),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.share, color: Colors.white),
+            onPressed: () async {
+              await _downloadAndShareImage(imageLink, title, eventDetails);
+            },
+          ),
+        ],
+        centerTitle: false,
+        elevation: 0,
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Calendar view with highlighted event date
-
-            const SizedBox(height: 20),
-            // Event Details Section
-            const Text(
-              'Event Date:',
-              style:
-                  TextStyle(fontFamily: popinsSemiBold, color: Colors.black54),
+            // Title Section
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                fontFamily: popinsRegulr,
+                color: primaryColor,
+              ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 12),
+
+            // Event Time and Type
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Icon(Icons.calendar_today, color: primaryColor),
-                const SizedBox(width: 8),
+                _buildEventDetailItem("Event Time",
+                    "Start: ${AppClass().formatTimeToAMPM(sTime)}\nEnd: ${AppClass().formatTimeToAMPM(endTime)}"),
+                _buildEventDetailItem(
+                    "Event", "Type: $eventType\nEntry: $entry"),
+              ],
+            ),
+            const SizedBox(height: 20),
+
+            // Event Date
+            _buildSectionTitle("Event Date"),
+            const SizedBox(height: 8),
+            Text(
+              "${AppClass().formatDate2(eventDate)}",
+              style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  fontFamily: popinsRegulr),
+            ),
+            const SizedBox(height: 20),
+
+            // Details Section
+            _buildSectionTitle("Details"),
+            const SizedBox(height: 8),
+            Text(
+              eventDetails,
+              style: const TextStyle(
+                  fontSize: 14,
+                  height: 1.5,
+                  color: Colors.black87,
+                  fontFamily: popinsRegulr),
+            ),
+            const SizedBox(height: 20),
+
+            // Venue Section
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        AppClass().launchURL(locatinV);
+                      },
+                      child: const Icon(Icons.location_on,
+                          color: Color(0xFF3FA27E), size: 20),
+                    ),
+                    Expanded(
+                      child: Text(
+                        'Venue',
+                        style: TextStyle(
+                            fontFamily: popinsSemiBold,
+                            fontSize: 18,
+                            color: primaryColor),
+                      ),
+                    ),
+                  ],
+                ),
+                5.heightBox,
                 Text(
-                  DateFormat('EEEE, MMMM d, yyyy').format(parsedEventDate),
-                  style:
-                      const TextStyle(fontSize: 16, fontFamily: popinsSemiBold),
+                  eventVenue,
+                  style: const TextStyle(
+                      fontSize: 14,
+                      color: Colors.black87,
+                      fontFamily: popinsRegulr),
                 ),
               ],
             ),
             const SizedBox(height: 20),
-            // Event Details Description
-            Text(
-              eventDetails,
-              style: const TextStyle(
-                fontFamily: popinsRegulr,
-                height: 1.5,
-                color: Colors.black87,
-              ),
-            ),
-            const SizedBox(height: 20),
-            // View Location Button
-            ElevatedButton.icon(
-              onPressed: () async {
-                // Open event link
-                if (await canLaunch(eventLink)) {
-                  await launch(eventLink);
-                } else {
-                  throw 'Could not launch $eventLink';
-                }
-              },
-              icon: Icon(
-                Icons.location_on,
-                color: whiteColor,
-              ),
-              label: Text(
-                'Visit',
-                style: TextStyle(
-                  fontFamily: popinsMedium,
-                  color: whiteColor,
-                ),
-              ),
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(
-                    vertical: 10.0, horizontal: 20.0),
-                backgroundColor: primaryColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                ),
-              ),
+
+            // Image Section
+            Image.network(
+              imageLink,
+              fit: BoxFit.cover,
+              height: 200,
+              width: double.infinity,
             ),
           ],
         ),
       ),
     );
   }
-}
 
-class CalendarWidget extends StatelessWidget {
-  final DateTime eventDate;
-  final DateTime currentDate;
+  Future<void> _downloadAndShareImage(
+      String imageUrl, String title, String details) async {
+    try {
+      if (imageUrl.isEmpty) {
+        throw "Image URL is empty";
+      }
+      final uri = Uri.parse(imageUrl);
+      final response = await http.get(uri);
+      if (response.statusCode == 200) {
+        final tempDir = await getTemporaryDirectory();
+        final file = File('${tempDir.path}/event_image.png');
+        await file.writeAsBytes(response.bodyBytes);
+        await Share.shareXFiles([XFile(file.path)], text: "$title\n\n$details");
+      } else {
+        scaffoldMessengerKey.currentState?.showSnackBar(
+          SnackBar(
+              content: Text(
+                  "Failed to fetch image. Status Code: ${response.statusCode}")),
+        );
+      }
+    } catch (e) {
+      print("Error sharing image: $e");
+      scaffoldMessengerKey.currentState?.showSnackBar(
+        SnackBar(content: Text("Failed to share image: $e")),
+      );
+    }
+  }
 
-  const CalendarWidget(
-      {super.key, required this.eventDate, required this.currentDate});
-
-  @override
-  Widget build(BuildContext context) {
-    // Generate days for the calendar (assuming a simple month view)
-    int daysInMonth = DateTime(currentDate.year, currentDate.month + 1, 0).day;
-
+  // Reusable Widget for Event Time and Type
+  Widget _buildEventDetailItem(String title, String value) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Calendar Header
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              IconButton(
-                onPressed: () {
-                  // Handle previous month button
-                },
-                icon: const Icon(Icons.arrow_back_ios),
-                color: primaryColor,
-              ),
-              Text(
-                DateFormat('MMMM yyyy').format(currentDate),
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              IconButton(
-                onPressed: () {
-                  // Handle next month button
-                },
-                icon: const Icon(Icons.arrow_forward_ios),
-                color: primaryColor,
-              ),
-            ],
-          ),
+        Text(
+          title,
+          style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: primaryColor,
+              fontFamily: popinsRegulr),
         ),
-        // Calendar Days
-        Table(
-          children: _generateCalendar(daysInMonth, eventDate, currentDate),
+        const SizedBox(height: 4),
+        Text(
+          value,
+          style: const TextStyle(
+              fontSize: 14, color: Colors.black87, fontFamily: popinsRegulr),
         ),
       ],
     );
   }
 
-  // Generates the rows for the calendar
-  List<TableRow> _generateCalendar(
-      int daysInMonth, DateTime eventDate, DateTime currentDate) {
-    List<TableRow> rows = [];
-    List<Widget> dayCells = [];
-
-    // Add day names (e.g., Mon, Tue, Wed...)
-    dayCells.addAll(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-        .map((day) => Center(
-              child: Text(
-                day,
-                style:
-                    TextStyle(fontFamily: popinsSemiBold, color: primaryColor),
-              ),
-            ))
-        .toList());
-    rows.add(TableRow(children: dayCells));
-
-    // Fill initial empty cells if the first day of the month doesn't start on Monday
-    dayCells = [];
-    int firstWeekday = DateTime(currentDate.year, currentDate.month, 1).weekday;
-    for (int i = 1; i < firstWeekday; i++) {
-      dayCells.add(const SizedBox());
-    }
-
-    // Generate day numbers
-    for (int day = 1; day <= daysInMonth; day++) {
-      DateTime date = DateTime(currentDate.year, currentDate.month, day);
-      bool isEventDay = date.year == eventDate.year &&
-          date.month == eventDate.month &&
-          date.day == eventDate.day;
-
-      dayCells.add(Center(
-        child: Container(
-          padding: const EdgeInsets.all(8.0),
-          decoration: BoxDecoration(
-            color: isEventDay ? primaryColor : Colors.transparent,
-            shape: BoxShape.circle,
-          ),
-          child: Text(
-            day.toString(),
-            style: TextStyle(
-              color: isEventDay ? Colors.white : Colors.black87,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-      ));
-
-      // Add row every Sunday (7th day of the week)
-      if ((day + firstWeekday - 1) % 7 == 0) {
-        rows.add(TableRow(children: dayCells));
-        dayCells = [];
-      }
-    }
-
-    // Add any remaining day cells
-    if (dayCells.isNotEmpty) {
-      while (dayCells.length < 7) {
-        dayCells.add(const SizedBox());
-      }
-      rows.add(TableRow(children: dayCells));
-    }
-
-    return rows;
+  // Reusable Widget for Section Titles
+  Widget _buildSectionTitle(String title) {
+    return Text(
+      title,
+      style: TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+        fontFamily: popinsRegulr,
+        color: primaryColor,
+      ),
+    );
   }
 }

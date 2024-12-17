@@ -378,11 +378,26 @@ class EventsWidget extends StatelessWidget {
                                               Spacer(),
                                               GestureDetector(
                                                 onTap: () {
-                                                  Get.to(() =>
-                                                      EventsDetailsScreen(
-                                                        imageUrl: eventData
+                                                  Get.to(() => EventDetailPage(
+                                                        eventVenue: eventData
                                                             .events[index]
-                                                            .eventImage,
+                                                            .venueName,
+                                                        title: eventData
+                                                            .events[index]
+                                                            .eventTitle,
+                                                        sTime: eventData
+                                                            .events[index]
+                                                            .eventStarttime,
+                                                        endTime: eventData
+                                                            .events[index]
+                                                            .eventEndtime,
+                                                        entry: eventData
+                                                                    .events[
+                                                                        index]
+                                                                    .paid ==
+                                                                '0'
+                                                            ? 'Free'
+                                                            : 'Paid',
                                                         eventDate: eventData
                                                             .events[index]
                                                             .eventDate
@@ -390,7 +405,14 @@ class EventsWidget extends StatelessWidget {
                                                         eventDetails: eventData
                                                             .events[index]
                                                             .eventDetail,
-                                                        eventLink: eventData
+                                                        eventType: eventData
+                                                            .events[index]
+                                                            .eventhastype
+                                                            .eventtypeName,
+                                                        imageLink: eventData
+                                                            .events[index]
+                                                            .eventImage,
+                                                        locatinV: eventData
                                                             .events[index]
                                                             .eventLink,
                                                       ));

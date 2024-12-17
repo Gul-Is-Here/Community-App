@@ -1,5 +1,6 @@
 import 'package:community_islamic_app/app_classes/app_class.dart';
 import 'package:community_islamic_app/views/namaz_timmings/namaztimmings.dart';
+import 'package:community_islamic_app/widgets/blink_dot.dart';
 import 'package:community_islamic_app/widgets/featureWidgetIcons.dart';
 import 'package:community_islamic_app/widgets/our_services_widget.dart';
 import 'package:flutter/material.dart';
@@ -180,21 +181,17 @@ class CustomizedMobileLayout extends StatelessWidget {
                           ),
                           Row(
                             children: [
-                              Text(
-                                'Now : ${homeController.getCurrentPrayerCurrent()}',
-                                style: TextStyle(
-                                    fontFamily: popinsBold,
-                                    color: whiteColor,
-                                    fontSize: 28),
+                              Obx(
+                                () => Text(
+                                  'Now : ${homeController.getCurrentPrayerCurrent()}',
+                                  style: TextStyle(
+                                      fontFamily: popinsBold,
+                                      color: whiteColor,
+                                      fontSize: 28),
+                                ),
                               ),
                               10.widthBox,
-                              Container(
-                                height: 10,
-                                width: 10,
-                                decoration: BoxDecoration(
-                                    color: const Color(0xFF6CFD74),
-                                    borderRadius: BorderRadius.circular(20)),
-                              ),
+                              BlinkingDot(),
                               const Spacer(),
                               Padding(
                                 padding: const EdgeInsets.only(right: 12.0),
@@ -277,7 +274,8 @@ class CustomizedMobileLayout extends StatelessWidget {
                                       // ),
                                       GestureDetector(
                                         onTap: () {
-                                          Get.to(() => const HijriCalendarExample());
+                                          Get.to(() =>
+                                              const HijriCalendarExample());
                                         },
                                         child: Text(
                                           ' Calendar',
@@ -290,7 +288,8 @@ class CustomizedMobileLayout extends StatelessWidget {
                                       2.widthBox,
                                       GestureDetector(
                                         onTap: () {
-                                          Get.to(() => const NamazTimingsScreen());
+                                          Get.to(
+                                              () => const NamazTimingsScreen());
                                         },
                                         child: Text(
                                           '  View Times',

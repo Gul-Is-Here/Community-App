@@ -71,9 +71,9 @@ class ServicesScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
-          Projectbackground(
-            title: 'Services',
-          ),
+          // Projectbackground(
+          //   title: 'Services',
+          // ),
           Expanded(
             child: ListView.builder(
               itemCount: services.length,

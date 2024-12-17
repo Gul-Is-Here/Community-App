@@ -95,14 +95,15 @@ class QiblahScreen extends StatelessWidget {
                         screenWidth: screenWidth,
                         screenHeight: screenHeight,
                         label: 'Your angle to Qibla',
-                        value: '${qiblahDirection.qiblah.toStringAsFixed(0)}°',
+                        value:
+                            '${(qiblahDirection.qiblah % 360).toStringAsFixed(0)}°',
                       ),
                       buildInfoCard(
                         screenWidth: screenWidth,
                         screenHeight: screenHeight,
                         label: 'Qibla angle from N',
                         value:
-                            '${qiblahDirection.direction.toStringAsFixed(0)}°',
+                            '${(qiblahDirection.direction % 360).toStringAsFixed(0)}°',
                       ),
                     ],
                   ),
@@ -148,7 +149,7 @@ class QiblahScreen extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        "${qiblahDirection.qiblah.toStringAsFixed(0)}°",
+                        "${(qiblahDirection.direction % 360).toStringAsFixed(0)}°",
                         style: TextStyle(
                           fontSize: 16,
                           // fontWeight: FontWeight.bold,
@@ -160,7 +161,7 @@ class QiblahScreen extends StatelessWidget {
                   ),
                   SizedBox(height: screenHeight * 0.03),
                   Text(
-                    "Qibla angle : ${qiblahDirection.qiblah.toStringAsFixed(0)}°",
+                    "Qibla angle :${(qiblahDirection.direction % 360).toStringAsFixed(0)}°",
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,

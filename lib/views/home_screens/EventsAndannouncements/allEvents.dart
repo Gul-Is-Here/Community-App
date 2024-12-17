@@ -98,7 +98,7 @@ class _AllEventsDatesScreenState extends State<AllEventsDatesScreen> {
                         padding: const EdgeInsets.symmetric(
                             vertical: 8.0, horizontal: 16.0),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5),
+                          borderRadius: BorderRadius.circular(10),
                         ),
                       ),
                       child: Text(
@@ -143,7 +143,7 @@ class _AllEventsDatesScreenState extends State<AllEventsDatesScreen> {
                                           eventType.eventtypeId
                                       ? primaryColor
                                       : const Color(0xFFB9EED2),
-                                  borderRadius: BorderRadius.circular(5),
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
                                 child: Center(
                                   child: Text(
@@ -444,8 +444,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
         child: Column(
           children: [
             Container(
-              width: 38,
-              height: 40,
+              width: 34,
+              height: 34,
               padding: const EdgeInsets.all(8.0),
               decoration: BoxDecoration(
                 gradient: isSelected
@@ -463,6 +463,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                   Text(
                     day.toString(),
                     style: TextStyle(
+                      fontSize: 12,
                       color: isSelected ? Colors.white : Colors.black87,
                       fontFamily: popinsMedium,
                     ),
@@ -484,7 +485,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
-                        color: const Color(0xFFB3E8DA),
+                        color: Color(0xFFB9EED2),
                       ),
                     ),
                   ),
