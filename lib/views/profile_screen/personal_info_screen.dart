@@ -7,7 +7,7 @@ import 'package:community_islamic_app/widgets/custome_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
-import 'package:velocity_x/velocity_x.dart';
+// import 'package:velocity_x/velocity_x.dart';
 import '../../controllers/profileController.dart';
 import '../../widgets/personal_info_row_widget.dart';
 
@@ -255,7 +255,7 @@ class PersonalInfoScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      20.heightBox,
+           SizedBox(height: 20,),
                       PersonnelInfoRow(
                           title: 'First Name',
                           value: userData['first_name'] ?? 'N/A'),

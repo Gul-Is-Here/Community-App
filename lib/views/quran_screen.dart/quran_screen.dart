@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 // import 'package:just_audio/just_audio.dart';
-import 'package:velocity_x/velocity_x.dart';
+// import 'package:velocity_x/velocity_x.dart';
 import '../../constants/image_constants.dart';
 import '../../controllers/audio_controller.dart';
 import '../../controllers/login_controller.dart';
@@ -188,7 +188,7 @@ class _QuranScreenState extends State<QuranScreen> {
                 ),
               ),
             ),
-            50.heightBox,
+           SizedBox(height: 50,),
             // Audio Player Bar
             Obx(() => audioController.isPlaying.value ||
                     audioController.currentAudio.value != null

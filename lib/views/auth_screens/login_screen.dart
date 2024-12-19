@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:velocity_x/velocity_x.dart';
+// import 'package:velocity_x/velocity_x.dart';
 import 'package:community_islamic_app/constants/color.dart';
 import 'package:community_islamic_app/constants/image_constants.dart';
 import 'package:community_islamic_app/controllers/login_controller.dart';
@@ -76,7 +76,7 @@ class LoginScreen extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                50.heightBox,
+                            SizedBox(height: 50,),
                                 const Text(
                                   'Login',
                                   style: TextStyle(
@@ -84,7 +84,7 @@ class LoginScreen extends StatelessWidget {
                                       fontFamily: popinsMedium,
                                       fontWeight: FontWeight.bold),
                                 ),
-                                30.heightBox,
+                            SizedBox(height: 30,),
                                 TextFormField(
                                   onChanged: (value) =>
                                       loginController.email.value = value,
@@ -131,7 +131,7 @@ class LoginScreen extends StatelessWidget {
                                     filled: true,
                                   ),
                                 ),
-                                20.heightBox,
+                     SizedBox(height: 20,),
                                 Obx(() => TextFormField(
                                       onChanged: (value) => loginController
                                           .password.value = value,
@@ -193,7 +193,7 @@ class LoginScreen extends StatelessWidget {
                                         filled: true,
                                       ),
                                     )),
-                                20.heightBox,
+                               SizedBox(height: 20,),
                                 TextButton(
                                   onPressed: () {},
                                   child: Text(
@@ -204,7 +204,7 @@ class LoginScreen extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                                20.heightBox,
+                              SizedBox(height: 20,),
                                 Center(
                                   child: Obx(
                                     () => loginController.isLoading.value
@@ -257,7 +257,7 @@ class LoginScreen extends StatelessWidget {
                                           ),
                                   ),
                                 ),
-                                10.heightBox,
+                              SizedBox(height: 10,),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [

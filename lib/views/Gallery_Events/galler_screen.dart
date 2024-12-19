@@ -5,7 +5,7 @@ import 'package:community_islamic_app/constants/color.dart';
 import 'package:community_islamic_app/views/Gallery_Events/gallery_images_screen.dart';
 import 'package:community_islamic_app/views/Gallery_Events/gallery_videos_screen.dart';
 import 'package:community_islamic_app/widgets/project_background.dart';
-import 'package:velocity_x/velocity_x.dart';
+// import 'package:velocity_x/velocity_x.dart';
 import '../../controllers/gallery_controller.dart';
 
 class GalleyScreen extends StatelessWidget {
@@ -124,7 +124,7 @@ class GalleyScreen extends StatelessWidget {
       body: Column(
         children: [
           const Projectbackground(title: 'GALLERY'),
-          10.heightBox,
+      SizedBox(height: 10,),
           Container(
             alignment: Alignment.centerLeft,
             height: 50,
@@ -144,7 +144,7 @@ class GalleyScreen extends StatelessWidget {
               ),
             ),
           ),
-          10.heightBox,
+         SizedBox(height: 10,),
           Expanded(
             child: Obx(
               () {

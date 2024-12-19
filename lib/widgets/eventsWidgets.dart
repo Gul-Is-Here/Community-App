@@ -5,7 +5,7 @@ import 'package:community_islamic_app/views/home_screens/EventsAndannouncements/
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
-import 'package:velocity_x/velocity_x.dart';
+// import 'package:velocity_x/velocity_x.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import '../constants/color.dart';
 import '../controllers/home_controller.dart';
@@ -67,7 +67,8 @@ class EventsWidget extends StatelessWidget {
                         ],
                       ),
                     ),
-                    5.heightBox,
+                    // 5.heightBox,
+                    SizedBox(height: 5,),
                     CarouselSlider.builder(
                       options: CarouselOptions(
                         scrollPhysics: const ScrollPhysics(),
@@ -135,7 +136,8 @@ class EventsWidget extends StatelessWidget {
                                               height: 14,
                                               width: 14,
                                             ),
-                                            10.widthBox,
+                                            // 10.widthBox,
+                                            SizedBox(height: 10,),
                                             Text(
                                               AppClass().formatDate2(
                                                   item['eventDate']!),
@@ -150,7 +152,8 @@ class EventsWidget extends StatelessWidget {
                                           ],
                                         ),
                                       ),
-                                      5.heightBox,
+                                      // 5.heightBox,
+                                      SizedBox(height: 5,),
                                       Padding(
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: 4),
@@ -197,7 +200,7 @@ class EventsWidget extends StatelessWidget {
                         );
                       },
                     ),
-                    5.heightBox,
+                    SizedBox(height: 5,),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: List.generate(
@@ -249,7 +252,8 @@ class EventsWidget extends StatelessWidget {
                         )
                       ],
                     ),
-                    5.heightBox,
+                    // 5.heightBox,
+                    SizedBox(height: 5,),
                     SizedBox(
                       height: 185,
                       child: Column(
@@ -331,7 +335,8 @@ class EventsWidget extends StatelessWidget {
                                                       height: 14,
                                                       width: 14,
                                                     ),
-                                                    10.widthBox,
+                                                    // 10.widthBox,
+                                                    SizedBox(height: 10,),
                                                     Text(
                                                       AppClass().formatDate2(
                                                           eventData
@@ -351,7 +356,8 @@ class EventsWidget extends StatelessWidget {
                                                   ],
                                                 ),
                                               ),
-                                              5.heightBox,
+                                              // 5.heightBox,
+                                              SizedBox(height: 5,),
                                               Padding(
                                                 padding: EdgeInsets.symmetric(
                                                     horizontal: 4),
@@ -448,7 +454,8 @@ class EventsWidget extends StatelessWidget {
                             );
                           }),
 
-                          5.heightBox,
+                          // 5.heightBox
+                          SizedBox(height: 5,),
 
                           // Dot indicators for the carousel slider with null checks
                           Obx(() {

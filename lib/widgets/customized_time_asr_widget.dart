@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:velocity_x/velocity_x.dart';
+// import 'package:velocity_x/velocity_x.dart';
 
 class CustomizedPrayerAsarWidget extends StatelessWidget {
   final String time;
@@ -27,13 +27,15 @@ class CustomizedPrayerAsarWidget extends StatelessWidget {
               time,
               style: const TextStyle(color: Colors.white, fontSize: 11),
             ),
-            5.heightBox,
+            // 5.heightBox,
+            SizedBox(height: 5,),
             Image.asset(
               image,
               height: 25,
               width: 25,
             ),
-            5.heightBox,
+            // 5.heightBox,
+            SizedBox(height: 25,),
             Text(
               text,
               style: TextStyle(color: Colors.white, fontSize: 11),

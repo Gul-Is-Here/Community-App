@@ -1,7 +1,7 @@
 import 'package:community_islamic_app/app_classes/app_class.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:velocity_x/velocity_x.dart';
+// import 'package:velocity_x/velocity_x.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import '../constants/color.dart';
 import '../controllers/home_controller.dart';
@@ -173,7 +173,7 @@ class AnnouncementWidget extends StatelessWidget {
                       },
                     ),
                   ),
-                  10.heightBox,
+                SizedBox(height: 10,),
                   Obx(
                     () => Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -355,7 +355,7 @@ class AnnouncementWidget extends StatelessWidget {
                       },
                     ),
                   ),
-                  10.heightBox,
+                SizedBox(height: 10,),
                   Obx(
                     () => Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -413,8 +413,7 @@ class AnnouncementWidget extends StatelessWidget {
                     ],
                   ),
                 ),
-                5.heightBox, // Add spacing
-
+         SizedBox(height: 5,),
                 // Carousel Slider with dots
                 Obx(() {
                   return Column(
@@ -543,7 +542,7 @@ class AnnouncementWidget extends StatelessWidget {
                       ),
 
                       // Indicator Dots
-                      10.heightBox,
+                    SizedBox(height: 10,),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: List.generate(
@@ -565,7 +564,7 @@ class AnnouncementWidget extends StatelessWidget {
                     ],
                   );
                 }),
-                10.heightBox, // Add spacing
+              SizedBox(height: 10,),
               ],
             );
           })

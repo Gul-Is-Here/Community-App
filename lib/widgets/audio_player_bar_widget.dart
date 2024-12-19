@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:velocity_x/velocity_x.dart';
+// import 'package:velocity_x/velocity_x.dart';
 import '../controllers/audio_controller.dart';
 import '../model/quran_audio_model.dart';
 
@@ -57,7 +57,7 @@ class AudioPlayerBar extends StatelessWidget {
                           fontSize: 16,
                           fontWeight: FontWeight.bold),
                     ),
-                    5.heightBox,
+                SizedBox(height: 5,),
                     Text(
                       artistName ?? '',
                       style: const TextStyle(

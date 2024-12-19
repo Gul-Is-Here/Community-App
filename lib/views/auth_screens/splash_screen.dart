@@ -61,14 +61,16 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          Positioned.fill(
-            child: _controller != null && _controller!.value.isInitialized
-                ? AspectRatio(
+          _controller != null && _controller!.value.isInitialized
+              ? SizedBox(
+                  height: double.infinity,
+                  width: double.infinity,
+                  child: AspectRatio(
                     aspectRatio: _controller!.value.aspectRatio,
                     child: VideoPlayer(_controller!),
-                  )
-                : Container(),
-          ),
+                  ),
+                )
+              : Container(),
         ],
       ),
     );

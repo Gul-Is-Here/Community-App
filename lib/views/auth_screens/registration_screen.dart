@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
-import 'package:velocity_x/velocity_x.dart';
+// import 'package:velocity_x/velocity_x.dart';
 import 'package:community_islamic_app/constants/color.dart';
 import 'package:community_islamic_app/constants/image_constants.dart';
 import 'package:community_islamic_app/views/auth_screens/login_screen.dart';
@@ -57,7 +57,7 @@ class RegistrationScreen extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              50.heightBox,
+                              SizedBox(height: 50,),
                               const Text(
                                 'Register',
                                 style: TextStyle(
@@ -65,7 +65,7 @@ class RegistrationScreen extends StatelessWidget {
                                     fontSize: 24,
                                     fontWeight: FontWeight.bold),
                               ),
-                              30.heightBox,
+                              SizedBox(height: 30,),
                               // First Name
                               TextFormField(
                                 cursorColor: primaryColor,
@@ -101,7 +101,7 @@ class RegistrationScreen extends StatelessWidget {
                                     fillColor: Colors.white,
                                     filled: true),
                               ),
-                              20.heightBox,
+                      SizedBox(height: 20,),
                               // Last Name
                               TextFormField(
                                 cursorColor: primaryColor,
@@ -137,7 +137,7 @@ class RegistrationScreen extends StatelessWidget {
                                     fillColor: Colors.white,
                                     filled: true),
                               ),
-                              20.heightBox,
+                  SizedBox(height: 20,),
                               // Email
                               TextFormField(
                                 cursorColor: primaryColor,
@@ -171,7 +171,7 @@ class RegistrationScreen extends StatelessWidget {
                                     fillColor: Colors.white,
                                     filled: true),
                               ),
-                              20.heightBox,
+                          SizedBox(height: 20,),
                               // Username
                               TextFormField(
                                 onChanged: (value) => registrationController
@@ -206,7 +206,7 @@ class RegistrationScreen extends StatelessWidget {
                                     fillColor: Colors.white,
                                     filled: true),
                               ),
-                              20.heightBox,
+                             SizedBox(height: 20,),
                               // Register Button
                               Center(
                                 child: Obx(
@@ -249,7 +249,7 @@ class RegistrationScreen extends StatelessWidget {
                                         ),
                                 ),
                               ),
-                              10.heightBox,
+                           SizedBox(height: 10,),
                               // Sign In Redirect
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,

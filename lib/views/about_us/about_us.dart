@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:community_islamic_app/constants/color.dart';
 import 'package:community_islamic_app/widgets/project_background.dart';
-import 'package:velocity_x/velocity_x.dart';
+// import 'package:velocity_x/velocity_x.dart';
 
 import '../../constants/image_constants.dart';
 
@@ -29,7 +29,6 @@ class AboutUsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-       
         leading: IconButton(
           onPressed: () {
             Get.back();
@@ -76,7 +75,9 @@ class AboutUsScreen extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                10.heightBox,
+                SizedBox(
+                  height: 10,
+                ),
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 8.0),
                   child: Text(
@@ -86,7 +87,9 @@ class AboutUsScreen extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                10.heightBox,
+                SizedBox(
+                  height: 10,
+                ),
                 Container(
                   height: 45,
                   width: double.infinity,
@@ -103,7 +106,9 @@ class AboutUsScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                5.heightBox,
+                SizedBox(
+                  height: 5,
+                ),
                 Padding(
                   padding: const EdgeInsets.all(0),
                   child: Column(
@@ -149,16 +154,22 @@ class AboutUsScreen extends StatelessWidget {
                                         color: primaryColor,
                                       ),
                                     ),
-                                    10.heightBox
+                                    SizedBox(
+                                      height: 10,
+                                    ),
                                   ],
-                                  10.heightBox
+                                  SizedBox(
+                                    height: 10,
+                                  ),
                                 ],
                               ),
                             );
                           }),
                         ),
                       ),
-                      5.heightBox,
+                      SizedBox(
+                        height: 5,
+                      ),
                       Obx(() {
                         final index = selectedImageIndex.value;
                         return Column(

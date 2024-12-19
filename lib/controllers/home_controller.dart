@@ -535,18 +535,17 @@ class HomeController extends GetxController {
       final ishaTime = DateFormat("HH:mm").parse(timings.isha);
 
       if (currentTime.isBefore(fajrTime)) {
-        return DateFormat("hh:mm a").format(fajrTime);
+        return DateFormat("hh:mm").format(fajrTime);
       } else if (currentTime.isBefore(dhuhrTime)) {
-        return DateFormat("hh:mm a").format(dhuhrTime);
+        return DateFormat("hh:mm").format(dhuhrTime);
       } else if (currentTime.isBefore(asrTime)) {
         return DateFormat("hh:mm a").format(asrTime);
       } else if (currentTime.isBefore(maghribTime)) {
-        return DateFormat("hh:mm a").format(maghribTime);
+        return DateFormat("hh:mm").format(maghribTime);
       } else if (currentTime.isBefore(ishaTime)) {
-        return DateFormat("hh:mm a").format(ishaTime);
+        return DateFormat("hh:mm").format(ishaTime);
       } else {
-        return DateFormat("hh:mm a")
-            .format(fajrTime); // The next day's Fajr time
+        return DateFormat("hh:mm").format(fajrTime); // The next day's Fajr time
       }
     }
 

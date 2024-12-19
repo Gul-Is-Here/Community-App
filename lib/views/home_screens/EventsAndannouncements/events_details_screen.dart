@@ -4,7 +4,7 @@ import 'package:community_islamic_app/app_classes/app_class.dart';
 import 'package:community_islamic_app/constants/color.dart';
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:velocity_x/velocity_x.dart';
+// import 'package:velocity_x/velocity_x.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 
@@ -144,7 +144,7 @@ class EventDetailPage extends StatelessWidget {
                     ),
                   ],
                 ),
-                5.heightBox,
+              SizedBox(height: 5,),
                 Text(
                   eventVenue,
                   style: const TextStyle(

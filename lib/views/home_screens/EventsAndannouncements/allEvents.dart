@@ -9,7 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:community_islamic_app/constants/color.dart';
 import 'package:community_islamic_app/controllers/home_events_controller.dart';
 import 'package:community_islamic_app/model/home_events_model.dart';
-import 'package:velocity_x/velocity_x.dart';
+// import 'package:velocity_x/velocity_x.dart';
 
 import '../../../app_classes/app_class.dart';
 
@@ -491,7 +491,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                   ),
                 ),
               ),
-            5.heightBox,
+          SizedBox(height: 5,),
           ],
         ),
       ));

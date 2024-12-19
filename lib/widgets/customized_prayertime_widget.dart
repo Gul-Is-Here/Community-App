@@ -1,6 +1,6 @@
 import 'package:community_islamic_app/constants/color.dart';
 import 'package:flutter/material.dart';
-import 'package:velocity_x/velocity_x.dart';
+// import 'package:velocity_x/velocity_x.dart';
 
 class CustomizedPrayerTimeWidget extends StatelessWidget {
   final String time;
@@ -31,19 +31,19 @@ class CustomizedPrayerTimeWidget extends StatelessWidget {
               style: const TextStyle(
                   color: Colors.white, fontSize: 11, fontFamily: popinsRegulr),
             ),
-            5.heightBox,
+          SizedBox(height: 5,),
             Image.asset(
               image,
               height: 25,
               width: 25,
             ),
-            5.heightBox,
+           SizedBox(height: 5,),
             Text(
               azazName,
               style: TextStyle(
                   color: Colors.white, fontSize: 11, fontFamily: popinsRegulr),
             ),
-            5.heightBox,
+          SizedBox(height: 5,),
             Text(
               text,
               style: TextStyle(

@@ -3,7 +3,7 @@ import 'package:community_islamic_app/app_classes/app_class.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_qiblah/flutter_qiblah.dart';
 import 'package:get/get.dart';
-import 'package:velocity_x/velocity_x.dart';
+// import 'package:velocity_x/velocity_x.dart';
 
 import '../../constants/color.dart';
 import '../../constants/image_constants.dart';
@@ -174,8 +174,7 @@ class QiblahScreen extends StatelessWidget {
                     compassBg, // Replace with the footer masjid line asset
                     width: screenWidth,
                     fit: BoxFit.cover,
-                  ),
-                  60.heightBox,
+                  ),SizedBox(height: 60,),
                 ],
               ),
             );

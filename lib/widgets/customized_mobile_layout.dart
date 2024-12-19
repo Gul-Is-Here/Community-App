@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:velocity_x/velocity_x.dart';
+// import 'package:velocity_x/velocity_x.dart';
 
 import '../constants/color.dart';
 import '../constants/image_constants.dart';
@@ -63,7 +63,7 @@ class CustomizedMobileLayout extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            40.heightBox,
+           SizedBox(height: 40,),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -79,7 +79,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                         height: 32,
                         width: 32,
                       ),
-                      2.widthBox,
+                    SizedBox(height: 2,),
                       Text(
                         'Rosenberg Community Centre',
                         style: TextStyle(
@@ -183,14 +183,14 @@ class CustomizedMobileLayout extends StatelessWidget {
                             children: [
                               Obx(
                                 () => Text(
-                                  'Now : ${homeController.getCurrentPrayerCurrent()}',
+                                  'Next : ${homeController.getCurrentPrayer()}',
                                   style: TextStyle(
                                       fontFamily: popinsBold,
                                       color: whiteColor,
                                       fontSize: 28),
                                 ),
                               ),
-                              10.widthBox,
+                        SizedBox(height: 10,),
                               BlinkingDot(),
                               const Spacer(),
                               Padding(
@@ -219,7 +219,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                                     children: [
                                       Obx(
                                         () => Text(
-                                          homeController.getCurrentPrayerTime(),
+                                          homeController.getNextPrayerTime(),
                                           style: TextStyle(
                                               fontFamily: popinsBold,
                                               color: whiteColor,
@@ -285,7 +285,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                                               fontSize: 11),
                                         ),
                                       ),
-                                      2.widthBox,
+                             SizedBox(height: 2,),
                                       GestureDetector(
                                         onTap: () {
                                           Get.to(
@@ -352,7 +352,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                     ),
                   )),
             ),
-            10.heightBox,
+         SizedBox(height: 10,),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: Text(
@@ -361,7 +361,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                     fontFamily: popinsBold, fontSize: 16, color: whiteColor),
               ),
             ),
-            10.heightBox,
+        SizedBox(height: 10,),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Card(
@@ -575,7 +575,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                   }
                   return const SizedBox();
                 }),
-                5.heightBox,
+            SizedBox(height: 5,),
                 Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -608,7 +608,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                     ],
                   ),
                 ),
-                5.heightBox,
+              SizedBox(height: 5,),
                 Obx(() {
                   if (!eventsController.isHiddenServices.value) {
                     return Padding(
@@ -669,7 +669,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                 })
               ],
             ),
-            100.heightBox,
+          SizedBox(height: 100,),
           ],
         ),
       ),

@@ -3,7 +3,7 @@ import 'package:community_islamic_app/model/quran_audio_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
-import 'package:velocity_x/velocity_x.dart';
+// import 'package:velocity_x/velocity_x.dart';
 
 import '../controllers/audio_controller.dart';
 
@@ -87,7 +87,8 @@ class _CustomizedSurahWidgetState extends State<CustomizedSurahWidget> {
               ),
             ),
           ),
-          10.widthBox,
+          // 10.widthBox,
+          SizedBox(height: 10,),
           Container(
             decoration: BoxDecoration(
               color: primaryColor,
@@ -137,7 +138,7 @@ class _CustomizedSurahWidgetState extends State<CustomizedSurahWidget> {
               ),
             ),
           ),
-          10.widthBox,
+          SizedBox(height: 10,),
           Expanded(
             child: Column(
               children: [
@@ -159,7 +160,8 @@ class _CustomizedSurahWidgetState extends State<CustomizedSurahWidget> {
               ],
             ),
           ),
-          10.widthBox,
+          // 10.widthBox,
+          SizedBox(height: 10,),
           Container(
               decoration: BoxDecoration(
                 color: primaryColor,
@@ -180,7 +182,8 @@ class _CustomizedSurahWidgetState extends State<CustomizedSurahWidget> {
                       fit: BoxFit.cover,
                     ),
                   ))),
-          10.widthBox,
+          // 10.widthBox,
+          SizedBox(height: 10,),
         ],
       ),
     );
