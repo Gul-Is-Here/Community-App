@@ -2,7 +2,7 @@ import 'package:community_islamic_app/constants/color.dart';
 import 'package:community_islamic_app/widgets/project_background.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:velocity_x/velocity_x.dart';
+// import 'package:velocity_x/velocity_x.dart';
 import 'package:community_islamic_app/controllers/project_controller.dart';
 
 class ProjectScreen extends StatefulWidget {
@@ -86,7 +86,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
                                   ),
                                 ),
                               ),
-                              5.widthBox,
+                       SizedBox(height: 5,),
                               Expanded(
                                 child: Column(
                                   // mainAxisAlignment: MainAxisAlignment.start,
@@ -132,10 +132,13 @@ class _ProjectScreenState extends State<ProjectScreen> {
                           ),
                           if (isExpanded) ...[
                             const SizedBox(height: 10),
-                            Image.network(
-                              project.projectImage,
-                              height: 200,
-                            ).p12(),
+                            Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Image.network(
+                                project.projectImage,
+                                height: 200,
+                              ),
+                            )
                           ],
                         ],
                       ),

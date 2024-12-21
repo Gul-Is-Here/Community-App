@@ -4,7 +4,7 @@ import 'package:community_islamic_app/views/contact_us/contact_us_screen.dart';
 import 'package:community_islamic_app/views/family_members/enrolment_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:velocity_x/velocity_x.dart';
+
 
 import '../../constants/color.dart';
 import 'classdropdown_widget.dart';
@@ -47,7 +47,7 @@ class ClassesScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                5.heightBox,
+           SizedBox(height: 5,),
                 ClassDropdown(
                     classesList: familyController.classesList,
                     member: relations[index]),

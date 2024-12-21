@@ -5,7 +5,7 @@ import 'package:community_islamic_app/views/home_screens/EventsAndannouncements/
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
-import 'package:velocity_x/velocity_x.dart';
+// import 'package:velocity_x/velocity_x.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import '../constants/color.dart';
 import '../controllers/home_controller.dart';
@@ -67,7 +67,10 @@ class EventsWidget extends StatelessWidget {
                         ],
                       ),
                     ),
-                    5.heightBox,
+                    // 5.heightBox,
+                    SizedBox(
+                      height: 5,
+                    ),
                     CarouselSlider.builder(
                       options: CarouselOptions(
                         scrollPhysics: const ScrollPhysics(),
@@ -135,7 +138,10 @@ class EventsWidget extends StatelessWidget {
                                               height: 14,
                                               width: 14,
                                             ),
-                                            10.widthBox,
+                                            // 10.widthBox,
+                                            SizedBox(
+                                              height: 10,
+                                            ),
                                             Text(
                                               AppClass().formatDate2(
                                                   item['eventDate']!),
@@ -150,7 +156,10 @@ class EventsWidget extends StatelessWidget {
                                           ],
                                         ),
                                       ),
-                                      5.heightBox,
+                                      // 5.heightBox,
+                                      SizedBox(
+                                        height: 5,
+                                      ),
                                       Padding(
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: 4),
@@ -197,7 +206,9 @@ class EventsWidget extends StatelessWidget {
                         );
                       },
                     ),
-                    5.heightBox,
+                    SizedBox(
+                      height: 5,
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: List.generate(
@@ -249,7 +260,10 @@ class EventsWidget extends StatelessWidget {
                         )
                       ],
                     ),
-                    5.heightBox,
+                    // 5.heightBox,
+                    SizedBox(
+                      height: 5,
+                    ),
                     SizedBox(
                       height: 185,
                       child: Column(
@@ -266,11 +280,12 @@ class EventsWidget extends StatelessWidget {
 
                             return CarouselSlider.builder(
                               options: CarouselOptions(
+                                // reverse: true,
                                 autoPlay: true,
                                 autoPlayInterval: Duration(seconds: 3),
                                 height: 169,
                                 viewportFraction: 1,
-                                enableInfiniteScroll: false,
+                                enableInfiniteScroll: true,
                                 enlargeCenterPage: true,
                                 scrollDirection: Axis.horizontal,
                                 onPageChanged: (index, reason) {
@@ -331,7 +346,10 @@ class EventsWidget extends StatelessWidget {
                                                       height: 14,
                                                       width: 14,
                                                     ),
-                                                    10.widthBox,
+                                                    // 10.widthBox,
+                                                    SizedBox(
+                                                      height: 10,
+                                                    ),
                                                     Text(
                                                       AppClass().formatDate2(
                                                           eventData
@@ -351,7 +369,10 @@ class EventsWidget extends StatelessWidget {
                                                   ],
                                                 ),
                                               ),
-                                              5.heightBox,
+                                              // 5.heightBox,
+                                              SizedBox(
+                                                height: 5,
+                                              ),
                                               Padding(
                                                 padding: EdgeInsets.symmetric(
                                                     horizontal: 4),
@@ -378,11 +399,26 @@ class EventsWidget extends StatelessWidget {
                                               Spacer(),
                                               GestureDetector(
                                                 onTap: () {
-                                                  Get.to(() =>
-                                                      EventsDetailsScreen(
-                                                        imageUrl: eventData
+                                                  Get.to(() => EventDetailPage(
+                                                        eventVenue: eventData
                                                             .events[index]
-                                                            .eventImage,
+                                                            .venueName,
+                                                        title: eventData
+                                                            .events[index]
+                                                            .eventTitle,
+                                                        sTime: eventData
+                                                            .events[index]
+                                                            .eventStarttime,
+                                                        endTime: eventData
+                                                            .events[index]
+                                                            .eventEndtime,
+                                                        entry: eventData
+                                                                    .events[
+                                                                        index]
+                                                                    .paid ==
+                                                                '0'
+                                                            ? 'Free'
+                                                            : 'Paid',
                                                         eventDate: eventData
                                                             .events[index]
                                                             .eventDate
@@ -390,7 +426,14 @@ class EventsWidget extends StatelessWidget {
                                                         eventDetails: eventData
                                                             .events[index]
                                                             .eventDetail,
-                                                        eventLink: eventData
+                                                        eventType: eventData
+                                                            .events[index]
+                                                            .eventhastype
+                                                            .eventtypeName,
+                                                        imageLink: eventData
+                                                            .events[index]
+                                                            .eventImage,
+                                                        locatinV: eventData
                                                             .events[index]
                                                             .eventLink,
                                                       ));
@@ -426,7 +469,10 @@ class EventsWidget extends StatelessWidget {
                             );
                           }),
 
-                          5.heightBox,
+                          // 5.heightBox
+                          SizedBox(
+                            height: 5,
+                          ),
 
                           // Dot indicators for the carousel slider with null checks
                           Obx(() {
@@ -470,132 +516,3 @@ class EventsWidget extends StatelessWidget {
     );
   }
 }
-
-
-
-///class EventsWidget extends StatelessWidget {
-//   const EventsWidget({
-//     super.key,
-//     required this.eventsController,
-//     required this.homeController,
-//   });
-
-//   final HomeEventsController eventsController;
-//   final HomeController homeController;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final screenHeight1 = MediaQuery.of(context).size.height;
-//     final screenWidth = MediaQuery.of(context).size.width;
-
-//     return Padding(
-//       padding: const EdgeInsets.all(0),
-//       child: Obx(
-//         () => Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//             if (eventsController.isLoading.value)
-//               SizedBox(
-//                 width: screenWidth * 1,
-//                 height: screenHeight1 * .075,
-//                 child: Center(
-//                   child: SpinKitFadingCircle(
-//                     color: primaryColor,
-//                     size: 50.0,
-//                   ),
-//                 ),
-//               )
-//             else if (eventsController.events.value == null ||
-//                 eventsController.events.value!.data.events.isEmpty)
-//               SizedBox(
-//                 width: screenWidth * .9,
-//                 height: screenHeight1 * .075,
-//                 child: Center(
-//                   child: Text(
-//                     'No Events found',
-//                     style: TextStyle(fontFamily: popinsRegulr),
-//                   ),
-//                 ),
-//               )
-//             else
-//               Column(
-//                 children: [
-//                   SingleChildScrollView(
-//                     scrollDirection: Axis.horizontal,
-//                     child: Row(
-//                       children: List.generate(
-//                         eventsController.events.value!.data.events.length,
-//                         (index) {
-//                           var eventData = eventsController.events.value!.data;
-//                           final feedsImages = eventsController.feedsList[index];
-//                           return GestureDetector(
-//                             onTap: () {
-//                               Get.to(() => EventsDetailsScreen(
-//                                   imageUrl: feedsImages.feedImage,
-//                                   eventDate: eventData.events[index].eventDate
-//                                       .toString(),
-//                                   eventDetails:
-//                                       eventData.events[index].eventDetail,
-//                                   eventLink:
-//                                       eventData.events[index].eventLink));
-//                             },
-//                             child: Padding(
-//                               padding: const EdgeInsets.symmetric(
-//                                   horizontal: 4, vertical: 5),
-//                               child: Image.network(
-//                                 eventsController.feedsList[index].feedImage,
-//                                 fit: BoxFit.cover,
-//                                 width: 90,
-//                                 height: 120,
-//                               ),
-//                             ),
-//                           );
-//                         },
-//                       ),
-//                     ),
-//                   ),
-//                   5.heightBox,
-//                   SizedBox(
-//                     height: 35,
-//                     child: GestureDetector(
-//                       onTap: () {
-//                         Get.to(() => AllEventsDatesScreen());
-//                       },
-//                       child: Row(
-//                         mainAxisAlignment:
-//                             MainAxisAlignment.end, // Aligns to the right
-//                         children: [
-//                           Text(
-//                             'View All',
-//                             style: TextStyle(
-//                               fontSize: 14,
-//                               fontWeight: FontWeight.w700,
-//                               color: primaryColor,
-//                               fontFamily: popinsRegulr,
-//                             ),
-//                           ),
-//                           SizedBox(width: 8),
-//                           Container(
-//                             padding: const EdgeInsets.all(8),
-//                             decoration: BoxDecoration(
-//                               shape: BoxShape.circle,
-//                               color: primaryColor,
-//                             ),
-//                             child: Icon(
-//                               Icons.arrow_forward,
-//                               color: Colors.white,
-//                               size: 20,
-//                             ),
-//                           ),
-//                         ],
-//                       ),
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }

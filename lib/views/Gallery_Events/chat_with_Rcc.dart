@@ -1,7 +1,7 @@
 import 'package:community_islamic_app/views/about_us/about_us.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:velocity_x/velocity_x.dart';
+// import 'package:velocity_x/velocity_x.dart';
 
 import '../../constants/color.dart';
 import '../../widgets/project_background.dart';
@@ -48,7 +48,7 @@ class ChatWithRCCScreen extends StatelessWidget {
               ),
             ),
           ),
-          150.heightBox,
+     SizedBox(height: 150,),
           const Center(
             child: Text(
               'COMMING SOON',

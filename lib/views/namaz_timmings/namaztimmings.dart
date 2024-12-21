@@ -3,7 +3,7 @@ import 'package:community_islamic_app/views/namaz_timmings/montly_prayer_times.d
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:velocity_x/velocity_x.dart';
+// import 'package:velocity_x/velocity_x.dart';
 import '../../controllers/home_controller.dart';
 import '../../model/prayer_times_static_model.dart';
 import '../../constants/color.dart';
@@ -82,7 +82,7 @@ class NamazTimingsScreen extends StatelessWidget {
                                 color: primaryColor,
                                 size: 24,
                               ),
-                              10.widthBox,
+                          SizedBox(height: 10,),
                               Column(
                                 children: [
                                   Text(
@@ -136,7 +136,7 @@ class NamazTimingsScreen extends StatelessWidget {
                                 color: primaryColor,
                                 size: 24,
                               ),
-                              10.widthBox,
+                       SizedBox(height: 10,),
                               Column(
                                 children: [
                                   Text(
@@ -167,28 +167,28 @@ class NamazTimingsScreen extends StatelessWidget {
                 ),
               ],
             ),
-            5.heightBox,
+         SizedBox(height: 5,),
             _buildPrayerTile(
                 'Fajr', timings.fajr, iqamatimes['Fajr']!, currentPrayer),
 
-            5.heightBox,
+         SizedBox(height: 5,),
             _buildPrayerTile(
                 'Dhuhr', timings.dhuhr, iqamatimes['Dhuhr']!, currentPrayer),
-            5.heightBox,
+         SizedBox(height: 5,),
             _buildPrayerTile(
                 'Asr', timings.asr, iqamatimes['Asr']!, currentPrayer),
-            5.heightBox,
+         SizedBox(height: 5,),
             _buildPrayerTile('Maghrib', timings.maghrib,
                 _calculateIqamaTime(timings.maghrib), currentPrayer),
 
-            5.heightBox,
+         SizedBox(height: 5,),
             _buildPrayerTile(
                 'Isha', timings.isha, iqamatimes['Isha']!, currentPrayer),
 
             // Jumma section
             const SizedBox(height: 20),
             const JummaPrayerTile(),
-            10.heightBox,
+           SizedBox(height: 10,),
             ElevatedButton(
                 style: ElevatedButton.styleFrom(
                     backgroundColor: whiteColor,
@@ -203,7 +203,7 @@ class NamazTimingsScreen extends StatelessWidget {
                   style: TextStyle(
                       fontFamily: popinsSemiBold, color: primaryColor),
                 )),
-            10.heightBox,
+       SizedBox(height: 10,),
             ElevatedButton(
                 style: ElevatedButton.styleFrom(
                     backgroundColor: whiteColor,

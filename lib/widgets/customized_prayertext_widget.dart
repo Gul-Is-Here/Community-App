@@ -1,5 +1,6 @@
+import 'package:blinking_text/blinking_text.dart';
+import 'package:community_islamic_app/widgets/blinkContainer.dart';
 import 'package:flutter/material.dart';
-import 'package:velocity_x/velocity_x.dart';
 
 import '../app_classes/app_class.dart';
 import '../constants/color.dart';
@@ -52,18 +53,11 @@ class PrayerTimeWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          2.widthBox,
+          SizedBox(
+            height: 2,
+          ),
           currentPrayer == namazName
-              ? Container(
-                  height: 10,
-                  width: 10,
-                  decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                          colors: [goldenColor, goldenColor2],
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter),
-                      borderRadius: BorderRadius.circular(20)),
-                )
+              ? BlinkingContainer()
               : Container(
                   height: 10,
                   width: 10,
@@ -72,7 +66,9 @@ class PrayerTimeWidget extends StatelessWidget {
                           LinearGradient(colors: [lightColor, lightColor]),
                       borderRadius: BorderRadius.circular(20)),
                 ),
-          5.heightBox,
+          SizedBox(
+            height: 5,
+          ),
           currentPrayer == namazName
               ? ShaderMask(
                   shaderCallback: (bounds) => LinearGradient(
@@ -83,7 +79,8 @@ class PrayerTimeWidget extends StatelessWidget {
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter)
                       .createShader(bounds),
-                  child: Text(
+                  child: BlinkText(
+                    duration: Duration(seconds: 1),
                     name,
                     style: TextStyle(
                       fontSize: 10,
@@ -101,7 +98,9 @@ class PrayerTimeWidget extends StatelessWidget {
                   ),
                 ),
           // const Spacer(),
-          2.heightBox,
+          SizedBox(
+            height: 2,
+          ),
           Column(
             children: [
               currentPrayer == namazName
@@ -114,7 +113,8 @@ class PrayerTimeWidget extends StatelessWidget {
                                   begin: Alignment.topCenter,
                                   end: Alignment.bottomCenter)
                               .createShader(bounds),
-                      child: Text(
+                      child: BlinkText(
+                        duration: Duration(seconds: 1),
                         appClass.formatPrayerTimeToAmPm(timings),
                         style: TextStyle(
                             color: whiteColor,
@@ -140,7 +140,8 @@ class PrayerTimeWidget extends StatelessWidget {
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
                           ).createShader(bounds),
-                      child: Text(
+                      child: BlinkText(
+                        duration: Duration(seconds: 1),
                         iqamaTime,
                         style: TextStyle(
                             color: whiteColor,

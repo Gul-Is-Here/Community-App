@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 // import 'package:just_audio/just_audio.dart';
-import 'package:velocity_x/velocity_x.dart';
+// import 'package:velocity_x/velocity_x.dart';
 import '../../constants/image_constants.dart';
 import '../../controllers/audio_controller.dart';
 import '../../controllers/login_controller.dart';
@@ -17,7 +17,8 @@ import 'player_bar_screen.dart';
 import 'surah_audio_detail_screen.dart';
 
 class QuranScreen extends StatefulWidget {
-  const QuranScreen({super.key});
+  final bool isNavigation;
+  const QuranScreen({super.key, required this.isNavigation});
 
   @override
   State<QuranScreen> createState() => _QuranScreenState();
@@ -37,6 +38,14 @@ class _QuranScreenState extends State<QuranScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        leading: widget.isNavigation
+            ? IconButton(
+                onPressed: () {},
+                icon: Icon(
+                  Icons.arrow_back,
+                  color: whiteColor,
+                ))
+            : SizedBox(),
         // toolbarHeight: 20,
         centerTitle: true,
         title: Text(
@@ -188,7 +197,9 @@ class _QuranScreenState extends State<QuranScreen> {
                 ),
               ),
             ),
-            50.heightBox,
+            SizedBox(
+              height: 50,
+            ),
             // Audio Player Bar
             Obx(() => audioController.isPlaying.value ||
                     audioController.currentAudio.value != null

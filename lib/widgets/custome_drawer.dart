@@ -11,7 +11,7 @@ import 'package:community_islamic_app/views/home_screens/home_screen.dart';
 import 'package:community_islamic_app/views/profile_screen/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:velocity_x/velocity_x.dart';
+// import 'package:velocity_x/velocity_x.dart';
 
 import '../hijri_calendar.dart';
 import '../views/home_screens/home.dart';
@@ -96,7 +96,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                   borderRadius: BorderRadius.circular(30)),
                               child: Icon(Icons.person),
                             ),
-                            10.widthBox,
+                            // 10.widthBox
+                            SizedBox(height: 10,),
                             Column(
                               children: [
                                 Row(
@@ -176,7 +177,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                   ),
                                 ),
                               ),
-                              10.widthBox,
+                              // 10.widthBox,
+                              SizedBox(height: 10,),
                               Column(
                                 children: [
                                   Text(
@@ -199,7 +201,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                   ),
                                 ],
                               ),
-                              3.widthBox,
+                              // 3.widthBox,
+                              SizedBox(height: 3,),
                               IconButton(
                                   onPressed: () async {
                                     await Get.to(() => ProfileScreen());
@@ -235,7 +238,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
             //         )
             //       : const SizedBox(),
             // ),
-            10.heightBox,
+            // 10.heightBox,
+            SizedBox(height: 10,),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: const Divider(color: Color(0xFF22554F)),

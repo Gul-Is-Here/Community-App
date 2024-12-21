@@ -31,7 +31,7 @@ class _HijriCalendarExampleState extends State<HijriCalendarExample> {
             style: TextStyle(fontFamily: popinsSemiBold, color: Colors.white),
           )),
       body: SizedBox(
-        height: 450,
+        height: 550,
         child: IslamicHijriCalendar(
           isHijriView:
               true, //allowing users to set either the English calendar only or display the Hijri calendar alongside the English calendar

@@ -30,7 +30,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
           _buildNavItem(
             context,
             index: 2,
-            icon: bDuaIcon,
+            icon: quranIcon,
             label: "Quran",
           ),
           _buildNavItem(

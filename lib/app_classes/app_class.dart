@@ -1,16 +1,13 @@
 import 'package:community_islamic_app/views/Gallery_Events/ask_imam_screen.dart';
-import 'package:community_islamic_app/views/contact_us/contact_us_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:velocity_x/velocity_x.dart';
+// import 'package:velocity_x/velocity_x.dart';
 
 import '../constants/color.dart';
 import '../constants/image_constants.dart';
-import '../views/Gallery_Events/chat_with_Rcc.dart';
-import '../widgets/social_widget.dart';
 
 class AppClass {
   Future<void> launchURL(String url) async {
@@ -116,7 +113,7 @@ class AppClass {
       DateTime parsedDate = DateTime.parse(dateString);
 
       // Format the DateTime to "MMM d, yyyy"
-      return DateFormat('MMM d, yyyy').format(parsedDate);
+      return DateFormat('d MMMM yyyy').format(parsedDate);
     } catch (e) {
       print("Error parsing date: $e");
       return ""; // Return an empty string or handle the error as needed
@@ -180,6 +177,70 @@ class AppClass {
     }
   }
 
+  void _showWhatsAppDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: primaryColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: Text(
+            'Join WhatsApp Group',
+            style: TextStyle(
+              fontFamily: popinsSemiBold,
+              fontSize: 18,
+              color: whiteColor,
+            ),
+          ),
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  buildSocialMediaButton(
+                    context: context,
+                    image: icWhatsApp,
+                    label: 'RCC Brothers',
+                    onPressed: () async {
+                      Navigator.of(context).pop();
+
+                      await launchUrl(Uri.parse(
+                          'https://chat.whatsapp.com/C558smdW2bc2asAJIeoS6t'));
+                    },
+                  ),
+                  buildSocialMediaButton(
+                    context: context,
+                    image: icWhatsApp,
+                    label: 'RCC Sisters',
+                    onPressed: () async {
+                      Navigator.of(context).pop();
+                      await launchUrl(Uri.parse(
+                          'https://chat.whatsapp.com/JwNn9RLPj4kFcrOLW4ANgW'));
+                    },
+                  ),
+                ],
+              ),
+              // ListTile(
+              //   leading: Image.asset(icWhatsapp),
+              //   title: Text(
+              //     'RCC Brothers',
+              //     style: TextStyle(fontFamily: popinsRegulr),
+              //   ),
+              //   onTap: () async {
+
+              //   },
+              // ),
+              // const Divider(),
+            ],
+          ),
+        );
+      },
+    );
+  }
 // Method For Social Media Links
 
   void showSocialMediaDialog(BuildContext context) {
@@ -259,12 +320,7 @@ class AppClass {
                             label: 'WhatsApp',
                             onPressed: () async {
                               Navigator.of(context).pop();
-                              Navigator.of(context).pop();
-                              final Uri phoneUri = Uri(
-                                scheme: 'tel',
-                                path: '+1 (281) 303-1758',
-                              );
-                              await launchUrl(phoneUri);
+                              _showWhatsAppDialog(context);
                             },
                           ),
                           buildSocialMediaButton(
@@ -289,10 +345,14 @@ class AppClass {
                           buildSocialMediaButton(
                             context: context,
                             image: icCall,
-                            label: 'Newsletters',
-                            onPressed: () {
+                            label: 'Call Us',
+                            onPressed: () async {
                               Navigator.of(context).pop();
-                              // Newsletter action
+                              final Uri phoneUri = Uri(
+                                scheme: 'tel',
+                                path: '+1 (281) 303-1758',
+                              );
+                              await launchUrl(phoneUri);
                             },
                           ),
                           buildSocialMediaButton(
@@ -340,7 +400,9 @@ class AppClass {
                     ),
                   ),
                 ),
-                20.heightBox,
+                SizedBox(
+                  height: 20,
+                ),
               ],
             ),
           ),
@@ -449,7 +511,9 @@ class AppClass {
                     )
                   ],
                 ),
-                10.heightBox,
+                SizedBox(
+                  height: 10,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -465,7 +529,9 @@ class AppClass {
                               fontSize: 16,
                               color: secondaryColor),
                         ),
-                        10.heightBox,
+                        SizedBox(
+                          height: 5,
+                        ),
                         Text(
                           'Start: ${formatTimeToAMPM(sTime)}',
                           style: const TextStyle(
@@ -473,7 +539,9 @@ class AppClass {
                               color: Colors.black,
                               fontSize: 12),
                         ),
-                        10.heightBox,
+                        SizedBox(
+                          height: 5,
+                        ),
                         Text(
                           'ENd:  ${formatTimeToAMPM(endTime)}',
                           style: const TextStyle(
@@ -494,7 +562,9 @@ class AppClass {
                               fontSize: 16,
                               color: secondaryColor),
                         ),
-                        10.heightBox,
+                        SizedBox(
+                          height: 5,
+                        ),
                         Text(
                           'Type: $eventType',
                           style: const TextStyle(
@@ -502,7 +572,9 @@ class AppClass {
                               color: Colors.black,
                               fontSize: 12),
                         ),
-                        10.heightBox,
+                        SizedBox(
+                          height: 5,
+                        ),
                         Text(
                           'Entry: $entry',
                           style: const TextStyle(
@@ -514,7 +586,9 @@ class AppClass {
                     )
                   ],
                 ),
-                20.heightBox,
+                SizedBox(
+                  height: 20,
+                ),
                 Text(
                   'Event Date',
                   style: TextStyle(
@@ -522,7 +596,9 @@ class AppClass {
                       fontSize: 16,
                       color: secondaryColor),
                 ),
-                10.heightBox,
+                SizedBox(
+                  height: 5,
+                ),
                 Text(
                   '${AppClass().formatDate2(eventDate)}',
                   style: const TextStyle(
@@ -530,7 +606,9 @@ class AppClass {
                       color: Colors.black,
                       fontSize: 12),
                 ),
-                20.heightBox,
+                SizedBox(
+                  height: 20,
+                ),
                 Text(
                   'Details',
                   style: TextStyle(
@@ -538,7 +616,9 @@ class AppClass {
                       fontSize: 16,
                       color: secondaryColor),
                 ),
-                10.heightBox,
+                SizedBox(
+                  height: 5,
+                ),
                 Text(
                   maxLines: 8,
                   eventDetails,
@@ -548,11 +628,15 @@ class AppClass {
                       fontFamily: popinsRegulr,
                       color: Colors.black),
                 ),
-                20.heightBox,
+                SizedBox(
+                  height: 20,
+                ),
                 Row(
                   children: [
                     Image.asset(icLocation),
-                    10.widthBox,
+                    SizedBox(
+                      width: 10,
+                    ),
                     Text(
                       'Venue',
                       style: TextStyle(
@@ -562,7 +646,9 @@ class AppClass {
                     ),
                   ],
                 ),
-                10.heightBox,
+                SizedBox(
+                  height: 5,
+                ),
                 GestureDetector(
                   onTap: () {
                     AppClass().launchURL(locatinD);
@@ -576,7 +662,9 @@ class AppClass {
                           fontFamily: popinsRegulr,
                           color: Colors.black)),
                 ),
-                10.heightBox,
+                SizedBox(
+                  height: 5,
+                ),
                 Container(
                     height: 200,
                     width: double.infinity,
@@ -584,8 +672,12 @@ class AppClass {
                         BoxDecoration(borderRadius: BorderRadius.circular(10)),
                     child: Image.network(
                       imageLink,
-                      fit: BoxFit.cover,
-                    ))
+                      // fit: BoxFit.cover,
+                      height: 250,
+                    )),
+                SizedBox(
+                  height: 10,
+                )
               ],
             ),
           ),

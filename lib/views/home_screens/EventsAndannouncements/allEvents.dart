@@ -9,8 +9,6 @@ import 'package:intl/intl.dart';
 import 'package:community_islamic_app/constants/color.dart';
 import 'package:community_islamic_app/controllers/home_events_controller.dart';
 import 'package:community_islamic_app/model/home_events_model.dart';
-import 'package:velocity_x/velocity_x.dart';
-
 import '../../../app_classes/app_class.dart';
 
 class AllEventsDatesScreen extends StatefulWidget {
@@ -22,7 +20,9 @@ class _AllEventsDatesScreenState extends State<AllEventsDatesScreen> {
   final HomeEventsController eventsController = Get.put(HomeEventsController());
   final EventTypeController eventTypeController =
       Get.put(EventTypeController());
-  RxInt selectedEventType = 1.obs;
+
+  // Initialize selectedEventType to 0, meaning no filter by default
+  RxInt selectedEventType = 0.obs; // 0 means show all events by default
 
   void _updateSelectedEvents(List<Event> updatedEvents) {
     eventTypeController.selectedEvents!.value = updatedEvents;
@@ -30,8 +30,8 @@ class _AllEventsDatesScreenState extends State<AllEventsDatesScreen> {
 
   void _clearFilters() {
     setState(() {
-      selectedEventType.value = 1; // Reset to "All"
-      // Ensure all events are displayed both on the calendar and below it
+      // Reset to 0 (no filter selected) meaning show all events by default
+      selectedEventType.value = 0;
       eventTypeController.selectedEvents!.value =
           eventsController.events.value?.data.events ?? [];
     });
@@ -65,7 +65,8 @@ class _AllEventsDatesScreenState extends State<AllEventsDatesScreen> {
           List<Event> filteredEvents = eventsController
               .events.value!.data.events
               .where((event) =>
-                  selectedEventType.value == 1 ||
+                  selectedEventType.value ==
+                      0 || // Show all events if no category is selected
                   event.eventhastype.eventtypeId == selectedEventType.value)
               .toList();
 
@@ -98,7 +99,7 @@ class _AllEventsDatesScreenState extends State<AllEventsDatesScreen> {
                         padding: const EdgeInsets.symmetric(
                             vertical: 8.0, horizontal: 16.0),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5),
+                          borderRadius: BorderRadius.circular(10),
                         ),
                       ),
                       child: Text(
@@ -113,7 +114,7 @@ class _AllEventsDatesScreenState extends State<AllEventsDatesScreen> {
                   ],
                 ),
                 const SizedBox(height: 8),
-                // Event Type Selector
+                // Event Type Selector (for category filtering)
                 SizedBox(
                   height: 40,
                   child: ListView.builder(
@@ -126,14 +127,15 @@ class _AllEventsDatesScreenState extends State<AllEventsDatesScreen> {
                           .any((event) =>
                               event.eventhastype.eventtypeId ==
                               eventType.eventtypeId);
-                      return GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            selectedEventType.value = eventType.eventtypeId;
-                          });
-                        },
-                        child: isMatched
-                            ? Container(
+                      return isMatched
+                          ? GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  selectedEventType.value = eventType
+                                      .eventtypeId; // Update selected category
+                                });
+                              },
+                              child: Container(
                                 margin:
                                     const EdgeInsets.symmetric(horizontal: 8.0),
                                 padding: const EdgeInsets.symmetric(
@@ -143,7 +145,7 @@ class _AllEventsDatesScreenState extends State<AllEventsDatesScreen> {
                                           eventType.eventtypeId
                                       ? primaryColor
                                       : const Color(0xFFB9EED2),
-                                  borderRadius: BorderRadius.circular(5),
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
                                 child: Center(
                                   child: Text(
@@ -157,9 +159,9 @@ class _AllEventsDatesScreenState extends State<AllEventsDatesScreen> {
                                     ),
                                   ),
                                 ),
-                              )
-                            : const SizedBox(),
-                      );
+                              ),
+                            )
+                          : const SizedBox(); // If no events match this category, don't display it
                     },
                   ),
                 ),
@@ -213,7 +215,11 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     super.initState();
     _currentDate = widget.initialDate;
     _initializeSelectedDateAndEvents();
-    _pageController = PageController(initialPage: _currentDate.month - 1);
+
+    // Initialize PageController with a starting index
+    _pageController = PageController(
+      initialPage: _currentDate.month - 1, // Start from the current month
+    );
   }
 
   void _initializeSelectedDateAndEvents() {
@@ -228,29 +234,23 @@ class _CalendarWidgetState extends State<CalendarWidget> {
         // Show all events when no specific date is selected
         _displayedEvents = widget.eventDates.values
             .expand((events) => events)
-            .where((event) =>
-                event.eventhastype.eventtypeId ==
-                widget.selectedEventType.value)
-            .toList();
+            .toList(); // No filtering by date, just all events
       } else {
         // Show events for the selected date
-        _displayedEvents = widget.eventDates[_selectedDate!]
-                ?.where((event) =>
-                    event.eventhastype.eventtypeId ==
-                    widget.selectedEventType.value)
-                .toList() ??
-            [];
+        _displayedEvents = widget.eventDates[_selectedDate!] ?? [];
       }
     });
+
     widget
         .onEventsUpdated(_displayedEvents); // Notify parent with updated events
   }
 
   void _onPageChanged(int pageIndex) {
     setState(() {
+      // Update the current date based on the page index (page 0 = January, page 1 = February, etc.)
       _currentDate = DateTime(DateTime.now().year, pageIndex + 1, 1);
     });
-    // _updateDisplayedEvents(); // Refresh events for the new page
+    _updateDisplayedEvents(); // Refresh events for the new page
   }
 
   @override
@@ -303,7 +303,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
         Expanded(
           child: PageView.builder(
             controller: _pageController,
-            itemCount: 12,
+            itemCount: 12, // Number of months (from January to December)
             onPageChanged: _onPageChanged,
             itemBuilder: (context, index) {
               return Column(
@@ -321,69 +321,151 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                   if (_displayedEvents.isNotEmpty)
                     Expanded(
                       child: ListView.builder(
-                        itemCount: _displayedEvents.length,
-                        itemBuilder: (context, eventIndex) {
-                          Event event = _displayedEvents[eventIndex];
-                          return GestureDetector(
-                            onTap: () {
-                              AppClass().EventDetailsShowModelBottomSheet(
-                                  context,
-                                  event.eventTitle,
-                                  event.eventStarttime.toString(),
-                                  event.eventEndtime.toString(),
-                                  event.eventhastype.eventtypeName,
-                                  event.paid == '0' ? 'Free Event' : 'Paid',
-                                  event.eventDate.toString(),
-                                  event.eventDetail,
-                                  event.eventImage,
-                                  event.venueName);
-                            },
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  AppClass()
-                                      .formatDate2(event.eventDate.toString()),
-                                  style: TextStyle(
-                                      fontFamily: popinsSemiBold, fontSize: 20),
+                        itemCount: widget.eventDates.keys
+                            .length, // Count the number of unique dates
+                        itemBuilder: (context, index) {
+                          DateTime date = widget.eventDates.keys
+                              .elementAt(index); // Get the date
+                          List<Event> eventsForDate = widget
+                              .eventDates[date]!; // Get events for that date
+
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Display date header
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 10.0),
+                                child: Text(
+                                  AppClass().formatDate2(
+                                      date.toString()), // Format the date
+                                  style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
                                 ),
-                                Container(
-                                  margin:
-                                      const EdgeInsets.symmetric(vertical: 8.0),
-                                  padding: const EdgeInsets.all(12.0),
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xFFD5CEFB),
-                                    borderRadius: BorderRadius.circular(5),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                              ),
+                              // Display events for that date
+                              for (var event in eventsForDate)
+                                GestureDetector(
+                                  onTap: () {
+                                    AppClass().EventDetailsShowModelBottomSheet(
+                                      context,
+                                      event.eventTitle,
+                                      event.eventStarttime.toString(),
+                                      event.eventEndtime.toString(),
+                                      event.eventhastype.eventtypeName,
+                                      event.paid == '0' ? 'Free Event' : 'Paid',
+                                      event.eventDate.toString(),
+                                      event.eventDetail,
+                                      event.eventImage,
+                                      event.venueName,
+                                    );
+                                  },
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      Text(
-                                        event.eventTitle,
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            fontFamily: popinsMedium,
-                                            color: primaryColor),
-                                      ),
-                                      Text(
-                                        event.paid == '0'
-                                            ? 'Free Event'
-                                            : 'Paid Event',
-                                        style: TextStyle(
-                                          fontFamily: popinsMedium,
-                                          fontSize: 14,
-                                          color: event.paid == '0'
-                                              ? Colors.green
-                                              : Colors.red,
+                                      Container(
+                                        margin: const EdgeInsets.symmetric(
+                                            vertical: 8.0),
+                                        padding: const EdgeInsets.all(12.0),
+                                        decoration: BoxDecoration(
+                                          color: event.eventhastype
+                                                      .eventtypeId ==
+                                                  1
+                                              ? const Color(0xFFB3DFFF)
+                                              : event.eventhastype
+                                                              .eventtypeId ==
+                                                          2 ||
+                                                      event.eventhastype
+                                                              .eventtypeId ==
+                                                          6
+                                                  ? const Color(0xFFB3E8DA)
+                                                  : const Color(0xFFD5CEFB),
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                event.eventhastype
+                                                                .eventtypeId ==
+                                                            1 ||
+                                                        event.eventhastype
+                                                                .eventtypeId ==
+                                                            4
+                                                    ? Image.asset(
+                                                        icFamily,
+                                                        height: 24,
+                                                        width: 24,
+                                                      )
+                                                    : event.eventhastype
+                                                                    .eventtypeId ==
+                                                                2 ||
+                                                            event.eventhastype
+                                                                    .eventtypeId ==
+                                                                6
+                                                        ? Image.asset(
+                                                            icFemale,
+                                                            height: 24,
+                                                            width: 24,
+                                                          )
+                                                        : Image.asset(
+                                                            icMale,
+                                                            height: 24,
+                                                            width: 24,
+                                                          ),
+                                                const SizedBox(width: 5),
+                                                Text(
+                                                  event.eventTitle,
+                                                  style: TextStyle(
+                                                    fontSize: 16,
+                                                    fontFamily: popinsMedium,
+                                                    color: event.eventhastype
+                                                                    .eventtypeId ==
+                                                                1 ||
+                                                            event.eventhastype
+                                                                    .eventtypeId ==
+                                                                4
+                                                        ? const Color(
+                                                            0xFF169EFF)
+                                                        : event.eventhastype
+                                                                        .eventtypeId ==
+                                                                    2 ||
+                                                                event.eventhastype
+                                                                        .eventtypeId ==
+                                                                    6
+                                                            ? const Color(
+                                                                0xFF05A741)
+                                                            : const Color(
+                                                                0xFF755EF2),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            Text(
+                                              event.paid == '0'
+                                                  ? 'Free Event'
+                                                  : 'Paid Event',
+                                              style: TextStyle(
+                                                fontFamily: popinsMedium,
+                                                fontSize: 14,
+                                                color: event.paid == '0'
+                                                    ? const Color(0xFF169EFF)
+                                                    : const Color(0xFF755EF2),
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
+                                      const SizedBox(height: 10),
                                     ],
                                   ),
                                 ),
-                              ],
-                            ),
+                            ],
                           );
                         },
                       ),
@@ -444,8 +526,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
         child: Column(
           children: [
             Container(
-              width: 38,
-              height: 40,
+              width: 34,
+              height: 34,
               padding: const EdgeInsets.all(8.0),
               decoration: BoxDecoration(
                 gradient: isSelected
@@ -463,6 +545,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                   Text(
                     day.toString(),
                     style: TextStyle(
+                      fontSize: 12,
                       color: isSelected ? Colors.white : Colors.black87,
                       fontFamily: popinsMedium,
                     ),
@@ -477,20 +560,32 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                 children: List.generate(
                   widget.eventDates[date]!.length
                       .clamp(1, 3), // Limit to 3 dots
-                  (index) => Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 1.0),
-                    width: 6.0,
-                    height: 6.0,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: const Color(0xFFB3E8DA),
+                  (index) {
+                    var event = widget.eventDates[date]![index];
+                    return Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 1.0),
+                      width: 6.0,
+                      height: 6.0,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: event.eventhastype.eventtypeId == 1 ||
+                                  event.eventhastype.eventtypeId == 4
+                              ? const Color(0xFF169EFF) // Blue for event type 1
+                              : event.eventhastype.eventtypeId == 2 ||
+                                      event.eventhastype.eventtypeId == 6
+                                  ? const Color(
+                                      0xFF05A741) // Green for event type 2
+                                  : const Color(0xFF755EF2), // Default color
+                        ),
                       ),
-                    ),
-                  ),
+                    );
+                  },
                 ),
               ),
-            5.heightBox,
+            const SizedBox(
+              height: 5,
+            ),
           ],
         ),
       ));

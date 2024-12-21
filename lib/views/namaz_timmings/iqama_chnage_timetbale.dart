@@ -1,7 +1,7 @@
 import 'package:community_islamic_app/views/qibla_screen/qibla_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:velocity_x/velocity_x.dart';
+// import 'package:velocity_x/velocity_x.dart';
 import '../../constants/color.dart';
 import '../../model/prayer_times_static_model.dart';
 
@@ -121,14 +121,14 @@ class IqamaChangeTimeTable extends StatelessWidget {
             ),
           ),
 
-          10.heightBox,
-          Card(
+      const SizedBox(height: 10,),
+          const Card(
             child: Column(
               children: [
                 SizedBox(
                   width: double.infinity,
                   child: Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: EdgeInsets.all(8.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -147,7 +147,7 @@ class IqamaChangeTimeTable extends StatelessWidget {
                 SizedBox(
                   width: double.infinity,
                   child: Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: EdgeInsets.all(8.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [

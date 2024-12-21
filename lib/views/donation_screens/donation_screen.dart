@@ -3,7 +3,7 @@ import 'package:community_islamic_app/controllers/donation_controller.dart';
 import 'package:community_islamic_app/widgets/customized_card_widget2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:velocity_x/velocity_x.dart';
+
 
 import '../../app_classes/app_class.dart';
 import '../../constants/image_constants.dart';
@@ -94,7 +94,7 @@ class DonationScreen extends StatelessWidget {
                               ),
                             ),
                           ),
-                          10.heightBox,
+                    SizedBox(height: 10,),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: donate.hasdonation.map((hasDonation) {
@@ -113,7 +113,7 @@ class DonationScreen extends StatelessWidget {
                               );
                             }).toList(),
                           ),
-                          10.heightBox,
+                       SizedBox(height: 10,),
                         ],
                       );
                     },

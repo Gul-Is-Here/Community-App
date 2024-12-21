@@ -1,7 +1,7 @@
 import 'package:community_islamic_app/constants/color.dart';
 import 'package:community_islamic_app/constants/image_constants.dart';
 import 'package:flutter/material.dart';
-import 'package:velocity_x/velocity_x.dart';
+// import 'package:velocity_x/velocity_x.dart';
 
 class Projectbackground extends StatelessWidget {
   final String title;
@@ -38,7 +38,7 @@ class Projectbackground extends StatelessWidget {
               ),
             ),
           ),
-          10.heightBox,
+    SizedBox(height: 10,),
         ],
       ),
     );

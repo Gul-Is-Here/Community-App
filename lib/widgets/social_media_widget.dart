@@ -162,56 +162,7 @@
 //     );
 //   }
 
-//   void _showWhatsAppDialog(BuildContext context) {
-//     showDialog(
-//       context: context,
-//       builder: (BuildContext context) {
-//         return AlertDialog(
-//           shape: RoundedRectangleBorder(
-//             borderRadius: BorderRadius.circular(20),
-//           ),
-//           title: Text(
-//             'Join WhatsApp Group',
-//             style: TextStyle(
-//               fontFamily: popinsSemiBold,
-//               fontSize: 18,
-//               color: primaryColor,
-//             ),
-//           ),
-//           content: Column(
-//             mainAxisSize: MainAxisSize.min,
-//             children: [
-//               ListTile(
-//                 leading: Image.asset(icWhatsapp),
-//                 title: Text(
-//                   'RCC Brothers',
-//                   style: TextStyle(fontFamily: popinsRegulr),
-//                 ),
-//                 onTap: () async {
-//                   Navigator.of(context).pop();
-//                   await launchUrl(Uri.parse(
-//                       'https://chat.whatsapp.com/C558smdW2bc2asAJIeoS6t'));
-//                 },
-//               ),
-//               const Divider(),
-//               ListTile(
-//                 leading: Image.asset(icWhatsapp),
-//                 title: const Text(
-//                   'RCC Sisters',
-//                   style: TextStyle(fontFamily: popinsRegulr),
-//                 ),
-//                 onTap: () async {
-//                   Navigator.of(context).pop();
-//                   await launchUrl(Uri.parse(
-//                       'https://chat.whatsapp.com/JwNn9RLPj4kFcrOLW4ANgW'));
-//                 },
-//               ),
-//             ],
-//           ),
-//         );
-//       },
-//     );
-//   }
+//  
 
  
 // }

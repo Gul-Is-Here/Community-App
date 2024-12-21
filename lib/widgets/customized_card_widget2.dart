@@ -1,6 +1,6 @@
 import 'package:community_islamic_app/constants/color.dart';
 import 'package:flutter/material.dart';
-import 'package:velocity_x/velocity_x.dart';
+// import 'package:velocity_x/velocity_x.dart';
 
 class CusTomizedCardWidget2 extends StatelessWidget {
   final String title;
@@ -44,7 +44,8 @@ class CusTomizedCardWidget2 extends StatelessWidget {
                     width: 60, // Fixed image width
                     height: 60, // Fixed image height
                   ),
-                  10.heightBox, // Consistent spacing
+                  // 10.heightBox, // Consistent spacing
+                  SizedBox(height:10,),
                   Text(
                     title,
                     textAlign: TextAlign.center,
