@@ -123,28 +123,30 @@ class EventDetailPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        AppClass().launchURL(locatinV);
-                      },
-                      child: const Icon(Icons.location_on,
+                GestureDetector(
+                  onTap: () {
+                    AppClass().launchURL(locatinV);
+                  },
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Icon(Icons.location_on,
                           color: Color(0xFF3FA27E), size: 20),
-                    ),
-                    Expanded(
-                      child: Text(
-                        'Venue',
-                        style: TextStyle(
-                            fontFamily: popinsSemiBold,
-                            fontSize: 18,
-                            color: primaryColor),
+                      Expanded(
+                        child: Text(
+                          'Venue',
+                          style: TextStyle(
+                              fontFamily: popinsSemiBold,
+                              fontSize: 18,
+                              color: primaryColor),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              SizedBox(height: 5,),
+                SizedBox(
+                  height: 5,
+                ),
                 Text(
                   eventVenue,
                   style: const TextStyle(
@@ -159,8 +161,8 @@ class EventDetailPage extends StatelessWidget {
             // Image Section
             Image.network(
               imageLink,
-              fit: BoxFit.cover,
-              height: 200,
+              // fit: BoxFit.cover,
+              height: 250,
               width: double.infinity,
             ),
           ],

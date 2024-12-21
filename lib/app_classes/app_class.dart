@@ -113,7 +113,7 @@ class AppClass {
       DateTime parsedDate = DateTime.parse(dateString);
 
       // Format the DateTime to "MMM d, yyyy"
-      return DateFormat('MMM d, yyyy').format(parsedDate);
+      return DateFormat('d MMMM yyyy').format(parsedDate);
     } catch (e) {
       print("Error parsing date: $e");
       return ""; // Return an empty string or handle the error as needed
@@ -400,7 +400,9 @@ class AppClass {
                     ),
                   ),
                 ),
-         SizedBox(height: 20,),
+                SizedBox(
+                  height: 20,
+                ),
               ],
             ),
           ),
@@ -509,7 +511,9 @@ class AppClass {
                     )
                   ],
                 ),
-             SizedBox(height: 10,),
+                SizedBox(
+                  height: 10,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -525,7 +529,9 @@ class AppClass {
                               fontSize: 16,
                               color: secondaryColor),
                         ),
-                      SizedBox(height: 5,),
+                        SizedBox(
+                          height: 5,
+                        ),
                         Text(
                           'Start: ${formatTimeToAMPM(sTime)}',
                           style: const TextStyle(
@@ -533,7 +539,9 @@ class AppClass {
                               color: Colors.black,
                               fontSize: 12),
                         ),
-                      SizedBox(height: 5,),
+                        SizedBox(
+                          height: 5,
+                        ),
                         Text(
                           'ENd:  ${formatTimeToAMPM(endTime)}',
                           style: const TextStyle(
@@ -554,7 +562,9 @@ class AppClass {
                               fontSize: 16,
                               color: secondaryColor),
                         ),
-                      SizedBox(height: 5,),
+                        SizedBox(
+                          height: 5,
+                        ),
                         Text(
                           'Type: $eventType',
                           style: const TextStyle(
@@ -562,7 +572,9 @@ class AppClass {
                               color: Colors.black,
                               fontSize: 12),
                         ),
-                      SizedBox(height: 5,),
+                        SizedBox(
+                          height: 5,
+                        ),
                         Text(
                           'Entry: $entry',
                           style: const TextStyle(
@@ -574,7 +586,9 @@ class AppClass {
                     )
                   ],
                 ),
-         SizedBox(height: 20,),
+                SizedBox(
+                  height: 20,
+                ),
                 Text(
                   'Event Date',
                   style: TextStyle(
@@ -582,15 +596,19 @@ class AppClass {
                       fontSize: 16,
                       color: secondaryColor),
                 ),
-              SizedBox(height: 5,),
+                SizedBox(
+                  height: 5,
+                ),
                 Text(
                   '${AppClass().formatDate2(eventDate)}',
                   style: const TextStyle(
                       fontFamily: popinsRegulr,
                       color: Colors.black,
                       fontSize: 12),
-               ),
-           SizedBox(height: 20,),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
                 Text(
                   'Details',
                   style: TextStyle(
@@ -598,7 +616,9 @@ class AppClass {
                       fontSize: 16,
                       color: secondaryColor),
                 ),
-              SizedBox(height: 5,),
+                SizedBox(
+                  height: 5,
+                ),
                 Text(
                   maxLines: 8,
                   eventDetails,
@@ -608,11 +628,15 @@ class AppClass {
                       fontFamily: popinsRegulr,
                       color: Colors.black),
                 ),
-                SizedBox(height: 20,),
+                SizedBox(
+                  height: 20,
+                ),
                 Row(
                   children: [
                     Image.asset(icLocation),
-                   SizedBox(width: 10,),
+                    SizedBox(
+                      width: 10,
+                    ),
                     Text(
                       'Venue',
                       style: TextStyle(
@@ -622,7 +646,9 @@ class AppClass {
                     ),
                   ],
                 ),
-              SizedBox(height: 5,),
+                SizedBox(
+                  height: 5,
+                ),
                 GestureDetector(
                   onTap: () {
                     AppClass().launchURL(locatinD);
@@ -636,7 +662,9 @@ class AppClass {
                           fontFamily: popinsRegulr,
                           color: Colors.black)),
                 ),
-              SizedBox(height: 5,),
+                SizedBox(
+                  height: 5,
+                ),
                 Container(
                     height: 200,
                     width: double.infinity,
@@ -644,8 +672,12 @@ class AppClass {
                         BoxDecoration(borderRadius: BorderRadius.circular(10)),
                     child: Image.network(
                       imageLink,
-                      fit: BoxFit.cover,
-                    ))
+                      // fit: BoxFit.cover,
+                      height: 250,
+                    )),
+                SizedBox(
+                  height: 10,
+                )
               ],
             ),
           ),

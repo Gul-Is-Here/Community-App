@@ -2,7 +2,6 @@ import 'package:blinking_text/blinking_text.dart';
 import 'package:community_islamic_app/widgets/blinkContainer.dart';
 import 'package:flutter/material.dart';
 
-
 import '../app_classes/app_class.dart';
 import '../constants/color.dart';
 
@@ -54,7 +53,9 @@ class PrayerTimeWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-     SizedBox(height:2,),
+          SizedBox(
+            height: 2,
+          ),
           currentPrayer == namazName
               ? BlinkingContainer()
               : Container(
@@ -65,7 +66,9 @@ class PrayerTimeWidget extends StatelessWidget {
                           LinearGradient(colors: [lightColor, lightColor]),
                       borderRadius: BorderRadius.circular(20)),
                 ),
-         SizedBox(height: 5,),
+          SizedBox(
+            height: 5,
+          ),
           currentPrayer == namazName
               ? ShaderMask(
                   shaderCallback: (bounds) => LinearGradient(
@@ -95,7 +98,9 @@ class PrayerTimeWidget extends StatelessWidget {
                   ),
                 ),
           // const Spacer(),
-       SizedBox(height: 2,),
+          SizedBox(
+            height: 2,
+          ),
           Column(
             children: [
               currentPrayer == namazName

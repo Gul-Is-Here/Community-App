@@ -12,7 +12,8 @@ import '../../controllers/login_controller.dart';
 import '../../controllers/qibla_controller.dart';
 
 class QiblahScreen extends StatelessWidget {
-  QiblahScreen({super.key});
+  final bool isNavigation;
+  QiblahScreen({super.key, required this.isNavigation});
 
   final QiblahController controller = Get.put(QiblahController());
   final homeController = Get.find<HomeController>();
@@ -26,10 +27,17 @@ class QiblahScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: primaryColor,
       appBar: AppBar(
-        leading: Icon(
-          Icons.arrow_back,
-          color: whiteColor,
-        ),
+        leading: isNavigation
+            ? IconButton(
+                onPressed: () {
+                  Get.back();
+                },
+                icon: Icon(
+                  Icons.arrow_back,
+                  color: whiteColor,
+                ),
+              )
+            : SizedBox(),
         // centerTitle: true,
         elevation: 0,
         backgroundColor: Colors.transparent,
@@ -74,7 +82,7 @@ class QiblahScreen extends StatelessWidget {
                     decoration: BoxDecoration(
                         // color: Color(0xFF33803C),
                         gradient: LinearGradient(
-                            colors: [primaryColor, Color(0xFF33803C)],
+                            colors: [Color(0xFF01823D), Color(0xFF01823D)],
                             begin: Alignment.center,
                             end: Alignment.center),
                         borderRadius: BorderRadius.circular(5),
@@ -88,26 +96,26 @@ class QiblahScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: screenHeight * 0.03),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      buildInfoCard(
-                        screenWidth: screenWidth,
-                        screenHeight: screenHeight,
-                        label: 'Your angle to Qibla',
-                        value:
-                            '${(qiblahDirection.qiblah % 360).toStringAsFixed(0)}°',
-                      ),
-                      buildInfoCard(
-                        screenWidth: screenWidth,
-                        screenHeight: screenHeight,
-                        label: 'Qibla angle from N',
-                        value:
-                            '${(qiblahDirection.direction % 360).toStringAsFixed(0)}°',
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: screenHeight * 0.05),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  //   children: [
+                  //     buildInfoCard(
+                  //       screenWidth: screenWidth,
+                  //       screenHeight: screenHeight,
+                  //       label: 'Your angle to Qibla',
+                  //       value:
+                  //           '${(qiblahDirection.qiblah % 360).toStringAsFixed(0)}°',
+                  //     ),
+                  //     buildInfoCard(
+                  //       screenWidth: screenWidth,
+                  //       screenHeight: screenHeight,
+                  //       label: 'Qibla angle from N',
+                  //       value:
+                  //           '${(qiblahDirection.direction % 360).toStringAsFixed(0)}°',
+                  //     ),
+                  //   ],
+                  // ),
+                  SizedBox(height: screenHeight * 0.08),
                   Stack(
                     clipBehavior: Clip.none,
                     alignment: Alignment.center,
@@ -174,7 +182,10 @@ class QiblahScreen extends StatelessWidget {
                     compassBg, // Replace with the footer masjid line asset
                     width: screenWidth,
                     fit: BoxFit.cover,
-                  ),SizedBox(height: 60,),
+                  ),
+                  SizedBox(
+                    height: 60,
+                  ),
                 ],
               ),
             );
@@ -232,7 +243,6 @@ class QiblahScreen extends StatelessWidget {
     );
   }
 }
-
 
 // import 'dart:math';
 // import 'package:flutter/material.dart';

@@ -1,5 +1,8 @@
 import 'package:community_islamic_app/app_classes/app_class.dart';
+import 'package:community_islamic_app/views/home_screens/comming_soon_screen.dart';
 import 'package:community_islamic_app/views/namaz_timmings/namaztimmings.dart';
+import 'package:community_islamic_app/views/qibla_screen/qibla_screen.dart';
+import 'package:community_islamic_app/views/quran_screen.dart/quran_screen.dart';
 import 'package:community_islamic_app/widgets/blink_dot.dart';
 import 'package:community_islamic_app/widgets/featureWidgetIcons.dart';
 import 'package:community_islamic_app/widgets/our_services_widget.dart';
@@ -45,6 +48,8 @@ class CustomizedMobileLayout extends StatelessWidget {
     final LoginController loginController = Get.put(LoginController());
     final screenHeight1 = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
+    print('Height : $screenHeight1');
+    print('width : $screenWidth');
     var iqamatimes = getAllIqamaTimes();
     homeController.getCurrentPrayer();
 
@@ -63,7 +68,9 @@ class CustomizedMobileLayout extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-           SizedBox(height: 40,),
+            SizedBox(
+              height: 40,
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -79,7 +86,9 @@ class CustomizedMobileLayout extends StatelessWidget {
                         height: 32,
                         width: 32,
                       ),
-                    SizedBox(height: 2,),
+                      SizedBox(
+                        height: 2,
+                      ),
                       Text(
                         'Rosenberg Community Centre',
                         style: TextStyle(
@@ -183,14 +192,16 @@ class CustomizedMobileLayout extends StatelessWidget {
                             children: [
                               Obx(
                                 () => Text(
-                                  'Next : ${homeController.getCurrentPrayer()}',
+                                  'Next : ${homeController.getCurrentPrayer()} ',
                                   style: TextStyle(
                                       fontFamily: popinsBold,
                                       color: whiteColor,
                                       fontSize: 28),
                                 ),
                               ),
-                        SizedBox(height: 10,),
+                              SizedBox(
+                                height: 10,
+                              ),
                               BlinkingDot(),
                               const Spacer(),
                               Padding(
@@ -285,7 +296,9 @@ class CustomizedMobileLayout extends StatelessWidget {
                                               fontSize: 11),
                                         ),
                                       ),
-                             SizedBox(height: 2,),
+                                      SizedBox(
+                                        height: 2,
+                                      ),
                                       GestureDetector(
                                         onTap: () {
                                           Get.to(
@@ -352,7 +365,9 @@ class CustomizedMobileLayout extends StatelessWidget {
                     ),
                   )),
             ),
-         SizedBox(height: 10,),
+            SizedBox(
+              height: 10,
+            ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: Text(
@@ -361,7 +376,9 @@ class CustomizedMobileLayout extends StatelessWidget {
                     fontFamily: popinsBold, fontSize: 16, color: whiteColor),
               ),
             ),
-        SizedBox(height: 10,),
+            SizedBox(
+              height: 10,
+            ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Card(
@@ -482,6 +499,8 @@ class CustomizedMobileLayout extends StatelessWidget {
                         );
                       }),
                       Obx(() {
+                        bool isFriday =
+                            DateTime.now().weekday == DateTime.friday;
                         if (homeController.jummaTimes.value.data == null) {
                           return PrayerTimeWidget(
                             currentPrayer: getCurrentPrayer(),
@@ -563,19 +582,49 @@ class CustomizedMobileLayout extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          FeatureWidgeticons(icons: quranIcon, onTap: () {}),
-                          FeatureWidgeticons(icons: azkarIcon, onTap: () {}),
-                          FeatureWidgeticons(icons: haditIcon, onTap: () {}),
-                          FeatureWidgeticons(icons: duaIcon, onTap: () {}),
-                          FeatureWidgeticons(icons: tasbihIcon, onTap: () {}),
-                          FeatureWidgeticons(icons: qiblaIcon, onTap: () {})
+                          FeatureWidgeticons(
+                              icons: quranIcon,
+                              onTap: () {
+                                Get.to(() => QuranScreen(
+                                      isNavigation: true,
+                                    ));
+                              }),
+                          FeatureWidgeticons(
+                              icons: azkarIcon,
+                              onTap: () {
+                                Get.to(() => CommingSoonScreen());
+                              }),
+                          FeatureWidgeticons(
+                              icons: haditIcon,
+                              onTap: () {
+                                Get.to(() => CommingSoonScreen());
+                              }),
+                          FeatureWidgeticons(
+                              icons: duaIcon,
+                              onTap: () {
+                                Get.to(() => CommingSoonScreen());
+                              }),
+                          FeatureWidgeticons(
+                              icons: tasbihIcon,
+                              onTap: () {
+                                Get.to(() => CommingSoonScreen());
+                              }),
+                          FeatureWidgeticons(
+                              icons: qiblaIcon,
+                              onTap: () {
+                                Get.to(() => QiblahScreen(
+                                      isNavigation: true,
+                                    ));
+                              })
                         ],
                       ),
                     );
                   }
                   return const SizedBox();
                 }),
-            SizedBox(height: 5,),
+                SizedBox(
+                  height: 5,
+                ),
                 Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -608,7 +657,9 @@ class CustomizedMobileLayout extends StatelessWidget {
                     ],
                   ),
                 ),
-              SizedBox(height: 5,),
+                SizedBox(
+                  height: 5,
+                ),
                 Obx(() {
                   if (!eventsController.isHiddenServices.value) {
                     return Padding(
@@ -620,17 +671,23 @@ class CustomizedMobileLayout extends StatelessWidget {
                           OurServicesWidget(
                             title: '5 DAILY\PRAYERS',
                             image: dailyPrayer,
-                            onTap: () {},
+                            onTap: () {
+                              Get.to(() => CommingSoonScreen());
+                            },
                           ),
                           OurServicesWidget(
                             title: 'FREE QURAN CLASSES',
                             image: freeQuranClasses,
-                            onTap: () {},
+                            onTap: () {
+                              Get.to(() => CommingSoonScreen());
+                            },
                           ),
                           OurServicesWidget(
                             title: 'YOUTH SIRA SERIES',
                             image: youthSeraSeries,
-                            onTap: () {},
+                            onTap: () {
+                              Get.to(() => CommingSoonScreen());
+                            },
                           ),
                         ],
                       ),
@@ -649,17 +706,23 @@ class CustomizedMobileLayout extends StatelessWidget {
                           OurServicesWidget(
                             title: 'GIRLS HALAQA',
                             image: girlsHaqa,
-                            onTap: () {},
+                            onTap: () {
+                              Get.to(() => CommingSoonScreen());
+                            },
                           ),
                           OurServicesWidget(
                             title: 'YOUTH PROGRAM',
                             image: youthProgram,
-                            onTap: () {},
+                            onTap: () {
+                              Get.to(() => CommingSoonScreen());
+                            },
                           ),
                           OurServicesWidget(
                             title: 'YOUTH SOCCER CLUB',
                             image: youthsoccorClub,
-                            onTap: () {},
+                            onTap: () {
+                              Get.to(() => CommingSoonScreen());
+                            },
                           ),
                         ],
                       ),
@@ -669,7 +732,9 @@ class CustomizedMobileLayout extends StatelessWidget {
                 })
               ],
             ),
-          SizedBox(height: 100,),
+            SizedBox(
+              height: 100,
+            ),
           ],
         ),
       ),

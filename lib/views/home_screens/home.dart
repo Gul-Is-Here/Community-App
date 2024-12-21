@@ -1,4 +1,5 @@
 import 'package:community_islamic_app/controllers/quran_controller.dart';
+import 'package:community_islamic_app/views/home_screens/comming_soon_screen.dart';
 import 'package:community_islamic_app/views/home_screens/home_screen.dart';
 import 'package:community_islamic_app/views/home_screens/masjid_map/map_splash_screen.dart';
 import 'package:community_islamic_app/views/prayer_screens/prayer_screen.dart';
@@ -28,9 +29,11 @@ class Home extends StatelessWidget {
 
     final List<Widget> _pages = [
       const HomeScreen(),
-      QiblahScreen(),
-      const QuranScreen(),
-      const PrayerScreen(),
+      QiblahScreen(
+        isNavigation: false,
+      ),
+      const QuranScreen(isNavigation: false,),
+      const CommingSoonScreen(),
       DonationScreen()
     ];
 

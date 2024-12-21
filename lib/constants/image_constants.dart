@@ -167,3 +167,4 @@ const icAskImam = 'assets/ConnectIcons/Ask Imam.png';
 const icFemale = 'assets/ConnectIcons/icFemale.png';
 const icFamily = 'assets/ConnectIcons/icFamily.png';
 const icMale = 'assets/ConnectIcons/male.png';
+const icCommingSoon = 'assets/ConnectIcons/comming_soon.png';

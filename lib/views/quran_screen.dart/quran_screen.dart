@@ -17,7 +17,8 @@ import 'player_bar_screen.dart';
 import 'surah_audio_detail_screen.dart';
 
 class QuranScreen extends StatefulWidget {
-  const QuranScreen({super.key});
+  final bool isNavigation;
+  const QuranScreen({super.key, required this.isNavigation});
 
   @override
   State<QuranScreen> createState() => _QuranScreenState();
@@ -37,6 +38,14 @@ class _QuranScreenState extends State<QuranScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        leading: widget.isNavigation
+            ? IconButton(
+                onPressed: () {},
+                icon: Icon(
+                  Icons.arrow_back,
+                  color: whiteColor,
+                ))
+            : SizedBox(),
         // toolbarHeight: 20,
         centerTitle: true,
         title: Text(
@@ -188,7 +197,9 @@ class _QuranScreenState extends State<QuranScreen> {
                 ),
               ),
             ),
-           SizedBox(height: 50,),
+            SizedBox(
+              height: 50,
+            ),
             // Audio Player Bar
             Obx(() => audioController.isPlaying.value ||
                     audioController.currentAudio.value != null

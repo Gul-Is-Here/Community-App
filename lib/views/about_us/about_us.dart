@@ -29,6 +29,10 @@ class AboutUsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text(
+          'About Us',
+          style: TextStyle(fontFamily: popinsMedium, color: whiteColor),
+        ),
         leading: IconButton(
           onPressed: () {
             Get.back();
@@ -47,8 +51,8 @@ class AboutUsScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Projectbackground(
-                  title: 'About Us',
+                SizedBox(
+                  height: 10,
                 ),
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 8.0),

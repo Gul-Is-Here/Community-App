@@ -1,7 +1,4 @@
-import 'package:community_islamic_app/controllers/all_event_controller.dart';
-import 'package:community_islamic_app/controllers/home_controller.dart';
-import 'package:community_islamic_app/controllers/home_events_controller.dart';
-import 'package:community_islamic_app/controllers/qibla_controller.dart';
+import 'package:community_islamic_app/constants/color.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,13 +17,10 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     _initializeVideoPlayer();
-    HomeController();
-    QiblahController();
-    HomeEventsController();
-    EventTypeController();
     _navigateToAppropriateScreen();
   }
 
+  // Initialize the video player
   Future<void> _initializeVideoPlayer() async {
     _controller = VideoPlayerController.asset('assets/video/splashvideo.mp4')
       ..initialize().then((_) {
@@ -36,6 +30,7 @@ class _SplashScreenState extends State<SplashScreen> {
       });
   }
 
+  // Navigate to the appropriate screen based on login state
   Future<void> _navigateToAppropriateScreen() async {
     await Future.delayed(const Duration(seconds: 5)); // Wait for 5 seconds
 
@@ -45,32 +40,39 @@ class _SplashScreenState extends State<SplashScreen> {
     if (isLoggedIn) {
       Get.offAll(() => const Home());
     } else {
-      Get.offAll(() => const Home());
+      Get.offAll(() => const Home()); // Replace with login screen if needed
     }
   }
 
   @override
   void dispose() {
-    _controller?.dispose();
+    _controller?.dispose(); // Dispose of the controller to avoid memory leaks
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       body: Stack(
         children: [
+          // Video background with transparent background
           _controller != null && _controller!.value.isInitialized
-              ? SizedBox(
-                  height: double.infinity,
-                  width: double.infinity,
-                  child: AspectRatio(
-                    aspectRatio: _controller!.value.aspectRatio,
-                    child: VideoPlayer(_controller!),
+              ? Container(
+                  decoration: BoxDecoration(color: primaryColor),
+                  child: SizedBox(
+                    height: screenHeight * 1,
+                    width: screenWidth * 1,
+                    child: AspectRatio(
+                      aspectRatio: _controller!.value.aspectRatio,
+                      child: VideoPlayer(_controller!),
+                    ),
                   ),
                 )
-              : Container(),
+              : Container(
+                  color: primaryColor, // Fallback if video isn't loaded yet
+                ),
         ],
       ),
     );
