@@ -89,34 +89,11 @@ class _AllEventsDatesScreenState extends State<AllEventsDatesScreen> {
             child: Column(
               children: [
                 // Clear Filter Button
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    TextButton(
-                      onPressed: _clearFilters, // Clear filter action
-                      style: TextButton.styleFrom(
-                        backgroundColor: primaryColor,
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 8.0, horizontal: 16.0),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      child: Text(
-                        'Clear Filter',
-                        style: TextStyle(
-                          color: whiteColor,
-                          fontSize: 14,
-                          fontFamily: popinsMedium,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+
                 const SizedBox(height: 8),
                 // Event Type Selector (for category filtering)
                 SizedBox(
-                  height: 40,
+                  height: 35,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     itemCount: eventTypeController.eventTypes.length,
@@ -135,32 +112,33 @@ class _AllEventsDatesScreenState extends State<AllEventsDatesScreen> {
                                       .eventtypeId; // Update selected category
                                 });
                               },
-                              child: Container(
-                                margin:
-                                    const EdgeInsets.symmetric(horizontal: 8.0),
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 8.0, horizontal: 16.0),
-                                decoration: BoxDecoration(
-                                  color: selectedEventType.value ==
-                                          eventType.eventtypeId
-                                      ? primaryColor
-                                      : const Color(0xFFB9EED2),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
+                              child: Card(
+                                color: selectedEventType.value ==
+                                        eventType.eventtypeId
+                                    ? primaryColor
+                                    : const Color(0xFFB9EED2),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10)),
+                                margin: EdgeInsets.all(0),
                                 child: Center(
-                                  child: Text(
-                                    eventType.eventtypeName,
-                                    style: TextStyle(
-                                      color: selectedEventType.value ==
-                                              eventType.eventtypeId
-                                          ? whiteColor
-                                          : Colors.black,
-                                      fontFamily: popinsMedium,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 4.0,
+                                        horizontal:
+                                            16), // Reduced vertical padding
+                                    child: Text(
+                                      eventType.eventtypeName,
+                                      style: TextStyle(
+                                        color: selectedEventType.value ==
+                                                eventType.eventtypeId
+                                            ? whiteColor
+                                            : Colors.black,
+                                        fontFamily: popinsMedium,
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            )
+                              ))
                           : const SizedBox(); // If no events match this category, don't display it
                     },
                   ),
@@ -567,6 +545,14 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                       width: 6.0,
                       height: 6.0,
                       decoration: BoxDecoration(
+                        color: event.eventhastype.eventtypeId == 1 ||
+                                event.eventhastype.eventtypeId == 4
+                            ? const Color(0xFF169EFF) // Blue for event type 1
+                            : event.eventhastype.eventtypeId == 2 ||
+                                    event.eventhastype.eventtypeId == 6
+                                ? const Color(
+                                    0xFF05A741) // Green for event type 2
+                                : const Color(0xFF755EF2),
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
                           color: event.eventhastype.eventtypeId == 1 ||

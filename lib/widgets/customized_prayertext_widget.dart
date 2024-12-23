@@ -79,8 +79,7 @@ class PrayerTimeWidget extends StatelessWidget {
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter)
                       .createShader(bounds),
-                  child: BlinkText(
-                    duration: Duration(seconds: 1),
+                  child: Text(
                     name,
                     style: TextStyle(
                       fontSize: 10,
@@ -113,8 +112,7 @@ class PrayerTimeWidget extends StatelessWidget {
                                   begin: Alignment.topCenter,
                                   end: Alignment.bottomCenter)
                               .createShader(bounds),
-                      child: BlinkText(
-                        duration: Duration(seconds: 1),
+                      child: Text(
                         appClass.formatPrayerTimeToAmPm(timings),
                         style: TextStyle(
                             color: whiteColor,
@@ -140,8 +138,7 @@ class PrayerTimeWidget extends StatelessWidget {
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
                           ).createShader(bounds),
-                      child: BlinkText(
-                        duration: Duration(seconds: 1),
+                      child: Text(
                         iqamaTime,
                         style: TextStyle(
                             color: whiteColor,

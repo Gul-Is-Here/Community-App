@@ -62,11 +62,16 @@ class _SplashScreenState extends State<SplashScreen> {
               ? Container(
                   decoration: BoxDecoration(color: primaryColor),
                   child: SizedBox(
-                    height: screenHeight * 1,
-                    width: screenWidth * 1,
-                    child: AspectRatio(
-                      aspectRatio: _controller!.value.aspectRatio,
-                      child: VideoPlayer(_controller!),
+                    height: screenHeight,
+                    width: screenWidth,
+                    child: FittedBox(
+                      fit: BoxFit
+                          .cover, // Ensures the video covers the screen without stretching
+                      child: SizedBox(
+                        width: _controller!.value.size.width,
+                        height: _controller!.value.size.height,
+                        child: VideoPlayer(_controller!),
+                      ),
                     ),
                   ),
                 )

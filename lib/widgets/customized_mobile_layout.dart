@@ -416,24 +416,48 @@ class CustomizedMobileLayout extends StatelessWidget {
 
                       // Similarly handle the other prayer times to prevent null errors
                       Obx(() {
-                        if (homeController.prayerTime.value.data == null) {
+                        bool isFriday =
+                            DateTime.now().weekday == DateTime.friday;
+
+                        if (isFriday) {
+                          if (homeController.jummaTimes.value.data == null) {
+                            return PrayerTimeWidget(
+                              currentPrayer: getCurrentPrayer(),
+                              namazName: 'Dhuhr',
+                              timings:
+                                  '12:10 PM', // Default value when prayerTime data is null
+                              iqamatimes: iqamatimes,
+                              name: 'JUMUAH',
+                            );
+                          }
                           return PrayerTimeWidget(
                             currentPrayer: getCurrentPrayer(),
                             namazName: 'Dhuhr',
-                            timings:
-                                '12:10 PM', // Default value when prayerTime data is null
+                            timings: homeController
+                                .jummaTimes.value.data!.jumah.prayerTiming,
+                            iqamatimes: iqamatimes,
+                            name: 'JUMUAH',
+                          );
+                        } else {
+                          if (homeController.prayerTime.value.data == null) {
+                            return PrayerTimeWidget(
+                              currentPrayer: getCurrentPrayer(),
+                              namazName: 'Dhuhr',
+                              timings:
+                                  '12:10 PM', // Default value when prayerTime data is null
+                              iqamatimes: iqamatimes,
+                              name: 'DHUHR',
+                            );
+                          }
+                          return PrayerTimeWidget(
+                            currentPrayer: getCurrentPrayer(),
+                            namazName: 'Dhuhr',
+                            timings: homeController
+                                .prayerTime.value.data!.timings.dhuhr,
                             iqamatimes: iqamatimes,
                             name: 'DHUHR',
                           );
                         }
-                        return PrayerTimeWidget(
-                          currentPrayer: getCurrentPrayer(),
-                          namazName: 'Dhuhr',
-                          timings: homeController
-                              .prayerTime.value.data!.timings.dhuhr,
-                          iqamatimes: iqamatimes,
-                          name: 'DHUHR',
-                        );
                       }),
 
                       Obx(() {
@@ -498,28 +522,9 @@ class CustomizedMobileLayout extends StatelessWidget {
                           name: 'ISHA',
                         );
                       }),
-                      Obx(() {
-                        bool isFriday =
-                            DateTime.now().weekday == DateTime.friday;
-                        if (homeController.jummaTimes.value.data == null) {
-                          return PrayerTimeWidget(
-                            currentPrayer: getCurrentPrayer(),
-                            namazName: 'Dhuhr',
-                            timings:
-                                '12:10 PM', // Default value when prayerTime data is null
-                            iqamatimes: iqamatimes,
-                            name: 'JUMUAH',
-                          );
-                        }
-                        return PrayerTimeWidget(
-                          currentPrayer: getCurrentPrayer(),
-                          namazName: 'Dhuhr',
-                          timings: homeController
-                              .jummaTimes.value.data!.jumah.prayerTiming,
-                          iqamatimes: iqamatimes,
-                          name: 'JUMUAH',
-                        );
-                      }),
+                      // Obx(() {
+
+                      // }),
                     ],
                   ),
                 ),

@@ -30,7 +30,7 @@ class CusTomizedCardWidget2 extends StatelessWidget {
             elevation: 10,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
-              side: BorderSide(width: 5, color: primaryColor),
+              side: BorderSide(width: 5, color: lightColor),
             ),
             child: Padding(
               padding: const EdgeInsets.all(16), // Consistent padding
@@ -45,7 +45,9 @@ class CusTomizedCardWidget2 extends StatelessWidget {
                     height: 60, // Fixed image height
                   ),
                   // 10.heightBox, // Consistent spacing
-                  SizedBox(height:10,),
+                  SizedBox(
+                    height: 10,
+                  ),
                   Text(
                     title,
                     textAlign: TextAlign.center,
