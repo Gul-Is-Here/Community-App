@@ -1,12 +1,10 @@
 import 'package:community_islamic_app/constants/globals.dart';
 import 'package:community_islamic_app/controllers/family_controller.dart';
 import 'package:community_islamic_app/views/family_members/add_enrolment_widget.dart';
-import 'package:community_islamic_app/views/qibla_screen/qibla_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
-// import 'package:velocity_x/velocity_x.dart';
 
 import '../../app_classes/app_class.dart';
 import '../../constants/color.dart';
@@ -33,82 +31,96 @@ class _ClassDropdownState extends State<ClassDropdown> {
   Widget build(BuildContext context) {
     FamilyController familyController = Get.put(FamilyController());
 
-    return Column(
-      children: widget.classesList.map((classData) {
-        // Get the member's age based on their DOB
-        int memberAge = AppClass().calculateAge(widget.member['dob']);
+    return Obx(() {
+      // Show a loading indicator while data is being fetched
+      if (familyController.isLoading.value) {
+        return Center(child: SpinKitFadingCircle(color: primaryColor));
+      }
 
-        // Ensure minimum_age and maximum_age are parsed as numbers
-        int minimumAge = int.tryParse(classData['minimum_age'].toString()) ?? 0;
-        int maximumAge =
-            int.tryParse(classData['maximum_age'].toString()) ?? 100;
+      // If there are no classes available, show a message
+      if (widget.classesList.isEmpty) {
+        return Center(child: Text('No classes available.'));
+      }
 
-        // Check age condition
-        bool ageMatch = memberAge >= minimumAge && memberAge <= maximumAge;
+      return Column(
+        children: widget.classesList.map((classData) {
+          // Get the member's age based on their DOB
+          int memberAge = AppClass().calculateAge(widget.member['dob']);
 
-        // Check gender condition (if class_gender is "All", allow any gender)
-        bool genderMatch = classData['class_gender'] == 'All' ||
-            widget.member['relation_type'] == classData['class_gender'];
+          // Ensure minimum_age and maximum_age are parsed as numbers
+          int minimumAge =
+              int.tryParse(classData['minimum_age'].toString()) ?? 0;
+          int maximumAge =
+              int.tryParse(classData['maximum_age'].toString()) ?? 100;
 
-        // Only show dropdown if both conditions are met
-        if (ageMatch && genderMatch) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: Container(
-              alignment: Alignment.centerLeft,
-              color: whiteColor,
-              height: 30,
-              child: Card(
+          // Check age condition
+          bool ageMatch = memberAge >= minimumAge && memberAge <= maximumAge;
+
+          // Check gender condition (if class_gender is "All", allow any gender)
+          bool genderMatch = classData['class_gender'] == 'All' ||
+              widget.member['relation_type'] == classData['class_gender'];
+
+          // Only show dropdown if both conditions are met
+          if (ageMatch && genderMatch) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Container(
+                alignment: Alignment.centerLeft,
                 color: whiteColor,
-                margin: const EdgeInsets.all(0),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                child: Center(
-                  child: DropdownButton<String>(
-                    dropdownColor: Colors.white,
-                    underline: Container(
-                      color: whiteColor,
-                    ), // Remove default underline
+                height: 30,
+                child: Card(
+                  color: whiteColor,
+                  margin: const EdgeInsets.all(0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: Center(
+                    child: DropdownButton<String>(
+                      dropdownColor: Colors.white,
+                      underline: Container(
+                        color: whiteColor,
+                      ), // Remove default underline
 
-                    // Items for dropdown (View Details and Enroll in Class)
-                    items: <String>['View Details', 'Enroll in Class']
-                        .map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(
-                          textAlign: TextAlign.left,
-                          value,
-                          style: const TextStyle(
-                            fontFamily: popinsRegulr,
-                            fontSize: 13,
+                      // Items for dropdown (View Details and Enroll in Class)
+                      items: <String>['View Details', 'Enroll in Class']
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(
+                            textAlign: TextAlign.left,
+                            value,
+                            style: const TextStyle(
+                              fontFamily: popinsRegulr,
+                              fontSize: 13,
+                            ),
                           ),
-                        ),
-                      );
-                    }).toList(),
+                        );
+                      }).toList(),
 
-                    // Handle the selected dropdown item
-                    onChanged: (String? selectedOption) {
-                      if (selectedOption == 'View Details') {
-                        // Show details dialog
-                        _showDetailsDialog(classData);
-                      } else if (selectedOption == 'Enroll in Class') {
-                        // Show enrollment dialog or process
-                        _showEnrollDialog(
-                            classData, familyController, widget.member);
-                      }
-                    },
+                      // Handle the selected dropdown item
+                      onChanged: (String? selectedOption) {
+                        if (selectedOption == 'View Details') {
+                          // Show details dialog
+                          _showDetailsDialog(classData);
+                        } else if (selectedOption == 'Enroll in Class') {
+                          // Show enrollment dialog or process
+                          _showEnrollDialog(
+                              classData, familyController, widget.member);
+                        }
+                      },
 
-                    hint: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          textAlign: TextAlign.left,
-                          classData['class_name'], // Display class name as hint
-                          style: const TextStyle(
-                            fontFamily: popinsBold,
-                            fontSize: 13,
+                      hint: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            textAlign: TextAlign.left,
+                            classData[
+                                'class_name'], // Display class name as hint
+                            style: const TextStyle(
+                              fontFamily: popinsBold,
+                              fontSize: 13,
+                            ),
                           ),
                         ),
                       ),
@@ -116,14 +128,14 @@ class _ClassDropdownState extends State<ClassDropdown> {
                   ),
                 ),
               ),
-            ),
-          );
-        } else {
-          // If the class doesn't match the criteria, don't display anything.
-          return Container();
-        }
-      }).toList(),
-    );
+            );
+          } else {
+            // If the class doesn't match the criteria, don't display anything.
+            return Container();
+          }
+        }).toList(),
+      );
+    });
   }
 
   void _showDetailsDialog(dynamic classData) {
@@ -208,7 +220,34 @@ class _ClassDropdownState extends State<ClassDropdown> {
     );
   }
 
-// Method to show the disclaimer dialog
+  // Helper method to build detail rows
+  Widget _buildDetailRow(String title, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              textAlign: TextAlign.end,
+              style: TextStyle(
+                color: Colors.black54,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   void _showDisclaimerDialog(
       BuildContext context, String title, String description) {
     showDialog(
@@ -252,34 +291,6 @@ class _ClassDropdownState extends State<ClassDropdown> {
           ],
         );
       },
-    );
-  }
-
-// Helper method to build detail rows
-  Widget _buildDetailRow(String title, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            title,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
-            ),
-          ),
-          Expanded(
-            child: Text(
-              value,
-              textAlign: TextAlign.end,
-              style: TextStyle(
-                color: Colors.black54,
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 

@@ -4,7 +4,6 @@ import 'package:community_islamic_app/widgets/customized_card_widget2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-
 import '../../app_classes/app_class.dart';
 import '../../constants/image_constants.dart';
 import '../../controllers/login_controller.dart';
@@ -19,6 +18,7 @@ class DonationScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
+      backgroundColor: primaryColor,
       appBar: AppBar(
         // centerTitle: true,
         // title: Text(
@@ -34,7 +34,7 @@ class DonationScreen extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
                 child: CircularProgressIndicator(
-              color: primaryColor,
+              color: whiteColor,
             ));
           } else if (snapshot.hasError) {
             return Center(child: Text("${snapshot.error}"));
@@ -75,45 +75,53 @@ class DonationScreen extends StatelessWidget {
                       final donate = donations[index];
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Container(
+                            alignment: Alignment.centerLeft,
                             height: 40,
                             width: double.infinity,
-                            color: primaryColor,
+                            color: lightColor,
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Center(
-                                child: Text(
-                                  donate.donationcategoryName,
-                                  style: const TextStyle(
-                                      fontSize: 18,
-                                      // fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                      fontFamily: popinsBold),
-                                ),
+                              child: Text(
+                                donate.donationcategoryName,
+                                style: const TextStyle(
+                                    fontSize: 18,
+                                    // fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                    fontFamily: popinsBold),
                               ),
                             ),
                           ),
-                    SizedBox(height: 10,),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: donate.hasdonation.map((hasDonation) {
-                              return CusTomizedCardWidget2(
-                                title: hasDonation.donationName,
-                                imageIcon: hasDonation.donationImage.toString(),
-                                onTap: () async {
-                                  try {
-                                    await AppClass()
-                                        .launchURL(hasDonation.donationLink);
-                                  } catch (e) {
-                                    print(
-                                        'Could not launch ${hasDonation.donationLink}: $e');
-                                  }
-                                },
-                              );
-                            }).toList(),
+                          SizedBox(
+                            height: 10,
                           ),
-                       SizedBox(height: 10,),
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: donate.hasdonation.map((hasDonation) {
+                                return CusTomizedCardWidget2(
+                                  title: hasDonation.donationName,
+                                  imageIcon:
+                                      hasDonation.donationImage.toString(),
+                                  onTap: () async {
+                                    try {
+                                      await AppClass()
+                                          .launchURL(hasDonation.donationLink);
+                                    } catch (e) {
+                                      print(
+                                          'Could not launch ${hasDonation.donationLink}: $e');
+                                    }
+                                  },
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
                         ],
                       );
                     },
