@@ -90,57 +90,95 @@ class _AllEventsDatesScreenState extends State<AllEventsDatesScreen> {
               children: [
                 // Clear Filter Button
 
-                const SizedBox(height: 8),
+                // const SizedBox(height: 8),
                 // Event Type Selector (for category filtering)
-                SizedBox(
-                  height: 35,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: eventTypeController.eventTypes.length,
-                    itemBuilder: (context, index) {
-                      final eventType = eventTypeController.eventTypes[index];
-                      final isMatched = eventsController
-                          .events.value!.data.events
-                          .any((event) =>
-                              event.eventhastype.eventtypeId ==
-                              eventType.eventtypeId);
-                      return isMatched
-                          ? GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  selectedEventType.value = eventType
-                                      .eventtypeId; // Update selected category
-                                });
-                              },
-                              child: Card(
-                                color: selectedEventType.value ==
-                                        eventType.eventtypeId
-                                    ? primaryColor
-                                    : const Color(0xFFB9EED2),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10)),
-                                margin: EdgeInsets.all(0),
-                                child: Center(
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 4.0,
-                                        horizontal:
-                                            16), // Reduced vertical padding
-                                    child: Text(
-                                      eventType.eventtypeName,
-                                      style: TextStyle(
+                GestureDetector(
+                  onTap: () {
+                    _clearFilters();
+                  },
+                  child: Row(
+                    children: [
+                      Card(
+                        color: selectedEventType.value == 0
+                            ? primaryColor
+                            : const Color(0xFFB9EED2),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                        margin: EdgeInsets.all(4),
+                        child: Center(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 4.0,
+                                horizontal: 16), // Reduced vertical padding
+                            child: Text(
+                              'All',
+                              style: TextStyle(
+                                color: selectedEventType.value == 0
+                                    ? whiteColor
+                                    : Colors.black,
+                                fontFamily: popinsMedium,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: SizedBox(
+                          height: 35,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: eventTypeController.eventTypes.length,
+                            itemBuilder: (context, index) {
+                              final eventType =
+                                  eventTypeController.eventTypes[index];
+                              final isMatched = eventsController
+                                  .events.value!.data.events
+                                  .any((event) =>
+                                      event.eventhastype.eventtypeId ==
+                                      eventType.eventtypeId);
+                              return isMatched
+                                  ? GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          selectedEventType.value = eventType
+                                              .eventtypeId; // Update selected category
+                                        });
+                                      },
+                                      child: Card(
                                         color: selectedEventType.value ==
                                                 eventType.eventtypeId
-                                            ? whiteColor
-                                            : Colors.black,
-                                        fontFamily: popinsMedium,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ))
-                          : const SizedBox(); // If no events match this category, don't display it
-                    },
+                                            ? primaryColor
+                                            : const Color(0xFFB9EED2),
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10)),
+                                        margin: EdgeInsets.all(4),
+                                        child: Center(
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 0.0,
+                                                horizontal:
+                                                    16), // Reduced vertical padding
+                                            child: Text(
+                                              eventType.eventtypeName,
+                                              style: TextStyle(
+                                                color: selectedEventType
+                                                            .value ==
+                                                        eventType.eventtypeId
+                                                    ? whiteColor
+                                                    : Colors.black,
+                                                fontFamily: popinsMedium,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ))
+                                  : const SizedBox(); // If no events match this category, don't display it
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -202,6 +240,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 
   void _initializeSelectedDateAndEvents() {
     // Display all events by default
+
     _selectedDate = null; // Reset selected date for "all events"
     _updateDisplayedEvents(); // Populate _displayedEvents immediately
   }
@@ -313,7 +352,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                               // Display date header
                               Padding(
                                 padding:
-                                    const EdgeInsets.symmetric(vertical: 10.0),
+                                    const EdgeInsets.symmetric(vertical: 0.0),
                                 child: Text(
                                   AppClass().formatDate2(
                                       date.toString()), // Format the date
@@ -492,13 +531,14 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     for (int day = 1; day <= daysInMonth; day++) {
       DateTime date = DateTime(_currentDate.year, _currentDate.month, day);
       bool isEventDay = widget.eventDates.containsKey(date);
-      bool isSelected = date == _selectedDate;
+      bool isSelected = date == _selectedDate; // Check if it's selected
+      bool isCurrentDate = date == DateTime.now(); // Check if it's current date
 
       dayCells.add(GestureDetector(
         onTap: () {
           setState(() {
-            _selectedDate = date;
-            _updateDisplayedEvents();
+            _selectedDate = date; // Update selected date
+            _updateDisplayedEvents(); // Refresh events based on selected date
           });
         },
         child: Column(
@@ -508,9 +548,11 @@ class _CalendarWidgetState extends State<CalendarWidget> {
               height: 34,
               padding: const EdgeInsets.all(8.0),
               decoration: BoxDecoration(
-                gradient: isSelected
-                    ? const LinearGradient(
-                        colors: [Color(0xFF00A559), Color(0xFF006627)])
+                gradient: isSelected ||DateTime.now()==DateTime.now()
+                    ? const LinearGradient(colors: [
+                        Color(0xFF00A559),
+                        Color(0xFF006627)
+                      ]) // Highlight selected/current date
                     : LinearGradient(colors: [
                         whiteColor,
                         whiteColor,
@@ -524,7 +566,9 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                     day.toString(),
                     style: TextStyle(
                       fontSize: 12,
-                      color: isSelected ? Colors.white : Colors.black87,
+                      color: isSelected || isCurrentDate
+                          ? Colors.white
+                          : Colors.black87,
                       fontFamily: popinsMedium,
                     ),
                   ),
@@ -536,8 +580,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: List.generate(
-                  widget.eventDates[date]!.length
-                      .clamp(1, 3), // Limit to 3 dots
+                  widget.eventDates[date]!.length.clamp(1, 3),
                   (index) {
                     var event = widget.eventDates[date]![index];
                     return Container(
@@ -552,7 +595,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                                     event.eventhastype.eventtypeId == 6
                                 ? const Color(
                                     0xFF05A741) // Green for event type 2
-                                : const Color(0xFF755EF2),
+                                : const Color(0xFF755EF2), // Default color
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
                           color: event.eventhastype.eventtypeId == 1 ||
@@ -569,9 +612,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                   },
                 ),
               ),
-            const SizedBox(
-              height: 5,
-            ),
+            const SizedBox(height: 5),
           ],
         ),
       ));

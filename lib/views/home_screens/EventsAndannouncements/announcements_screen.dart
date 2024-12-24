@@ -3,7 +3,9 @@ import 'package:community_islamic_app/views/home_screens/EventsAndannouncements/
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:community_islamic_app/controllers/home_events_controller.dart'; // Adjust with your controller path
+import 'package:community_islamic_app/controllers/home_events_controller.dart';
+
+import '../../../constants/image_constants.dart'; // Adjust with your controller path
 
 class AnnouncementsScreen extends StatelessWidget {
   final HomeEventsController controller = Get.put(HomeEventsController());
@@ -13,6 +15,7 @@ class AnnouncementsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: primaryColor,
       appBar: AppBar(
         leading: IconButton(
             onPressed: () {
@@ -23,11 +26,29 @@ class AnnouncementsScreen extends StatelessWidget {
               color: Colors.white,
             )),
         backgroundColor: primaryColor,
+        // actions: [
+        //   IconButton(
+        //       onPressed: () {},
+        //       icon: Icon(
+        //         Icons.share,
+        //         color: goldenColor,
+        //       )),
+        // ],
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(1.0), // Height of the bottom line
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Container(
+              color: Colors.white, // Bottom line color
+              height: 1.0,
+            ),
+          ),
+        ),
         title: const Text(
           'Announcements',
           style: TextStyle(fontFamily: popinsSemiBold, color: Colors.white),
         ),
-        centerTitle: true,
+        // centerTitle: true,
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
@@ -51,7 +72,8 @@ class AnnouncementsScreen extends StatelessWidget {
               return AnnouncementCard(
                 alertDisc: alert.alertDescription,
                 onTap: () {
-                  Get.to(() => AnnouncementsDetailsScreen(alertDisc: alert.alertDescription,
+                  Get.to(() => AnnouncementsDetailsScreen(
+                      alertDisc: alert.alertDescription,
                       controller: controller,
                       title: alert.alertTitle,
                       details: alert.alertDescription,
@@ -59,7 +81,6 @@ class AnnouncementsScreen extends StatelessWidget {
                       description: '',
                       postedDate: alert.updatedAt.toString()));
                 },
-               
                 title: alert.alertTitle,
                 postedDate:
                     controller.formatDateString(alert.createdAt.toString()),
@@ -83,55 +104,78 @@ class AnnouncementCard extends StatelessWidget {
     super.key,
     required this.alertDisc,
     required this.onTap,
-
     required this.title,
     required this.postedDate,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.symmetric(vertical: 10.0),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15.0),
-      ),
-      elevation: 5.0,
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
       child: GestureDetector(
         onTap: onTap,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            
-            Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Column(
+        child: Container(
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              gradient: LinearGradient(
+                  colors: [Colors.green, Colors.green],
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight)),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  Row(
-                    children: [
-                      Icon(Icons.date_range, color: Colors.grey, size: 16),
-                      SizedBox(width: 5),
-                      Text(
-                        "Posted on $postedDate",
-                        style: TextStyle(
-                          fontSize: 14.0,
-                          color: Colors.grey,
+                  Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title,
+                          style: TextStyle(
+                            color: whiteColor,
+                            fontFamily: popinsRegulr,
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                    ],
+                        SizedBox(height: 10),
+                        Row(
+                          children: [
+                            Image.asset(
+                              eventIcon,
+                              height: 16,
+                              width: 16,
+                            ),
+                            SizedBox(width: 5),
+                            Text(
+                              "Posted on $postedDate",
+                              style: TextStyle(
+                                fontFamily: popinsRegulr,
+                                fontSize: 12.0,
+                                color: whiteColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
-            ),
-          ],
+              Container(
+                height: 100,
+                width: MediaQuery.of(context).size.width * .03,
+                decoration: BoxDecoration(
+                    color: goldenColor,
+                    borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(10),
+                        bottomRight: Radius.circular(10))),
+              )
+            ],
+          ),
         ),
       ),
     );

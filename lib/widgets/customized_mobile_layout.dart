@@ -89,12 +89,15 @@ class CustomizedMobileLayout extends StatelessWidget {
                       SizedBox(
                         height: 2,
                       ),
+                      SizedBox(
+                        width: 5,
+                      ),
                       Text(
-                        'Rosenberg Community Centre',
+                        'Rosenberg Community Center',
                         style: TextStyle(
                             fontFamily: popinsSemiBold,
                             color: whiteColor,
-                            fontSize: 12),
+                            fontSize: 13),
                       ),
                     ],
                   ),

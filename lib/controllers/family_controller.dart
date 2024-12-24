@@ -1,40 +1,49 @@
 import 'dart:convert';
-
 import 'package:community_islamic_app/constants/globals.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 class FamilyController extends GetxController {
-  List<dynamic> classesList = [];
+  // Make classesList an observable list
+  var classesList = <dynamic>[].obs;
   var isLoading = false.obs; // Observable loading state
+  var errorMessage = ''.obs; // Observable for error messages
 
   @override
   void onInit() {
     super.onInit();
-    fetchData();
+    fetchData(); // Fetch data when the controller is initialized
   }
 
   // Method to get data from API and save to a dynamic variable
   Future<void> fetchData() async {
-    // Replace with your API call logic
-    final response = await http.get(Uri.parse(
-        'https://rosenbergcommunitycenter.org/api/ClassApi?access=7b150e45-e0c1-43bc-9290-3c0bf6473a51332'));
+    try {
+      isLoading(true); // Start loading state
+      // Replace with your API call logic
+      final response = await http.get(Uri.parse(
+          'https://rosenbergcommunitycenter.org/api/ClassApi?access=7b150e45-e0c1-43bc-9290-3c0bf6473a51332'));
 
-    if (response.statusCode == 200) {
-      // Decode the JSON response
-      var data = json.decode(response.body);
+      if (response.statusCode == 200) {
+        // Decode the JSON response
+        var data = json.decode(response.body);
 
-      // Store the classes data in a list
-      classesList = data['data']['Classes'];
+        // Store the classes data in a reactive list
+        classesList.value = data['data']['Classes'];
 
-      // You can now use the `classesList` to access each class
-      for (var singleClass in classesList) {
-        print(singleClass[
-            'class_name']); // Accessing class_name field for each class
+        // Debug print to check the response data
+        for (var singleClass in classesList) {
+          print(singleClass[
+              'class_name']); // Accessing class_name field for each class
+        }
+      } else {
+        errorMessage.value =
+            'Failed to load data. Status code: ${response.statusCode}';
       }
-    } else {
-      throw Exception('Failed to load data');
+    } catch (e) {
+      errorMessage.value = 'Error occurred: $e';
+    } finally {
+      isLoading(false); // Stop loading
     }
   }
 
@@ -85,7 +94,7 @@ class FamilyController extends GetxController {
           ),
         );
       } else if (response.statusCode == 423) {
-        // Handle the error
+        // Handle the error for already enrolled
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Already enrolled in this class.'),

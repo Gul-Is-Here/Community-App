@@ -22,7 +22,7 @@ void main() async {
   await HomeController().fetchPrayerTimes();
   HomeController().getCurrentPrayerCurrent();
   HomeEventsController().fetchEventsData();
-  QiblahController();
+  // QiblahController();
   await QiblahController().getLocation();
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 

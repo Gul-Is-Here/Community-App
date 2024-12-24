@@ -108,6 +108,18 @@ class _FamilyMemberScreenState extends State<FamilyMemberScreen> {
   Widget build(BuildContext context) {
     profileController.userData();
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: primaryColor,
+        title: Text(
+          'FAMILY MEMBERS',
+          style: TextStyle(
+            color: Colors.white,
+            fontFamily: popinsSemiBold,
+            fontSize: 24,
+          ),
+        ),
+      ),
+      // backgroundColor: primaryColor,
       floatingActionButton: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30),
@@ -136,24 +148,23 @@ class _FamilyMemberScreenState extends State<FamilyMemberScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            const Projectbackground(title: 'Family Members'),
-            Container(
-              alignment: Alignment.centerLeft,
-              height: 50,
-              width: double.infinity,
-              color: primaryColor,
-              child: const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 12),
-                child: Text(
-                  'FAMILY MEMBERS',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: popinsSemiBold,
-                    fontSize: 24,
-                  ),
-                ),
-              ),
-            ),
+            // Container(
+            //   alignment: Alignment.centerLeft,
+            //   height: 50,
+            //   width: double.infinity,
+            //   color: primaryColor,
+            //   child: const Padding(
+            //     padding: EdgeInsets.symmetric(horizontal: 12),
+            //     child: Text(
+            //       'FAMILY MEMBERS',
+            //       style: TextStyle(
+            //         color: Colors.white,
+            //         fontFamily: popinsSemiBold,
+            //         fontSize: 24,
+            //       ),
+            //     ),
+            //   ),
+            // ),
             Obx(() {
               if (profileController.isLoading.value) {
                 return Center(
