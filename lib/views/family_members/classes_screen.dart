@@ -1,46 +1,68 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:get/get.dart';
+import 'package:community_islamic_app/constants/color.dart';
 import 'package:community_islamic_app/controllers/family_controller.dart';
 import 'package:community_islamic_app/controllers/profileController.dart';
-import 'package:community_islamic_app/views/contact_us/contact_us_screen.dart';
-import 'package:community_islamic_app/views/family_members/enrolment_widget.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import '../../constants/color.dart';
-import 'classdropdown_widget.dart';
+import 'package:community_islamic_app/views/family_members/classdropdown_widget.dart';
+import 'package:community_islamic_app/views/family_members/buildFamilyMemeberWidget.dart';
 
-class ClassesScreen extends StatelessWidget {
+import '../../constants/image_constants.dart';
+
+class ClassesScreen extends StatefulWidget {
   ClassesScreen({super.key});
 
+  @override
+  State<ClassesScreen> createState() => _ClassesScreenState();
+}
+
+class _ClassesScreenState extends State<ClassesScreen> {
   // Controllers
   var familyController = Get.put(FamilyController());
   var profileController = Get.find<ProfileController>();
 
+  // Map to track visibility of ClassDropdown for each member
+  Map<int, bool> showClassesMap = {};
+
   @override
   Widget build(BuildContext context) {
+    profileController.fetchUserData();
+    profileController.fetchUserData2();
+    familyController.fetchData();
+    profileController.userDataStream;
     // Get relations list from user data
     List<dynamic> relations = profileController.userData['relations'] ?? [];
 
     return Scaffold(
+      backgroundColor: primaryColor,
       appBar: AppBar(
-        title: Text('Classes',
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-        backgroundColor: primaryColor, // Change app bar color to match theme
-        actions: [
-          IconButton(
-            icon: Icon(Icons.info_outline),
-            onPressed: () {
-              // Navigate to contact us screen or show information
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ContactUsPage()),
-              );
-            },
+        leading: IconButton(
+          onPressed: () {
+            Get.back();
+          },
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: whiteColor,
           ),
-        ],
+        ),
+        bottom: const PreferredSize(
+          preferredSize: Size.fromHeight(1.0),
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0),
+            child: Divider(color: Colors.white, thickness: 1),
+          ),
+        ),
+        title: Text('Classes',
+            style: TextStyle(
+                fontSize: 20, fontFamily: popinsRegulr, color: whiteColor)),
+        backgroundColor: primaryColor,
       ),
       body: Obx(() {
         // Observe loading state from the controller
         if (familyController.isLoading.value) {
-          return Center(child: CircularProgressIndicator());
+          return Center(
+            child: SpinKitFadingCircle(color: whiteColor, size: 50.0),
+          );
         }
 
         return ListView.builder(
@@ -48,82 +70,78 @@ class ClassesScreen extends StatelessWidget {
           itemBuilder: (context, index) {
             List<dynamic> enrollments =
                 relations[index]['hasenrollments'] ?? [];
+            var enrolCount =
+                enrollments.where((e) => e['_active'] == '1').length;
 
-            return Padding(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 12.0, horizontal: 20.0),
-              child: Card(
-                elevation: 10,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                shadowColor: Colors.black.withOpacity(0.1),
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+            // Initialize the visibility of ClassDropdown for each member if not already initialized
+            if (!showClassesMap.containsKey(index)) {
+              showClassesMap[index] = false;
+            }
+
+            return Column(
+              children: [
+                buildFamilyMemberCardClasses(relations[index], enrolCount, () {
+                  setState(() {
+                    showClassesMap[index] = !showClassesMap[index]!;
+                  });
+                }),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 12.0, horizontal: 8.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Display the relation name
-                      Text(
-                        "${relations[index]['first_name']} ${relations[index]['last_name']}",
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black87,
+                      // Only show the classes section if the showClassesMap[index] is true
+                      if (showClassesMap[index] != null &&
+                          showClassesMap[index]!)
+                        Column(
+                          children: [
+                            Row(
+                              children: [
+                                Image.asset(
+                                  eventIcon,
+                                  height: 24,
+                                  width: 24,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 20.0),
+                                  child: Text(
+                                    'Classes',
+                                    style: TextStyle(
+                                        fontFamily: popinsRegulr,
+                                        color: whiteColor),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 15,
+                            ),
+                            Divider(
+                              height: 2,
+                              color: lightColor,
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            // Show the class dropdown when the icon is clicked
+                            ClassDropdown(
+                              classesList: familyController.classesList,
+                              member: relations[index],
+                              inrolments: enrollments,
+                            ),
+                            SizedBox(height: 16),
+                          ],
                         ),
-                      ),
-                      SizedBox(height: 8),
-
-                      // Available classes section
-                      SectionHeader(title: 'CLASSES AVAILABLE'),
-                      SizedBox(height: 10),
-                      ClassDropdown(
-                        classesList: familyController.classesList,
-                        member: relations[index],
-                      ),
-
-                      SizedBox(height: 16),
-
-                      // Enrolled classes section
-                      SectionHeader(title: 'CLASSES ENROLLED'),
-                      SizedBox(height: 10),
-                      ClassEnrolmentWidget(inrolments: enrollments),
                     ],
                   ),
                 ),
-              ),
+              ],
             );
           },
         );
       }),
-    );
-  }
-}
-
-// Section header widget for reusability
-class SectionHeader extends StatelessWidget {
-  final String title;
-
-  SectionHeader({required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      alignment: Alignment.centerLeft,
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      decoration: BoxDecoration(
-        color: primaryColor,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Text(
-        title,
-        style: TextStyle(
-          color: Colors.white,
-          fontFamily: popinsSemiBold,
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
     );
   }
 }

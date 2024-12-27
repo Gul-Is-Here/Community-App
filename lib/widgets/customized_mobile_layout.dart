@@ -129,7 +129,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                             children: [
                               Obx(
                                 () => Text(
-                                  '${homeController.timeUntilNextPrayer} (${homeController.getNextPrayerTime()})',
+                                  '${homeController.timeUntilNextPrayer}',
                                   style: TextStyle(
                                       color: whiteColor,
                                       fontFamily: popinsRegulr,

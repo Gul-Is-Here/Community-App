@@ -387,18 +387,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                                             vertical: 8.0),
                                         padding: const EdgeInsets.all(12.0),
                                         decoration: BoxDecoration(
-                                          color: event.eventhastype
-                                                      .eventtypeId ==
-                                                  1
-                                              ? const Color(0xFFB3DFFF)
-                                              : event.eventhastype
-                                                              .eventtypeId ==
-                                                          2 ||
-                                                      event.eventhastype
-                                                              .eventtypeId ==
-                                                          6
-                                                  ? const Color(0xFFB3E8DA)
-                                                  : const Color(0xFFD5CEFB),
+                                          color: AppClass().hexToColor(event
+                                              .eventhastype.eventtypeBgcolor),
                                           borderRadius:
                                               BorderRadius.circular(10),
                                         ),
@@ -408,57 +398,22 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                                           children: [
                                             Row(
                                               children: [
-                                                event.eventhastype
-                                                                .eventtypeId ==
-                                                            1 ||
-                                                        event.eventhastype
-                                                                .eventtypeId ==
-                                                            4
-                                                    ? Image.asset(
-                                                        icFamily,
-                                                        height: 24,
-                                                        width: 24,
-                                                      )
-                                                    : event.eventhastype
-                                                                    .eventtypeId ==
-                                                                2 ||
-                                                            event.eventhastype
-                                                                    .eventtypeId ==
-                                                                6
-                                                        ? Image.asset(
-                                                            icFemale,
-                                                            height: 24,
-                                                            width: 24,
-                                                          )
-                                                        : Image.asset(
-                                                            icMale,
-                                                            height: 24,
-                                                            width: 24,
-                                                          ),
+                                                Image.network(
+                                                  event.eventhastype
+                                                      .eventtypeIcon,
+                                                  height: 24,
+                                                  width: 24,
+                                                ),
                                                 const SizedBox(width: 5),
                                                 Text(
                                                   event.eventTitle,
                                                   style: TextStyle(
                                                     fontSize: 16,
                                                     fontFamily: popinsMedium,
-                                                    color: event.eventhastype
-                                                                    .eventtypeId ==
-                                                                1 ||
-                                                            event.eventhastype
-                                                                    .eventtypeId ==
-                                                                4
-                                                        ? const Color(
-                                                            0xFF169EFF)
-                                                        : event.eventhastype
-                                                                        .eventtypeId ==
-                                                                    2 ||
-                                                                event.eventhastype
-                                                                        .eventtypeId ==
-                                                                    6
-                                                            ? const Color(
-                                                                0xFF05A741)
-                                                            : const Color(
-                                                                0xFF755EF2),
+                                                    color: AppClass()
+                                                        .hexToColor(event
+                                                            .eventhastype
+                                                            .eventtypeTextcolor),
                                                   ),
                                                 ),
                                               ],
@@ -530,13 +485,16 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     // Add day cells with event indicators
     for (int day = 1; day <= daysInMonth; day++) {
       DateTime date = DateTime(_currentDate.year, _currentDate.month, day);
+      DateTime date2 = DateTime(_currentDate.year, _currentDate.month, day);
       bool isEventDay = widget.eventDates.containsKey(date);
       bool isSelected = date == _selectedDate; // Check if it's selected
-      bool isCurrentDate = date == DateTime.now(); // Check if it's current date
+      bool isCurrentDate =
+          date2 == DateTime.now(); // Check if it's current date
 
       dayCells.add(GestureDetector(
         onTap: () {
           setState(() {
+            isCurrentDate;
             _selectedDate = date; // Update selected date
             _updateDisplayedEvents(); // Refresh events based on selected date
           });
@@ -548,7 +506,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
               height: 34,
               padding: const EdgeInsets.all(8.0),
               decoration: BoxDecoration(
-                gradient: isSelected ||DateTime.now()==DateTime.now()
+                gradient: isSelected || isCurrentDate
                     ? const LinearGradient(colors: [
                         Color(0xFF00A559),
                         Color(0xFF006627)
@@ -584,31 +542,18 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                   (index) {
                     var event = widget.eventDates[date]![index];
                     return Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 1.0),
-                      width: 6.0,
-                      height: 6.0,
-                      decoration: BoxDecoration(
-                        color: event.eventhastype.eventtypeId == 1 ||
-                                event.eventhastype.eventtypeId == 4
-                            ? const Color(0xFF169EFF) // Blue for event type 1
-                            : event.eventhastype.eventtypeId == 2 ||
-                                    event.eventhastype.eventtypeId == 6
-                                ? const Color(
-                                    0xFF05A741) // Green for event type 2
-                                : const Color(0xFF755EF2), // Default color
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                          color: event.eventhastype.eventtypeId == 1 ||
-                                  event.eventhastype.eventtypeId == 4
-                              ? const Color(0xFF169EFF) // Blue for event type 1
-                              : event.eventhastype.eventtypeId == 2 ||
-                                      event.eventhastype.eventtypeId == 6
-                                  ? const Color(
-                                      0xFF05A741) // Green for event type 2
-                                  : const Color(0xFF755EF2), // Default color
-                        ),
-                      ),
-                    );
+                        margin: const EdgeInsets.symmetric(horizontal: 1.0),
+                        width: 6.0,
+                        height: 6.0,
+                        decoration: BoxDecoration(
+                          color: AppClass().hexToColor(event.eventhastype
+                              .eventtypeTextcolor), // Default color
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: AppClass().hexToColor(
+                                event.eventhastype.eventtypeBgcolor),
+                          ),
+                        ));
                   },
                 ),
               ),

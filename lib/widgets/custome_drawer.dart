@@ -97,7 +97,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               child: Icon(Icons.person),
                             ),
                             // 10.widthBox
-                            SizedBox(height: 10,),
+                            SizedBox(
+                              height: 10,
+                            ),
                             Column(
                               children: [
                                 Row(
@@ -107,7 +109,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                         Get.to(() => LoginScreen());
                                       },
                                       child: Text(
-                                        'Login/',
+                                        '   Login/',
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                           fontFamily: popinsMedium,
@@ -134,14 +136,18 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                     ),
                                   ],
                                 ),
-                                Text(
-                                  'Guest',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontFamily: popinsRegulr,
-                                    color: whiteColor,
-                                    // fontWeight: FontWeight.bold,
-                                    fontSize: 10,
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    textDirection: TextDirection.ltr,
+                                    'Guest',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontFamily: popinsRegulr,
+                                      color: whiteColor,
+                                      // fontWeight: FontWeight.bold,
+                                      fontSize: 10,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -166,7 +172,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                       50,
                                     ),
                                     border: Border.all(width: 2),
-                                    color: Colors.black),
+                                    color: lightColor),
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(50),
                                   child: Image.network(
@@ -178,11 +184,15 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                 ),
                               ),
                               // 10.widthBox,
-                              SizedBox(height: 10,),
+                              SizedBox(
+                                height: 10,
+                              ),
                               Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    '${profileController.userData['user']['name']}',
+                                    '  ${profileController.userData['user']['name']}',
                                     style: TextStyle(
                                       color: whiteColor,
                                       fontFamily: popinsMedium,
@@ -191,7 +201,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                     ),
                                   ),
                                   Text(
-                                    '${profileController.userData['user']['email']}',
+                                    '   ${profileController.userData['user']['email']}',
                                     style: TextStyle(
                                       color: whiteColor,
                                       fontFamily: popinsRegulr,
@@ -202,7 +212,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                 ],
                               ),
                               // 3.widthBox,
-                              SizedBox(height: 3,),
+                              SizedBox(
+                                height: 3,
+                              ),
                               IconButton(
                                   onPressed: () async {
                                     await Get.to(() => ProfileScreen());
@@ -239,7 +251,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
             //       : const SizedBox(),
             // ),
             // 10.heightBox,
-            SizedBox(height: 10,),
+            SizedBox(
+              height: 10,
+            ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: const Divider(color: Color(0xFF22554F)),

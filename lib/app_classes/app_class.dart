@@ -113,7 +113,7 @@ class AppClass {
       DateTime parsedDate = DateTime.parse(dateString);
 
       // Format the DateTime to "MMM d, yyyy"
-      return DateFormat('d MMMM yyyy').format(parsedDate);
+      return DateFormat('d. MMMM yyyy').format(parsedDate);
     } catch (e) {
       print("Error parsing date: $e");
       return ""; // Return an empty string or handle the error as needed
@@ -695,5 +695,14 @@ class AppClass {
     String formattedTime = DateFormat("h:mm a").format(parsedTime);
 
     return formattedTime; // e.g., "1:40 PM"
+  }
+
+  Color hexToColor(String hexCode) {
+    final buffer = StringBuffer();
+    if (hexCode.length == 6 || hexCode.length == 7) {
+      buffer.write('ff'); // Add alpha value (fully opaque)
+      buffer.write(hexCode.replaceFirst('#', '')); // Remove '#' if present
+    }
+    return Color(int.parse(buffer.toString(), radix: 16));
   }
 }

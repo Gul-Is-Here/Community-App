@@ -181,6 +181,9 @@ class Event {
 class Eventhastype {
   final int eventtypeId;
   final String eventtypeName;
+  final String eventtypeIcon;
+  final String eventtypeBgcolor;
+  final String eventtypeTextcolor;
   final String active;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -188,6 +191,9 @@ class Eventhastype {
   Eventhastype({
     required this.eventtypeId,
     required this.eventtypeName,
+    required this.eventtypeIcon,
+    required this.eventtypeBgcolor,
+    required this.eventtypeTextcolor,
     required this.active,
     required this.createdAt,
     required this.updatedAt,
@@ -196,6 +202,9 @@ class Eventhastype {
   Eventhastype copyWith({
     int? eventtypeId,
     String? eventtypeName,
+    String? eventtypeIcon,
+    String? eventtypeBgcolor,
+    String? eventtypeTextcolor,
     String? active,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -203,6 +212,9 @@ class Eventhastype {
       Eventhastype(
         eventtypeId: eventtypeId ?? this.eventtypeId,
         eventtypeName: eventtypeName ?? this.eventtypeName,
+        eventtypeIcon: eventtypeIcon ?? this.eventtypeIcon,
+        eventtypeBgcolor: eventtypeBgcolor ?? this.eventtypeBgcolor,
+        eventtypeTextcolor: eventtypeTextcolor ?? this.eventtypeTextcolor,
         active: active ?? this.active,
         createdAt: createdAt ?? this.createdAt,
         updatedAt: updatedAt ?? this.updatedAt,
@@ -216,6 +228,9 @@ class Eventhastype {
   factory Eventhastype.fromJson(Map<String, dynamic> json) => Eventhastype(
         eventtypeId: json["eventtype_id"],
         eventtypeName: json["eventtype_name"],
+        eventtypeIcon: json["eventtype_icon"],
+        eventtypeBgcolor: json["eventtype_bgcolor"],
+        eventtypeTextcolor: json["eventtype_textcolor"],
         active: json["_active"],
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
@@ -224,6 +239,9 @@ class Eventhastype {
   Map<String, dynamic> toJson() => {
         "eventtype_id": eventtypeId,
         "eventtype_name": eventtypeName,
+        "eventtype_icon": eventtypeIcon,
+        "eventtype_bgcolor": eventtypeBgcolor,
+        "eventtype_textcolor": eventtypeTextcolor,
         "_active": active,
         "created_at": createdAt.toIso8601String(),
         "updated_at": updatedAt.toIso8601String(),

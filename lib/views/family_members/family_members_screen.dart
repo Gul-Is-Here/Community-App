@@ -1,19 +1,14 @@
-import 'dart:io';
-import 'package:community_islamic_app/app_classes/app_class.dart';
-import 'package:community_islamic_app/constants/globals.dart';
-import 'package:community_islamic_app/controllers/family_controller.dart';
-import 'package:community_islamic_app/views/family_members/classdropdown_widget.dart';
+import 'package:community_islamic_app/constants/image_constants.dart';
+import 'package:community_islamic_app/views/family_members/add_family_memeber.dart';
+import 'package:community_islamic_app/views/family_members/editFamilyMemberScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
+
+import '../../app_classes/app_class.dart';
 import '../../constants/color.dart';
 import '../../controllers/profileController.dart';
-import '../../widgets/family_card_widget.dart';
-import '../../widgets/profile_dropdown_widget.dart';
-import '../../widgets/profile_text_widget.dart';
-import '../../widgets/project_background.dart';
-import 'enrolment_widget.dart';
+import '../../controllers/family_controller.dart';
 
 class FamilyMemberScreen extends StatefulWidget {
   @override
@@ -21,1459 +16,202 @@ class FamilyMemberScreen extends StatefulWidget {
 }
 
 class _FamilyMemberScreenState extends State<FamilyMemberScreen> {
+  late var member;
   final ProfileController profileController = Get.put(ProfileController());
   final FamilyController familyController = Get.put(FamilyController());
 
-  TextEditingController firstNameController = TextEditingController();
-  TextEditingController lastNameController = TextEditingController();
-  TextEditingController dobController = TextEditingController();
-
-  String selectedRelation = 'Brother';
-  List<bool> isExpandedList = [];
+  bool isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    List<dynamic> relations = profileController.userData['relations'] ?? [];
-    isExpandedList = List.generate(relations.length + 1, (index) => false);
-  }
-
-  File? _profileImage;
-  // bool isExpanded = false; // Individual state for each widget
-  bool isLoading = false; // Loading state
-
-  final List<String> relation = [
-    "Father",
-    "Husband",
-    "Brother",
-    "Son",
-    "Mother",
-    "Wife",
-    "Sister",
-    "Daughter"
-  ];
-
-  final List<String> avatars = [
-    'assets/images/male.png',
-    'assets/images/female.png',
-    'assets/images/boy.png',
-    'assets/images/girl.png'
-  ];
-
-  Future<void> _pickImageFromGallery() async {
-    final pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      setState(() {
-        _profileImage = File(pickedFile.path);
-      });
-    }
-  }
-
-  Future<void> _showImageSelectionDialog() async {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text(
-            'Select Profile Picture',
-            style: TextStyle(fontFamily: popinsSemiBold, color: Colors.black),
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextButton.icon(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  _pickImageFromGallery();
-                },
-                icon: Icon(
-                  Icons.photo,
-                  color: primaryColor,
-                ),
-                label: Text(
-                  'Select from Gallery',
-                  style:
-                      TextStyle(fontFamily: popinsRegulr, color: primaryColor),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
+    profileController.userData();
   }
 
   @override
   Widget build(BuildContext context) {
-    profileController.userData();
     return Scaffold(
+      backgroundColor: primaryColor,
       appBar: AppBar(
         backgroundColor: primaryColor,
-        title: Text(
-          'FAMILY MEMBERS',
+        elevation: 0,
+        title: const Text(
+          'Family Members',
           style: TextStyle(
-            color: Colors.white,
-            fontFamily: popinsSemiBold,
-            fontSize: 24,
+              fontFamily: popinsMedium, fontSize: 20, color: Colors.white),
+        ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Get.back(),
+        ),
+        bottom: const PreferredSize(
+          preferredSize: Size.fromHeight(1.0),
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0),
+            child: Divider(color: Colors.white, thickness: 1),
           ),
         ),
       ),
-      // backgroundColor: primaryColor,
-      floatingActionButton: Container(
-        decoration: BoxDecoration(
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: primaryColor,
+        shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30),
-          gradient:
-              const LinearGradient(colors: [gradianColor1, gradianColor2]),
+          side: BorderSide(width: 2, color: goldenColor),
         ),
-        child: FloatingActionButton(
-          backgroundColor: Colors.transparent,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
-            side: BorderSide(width: 2, color: whiteColor),
-          ),
-          onPressed: () {
-            showAddMemberDialog(context);
-            lastNameController.clear();
-            firstNameController.clear();
-            dobController.clear();
-          },
-          child: Icon(
-            Icons.add,
-            size: 30,
-            color: whiteColor,
-          ),
-        ),
+        onPressed: () {
+          Get.to(() => AddFamilyMemberScreen(
+                member: member,
+              ));
+        },
+        child: Icon(Icons.add, size: 30, color: whiteColor),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            // Container(
-            //   alignment: Alignment.centerLeft,
-            //   height: 50,
-            //   width: double.infinity,
-            //   color: primaryColor,
-            //   child: const Padding(
-            //     padding: EdgeInsets.symmetric(horizontal: 12),
-            //     child: Text(
-            //       'FAMILY MEMBERS',
-            //       style: TextStyle(
-            //         color: Colors.white,
-            //         fontFamily: popinsSemiBold,
-            //         fontSize: 24,
-            //       ),
-            //     ),
-            //   ),
-            // ),
-            Obx(() {
-              if (profileController.isLoading.value) {
-                return Center(
-                  child: SpinKitFadingCircle(
-                    color: primaryColor,
-                    size: 50.0,
-                  ),
-                ); // Loading indicator
-              }
+      body: Obx(() {
+        if (profileController.isLoading.value) {
+          return Center(
+            child: SpinKitFadingCircle(color: whiteColor, size: 50.0),
+          );
+        }
 
-              if (profileController.userData.isEmpty) {
-                return const Center(
-                    child: Text(
-                  "No data available.",
-                  style:
-                      TextStyle(color: Colors.black, fontFamily: popinsRegulr),
-                ));
-              }
-              List<dynamic> relations =
-                  profileController.userData['relations'] ?? [];
+        if (profileController.userData.isEmpty) {
+          return Center(
+            child: Text("No data available.",
+                style: TextStyle(color: whiteColor, fontFamily: popinsRegulr)),
+          );
+        }
 
-              return ListView.builder(
-                shrinkWrap: true, padding: const EdgeInsets.all(0),
-                physics:
-                    const NeverScrollableScrollPhysics(), // Disable internal scrolling
-                itemCount: relations.length,
-                itemBuilder: (context, index) {
-                  final member = relations[index];
+        List<dynamic> relations = profileController.userData['relations'] ?? [];
+        return ListView.builder(
+          itemCount: relations.length,
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+          itemBuilder: (context, index) {
+            member = relations[index];
+            return buildFamilyMemberCard(member);
+          },
+        );
+      }),
+    );
+  }
 
-                  // Using first relation for this example
-                  List<dynamic> inrolments = member['hasenrollments'] ?? [];
-
-                  if (member == null) {
-                    isExpandedList =
-                        List.generate(member.lenght, (index) => false);
-                    return const Center(
-                      child: Text(
-                        'No Family Member Added Yet',
-                        style: TextStyle(fontFamily: popinsRegulr),
+  Widget buildFamilyMemberCard(Map<String, dynamic> member) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Card(
+            color: whiteColor,
+            elevation: 4,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    height: 100,
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFF00A559), Color(0xFF006627)],
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight,
                       ),
-                    );
-                  } else {
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Stack(
-                        clipBehavior: Clip.none,
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        bottomLeft: Radius.circular(10),
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Card(
-                            color: whiteColor,
-                            elevation: 4,
-                            margin: const EdgeInsets.symmetric(vertical: 10),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Column(
-                              children: [
-                                ListTile(
-                                  leading: CircleAvatar(
-                                    radius: 30,
-                                    backgroundImage: NetworkImage(member[
-                                            'profile_image'] ??
-                                        'default_image_path'), // Profile picture
-                                  ),
-                                  title: Text(
-                                    member['name'],
-                                    style: const TextStyle(
-                                        fontFamily: popinsBold, fontSize: 13),
-                                  ),
-                                  subtitle: Text(
-                                    '${member['relation_type'] ?? 'Unknown'} - ${member['dob'] ?? 'N/A'} - ${AppClass().calculateAge(member['dob'])} Years',
-                                    style: const TextStyle(
-                                        fontFamily: popinsBold, fontSize: 10),
-                                  ),
-                                  trailing: Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.black,
-                                      border: Border.all(
-                                        color: whiteColor,
-                                        width: 0,
-                                      ),
-                                      borderRadius: BorderRadius.circular(
-                                        30,
-                                      ),
-                                    ),
-                                    child: IconButton(
-                                      icon: Icon(
-                                        isExpandedList[index]
-                                            ? Icons.expand_less
-                                            : Icons.expand_more,
-                                        color: whiteColor,
-                                        size: 35,
-                                      ),
-                                      onPressed: () {
-                                        setState(() {
-                                          isExpandedList[index] =
-                                              !isExpandedList[index];
-                                        });
-                                      },
-                                    ),
-                                  ),
-                                ),
-                                if (isExpandedList[index]) ...[
-                                  const Divider(),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        alignment: Alignment.centerLeft,
-                                        height: 28,
-                                        width: double.infinity,
-                                        decoration: BoxDecoration(
-                                          color: primaryColor,
-                                        ),
-                                        child: const Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 12),
-                                          child: Text(
-                                            'GENERAL INFORMATION',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontFamily: popinsSemiBold,
-                                              fontSize: 13,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 8),
-                                      Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceEvenly,
-                                            children: [
-                                              Text(
-                                                'Name ',
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontFamily: popinsRegulr,
-                                                    fontSize: 10),
-                                              ),
-                                              Text(
-                                                member['name'],
-                                                style: const TextStyle(
-                                                    fontFamily: popinsRegulr,
-                                                    fontSize: 10),
-                                              ),
-                                              const Text(
-                                                'Relation',
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontFamily: popinsRegulr,
-                                                    fontSize: 10),
-                                              ),
-                                              Text(
-                                                member['relation_type'],
-                                                style: const TextStyle(
-                                                    fontFamily: popinsRegulr,
-                                                    fontSize: 10),
-                                              ),
-                                            ],
-                                          ),
-                                          const SizedBox(height: 10),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceEvenly,
-                                            children: [
-                                              const Text(
-                                                'DOB',
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontFamily: popinsRegulr,
-                                                    fontSize: 10),
-                                              ),
-                                              Text(
-                                                member['dob'],
-                                                style: const TextStyle(
-                                                    fontFamily: popinsRegulr,
-                                                    fontSize: 10),
-                                              ),
-                                              const Padding(
-                                                padding:
-                                                    EdgeInsets.only(right: 10),
-                                                child: Text(
-                                                  'Age',
-                                                  style: TextStyle(
-                                                      fontFamily: popinsRegulr,
-                                                      fontSize: 10),
-                                                ),
-                                              ),
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    right: 0),
-                                                child: Text(
-                                                  textAlign: TextAlign.start,
-                                                  AppClass()
-                                                      .calculateAge(
-                                                          member['dob'])
-                                                      .toString(),
-                                                  style: const TextStyle(
-                                                      fontFamily: popinsRegulr,
-                                                      fontSize: 10),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(height: 20),
-                                    ],
-                                  ),
-                                ],
-                              ],
-                            ),
-                          ),
-                          // Positioned Edit Button, half on and half off the card
-                          Positioned(
-                            bottom: -20,
-                            right: 120,
-                            child: FloatingActionButton(
-                              heroTag: 'btn+$index',
-                              shape: RoundedRectangleBorder(
-                                side: BorderSide(width: 2, color: whiteColor),
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              onPressed: () {
-                                // Call fetchUserData2 and refresh the screen
-                                setState(() {
-                                  profileController
-                                      .fetchUserData2(); // Fetch the data
-                                });
-                              },
-                              mini: true,
-                              backgroundColor: asColor,
-                              child: Icon(
-                                Icons.refresh,
+                          Text(
+                            member['name'],
+                            style: TextStyle(
                                 color: whiteColor,
-                              ),
-                            ),
+                                fontFamily: popinsBold,
+                                fontSize: 16),
                           ),
-                          Positioned(
-                            bottom: -20,
-                            right: 165,
-                            child: FloatingActionButton(
-                              heroTag: 'btn+$index',
-                              shape: RoundedRectangleBorder(
-                                  side: BorderSide(width: 2, color: whiteColor),
-                                  borderRadius: BorderRadius.circular(20)),
-                              onPressed: () {
-                                _showEditMemberDialog(context, member);
-                              },
-                              mini: true,
-                              backgroundColor: primaryColor,
-                              child: Icon(
-                                Icons.edit,
-                                color: whiteColor,
+                          Row(
+                            children: [
+                              Image.asset(eventIcon, height: 24, width: 24),
+                              const SizedBox(width: 8),
+                              Text(
+                                '${AppClass().formatDate(member['dob'])} (${AppClass().calculateAge(member['dob'])} Years) - ',
+                                style: TextStyle(
+                                    color: whiteColor,
+                                    fontFamily: popinsBold,
+                                    fontSize: 12),
                               ),
-                            ),
+                              Text(
+                                member['relation_type'],
+                                style: TextStyle(
+                                    color: whiteColor,
+                                    fontFamily: popinsBold,
+                                    fontSize: 12),
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                    );
-                  }
-                },
-              );
-            }),
-          ],
-        ),
+                    ),
+                  ),
+                ),
+                Container(
+                  height: 100,
+                  width: 8,
+                  decoration: BoxDecoration(
+                    color: goldenColor,
+                    borderRadius: const BorderRadius.only(
+                      topRight: Radius.circular(10),
+                      bottomRight: Radius.circular(10),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Positioned(
+            bottom: -20,
+            right: 120,
+            child: _buildActionButton(
+              icon: Icons.refresh,
+              color: asColor,
+              onPressed: () {
+                profileController.fetchUserData2();
+              },
+            ),
+          ),
+          Positioned(
+            bottom: -20,
+            right: 165,
+            child: _buildActionButton(
+              icon: Icons.edit,
+              color: primaryColor,
+              onPressed: () {
+                Get.to(() => EditFamilyMemberScreen(member: member));
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  void showAddMemberDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return AlertDialog(
-              title: const Text(
-                'Add Family Member',
-                style: TextStyle(fontFamily: popinsSemiBold),
-              ),
-              content: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    buildTextField(
-                        label: "First Name", controller: firstNameController),
-                    buildTextField(
-                        label: "Last Name", controller: lastNameController),
-                    buildDropdownField(
-                      label: "Relationship",
-                      value: selectedRelation,
-                      items: relation,
-                      onChanged: (newValue) {
-                        if (mounted) {
-                          setState(() {
-                            selectedRelation = newValue!;
-                          });
-                        }
-                      },
-                    ),
-                    buildTextField(
-                      label: "Date of Birth",
-                      controller: dobController,
-                      onTap: () async {
-                        DateTime? pickedDate = await showDatePicker(
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime(1900),
-                          lastDate: DateTime.now(),
-                        );
-                        if (pickedDate != null) {
-                          if (mounted) {
-                            setState(() {
-                              dobController.text =
-                                  "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
-                            });
-                          }
-                        }
-                      },
-                    ),
-                    _profileImage != null
-                        ? Image.file(_profileImage!, height: 100, width: 100)
-                        : const Text(
-                            'No image selected.',
-                            style: TextStyle(fontFamily: popinsRegulr),
-                          ),
-                    TextButton.icon(
-                      onPressed: _showImageSelectionDialog,
-                      icon: Icon(Icons.photo, color: primaryColor),
-                      label: Text(
-                        'Upload Profile Picture',
-                        style: TextStyle(
-                            fontFamily: popinsRegulr, color: primaryColor),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text(
-                    'Cancel',
-                    style: TextStyle(
-                        fontFamily: popinsSemiBold, color: primaryColor),
-                  ),
-                ),
-                TextButton(
-                  onPressed: () async {
-                    setState(() {
-                      isLoading = true; // Start loading
-                    });
-                    await profileController.addFamilyMember(
-                      id: globals.userId.value,
-                      firstName: firstNameController.text,
-                      lastName: lastNameController.text,
-                      relationType: selectedRelation,
-                      dob: dobController.text,
-                      profileImage: _profileImage,
-                    );
-
-                    // Clear form fields
-                    firstNameController.clear();
-                    lastNameController.clear();
-                    dobController.clear();
-                    _profileImage = null;
-
-                    // Fetch updated list of family members
-                    await profileController.fetchUserData2();
-
-                    setState(() {
-                      isLoading = false; // Stop loading
-                    });
-
-                    Navigator.of(context).pop();
-                  },
-                  child: isLoading
-                      ? SpinKitFadingCircle(
-                          color: primaryColor,
-                          size: 50.0,
-                        ) // Loading indicator
-                      : Text(
-                          'Save',
-                          style: TextStyle(
-                              fontFamily: popinsSemiBold, color: primaryColor),
-                        ),
-                ),
-              ],
-            );
-          },
-        );
-      },
-    );
-  }
-
-  void _showEditMemberDialog(
-      BuildContext context, Map<String, dynamic> member) {
-    firstNameController.text = member['first_name'] ?? '';
-    lastNameController.text = member['last_name'] ?? '';
-    dobController.text = member['dob'] ?? '';
-    selectedRelation = member['relation_type'] ?? 'Brother';
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return AlertDialog(
-              title: const Text(
-                'Edit Family Member',
-                style: TextStyle(fontFamily: popinsSemiBold),
-              ),
-              content: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    buildTextField(
-                        label: "First Name", controller: firstNameController),
-                    buildTextField(
-                        label: "Last Name", controller: lastNameController),
-                    buildDropdownField(
-                      label: "Relationship",
-                      value: selectedRelation,
-                      items: relation,
-                      onChanged: (newValue) {
-                        if (mounted) {
-                          setState(() {
-                            selectedRelation = newValue!;
-                          });
-                        }
-                      },
-                    ),
-                    buildTextField(
-                      label: "Date of Birth",
-                      controller: dobController,
-                      onTap: () async {
-                        DateTime? pickedDate = await showDatePicker(
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime(1900),
-                          lastDate: DateTime.now(),
-                        );
-                        if (pickedDate != null) {
-                          if (mounted) {
-                            setState(() {
-                              dobController.text =
-                                  "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
-                            });
-                          }
-                        }
-                      },
-                    ),
-                    _profileImage != null
-                        ? Image.file(_profileImage!, height: 100, width: 100)
-                        : const Text(
-                            'No image selected.',
-                            style: TextStyle(
-                                fontFamily: popinsRegulr, color: Colors.black),
-                          ),
-                    TextButton.icon(
-                      onPressed: _showImageSelectionDialog,
-                      icon: Icon(Icons.photo, color: primaryColor),
-                      label: const Text(
-                        'Upload Profile Picture',
-                        style: TextStyle(
-                            fontFamily: popinsRegulr, color: Colors.black),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text(
-                    'Cancel',
-                    style: TextStyle(
-                        fontFamily: popinsSemiBold, color: primaryColor),
-                  ),
-                ),
-                TextButton(
-                  onPressed: () async {
-                    setState(() {
-                      isLoading = true; // Start loading
-                    });
-                    await profileController.editFamilyMember(
-                      auth: globals.accessToken.value,
-                      id: member['id'].toString(),
-                      roleId: member['role_id'].toString(),
-                      profileImage: _profileImage,
-                      firstName: firstNameController.text,
-                      lastName: lastNameController.text,
-                      dob: dobController.text,
-                      relationType: selectedRelation,
-                    );
-
-                    // Fetch updated list of family members
-                    await profileController.fetchUserData2();
-
-                    setState(() {
-                      isLoading = false; // Stop loading
-                    });
-
-                    Navigator.of(context).pop();
-                  },
-                  child: isLoading
-                      ? SpinKitFadingCircle(
-                          color: primaryColor,
-                          size: 50.0,
-                        ) // Loading indicator// Show loading indicator
-                      : Text(
-                          'Save',
-                          style: TextStyle(
-                              fontFamily: popinsSemiBold, color: primaryColor),
-                        ),
-                ),
-              ],
-            );
-          },
-        );
-      },
+  Widget _buildActionButton(
+      {required IconData icon,
+      required Color color,
+      required VoidCallback onPressed}) {
+    return FloatingActionButton(
+      mini: true,
+      backgroundColor: color,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+        side: BorderSide(width: 2, color: goldenColor),
+      ),
+      onPressed: onPressed,
+      child: Icon(icon, color: whiteColor),
     );
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-////
-
-
-
-// class FamilyMembersScreen extends StatefulWidget {
-//   @override
-//   State<FamilyMemberScreen> createState() => _FamilyMemberScreenState();
-// }
-
-// class _FamilyMembersScreenState extends State<FamilyMembersScreen> {
-//   final ProfileController profileController = Get.put(ProfileController());
-//   final FamilyController familyController = Get.put(FamilyController());
-
-//   TextEditingController firstNameController = TextEditingController();
-//   TextEditingController lastNameController = TextEditingController();
-//   TextEditingController dobController = TextEditingController();
-
-//   String selectedRelation = 'Brother';
-//   List<bool> isExpandedList = [];
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     List<dynamic> relations = profileController.userData['relations'] ?? [];
-//     isExpandedList = List.generate(relations.length, (index) => false);
-//   }
-
-//   File? _profileImage;
-//   // bool isExpanded = false; // Individual state for each widget
-//   bool isLoading = false; // Loading state
-
-//   final List<String> relation = [
-//     "Father",
-//     "Husband",
-//     "Brother",
-//     "Son",
-//     "Mother",
-//     "Wife",
-//     "Sister",
-//     "Daughter"
-//   ];
-
-//   final List<String> avatars = [
-//     'assets/images/male.png',
-//     'assets/images/female.png',
-//     'assets/images/boy.png',
-//     'assets/images/girl.png'
-//   ];
-
-//   Future<void> _pickImageFromGallery() async {
-//     final pickedFile =
-//         await ImagePicker().pickImage(source: ImageSource.gallery);
-//     if (pickedFile != null) {
-//       setState(() {
-//         _profileImage = File(pickedFile.path);
-//       });
-//     }
-//   }
-
-//   Future<void> _showImageSelectionDialog() async {
-//     showDialog(
-//       context: context,
-//       builder: (context) {
-//         return AlertDialog(
-//           title: const Text(
-//             'Select Profile Picture',
-//             style: TextStyle(fontFamily: popinsSemiBold, color: Colors.black),
-//           ),
-//           content: Column(
-//             mainAxisSize: MainAxisSize.min,
-//             children: [
-//               TextButton.icon(
-//                 onPressed: () {
-//                   Navigator.of(context).pop();
-//                   _pickImageFromGallery();
-//                 },
-//                 icon: Icon(
-//                   Icons.photo,
-//                   color: primaryColor,
-//                 ),
-//                 label: Text(
-//                   'Select from Gallery',
-//                   style:
-//                       TextStyle(fontFamily: popinsRegulr, color: primaryColor),
-//                 ),
-//               ),
-//             ],
-//           ),
-//         );
-//       },
-//     );
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       floatingActionButton: Container(
-//         decoration: BoxDecoration(
-//           borderRadius: BorderRadius.circular(30),
-//           gradient:
-//               const LinearGradient(colors: [gradianColor1, gradianColor2]),
-//         ),
-//         child: FloatingActionButton(
-//           backgroundColor: Colors.transparent,
-//           shape: RoundedRectangleBorder(
-//             borderRadius: BorderRadius.circular(30),
-//             side: BorderSide(width: 2, color: whiteColor),
-//           ),
-//           onPressed: () {
-//             showAddMemberDialog(context);
-//             lastNameController.clear();
-//             firstNameController.clear();
-//             dobController.clear();
-//           },
-//           child: Icon(
-//             Icons.add,
-//             size: 30,
-//             color: whiteColor,
-//           ),
-//         ),
-//       ),
-//       body: SingleChildScrollView(
-//         child: Column(
-//           children: [
-//             const Projectbackground(title: 'Family Members'),
-//             Container(
-//               alignment: Alignment.centerLeft,
-//               height: 50,
-//               width: double.infinity,
-//               color: primaryColor,
-//               child: const Padding(
-//                 padding: EdgeInsets.symmetric(horizontal: 12),
-//                 child: Text(
-//                   'FAMILY MEMBERS',
-//                   style: TextStyle(
-//                     color: Colors.white,
-//                     fontFamily: popinsSemiBold,
-//                     fontSize: 24,
-//                   ),
-//                 ),
-//               ),
-//             ),
-//             Obx(() {
-//               if (profileController.isLoading.value) {
-//                 return Center(
-//                   child: SpinKitFadingCircle(
-//                     color: primaryColor,
-//                     size: 50.0,
-//                   ),
-//                 ); // Loading indicator
-//               }
-
-//               if (profileController.userData.isEmpty) {
-//                 return const Center(
-//                     child: Text(
-//                   "No data available.",
-//                   style:
-//                       TextStyle(color: Colors.black, fontFamily: popinsRegulr),
-//                 ));
-//               }
-//               List<dynamic> relations =
-//                   profileController.userData['relations'] ?? [];
-
-//               return ListView.builder(
-//                 shrinkWrap: true, padding: const EdgeInsets.all(0),
-//                 physics:
-//                     const NeverScrollableScrollPhysics(), // Disable internal scrolling
-//                 itemCount: relations.length,
-//                 itemBuilder: (context, index) {
-//                   final member = relations[index];
-
-//                   // Using first relation for this example
-//                   List<dynamic> inrolments = member['hasenrollments'] ?? [];
-
-//                   if (member == null) {
-//                     isExpandedList =
-//                         List.generate(member.lenght, (index) => false);
-//                     return const Center(
-//                       child: Text(
-//                         'No Family Member Added Yet',
-//                         style: TextStyle(fontFamily: popinsRegulr),
-//                       ),
-//                     );
-//                   } else {
-//                     return Padding(
-//                       padding: const EdgeInsets.all(8.0),
-//                       // child: FamilyMemberCard(
-//                       //   heroTag: 'btn$index',
-//                       //   name: member['name'] ?? 'Unknown',
-//                       //   relationship: member['relation_type'] ?? 'Unknown',
-//                       //   dob: member['dob'] ?? 'N/A',
-//                       //   age: AppClass().calculateAge(member['dob']),
-//                       //   profileImage:
-//                       //       member['profile_image'] ?? 'default_image_path',
-//                       //   onTap: () => _showEditMemberDialog(context, member),
-//                       // ),
-//                       child: Stack(
-//                         clipBehavior: Clip.none,
-//                         children: [
-//                           Card(
-//                             color: whiteColor,
-//                             elevation: 4,
-//                             margin: const EdgeInsets.symmetric(vertical: 10),
-//                             shape: RoundedRectangleBorder(
-//                               borderRadius: BorderRadius.circular(20),
-//                             ),
-//                             child: Column(
-//                               children: [
-//                                 ListTile(
-//                                   leading: CircleAvatar(
-//                                     radius: 30,
-//                                     backgroundImage: NetworkImage(member[
-//                                             'profile_image'] ??
-//                                         'default_image_path'), // Profile picture
-//                                   ),
-//                                   title: Text(
-//                                     member['name'],
-//                                     style: const TextStyle(
-//                                         fontFamily: popinsBold, fontSize: 13),
-//                                   ),
-//                                   subtitle: Text(
-//                                     '${member['relation_type'] ?? 'Unknown'} - ${member['dob'] ?? 'N/A'} - ${AppClass().calculateAge(member['dob'])} Years',
-//                                     style: const TextStyle(
-//                                         fontFamily: popinsBold, fontSize: 10),
-//                                   ),
-//                                   trailing: Container(
-//                                     decoration: BoxDecoration(
-//                                       color: Colors.black,
-//                                       border: Border.all(
-//                                         color: whiteColor,
-//                                         width: 0,
-//                                       ),
-//                                       borderRadius: BorderRadius.circular(
-//                                         30,
-//                                       ),
-//                                     ),
-//                                     child: IconButton(
-//                                       icon: Icon(
-//                                         isExpandedList[index]
-//                                             ? Icons.expand_less
-//                                             : Icons.expand_more,
-//                                         color: whiteColor,
-//                                         size: 35,
-//                                       ),
-//                                       onPressed: () {
-//                                         setState(() {
-//                                           isExpandedList[index] =
-//                                               !isExpandedList[index];
-//                                         });
-//                                       },
-//                                     ),
-//                                   ),
-//                                 ),
-//                                 if (isExpandedList[index]) ...[
-//                                   const Divider(),
-//                                   Column(
-//                                     crossAxisAlignment:
-//                                         CrossAxisAlignment.start,
-//                                     children: [
-//                                       Container(
-//                                         alignment: Alignment.centerLeft,
-//                                         height: 28,
-//                                         width: double.infinity,
-//                                         decoration: BoxDecoration(
-//                                           color: primaryColor,
-//                                         ),
-//                                         child: const Padding(
-//                                           padding: EdgeInsets.symmetric(
-//                                               horizontal: 12),
-//                                           child: Text(
-//                                             'GENERAL INFORMATION',
-//                                             style: TextStyle(
-//                                               color: Colors.white,
-//                                               fontFamily: popinsSemiBold,
-//                                               fontSize: 13,
-//                                             ),
-//                                           ),
-//                                         ),
-//                                       ),
-//                                       const SizedBox(height: 8),
-//                                       Column(
-//                                         mainAxisAlignment:
-//                                             MainAxisAlignment.start,
-//                                         crossAxisAlignment:
-//                                             CrossAxisAlignment.start,
-//                                         children: [
-//                                           Row(
-//                                             mainAxisAlignment:
-//                                                 MainAxisAlignment.spaceEvenly,
-//                                             children: [
-//                                               Text(
-//                                                 'Name ',
-//                                                 style: TextStyle(
-//                                                     fontWeight: FontWeight.bold,
-//                                                     fontFamily: popinsRegulr,
-//                                                     fontSize: 10),
-//                                               ),
-//                                               Text(
-//                                                 member['name'],
-//                                                 style: const TextStyle(
-//                                                     fontFamily: popinsRegulr,
-//                                                     fontSize: 10),
-//                                               ),
-//                                               const Text(
-//                                                 'Relation',
-//                                                 style: TextStyle(
-//                                                     fontWeight: FontWeight.bold,
-//                                                     fontFamily: popinsRegulr,
-//                                                     fontSize: 10),
-//                                               ),
-//                                               Text(
-//                                                 member['relation_type'],
-//                                                 style: const TextStyle(
-//                                                     fontFamily: popinsRegulr,
-//                                                     fontSize: 10),
-//                                               ),
-//                                             ],
-//                                           ),
-//                                           const SizedBox(height: 10),
-//                                           Row(
-//                                             mainAxisAlignment:
-//                                                 MainAxisAlignment.spaceEvenly,
-//                                             children: [
-//                                               const Text(
-//                                                 'DOB',
-//                                                 style: TextStyle(
-//                                                     fontWeight: FontWeight.bold,
-//                                                     fontFamily: popinsRegulr,
-//                                                     fontSize: 10),
-//                                               ),
-//                                               Text(
-//                                                 member['dob'],
-//                                                 style: const TextStyle(
-//                                                     fontFamily: popinsRegulr,
-//                                                     fontSize: 10),
-//                                               ),
-//                                               const Padding(
-//                                                 padding:
-//                                                     EdgeInsets.only(right: 10),
-//                                                 child: Text(
-//                                                   'Age',
-//                                                   style: TextStyle(
-//                                                       fontFamily: popinsRegulr,
-//                                                       fontSize: 10),
-//                                                 ),
-//                                               ),
-//                                               Padding(
-//                                                 padding: const EdgeInsets.only(
-//                                                     right: 0),
-//                                                 child: Text(
-//                                                   textAlign: TextAlign.start,
-//                                                   AppClass()
-//                                                       .calculateAge(
-//                                                           member['dob'])
-//                                                       .toString(),
-//                                                   style: const TextStyle(
-//                                                       fontFamily: popinsRegulr,
-//                                                       fontSize: 10),
-//                                                 ),
-//                                               ),
-//                                             ],
-//                                           ),
-//                                         ],
-//                                       ),
-//                                       const SizedBox(height: 20),
-//                                       Container(
-//                                         alignment: Alignment.centerLeft,
-//                                         height: 28,
-//                                         width: double.infinity,
-//                                         decoration: BoxDecoration(
-//                                           color: primaryColor,
-//                                         ),
-//                                         child: const Padding(
-//                                           padding: EdgeInsets.symmetric(
-//                                               horizontal: 12),
-//                                           child: Text(
-//                                             'AVAILABLE CLASSES',
-//                                             style: TextStyle(
-//                                               color: Colors.white,
-//                                               fontFamily: popinsSemiBold,
-//                                               fontSize: 13,
-//                                             ),
-//                                           ),
-//                                         ),
-//                                       ),
-//                                       const SizedBox(height: 8),
-//                                       Padding(
-//                                         padding: const EdgeInsets.symmetric(
-//                                             horizontal: 8),
-//                                         child: Row(
-//                                           mainAxisAlignment:
-//                                               MainAxisAlignment.spaceBetween,
-//                                           children: [
-//                                             const SizedBox(height: 8),
-//                                             Padding(
-//                                                 padding:
-//                                                     const EdgeInsets.symmetric(
-//                                                         horizontal: 8),
-//                                                 child: Row(
-//                                                     mainAxisAlignment:
-//                                                         MainAxisAlignment
-//                                                             .spaceBetween,
-//                                                     children: [
-//                                                       ClassDropdown(
-//                                                           classesList:
-//                                                               familyController
-//                                                                   .classesList,
-//                                                           member: member)
-//                                                     ]))
-//                                           ],
-//                                         ),
-//                                       ),
-//                                       const SizedBox(height: 20),
-//                                       Container(
-//                                         alignment: Alignment.centerLeft,
-//                                         height: 28,
-//                                         width: double.infinity,
-//                                         decoration: BoxDecoration(
-//                                           color: primaryColor,
-//                                         ),
-//                                         child: const Padding(
-//                                           padding: EdgeInsets.symmetric(
-//                                               horizontal: 12),
-//                                           child: Text(
-//                                             'CLASSES ENROLLED',
-//                                             style: TextStyle(
-//                                               color: Colors.white,
-//                                               fontFamily: popinsSemiBold,
-//                                               fontSize: 13,
-//                                             ),
-//                                           ),
-//                                         ),
-//                                       ),
-//                                       const SizedBox(height: 8),
-//                                       ClassEnrolmentWidget(
-//                                           inrolments: inrolments)
-//                                     ],
-//                                   ),
-//                                 ],
-//                               ],
-//                             ),
-//                           ),
-//                           // Positioned Edit Button, half on and half off the card
-//                           Positioned(
-//                             bottom: -20,
-//                             right: 120,
-//                             child: FloatingActionButton(
-//                               heroTag: 'btn+$index',
-//                               shape: RoundedRectangleBorder(
-//                                 side: BorderSide(width: 2, color: whiteColor),
-//                                 borderRadius: BorderRadius.circular(20),
-//                               ),
-//                               onPressed: () {
-//                                 // Call fetchUserData2 and refresh the screen
-//                                 setState(() {
-//                                   profileController
-//                                       .fetchUserData2(); // Fetch the data
-//                                 });
-//                               },
-//                               mini: true,
-//                               backgroundColor: asColor,
-//                               child: Icon(
-//                                 Icons.refresh,
-//                                 color: whiteColor,
-//                               ),
-//                             ),
-//                           ),
-//                           Positioned(
-//                             bottom: -20,
-//                             right: 165,
-//                             child: FloatingActionButton(
-//                               heroTag: 'btn+$index',
-//                               shape: RoundedRectangleBorder(
-//                                   side: BorderSide(width: 2, color: whiteColor),
-//                                   borderRadius: BorderRadius.circular(20)),
-//                               onPressed: () {
-//                                 _showEditMemberDialog(context, member);
-//                               },
-//                               mini: true,
-//                               backgroundColor: primaryColor,
-//                               child: Icon(
-//                                 Icons.edit,
-//                                 color: whiteColor,
-//                               ),
-//                             ),
-//                           ),
-//                         ],
-//                       ),
-//                     );
-//                   }
-//                 },
-//               );
-//             }),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-
-//   void showAddMemberDialog(BuildContext context) {
-//     showDialog(
-//       context: context,
-//       builder: (BuildContext context) {
-//         return StatefulBuilder(
-//           builder: (context, setState) {
-//             return AlertDialog(
-//               title: const Text(
-//                 'Add Family Member',
-//                 style: TextStyle(fontFamily: popinsSemiBold),
-//               ),
-//               content: SingleChildScrollView(
-//                 child: Column(
-//                   children: [
-//                     buildTextField(
-//                         label: "First Name", controller: firstNameController),
-//                     buildTextField(
-//                         label: "Last Name", controller: lastNameController),
-//                     buildDropdownField(
-//                       label: "Relationship",
-//                       value: selectedRelation,
-//                       items: relation,
-//                       onChanged: (newValue) {
-//                         if (mounted) {
-//                           setState(() {
-//                             selectedRelation = newValue!;
-//                           });
-//                         }
-//                       },
-//                     ),
-//                     buildTextField(
-//                       label: "Date of Birth",
-//                       controller: dobController,
-//                       onTap: () async {
-//                         DateTime? pickedDate = await showDatePicker(
-//                           context: context,
-//                           initialDate: DateTime.now(),
-//                           firstDate: DateTime(1900),
-//                           lastDate: DateTime.now(),
-//                         );
-//                         if (pickedDate != null) {
-//                           if (mounted) {
-//                             setState(() {
-//                               dobController.text =
-//                                   "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
-//                             });
-//                           }
-//                         }
-//                       },
-//                     ),
-//                     _profileImage != null
-//                         ? Image.file(_profileImage!, height: 100, width: 100)
-//                         : const Text(
-//                             'No image selected.',
-//                             style: TextStyle(fontFamily: popinsRegulr),
-//                           ),
-//                     TextButton.icon(
-//                       onPressed: _showImageSelectionDialog,
-//                       icon: Icon(Icons.photo, color: primaryColor),
-//                       label: Text(
-//                         'Upload Profile Picture',
-//                         style: TextStyle(
-//                             fontFamily: popinsRegulr, color: primaryColor),
-//                       ),
-//                     ),
-//                   ],
-//                 ),
-//               ),
-//               actions: [
-//                 TextButton(
-//                   onPressed: () {
-//                     Navigator.of(context).pop();
-//                   },
-//                   child: Text(
-//                     'Cancel',
-//                     style: TextStyle(
-//                         fontFamily: popinsSemiBold, color: primaryColor),
-//                   ),
-//                 ),
-//                 TextButton(
-//                   onPressed: () async {
-//                     setState(() {
-//                       isLoading = true; // Start loading
-//                     });
-//                     await profileController.addFamilyMember(
-//                       id: globals.userId.value,
-//                       firstName: firstNameController.text,
-//                       lastName: lastNameController.text,
-//                       relationType: selectedRelation,
-//                       dob: dobController.text,
-//                       profileImage: _profileImage,
-//                     );
-
-//                     // Clear form fields
-//                     firstNameController.clear();
-//                     lastNameController.clear();
-//                     dobController.clear();
-//                     _profileImage = null;
-
-//                     // Fetch updated list of family members
-//                     await profileController.fetchUserData2();
-
-//                     setState(() {
-//                       isLoading = false; // Stop loading
-//                     });
-
-//                     Navigator.of(context).pop();
-//                   },
-//                   child: isLoading
-//                       ? SpinKitFadingCircle(
-//                           color: primaryColor,
-//                           size: 50.0,
-//                         ) // Loading indicator
-//                       : Text(
-//                           'Save',
-//                           style: TextStyle(
-//                               fontFamily: popinsSemiBold, color: primaryColor),
-//                         ),
-//                 ),
-//               ],
-//             );
-//           },
-//         );
-//       },
-//     );
-//   }
-
-//   void _showEditMemberDialog(
-//       BuildContext context, Map<String, dynamic> member) {
-//     firstNameController.text = member['first_name'] ?? '';
-//     lastNameController.text = member['last_name'] ?? '';
-//     dobController.text = member['dob'] ?? '';
-//     selectedRelation = member['relation_type'] ?? 'Brother';
-
-//     showDialog(
-//       context: context,
-//       builder: (BuildContext context) {
-//         return StatefulBuilder(
-//           builder: (context, setState) {
-//             return AlertDialog(
-//               title: const Text(
-//                 'Edit Family Member',
-//                 style: TextStyle(fontFamily: popinsSemiBold),
-//               ),
-//               content: SingleChildScrollView(
-//                 child: Column(
-//                   children: [
-//                     buildTextField(
-//                         label: "First Name", controller: firstNameController),
-//                     buildTextField(
-//                         label: "Last Name", controller: lastNameController),
-//                     buildDropdownField(
-//                       label: "Relationship",
-//                       value: selectedRelation,
-//                       items: relation,
-//                       onChanged: (newValue) {
-//                         if (mounted) {
-//                           setState(() {
-//                             selectedRelation = newValue!;
-//                           });
-//                         }
-//                       },
-//                     ),
-//                     buildTextField(
-//                       label: "Date of Birth",
-//                       controller: dobController,
-//                       onTap: () async {
-//                         DateTime? pickedDate = await showDatePicker(
-//                           context: context,
-//                           initialDate: DateTime.now(),
-//                           firstDate: DateTime(1900),
-//                           lastDate: DateTime.now(),
-//                         );
-//                         if (pickedDate != null) {
-//                           if (mounted) {
-//                             setState(() {
-//                               dobController.text =
-//                                   "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
-//                             });
-//                           }
-//                         }
-//                       },
-//                     ),
-//                     _profileImage != null
-//                         ? Image.file(_profileImage!, height: 100, width: 100)
-//                         : const Text(
-//                             'No image selected.',
-//                             style: TextStyle(
-//                                 fontFamily: popinsRegulr, color: Colors.black),
-//                           ),
-//                     TextButton.icon(
-//                       onPressed: _showImageSelectionDialog,
-//                       icon: Icon(Icons.photo, color: primaryColor),
-//                       label: const Text(
-//                         'Upload Profile Picture',
-//                         style: TextStyle(
-//                             fontFamily: popinsRegulr, color: Colors.black),
-//                       ),
-//                     ),
-//                   ],
-//                 ),
-//               ),
-//               actions: [
-//                 TextButton(
-//                   onPressed: () {
-//                     Navigator.of(context).pop();
-//                   },
-//                   child: Text(
-//                     'Cancel',
-//                     style: TextStyle(
-//                         fontFamily: popinsSemiBold, color: primaryColor),
-//                   ),
-//                 ),
-//                 TextButton(
-//                   onPressed: () async {
-//                     setState(() {
-//                       isLoading = true; // Start loading
-//                     });
-//                     await profileController.editFamilyMember(
-//                       auth: globals.accessToken.value,
-//                       id: member['id'].toString(),
-//                       roleId: member['role_id'].toString(),
-//                       profileImage: _profileImage,
-//                       firstName: firstNameController.text,
-//                       lastName: lastNameController.text,
-//                       dob: dobController.text,
-//                       relationType: selectedRelation,
-//                     );
-
-//                     // Fetch updated list of family members
-//                     await profileController.fetchUserData2();
-
-//                     setState(() {
-//                       isLoading = false; // Stop loading
-//                     });
-
-//                     Navigator.of(context).pop();
-//                   },
-//                   child: isLoading
-//                       ? SpinKitFadingCircle(
-//                           color: primaryColor,
-//                           size: 50.0,
-//                         ) // Loading indicator// Show loading indicator
-//                       : Text(
-//                           'Save',
-//                           style: TextStyle(
-//                               fontFamily: popinsSemiBold, color: primaryColor),
-//                         ),
-//                 ),
-//               ],
-//             );
-//           },
-//         );
-//       },
-//     );
-//   }
-// }
-
-
-// /

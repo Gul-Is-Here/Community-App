@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:community_islamic_app/constants/globals.dart';
+import 'package:community_islamic_app/controllers/profileController.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -19,7 +20,7 @@ class FamilyController extends GetxController {
   // Method to get data from API and save to a dynamic variable
   Future<void> fetchData() async {
     try {
-      isLoading(true); // Start loading state
+      // isLoading(true); // Start loading state
       // Replace with your API call logic
       final response = await http.get(Uri.parse(
           'https://rosenbergcommunitycenter.org/api/ClassApi?access=7b150e45-e0c1-43bc-9290-3c0bf6473a51332'));
@@ -68,9 +69,9 @@ class FamilyController extends GetxController {
     };
 
     Map<String, dynamic> body = {
-      'class_id': classId, // Ensure classId is a String
-      'id': id, // Ensure id is a String
-      'relation_id': relationId, // Ensure relationId is a String
+      'class_id': classId.toString(), // Ensure classId is a String
+      'id': id.toString(), // Ensure id is a String
+      'relation_id': relationId.toString(), // Ensure relationId is a String
       'emergency_contact': emergencyContact,
       'emergencycontact_name': emergencyContactName,
       'allergies_detail': allergiesDetail,
@@ -86,7 +87,13 @@ class FamilyController extends GetxController {
 
       // Check if the request was successful
       if (response.statusCode == 200) {
-        // Request was successful
+        // Successfully enrolled, update the status
+        _updateEnrollmentStatus(classId);
+
+        // Refresh user data if necessary
+        await ProfileController()
+            .fetchUserData(); // Re-fetch user data after the enrollment to update the UI
+      
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Successfully enrolled for the class.'),
@@ -112,5 +119,19 @@ class FamilyController extends GetxController {
     } finally {
       isLoading(false); // Stop loading
     }
+  }
+
+// Method to update the enrollment status in the observable list after a successful enrollment
+  void _updateEnrollmentStatus(int classId) {
+    for (var enrollment in ProfileController().userData['relations']
+        ['hasenrollments']) {
+      if (enrollment['class_id'] == classId) {
+        enrollment['_active'] = '1'; // Mark the class as 'Enrolled'
+        break;
+      }
+    }
+    ProfileController()
+        .userData
+        .refresh(); // Trigger GetX to refresh the userData observable
   }
 }

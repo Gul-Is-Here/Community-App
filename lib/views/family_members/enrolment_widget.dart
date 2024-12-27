@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 
 import '../../constants/color.dart';
 
-class ClassEnrolmentWidget extends StatelessWidget {final List<dynamic> inrolments;
-   ClassEnrolmentWidget({super.key, required this.inrolments});
+class ClassEnrolmentWidget extends StatelessWidget {
+  final List<dynamic> inrolments;
+  ClassEnrolmentWidget({super.key, required this.inrolments});
 
   @override
   Widget build(BuildContext context) {
-   
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8),
       child: SizedBox(
@@ -181,4 +181,4 @@ class ClassEnrolmentWidget extends StatelessWidget {final List<dynamic> inrolmen
       ),
     );
   }
-  }
+}

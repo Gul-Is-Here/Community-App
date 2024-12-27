@@ -1,19 +1,20 @@
-import 'package:community_islamic_app/constants/globals.dart';
-import 'package:community_islamic_app/controllers/family_controller.dart';
-import 'package:community_islamic_app/views/family_members/add_enrolment_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 
-import '../../app_classes/app_class.dart';
 import '../../constants/color.dart';
+import '../../app_classes/app_class.dart';
+import '../../controllers/family_controller.dart';
+import '../../constants/globals.dart';
 
 class ClassDropdown extends StatefulWidget {
   final List<dynamic> classesList;
   final Map<String, dynamic> member;
+  final List<dynamic> inrolments;
 
   const ClassDropdown({
+    required this.inrolments,
     required this.classesList,
     required this.member,
     Key? key,
@@ -24,105 +25,157 @@ class ClassDropdown extends StatefulWidget {
 }
 
 class _ClassDropdownState extends State<ClassDropdown> {
-  // Track selected class for each dropdown (optional, for future use)
-  String? selectedClass;
-
   @override
   Widget build(BuildContext context) {
     FamilyController familyController = Get.put(FamilyController());
 
     return Obx(() {
-      // Show a loading indicator while data is being fetched
       if (familyController.isLoading.value) {
         return Center(child: SpinKitFadingCircle(color: primaryColor));
       }
 
-      // If there are no classes available, show a message
       if (widget.classesList.isEmpty) {
         return Center(child: Text('No classes available.'));
       }
 
       return Column(
         children: widget.classesList.map((classData) {
-          // Get the member's age based on their DOB
           int memberAge = AppClass().calculateAge(widget.member['dob']);
-
-          // Ensure minimum_age and maximum_age are parsed as numbers
           int minimumAge =
               int.tryParse(classData['minimum_age'].toString()) ?? 0;
           int maximumAge =
               int.tryParse(classData['maximum_age'].toString()) ?? 100;
 
-          // Check age condition
           bool ageMatch = memberAge >= minimumAge && memberAge <= maximumAge;
-
-          // Check gender condition (if class_gender is "All", allow any gender)
           bool genderMatch = classData['class_gender'] == 'All' ||
               widget.member['relation_type'] == classData['class_gender'];
 
-          // Only show dropdown if both conditions are met
+          // Get the enrollment status for the class
+          var enrollmentStatus = _getEnrollmentStatus(classData);
+
           if (ageMatch && genderMatch) {
             return Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: Container(
                 alignment: Alignment.centerLeft,
-                color: whiteColor,
-                height: 30,
+                decoration: BoxDecoration(
+                    color: Color(0xFF315B5A),
+                    borderRadius: BorderRadius.circular(10)),
+                height: 100,
                 child: Card(
-                  color: whiteColor,
+                  color: Color(0xFF315B5A),
                   margin: const EdgeInsets.all(0),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
                   child: Center(
-                    child: DropdownButton<String>(
-                      dropdownColor: Colors.white,
-                      underline: Container(
-                        color: whiteColor,
-                      ), // Remove default underline
-
-                      // Items for dropdown (View Details and Enroll in Class)
-                      items: <String>['View Details', 'Enroll in Class']
-                          .map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(
-                            textAlign: TextAlign.left,
-                            value,
-                            style: const TextStyle(
-                              fontFamily: popinsRegulr,
-                              fontSize: 13,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      child: Column(
+                        children: [
+                          Align(
+                            alignment: Alignment.topLeft,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                textAlign: TextAlign.left,
+                                classData['class_name'],
+                                style: TextStyle(
+                                  fontFamily: popinsBold,
+                                  fontSize: 13,
+                                  color: Color(0xFF00A53C),
+                                ),
+                              ),
                             ),
                           ),
-                        );
-                      }).toList(),
-
-                      // Handle the selected dropdown item
-                      onChanged: (String? selectedOption) {
-                        if (selectedOption == 'View Details') {
-                          // Show details dialog
-                          _showDetailsDialog(classData);
-                        } else if (selectedOption == 'Enroll in Class') {
-                          // Show enrollment dialog or process
-                          _showEnrollDialog(
-                              classData, familyController, widget.member);
-                        }
-                      },
-
-                      hint: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            textAlign: TextAlign.left,
-                            classData[
-                                'class_name'], // Display class name as hint
-                            style: const TextStyle(
-                              fontFamily: popinsBold,
-                              fontSize: 13,
+                          SizedBox(height: 5),
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 8),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  // Enroll Button Text Changes Based on Enrollment Status
+                                  SizedBox(
+                                    height: 36,
+                                    width: 110,
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: enrollmentStatus ==
+                                                    '0' ||
+                                                enrollmentStatus == '2' ||
+                                                enrollmentStatus == '3'
+                                            ? goldenColor // Default 'Enroll' color
+                                            : enrollmentStatus == '1'
+                                                ? secondaryColor
+                                                : whiteColor, // If already enrolled, set to white
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                        ),
+                                      ),
+                                      onPressed: () {
+                                        if (enrollmentStatus == '') {
+                                          // If not enrolled, show the Enrollment Form
+                                          _showEnrollDialog(classData,
+                                              familyController, widget.member);
+                                        } else {
+                                          // If already enrolled, show current status (No action needed)
+                                          print(
+                                              'Already Enrolled or Waiting for Approval');
+                                        }
+                                      },
+                                      child: Text(
+                                        enrollmentStatus == ''
+                                            ? 'Enroll' // Show "Enroll" if not enrolled
+                                            : _getEnrollButtonText(
+                                                enrollmentStatus), // Show status if already enrolled
+                                        style: TextStyle(
+                                          color: enrollmentStatus == '0' ||
+                                                  enrollmentStatus == '2' ||
+                                                  enrollmentStatus == '3'
+                                              ? Colors
+                                                  .black // Default 'Enroll' color
+                                              : enrollmentStatus == '1'
+                                                  ? whiteColor
+                                                  : Colors.black,
+                                          fontFamily: popinsRegulr,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(width: 5),
+                                  // Details Button
+                                  SizedBox(
+                                    height: 36,
+                                    width: 110,
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: whiteColor,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                        ),
+                                      ),
+                                      onPressed: () {
+                                        _showDetailsDialog(classData);
+                                      },
+                                      child: Text(
+                                        'Details',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontFamily: popinsRegulr,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
+                        ],
                       ),
                     ),
                   ),
@@ -130,7 +183,6 @@ class _ClassDropdownState extends State<ClassDropdown> {
               ),
             );
           } else {
-            // If the class doesn't match the criteria, don't display anything.
             return Container();
           }
         }).toList(),
@@ -138,14 +190,45 @@ class _ClassDropdownState extends State<ClassDropdown> {
     });
   }
 
+  // Function to get the enrollment status for each class
+  String _getEnrollmentStatus(dynamic classData) {
+    int index = widget.classesList.indexOf(classData);
+    if (index < widget.inrolments.length) {
+      return widget.inrolments[index]
+          ['_active']; // Default to '0' if status is missing
+    }
+    return ''; // No enrollment
+  }
+
+  // Get the text for the button based on the enrollment status
+  String _getEnrollButtonText(String status) {
+    switch (status) {
+      case '0':
+        return 'Waiting';
+
+      case '1':
+        return 'Enrolled';
+
+      case '2':
+        return 'Hold On';
+      // style: TextStyle(fontFamily: popinsSemiBold, fontSize: 8));
+      case '3':
+        return 'Rejected';
+      //   style: TextStyle(fontFamily: popinsSemiBold, fontSize: 8));
+      default:
+        return 'Enrol';
+      // style: TextStyle(fontFamily: popinsSemiBold, fontSize: 8));
+    }
+  }
+
   void _showDetailsDialog(dynamic classData) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Colors.white, // Background color of the dialog
+          backgroundColor: Colors.white,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20), // Rounded corners
+            borderRadius: BorderRadius.circular(20),
           ),
           title: Container(
             padding: const EdgeInsets.all(16.0),
@@ -156,10 +239,7 @@ class _ClassDropdownState extends State<ClassDropdown> {
             child: Text(
               'Class Details',
               style: TextStyle(
-                fontFamily: popinsMedium,
-                fontSize: 18,
-                color: whiteColor,
-              ),
+                  fontFamily: popinsMedium, fontSize: 18, color: whiteColor),
             ),
           ),
           content: SingleChildScrollView(
@@ -180,7 +260,7 @@ class _ClassDropdownState extends State<ClassDropdown> {
                     '${classData['minimum_age']} - ${classData['maximum_age']}'),
                 _buildDetailRow(
                     'Description:', '${classData['class_description']}'),
-                const SizedBox(height: 10), // Add spacing
+                const SizedBox(height: 10),
                 GestureDetector(
                   onTap: () {
                     _showDisclaimerDialog(
@@ -192,10 +272,9 @@ class _ClassDropdownState extends State<ClassDropdown> {
                   child: Text(
                     'Disclaimer: Please view carefully.',
                     style: TextStyle(
-                      color: Colors.grey[600],
-                      fontStyle: FontStyle.italic,
-                      decoration: TextDecoration.underline,
-                    ),
+                        color: Colors.grey[600],
+                        fontStyle: FontStyle.italic,
+                        decoration: TextDecoration.underline),
                   ),
                 ),
               ],
@@ -203,13 +282,9 @@ class _ClassDropdownState extends State<ClassDropdown> {
           ),
           actions: [
             TextButton(
-              style: TextButton.styleFrom(
-                foregroundColor: primaryColor, // Button text color
-              ),
-              child: const Text(
-                'Close',
-                style: TextStyle(fontFamily: popinsMedium),
-              ),
+              style: TextButton.styleFrom(foregroundColor: primaryColor),
+              child: const Text('Close',
+                  style: TextStyle(fontFamily: popinsMedium)),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -229,18 +304,14 @@ class _ClassDropdownState extends State<ClassDropdown> {
         children: [
           Text(
             title,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
-            ),
+            style:
+                TextStyle(fontWeight: FontWeight.bold, color: Colors.black87),
           ),
           Expanded(
             child: Text(
               value,
               textAlign: TextAlign.end,
-              style: TextStyle(
-                color: Colors.black54,
-              ),
+              style: TextStyle(color: Colors.black54),
             ),
           ),
         ],
@@ -254,36 +325,25 @@ class _ClassDropdownState extends State<ClassDropdown> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Colors.white, // Background color of the dialog
+          backgroundColor: Colors.white,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20), // Rounded corners
+            borderRadius: BorderRadius.circular(20),
           ),
-          title: Text(
-            title,
-            style: TextStyle(
-              fontFamily: popinsBold,
-              fontSize: 16,
-              color: Colors.black87,
-            ),
-          ),
+          title: Text(title,
+              style: TextStyle(
+                  fontFamily: popinsBold, fontSize: 16, color: Colors.black87)),
           content: SizedBox(
             height: 500,
             width: 120,
             child: SingleChildScrollView(
-              child: Html(
-                data: description,
-              ),
+              child: Html(data: description),
             ),
           ),
           actions: [
             TextButton(
-              style: TextButton.styleFrom(
-                foregroundColor: primaryColor, // Button text color
-              ),
-              child: const Text(
-                'Close',
-                style: TextStyle(fontFamily: popinsMedium),
-              ),
+              style: TextButton.styleFrom(foregroundColor: primaryColor),
+              child: const Text('Close',
+                  style: TextStyle(fontFamily: popinsMedium)),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -336,7 +396,6 @@ class _ClassDropdownState extends State<ClassDropdown> {
               ),
               content: SingleChildScrollView(
                 child: Form(
-                  // Wrap with Form widget
                   key: _formKey,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -398,7 +457,7 @@ class _ClassDropdownState extends State<ClassDropdown> {
                       ),
                       const SizedBox(height: 10),
                       if (isAllergic)
-                        PasswordTextField(
+                        _PasswordTextField(
                           label: 'Allergic Details',
                           controller: allergiesController,
                           validator: (value) {
@@ -472,8 +531,9 @@ class _ClassDropdownState extends State<ClassDropdown> {
                                         context: context,
                                         token: globals.accessToken.value,
                                         classId: classData['class_id'],
-                                        id: member['id'],
-                                        relationId: member['relation_id'],
+                                        id: widget.member['id'],
+                                        relationId:
+                                            widget.member['relation_id'],
                                         emergencyContact:
                                             emergencyContactController.text,
                                         emergencyContactName:
@@ -483,7 +543,6 @@ class _ClassDropdownState extends State<ClassDropdown> {
                                       );
                                       Navigator.of(context).pop();
                                     } catch (error) {
-                                      // Handle the error
                                       print("Error: $error");
                                     } finally {
                                       setState(() {
@@ -528,12 +587,12 @@ class _ClassDropdownState extends State<ClassDropdown> {
 class _PasswordTextField extends StatelessWidget {
   final String label;
   final TextEditingController controller;
-  final String? Function(String?)? validator; // Added validator
+  final String? Function(String?)? validator;
 
   const _PasswordTextField({
     required this.label,
     required this.controller,
-    this.validator, // Pass the validator
+    this.validator,
   });
 
   @override
@@ -558,46 +617,8 @@ class _PasswordTextField extends StatelessWidget {
             border: InputBorder.none,
             contentPadding: const EdgeInsets.symmetric(horizontal: 16),
           ),
-          validator: validator, // Apply validator
+          validator: validator,
         ),
-      ),
-    );
-  }
-}
-
-class PasswordTextField extends StatelessWidget {
-  final String label;
-  final TextEditingController controller;
-  final String? Function(String?)? validator; // Added validator
-
-  const PasswordTextField({
-    required this.label,
-    required this.controller,
-    this.validator, // Pass the validator
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: 8,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(5),
-      ),
-      color: Colors.white,
-      shadowColor: Colors.grey.shade300,
-      child: TextFormField(
-        maxLines: 3,
-        controller: controller,
-        decoration: InputDecoration(
-          labelText: label,
-          labelStyle: TextStyle(
-            color: Colors.grey.shade700,
-            fontWeight: FontWeight.w500,
-          ),
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-        ),
-        validator: validator, // Apply validator
       ),
     );
   }
