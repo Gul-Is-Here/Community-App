@@ -16,8 +16,8 @@ class FamilyMemberScreen extends StatefulWidget {
 }
 
 class _FamilyMemberScreenState extends State<FamilyMemberScreen> {
-  late var member;
-  final ProfileController profileController = Get.put(ProfileController());
+  var member;
+  final ProfileController profileController = Get.find<ProfileController>();
   final FamilyController familyController = Get.put(FamilyController());
 
   bool isLoading = false;
@@ -53,7 +53,7 @@ class _FamilyMemberScreenState extends State<FamilyMemberScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: primaryColor,
+        backgroundColor: secondaryColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30),
           side: BorderSide(width: 2, color: goldenColor),
@@ -80,11 +80,14 @@ class _FamilyMemberScreenState extends State<FamilyMemberScreen> {
         }
 
         List<dynamic> relations = profileController.userData['relations'] ?? [];
+        print('relations : $relations');
         return ListView.builder(
           itemCount: relations.length,
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
           itemBuilder: (context, index) {
             member = relations[index];
+            print(relations.length);
+
             return buildFamilyMemberCard(member);
           },
         );
@@ -179,7 +182,8 @@ class _FamilyMemberScreenState extends State<FamilyMemberScreen> {
               icon: Icons.refresh,
               color: asColor,
               onPressed: () {
-                profileController.fetchUserData2();
+                profileController.fetchUserData();
+                profileController.userData;
               },
             ),
           ),

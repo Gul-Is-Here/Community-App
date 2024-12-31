@@ -1,4 +1,5 @@
 // import 'package:alarm/alarm.dart';
+import 'package:community_islamic_app/constants/globals.dart';
 import 'package:community_islamic_app/controllers/home_controller.dart';
 import 'package:community_islamic_app/controllers/home_events_controller.dart';
 import 'package:community_islamic_app/controllers/qibla_controller.dart';

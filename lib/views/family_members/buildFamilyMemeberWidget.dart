@@ -24,13 +24,13 @@ Widget buildFamilyMemberCardClasses(Map<String, dynamic> member, int count,  Fun
               Expanded(
                 child: Container(
                   height: 100,
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
                       colors: [Color(0xFF00A559), Color(0xFF006627)],
                       begin: Alignment.centerLeft,
                       end: Alignment.centerRight,
                     ),
-                    borderRadius: const BorderRadius.only(
+                    borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(10),
                       bottomLeft: Radius.circular(10),
                     ),
@@ -66,7 +66,7 @@ Widget buildFamilyMemberCardClasses(Map<String, dynamic> member, int count,  Fun
                                   fontFamily: popinsBold,
                                   fontSize: 12),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               width: 5,
                             ),
                             IconButton(

@@ -1,3 +1,4 @@
+import 'package:community_islamic_app/controllers/profileController.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -25,9 +26,29 @@ class ClassDropdown extends StatefulWidget {
 }
 
 class _ClassDropdownState extends State<ClassDropdown> {
+  // Function to safely get the enrollment status for each class
+  String _getEnrollmentStatus(dynamic classData) {
+    // Ensure classData is valid and inrolments are not empty
+    if (classData == null || widget.inrolments.isEmpty) return '';
+
+    // Find the index of the class in classesList
+    int index = widget.classesList.indexOf(classData);
+
+    // Safely access inrolments by index
+    if (index >= 0 && index < widget.inrolments.length) {
+      final enrollment = widget.inrolments[index];
+      if (enrollment != null && enrollment.containsKey('_active')) {
+        return enrollment['_active']?.toString() ?? '';
+      }
+    }
+
+    return ''; // Return empty string if _active is unavailable
+  }
+
   @override
   Widget build(BuildContext context) {
     FamilyController familyController = Get.put(FamilyController());
+    ProfileController().userDataStream;
 
     return Obx(() {
       if (familyController.isLoading.value) {
@@ -51,7 +72,8 @@ class _ClassDropdownState extends State<ClassDropdown> {
               widget.member['relation_type'] == classData['class_gender'];
 
           // Get the enrollment status for the class
-          var enrollmentStatus = _getEnrollmentStatus(classData);
+          String enrollmentStatus = _getEnrollmentStatus(classData);
+          print(widget.inrolments);
 
           if (ageMatch && genderMatch) {
             return Padding(
@@ -59,11 +81,12 @@ class _ClassDropdownState extends State<ClassDropdown> {
               child: Container(
                 alignment: Alignment.centerLeft,
                 decoration: BoxDecoration(
-                    color: Color(0xFF315B5A),
-                    borderRadius: BorderRadius.circular(10)),
+                  color: const Color(0xFF315B5A),
+                  borderRadius: BorderRadius.circular(10),
+                ),
                 height: 100,
                 child: Card(
-                  color: Color(0xFF315B5A),
+                  color: const Color(0xFF315B5A),
                   margin: const EdgeInsets.all(0),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
@@ -78,64 +101,59 @@ class _ClassDropdownState extends State<ClassDropdown> {
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
-                                textAlign: TextAlign.left,
-                                classData['class_name'],
+                                classData['class_name'] ?? '',
                                 style: TextStyle(
                                   fontFamily: popinsBold,
                                   fontSize: 13,
-                                  color: Color(0xFF00A53C),
+                                  color: const Color(0xFF00A53C),
                                 ),
                               ),
                             ),
                           ),
-                          SizedBox(height: 5),
+                          const SizedBox(height: 5),
                           Expanded(
                             child: Padding(
                               padding: const EdgeInsets.only(right: 8),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-                                  // Enroll Button Text Changes Based on Enrollment Status
+                                  // Enroll Button
                                   SizedBox(
                                     height: 36,
                                     width: 110,
                                     child: ElevatedButton(
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: enrollmentStatus ==
-                                                    '0' ||
-                                                enrollmentStatus == '2' ||
-                                                enrollmentStatus == '3'
-                                            ? goldenColor // Default 'Enroll' color
-                                            : enrollmentStatus == '1'
-                                                ? secondaryColor
-                                                : whiteColor, // If already enrolled, set to white
+                                        backgroundColor:
+                                            enrollmentStatus == '0' ||
+                                                    enrollmentStatus == '2' ||
+                                                    enrollmentStatus == '3'
+                                                ? goldenColor
+                                                : enrollmentStatus == '1'
+                                                    ? secondaryColor
+                                                    : whiteColor,
                                         shape: RoundedRectangleBorder(
                                           borderRadius:
                                               BorderRadius.circular(5),
                                         ),
                                       ),
                                       onPressed: () {
-                                        if (enrollmentStatus == '') {
-                                          // If not enrolled, show the Enrollment Form
+                                        if (enrollmentStatus.isEmpty) {
+                                          // Show Enrollment Form
                                           _showEnrollDialog(classData,
                                               familyController, widget.member);
                                         } else {
-                                          // If already enrolled, show current status (No action needed)
+                                          // Already enrolled
                                           print(
                                               'Already Enrolled or Waiting for Approval');
                                         }
                                       },
                                       child: Text(
-                                        enrollmentStatus == ''
-                                            ? 'Enroll' // Show "Enroll" if not enrolled
-                                            : _getEnrollButtonText(
-                                                enrollmentStatus), // Show status if already enrolled
+                                        _getEnrollButtonText(enrollmentStatus),
                                         style: TextStyle(
                                           color: enrollmentStatus == '0' ||
                                                   enrollmentStatus == '2' ||
                                                   enrollmentStatus == '3'
-                                              ? Colors
-                                                  .black // Default 'Enroll' color
+                                              ? Colors.black
                                               : enrollmentStatus == '1'
                                                   ? whiteColor
                                                   : Colors.black,
@@ -145,7 +163,7 @@ class _ClassDropdownState extends State<ClassDropdown> {
                                       ),
                                     ),
                                   ),
-                                  SizedBox(width: 5),
+                                  const SizedBox(width: 5),
                                   // Details Button
                                   SizedBox(
                                     height: 36,
@@ -159,9 +177,11 @@ class _ClassDropdownState extends State<ClassDropdown> {
                                         ),
                                       ),
                                       onPressed: () {
-                                        _showDetailsDialog(classData);
+                                        setState(() {
+                                          _showDetailsDialog(classData);
+                                        });
                                       },
-                                      child: Text(
+                                      child: const Text(
                                         'Details',
                                         style: TextStyle(
                                           color: Colors.black,
@@ -190,34 +210,19 @@ class _ClassDropdownState extends State<ClassDropdown> {
     });
   }
 
-  // Function to get the enrollment status for each class
-  String _getEnrollmentStatus(dynamic classData) {
-    int index = widget.classesList.indexOf(classData);
-    if (index < widget.inrolments.length) {
-      return widget.inrolments[index]
-          ['_active']; // Default to '0' if status is missing
-    }
-    return ''; // No enrollment
-  }
-
-  // Get the text for the button based on the enrollment status
+  // Function to get the text for the button based on the enrollment status
   String _getEnrollButtonText(String status) {
     switch (status) {
       case '0':
         return 'Waiting';
-
       case '1':
         return 'Enrolled';
-
       case '2':
         return 'Hold On';
-      // style: TextStyle(fontFamily: popinsSemiBold, fontSize: 8));
       case '3':
         return 'Rejected';
-      //   style: TextStyle(fontFamily: popinsSemiBold, fontSize: 8));
       default:
-        return 'Enrol';
-      // style: TextStyle(fontFamily: popinsSemiBold, fontSize: 8));
+        return 'Enroll';
     }
   }
 
@@ -547,6 +552,7 @@ class _ClassDropdownState extends State<ClassDropdown> {
                                     } finally {
                                       setState(() {
                                         isLoading = false;
+                                        ProfileController().fetchUserData2();
                                       });
                                     }
                                   }

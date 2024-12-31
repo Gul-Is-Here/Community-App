@@ -58,66 +58,60 @@ class FamilyController extends GetxController {
     required String emergencyContactName,
     required String allergiesDetail,
   }) async {
-    isLoading(true); // Start loading
+    isLoading(true);
+
     const String url =
         'https://rosenbergcommunitycenter.org/api/RegisterClassApi';
 
-    // Prepare the headers and body for the POST request
     Map<String, String> headers = {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token', // Assuming token is a Bearer token
+      'Authorization': 'Bearer $token',
     };
 
     Map<String, dynamic> body = {
-      'class_id': classId.toString(), // Ensure classId is a String
-      'id': id.toString(), // Ensure id is a String
-      'relation_id': relationId.toString(), // Ensure relationId is a String
+      'class_id': classId.toString(),
+      'id': id.toString(),
+      'relation_id': relationId.toString(),
       'emergency_contact': emergencyContact,
       'emergencycontact_name': emergencyContactName,
       'allergies_detail': allergiesDetail,
     };
 
     try {
-      // Send the POST request
       final response = await http.post(
         Uri.parse(url),
         headers: headers,
         body: jsonEncode(body),
       );
 
-      // Check if the request was successful
       if (response.statusCode == 200) {
-        // Successfully enrolled, update the status
-        _updateEnrollmentStatus(classId);
-
-        // Refresh user data if necessary
-        await ProfileController()
-            .fetchUserData(); // Re-fetch user data after the enrollment to update the UI
-      
+        ProfileController().userDataStream;
+        print(ProfileController().userData); // Fetch updated user data
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Successfully enrolled for the class.'),
             backgroundColor: Colors.green,
           ),
         );
-      } else if (response.statusCode == 423) {
-        // Handle the error for already enrolled
+      } else
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Already enrolled in this class.'),
             backgroundColor: Colors.orange,
           ),
         );
-      } else {
-        // Handle other status codes
-        print('Failed to register. Status code: ${response.statusCode}');
-        print('Response body: ${response.body}');
-      }
+
+      print('Error: ${response.body}');
     } catch (e) {
-      // Handle network or other errors
-      print('An error occurred: $e');
+      print('Error: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('An error occurred: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
     } finally {
-      isLoading(false); // Stop loading
+      isLoading(false);
     }
   }
 

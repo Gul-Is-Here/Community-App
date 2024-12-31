@@ -54,11 +54,13 @@ class LoginController extends GetxController {
         if (userDetails != null) {
           globals.userId.value = userDetails["id"]?.toString() ?? '';
           globals.accessToken.value = jsonResponse["access_token"] ?? '';
+          print(globals.accessToken.value);
 
           // Store login status and access token in SharedPreferences
           SharedPreferences prefs = await SharedPreferences.getInstance();
           await prefs.setBool('isLoggedIn', true);
           await prefs.setString('accessToken', globals.accessToken.value);
+          print(globals.accessToken.value);
           await prefs.setString('userid', globals.userId.value);
 
           Get.snackbar("Success", "Login successful.");
@@ -102,6 +104,8 @@ class LoginController extends GetxController {
     // Retrieve the access token from SharedPreferences
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final storedToken = prefs.getString('accessToken');
+    print(prefs.getString('accessToken'));
+    print('Token : $storedToken');
 
     if (storedToken != null) {
       globals.accessToken.value = storedToken;

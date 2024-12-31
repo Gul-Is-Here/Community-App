@@ -130,7 +130,7 @@ class ProfileScreen extends StatelessWidget {
                             elevation: 10,
                             child: ElevatedButton(
                               onPressed: () {
-                                Get.to(() => FamilyMemberScreen());
+                                Get.to(() => FamilyMemberScreen(                             ));
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: buttonColorP,

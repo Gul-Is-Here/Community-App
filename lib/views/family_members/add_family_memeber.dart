@@ -14,7 +14,7 @@ import '../../widgets/profile_text_widget.dart';
 class AddFamilyMemberScreen extends StatefulWidget {
   const AddFamilyMemberScreen({super.key, required this.member});
 
-  final Map<String, dynamic> member;
+  final Map<String, dynamic>? member;
 
   @override
   State<AddFamilyMemberScreen> createState() => _AddFamilyMemberScreenState();

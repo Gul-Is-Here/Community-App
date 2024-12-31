@@ -1,4 +1,5 @@
 import 'package:community_islamic_app/constants/color.dart';
+import 'package:community_islamic_app/constants/globals.dart';
 import 'package:community_islamic_app/constants/image_constants.dart';
 import 'package:community_islamic_app/controllers/login_controller.dart';
 import 'package:community_islamic_app/controllers/profileController.dart';
@@ -47,6 +48,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
   @override
   Widget build(BuildContext context) {
+    print('token');
+    print(globals.accessToken.value);
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
 

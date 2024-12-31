@@ -18,21 +18,25 @@ class ClassesScreen extends StatefulWidget {
 
 class _ClassesScreenState extends State<ClassesScreen> {
   // Controllers
-  var familyController = Get.put(FamilyController());
-  var profileController = Get.find<ProfileController>();
+  final familyController = Get.put(FamilyController());
+  final profileController = Get.find<ProfileController>();
 
   // Map to track visibility of ClassDropdown for each member
   Map<int, bool> showClassesMap = {};
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
+    // Fetch data if necessary
     profileController.fetchUserData();
-    profileController.fetchUserData2();
-    familyController.fetchData();
-    profileController.userDataStream;
-    // Get relations list from user data
-    List<dynamic> relations = profileController.userData['relations'] ?? [];
+  }
 
+  @override
+  Widget build(BuildContext context) {
+    profileController.fetchUserData2();
+    profileController.fetchUserData();                                                                                                                                                                                   
+    profileController.userDataStream;
+    profileController.userData();
     return Scaffold(
       backgroundColor: primaryColor,
       appBar: AppBar(
@@ -65,78 +69,47 @@ class _ClassesScreenState extends State<ClassesScreen> {
           );
         }
 
+        // Get relations list from user data
+        List<dynamic> relations = profileController.userData['relations'] ?? [];
+        if (relations.isEmpty) {
+          return Center(
+            child: Text(
+              'No members available.',
+              style: TextStyle(color: whiteColor, fontSize: 18),
+            ),
+          );
+        }
+
         return ListView.builder(
           itemCount: relations.length,
           itemBuilder: (context, index) {
-            List<dynamic> enrollments =
-                relations[index]['hasenrollments'] ?? [];
-            var enrolCount =
-                enrollments.where((e) => e['_active'] == '1').length;
-
-            // Initialize the visibility of ClassDropdown for each member if not already initialized
-            if (!showClassesMap.containsKey(index)) {
-              showClassesMap[index] = false;
-            }
+            var member = relations[index] ?? {}; // Ensure member is not null
+            List<dynamic> enrollments = member['hasenrollments'] ?? [];
+            var enrolCount = enrollments
+                .where((e) => e != null && e['_active'] == '1')
+                .length;
 
             return Column(
               children: [
-                buildFamilyMemberCardClasses(relations[index], enrolCount, () {
+                buildFamilyMemberCardClasses(member, enrolCount, () {
                   setState(() {
-                    showClassesMap[index] = !showClassesMap[index]!;
+                    showClassesMap[index] = !(showClassesMap[index] ?? false);
                   });
+                  profileController.fetchUserData();
                 }),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 12.0, horizontal: 8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Only show the classes section if the showClassesMap[index] is true
-                      if (showClassesMap[index] != null &&
-                          showClassesMap[index]!)
-                        Column(
-                          children: [
-                            Row(
-                              children: [
-                                Image.asset(
-                                  eventIcon,
-                                  height: 24,
-                                  width: 24,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 20.0),
-                                  child: Text(
-                                    'Classes',
-                                    style: TextStyle(
-                                        fontFamily: popinsRegulr,
-                                        color: whiteColor),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 15,
-                            ),
-                            Divider(
-                              height: 2,
-                              color: lightColor,
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            // Show the class dropdown when the icon is clicked
-                            ClassDropdown(
-                              classesList: familyController.classesList,
-                              member: relations[index],
-                              inrolments: enrollments,
-                            ),
-                            SizedBox(height: 16),
-                          ],
-                        ),
-                    ],
+                if (showClassesMap[index] ?? false)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 12.0, horizontal: 8.0),
+                    child: ClassDropdown(
+                      // inrolmentStatus: enrollments
+                      //     .map((e) => e['_active']?.toString() ?? '')
+                      //     .toList(), // Pass all statuses
+                      classesList: familyController.classesList,
+                      member: member,
+                      inrolments: enrollments,
+                    ),
                   ),
-                ),
               ],
             );
           },
