@@ -30,13 +30,13 @@ class Prayer {
   factory Prayer.fromJson(Map<String, dynamic> json) => Prayer(
         code: json["code"],
         status: json["status"],
-        data: json["data"] == null ? null : Data.fromJson(json["data"]),
+        data: Data.fromJson(json["data"]),
       );
 
   Map<String, dynamic> toJson() => {
         "code": code,
         "status": status,
-        "data": data?.toJson(),
+        "data": data!.toJson(),
       };
 }
 
@@ -288,12 +288,13 @@ class GregorianWeekday {
 class Hijri {
   final String date;
   final String format;
-  final String day;
+  final int day;
   final HijriWeekday weekday;
   final HijriMonth month;
-  final String year;
+  final int year;
   final Designation designation;
   final List<dynamic> holidays;
+  final String method;
 
   Hijri({
     required this.date,
@@ -304,17 +305,19 @@ class Hijri {
     required this.year,
     required this.designation,
     required this.holidays,
+    required this.method,
   });
 
   Hijri copyWith({
     String? date,
     String? format,
-    String? day,
+    int? day,
     HijriWeekday? weekday,
     HijriMonth? month,
-    String? year,
+    int? year,
     Designation? designation,
     List<dynamic>? holidays,
+    String? method,
   }) =>
       Hijri(
         date: date ?? this.date,
@@ -325,6 +328,7 @@ class Hijri {
         year: year ?? this.year,
         designation: designation ?? this.designation,
         holidays: holidays ?? this.holidays,
+        method: method ?? this.method,
       );
 
   factory Hijri.fromRawJson(String str) => Hijri.fromJson(json.decode(str));
@@ -340,6 +344,7 @@ class Hijri {
         year: json["year"],
         designation: Designation.fromJson(json["designation"]),
         holidays: List<dynamic>.from(json["holidays"].map((x) => x)),
+        method: json["method"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -351,6 +356,7 @@ class Hijri {
         "year": year,
         "designation": designation.toJson(),
         "holidays": List<dynamic>.from(holidays.map((x) => x)),
+        "method": method,
       };
 }
 
@@ -358,22 +364,26 @@ class HijriMonth {
   final int number;
   final String en;
   final String ar;
+  final int days;
 
   HijriMonth({
     required this.number,
     required this.en,
     required this.ar,
+    required this.days,
   });
 
   HijriMonth copyWith({
     int? number,
     String? en,
     String? ar,
+    int? days,
   }) =>
       HijriMonth(
         number: number ?? this.number,
         en: en ?? this.en,
         ar: ar ?? this.ar,
+        days: days ?? this.days,
       );
 
   factory HijriMonth.fromRawJson(String str) =>
@@ -385,12 +395,14 @@ class HijriMonth {
         number: json["number"],
         en: json["en"],
         ar: json["ar"],
+        days: json["days"],
       );
 
   Map<String, dynamic> toJson() => {
         "number": number,
         "en": en,
         "ar": ar,
+        "days": days,
       };
 }
 

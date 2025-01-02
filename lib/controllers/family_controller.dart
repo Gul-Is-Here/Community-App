@@ -8,6 +8,8 @@ import 'package:http/http.dart' as http;
 class FamilyController extends GetxController {
   // Make classesList an observable list
   var classesList = <dynamic>[].obs;
+  // var inrolments = <dynamic>[].obs; // Make it reactive
+
   var isLoading = false.obs; // Observable loading state
   var errorMessage = ''.obs; // Observable for error messages
 
@@ -86,6 +88,7 @@ class FamilyController extends GetxController {
 
       if (response.statusCode == 200) {
         ProfileController().userDataStream;
+        // inrolments.refresh();
         print(ProfileController().userData); // Fetch updated user data
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(

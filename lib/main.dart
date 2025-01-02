@@ -20,8 +20,8 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   tz.initializeTimeZones();
   await NotificationServices().initializeNotification();
-  await HomeController().fetchPrayerTimes();
-  HomeController().getCurrentPrayerCurrent();
+  // await HomeController().fetchPrayerTimes();
+  // HomeController().getCurrentPrayerCurrent();
   HomeEventsController().fetchEventsData();
   // QiblahController();
   await QiblahController().getLocation();
