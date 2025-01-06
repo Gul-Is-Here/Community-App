@@ -1,14 +1,9 @@
-import 'package:meta/meta.dart';
 import 'dart:convert';
 
 class Prayer {
-  final int? code;
-  final String? status;
-  final Data? data;
+  Data? data;
 
   Prayer({
-    this.code,
-    this.status,
     this.data,
   });
 
@@ -18,8 +13,6 @@ class Prayer {
     Data? data,
   }) =>
       Prayer(
-        code: code ?? this.code,
-        status: status ?? this.status,
         data: data ?? this.data,
       );
 
@@ -28,22 +21,18 @@ class Prayer {
   String toRawJson() => json.encode(toJson());
 
   factory Prayer.fromJson(Map<String, dynamic> json) => Prayer(
-        code: json["code"],
-        status: json["status"],
         data: Data.fromJson(json["data"]),
       );
 
   Map<String, dynamic> toJson() => {
-        "code": code,
-        "status": status,
-        "data": data!.toJson(),
+        "data": data?.toJson(),
       };
 }
 
 class Data {
-  final Timings timings;
-  final Date date;
-  final Meta meta;
+  Timings timings;
+  Date date;
+  Meta meta;
 
   Data({
     required this.timings,
@@ -80,10 +69,10 @@ class Data {
 }
 
 class Date {
-  final String readable;
-  final String timestamp;
-  final Hijri hijri;
-  final Gregorian gregorian;
+  String readable;
+  String timestamp;
+  Hijri hijri;
+  Gregorian gregorian;
 
   Date({
     required this.readable,
@@ -125,13 +114,14 @@ class Date {
 }
 
 class Gregorian {
-  final String date;
-  final String format;
-  final String day;
-  final GregorianWeekday weekday;
-  final GregorianMonth month;
-  final String year;
-  final Designation designation;
+  String date;
+  String format;
+  String day;
+  GregorianWeekday weekday;
+  GregorianMonth month;
+  String year;
+  Designation designation;
+  bool lunarSighting;
 
   Gregorian({
     required this.date,
@@ -141,6 +131,7 @@ class Gregorian {
     required this.month,
     required this.year,
     required this.designation,
+    required this.lunarSighting,
   });
 
   Gregorian copyWith({
@@ -151,6 +142,7 @@ class Gregorian {
     GregorianMonth? month,
     String? year,
     Designation? designation,
+    bool? lunarSighting,
   }) =>
       Gregorian(
         date: date ?? this.date,
@@ -160,6 +152,7 @@ class Gregorian {
         month: month ?? this.month,
         year: year ?? this.year,
         designation: designation ?? this.designation,
+        lunarSighting: lunarSighting ?? this.lunarSighting,
       );
 
   factory Gregorian.fromRawJson(String str) =>
@@ -175,6 +168,7 @@ class Gregorian {
         month: GregorianMonth.fromJson(json["month"]),
         year: json["year"],
         designation: Designation.fromJson(json["designation"]),
+        lunarSighting: json["lunarSighting"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -185,12 +179,13 @@ class Gregorian {
         "month": month.toJson(),
         "year": year,
         "designation": designation.toJson(),
+        "lunarSighting": lunarSighting,
       };
 }
 
 class Designation {
-  final String abbreviated;
-  final String expanded;
+  String abbreviated;
+  String expanded;
 
   Designation({
     required this.abbreviated,
@@ -223,8 +218,8 @@ class Designation {
 }
 
 class GregorianMonth {
-  final int number;
-  final String en;
+  int number;
+  String en;
 
   GregorianMonth({
     required this.number,
@@ -257,7 +252,7 @@ class GregorianMonth {
 }
 
 class GregorianWeekday {
-  final String en;
+  String en;
 
   GregorianWeekday({
     required this.en,
@@ -286,15 +281,16 @@ class GregorianWeekday {
 }
 
 class Hijri {
-  final String date;
-  final String format;
-  final int day;
-  final HijriWeekday weekday;
-  final HijriMonth month;
-  final int year;
-  final Designation designation;
-  final List<dynamic> holidays;
-  final String method;
+  String date;
+  String format;
+  int day;
+  HijriWeekday weekday;
+  HijriMonth month;
+  int year;
+  Designation designation;
+  List<dynamic> holidays;
+  List<dynamic> adjustedHolidays;
+  String method;
 
   Hijri({
     required this.date,
@@ -305,6 +301,7 @@ class Hijri {
     required this.year,
     required this.designation,
     required this.holidays,
+    required this.adjustedHolidays,
     required this.method,
   });
 
@@ -317,6 +314,7 @@ class Hijri {
     int? year,
     Designation? designation,
     List<dynamic>? holidays,
+    List<dynamic>? adjustedHolidays,
     String? method,
   }) =>
       Hijri(
@@ -328,6 +326,7 @@ class Hijri {
         year: year ?? this.year,
         designation: designation ?? this.designation,
         holidays: holidays ?? this.holidays,
+        adjustedHolidays: adjustedHolidays ?? this.adjustedHolidays,
         method: method ?? this.method,
       );
 
@@ -344,6 +343,8 @@ class Hijri {
         year: json["year"],
         designation: Designation.fromJson(json["designation"]),
         holidays: List<dynamic>.from(json["holidays"].map((x) => x)),
+        adjustedHolidays:
+            List<dynamic>.from(json["adjustedHolidays"].map((x) => x)),
         method: json["method"],
       );
 
@@ -356,15 +357,16 @@ class Hijri {
         "year": year,
         "designation": designation.toJson(),
         "holidays": List<dynamic>.from(holidays.map((x) => x)),
+        "adjustedHolidays": List<dynamic>.from(adjustedHolidays.map((x) => x)),
         "method": method,
       };
 }
 
 class HijriMonth {
-  final int number;
-  final String en;
-  final String ar;
-  final int days;
+  int number;
+  String en;
+  String ar;
+  int days;
 
   HijriMonth({
     required this.number,
@@ -407,8 +409,8 @@ class HijriMonth {
 }
 
 class HijriWeekday {
-  final String en;
-  final String ar;
+  String en;
+  String ar;
 
   HijriWeekday({
     required this.en,
@@ -441,14 +443,14 @@ class HijriWeekday {
 }
 
 class Meta {
-  final double latitude;
-  final double longitude;
-  final String timezone;
-  final Method method;
-  final String latitudeAdjustmentMethod;
-  final String midnightMode;
-  final String school;
-  final Map<String, int> offset;
+  double latitude;
+  double longitude;
+  String timezone;
+  Method method;
+  String latitudeAdjustmentMethod;
+  String midnightMode;
+  String school;
+  Map<String, int> offset;
 
   Meta({
     required this.latitude,
@@ -513,10 +515,10 @@ class Meta {
 }
 
 class Method {
-  final int id;
-  final String name;
-  final Params params;
-  final Location location;
+  int id;
+  String name;
+  Params params;
+  Location location;
 
   Method({
     required this.id,
@@ -558,8 +560,8 @@ class Method {
 }
 
 class Location {
-  final double latitude;
-  final double longitude;
+  double latitude;
+  double longitude;
 
   Location({
     required this.latitude,
@@ -592,8 +594,8 @@ class Location {
 }
 
 class Params {
-  final int fajr;
-  final int isha;
+  int fajr;
+  int isha;
 
   Params({
     required this.fajr,
@@ -625,17 +627,17 @@ class Params {
 }
 
 class Timings {
-  final String fajr;
-  final String sunrise;
-  final String dhuhr;
-  final String asr;
-  final String sunset;
-  final String maghrib;
-  final String isha;
-  final String imsak;
-  final String midnight;
-  final String firstthird;
-  final String lastthird;
+  String fajr;
+  String sunrise;
+  String dhuhr;
+  String asr;
+  String sunset;
+  String maghrib;
+  String isha;
+  String imsak;
+  String midnight;
+  String firstthird;
+  String lastthird;
 
   Timings({
     required this.fajr,

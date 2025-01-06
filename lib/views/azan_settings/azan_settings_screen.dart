@@ -26,6 +26,14 @@ class _AzanSettingsScreenState extends State<AzanSettingsScreen> {
     'Isha': true,
   };
 
+  Map<String, bool> _iqamahTimes = {
+    'Fajr': true,
+    'Dhuhr': true,
+    'Asr': true,
+    'Maghrib': true,
+    'Isha': true,
+  };
+
   // Add a map to track the playing state for each Azan sound
   final Map<String, bool> _isPlaying = {
     'Adhan - Makkah': false,
@@ -55,6 +63,14 @@ class _AzanSettingsScreenState extends State<AzanSettingsScreen> {
           'Isha': sharedPreferences!.getBool("isha")!,
         };
 
+        _iqamahTimes = {
+          'Fajr': sharedPreferences!.getBool("fajrIqamah")!,
+          'Dhuhr': sharedPreferences!.getBool("dhuhrIqamah")!,
+          'Asr': sharedPreferences!.getBool("asrIqamah")!,
+          'Maghrib': sharedPreferences!.getBool("maghribIqamah")!,
+          'Isha': sharedPreferences!.getBool("ishaIqamah")!,
+        };
+
         _selectedAzan = sharedPreferences!.getString("selectedSound")!;
       });
     }
@@ -75,24 +91,85 @@ class _AzanSettingsScreenState extends State<AzanSettingsScreen> {
             color: Colors.white,
           ),
         ),
+        title: const Text(
+          "PRAYER NOTIFICATION",
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
         backgroundColor: primaryColor,
       ),
       backgroundColor: Colors.white,
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      body: ListView(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         children: [
-          _buildHeader(),
-          const SizedBox(height: 10),
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              children: [
-                _buildAzanSelection(),
-                const SizedBox(height: 20),
-                _buildAzanTimeSelection(),
-              ],
+          const SizedBox(height: 20),
+          GestureDetector(
+            onTap: () async {
+              if (_azanTimes.values.every((val) => val)) {
+                for (var azanTime in _azanTimes.keys) {
+                  _azanTimes[azanTime] = false;
+
+                  sharedPreferences!.setBool(azanTime.toLowerCase(), false);
+                }
+
+                setState(() {});
+
+                await NotificationServices().cancelAll();
+
+                await homeController.setNotifications();
+              } else {
+                for (var azanTime in _azanTimes.keys) {
+                  _azanTimes[azanTime] = true;
+
+                  sharedPreferences!.setBool(azanTime.toLowerCase(), true);
+                }
+
+                setState(() {});
+
+                await NotificationServices().cancelAll();
+
+                await homeController.setNotifications();
+              }
+            },
+            child: Container(
+              width: double.maxFinite,
+              height: 60,
+              decoration: BoxDecoration(
+                color: primaryColor,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              padding: const EdgeInsets.all(8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const SizedBox(),
+                  Text(
+                    _azanTimes.values.every((val) => val)
+                        ? "Turn off Notification"
+                        : "Turn on Notification",
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  Icon(
+                    _azanTimes.values.every((val) => val)
+                        ? Icons.check_circle_outline
+                        : Icons.circle_outlined,
+                    color: Colors.white,
+                  ),
+                ],
+              ),
             ),
           ),
+          const SizedBox(height: 20),
+          _buildAzanSelection(),
+          const SizedBox(height: 20),
+          _buildAzanTimeSelection(),
         ],
       ),
     );
@@ -237,58 +314,67 @@ class _AzanSettingsScreenState extends State<AzanSettingsScreen> {
       ),
       child: Column(
         children: [
-          Row(
+          const Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'Prayer Time',
-                style: TextStyle(
-                  fontSize: 14,
-                ),
-              ),
-              Text(
-                'Time',
-                style: TextStyle(
-                  fontSize: 14,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(right: 30),
+              Expanded(
                 child: Text(
-                  'Alert',
+                  'Prayer Time',
                   style: TextStyle(
                     fontSize: 14,
                   ),
                 ),
-              )
+              ),
+              Expanded(
+                child: Text(
+                  'Time',
+                  style: TextStyle(
+                    fontSize: 14,
+                  ),
+                ),
+              ),
+              Text(
+                'Azan',
+                style: TextStyle(
+                  fontSize: 14,
+                ),
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              Text(
+                'Iqamah',
+                style: TextStyle(
+                  fontSize: 14,
+                ),
+              ),
             ],
           ),
-          Divider(),
+          const Divider(),
           Column(
             children: homeController.prayerTimes!
                 .getTodayPrayerTimes()!
                 .toJson()
                 .entries
                 .map((MapEntry<String, dynamic> time) {
-              return SwitchListTile(
-                title: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        time.key,
-                        style: TextStyle(
-                          color: time.key == "Sunrise"
-                              ? primaryColor
-                              : Colors.black,
-                          fontWeight: time.key == "Sunrise"
-                              ? FontWeight.bold
-                              : FontWeight.normal,
-                        ),
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Text(
+                      time.key,
+                      style: TextStyle(
+                        color:
+                            time.key == "Sunrise" ? primaryColor : Colors.black,
+                        fontWeight: time.key == "Sunrise"
+                            ? FontWeight.bold
+                            : FontWeight.normal,
                       ),
                     ),
-                    Text(
+                  ),
+                  Expanded(
+                    child: Text(
                       homeController.prayerTimes!
                           .convertTimeFormat(time.value.toString()),
                       style: TextStyle(
@@ -299,21 +385,40 @@ class _AzanSettingsScreenState extends State<AzanSettingsScreen> {
                             : FontWeight.normal,
                       ),
                     ),
-                  ],
-                ),
-                value: _azanTimes[time.key]!,
-                activeColor: primaryColor,
-                onChanged: (bool? value) async {
-                  setState(() {
-                    _azanTimes[time.key] = value!;
-                  });
+                  ),
+                  Checkbox(
+                    value: _azanTimes[time.key]!,
+                    activeColor: primaryColor,
+                    onChanged: (bool? value) async {
+                      setState(() {
+                        _azanTimes[time.key] = value!;
+                      });
 
-                  sharedPreferences!.setBool(time.key.toLowerCase(), value!);
+                      sharedPreferences!
+                          .setBool(time.key.toLowerCase(), value!);
 
-                  await NotificationServices().cancelAll();
+                      await NotificationServices().cancelAll();
 
-                  await homeController.setNotifications();
-                },
+                      await homeController.setNotifications();
+                    },
+                  ),
+                  Checkbox(
+                    value: _iqamahTimes[time.key]!,
+                    activeColor: primaryColor,
+                    onChanged: (bool? value) async {
+                      setState(() {
+                        _iqamahTimes[time.key] = value!;
+                      });
+
+                      sharedPreferences!
+                          .setBool(time.key.toLowerCase()+"Iqamah", value!);
+
+                      await NotificationServices().cancelAll();
+
+                      await homeController.setNotifications();
+                    },
+                  ),
+                ],
               );
             }).toList(),
           ),

@@ -16,7 +16,7 @@ class NotificationServices {
             AndroidFlutterLocalNotificationsPlugin>();
 
     List<AndroidNotificationChannel> channels = [
-       const AndroidNotificationChannel(
+      const AndroidNotificationChannel(
         'makkah_channel',
         'Makkah Notifications',
         description:
@@ -62,8 +62,6 @@ class NotificationServices {
   Future<void> cancelAll() async {
     await _flutterLocalNotificationPlugin.cancelAll();
   }
-
-  
 
   Future<void> initializeNotification() async {
     const AndroidInitializationSettings initializationSettingsAndroid =
@@ -196,6 +194,26 @@ class NotificationServices {
 
     if (payLoad == "isha") {
       flag = 5;
+    }
+
+    if (payLoad == "fajrIqamah") {
+      flag = 6;
+    }
+
+    if (payLoad == "dhuhrIqamah") {
+      flag = 7;
+    }
+
+    if (payLoad == "asrIqamah") {
+      flag = 8;
+    }
+
+    if (payLoad == "maghribIqamah") {
+      flag = 9;
+    }
+
+    if (payLoad == "ishaIqamah") {
+      flag = 10;
     }
 
     int dayOfYear = getDayOfYear(scheduleNotificationDateTime);

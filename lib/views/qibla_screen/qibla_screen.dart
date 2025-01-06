@@ -33,7 +33,7 @@ class QiblahScreen extends StatelessWidget {
                   Get.back();
                 },
                 icon: Icon(
-                  Icons.arrow_back,
+                  Icons.arrow_back_ios,
                   color: whiteColor,
                 ),
               )
