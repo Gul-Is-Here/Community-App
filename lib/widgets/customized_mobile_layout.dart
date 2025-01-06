@@ -195,7 +195,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                             children: [
                               Obx(
                                 () => Text(
-                                  'Next : ${homeController.getCurrentPrayer()} ',
+                                  '${homeController.getCurrentPrayer()} ',
                                   style: TextStyle(
                                       fontFamily: popinsBold,
                                       color: whiteColor,

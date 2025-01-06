@@ -40,9 +40,11 @@ class _QuranScreenState extends State<QuranScreen> {
       appBar: AppBar(
         leading: widget.isNavigation
             ? IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Get.back();
+                },
                 icon: Icon(
-                  Icons.arrow_back,
+                  Icons.arrow_back_ios,
                   color: whiteColor,
                 ))
             : SizedBox(),

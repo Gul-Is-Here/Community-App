@@ -227,17 +227,60 @@ class StaticPrayarTime {
       required this.asr,
       required this.magrib,
       required this.isha});
+
+  DateTime getDate() {
+    List date = startDate.split("/");
+
+    return DateTime(
+      DateTime.now().year,
+      int.parse(date[1]),
+      int.parse(date[0]),
+    );
+  }
+
+  DateTime getNamazTime(String namazName) {
+    List<String> date = [];
+
+    if (namazName == "fajr") {
+      date = fjar.split(" ");
+    }
+
+    if (namazName == "dhuhr") {
+      date = zuhr.split(" ");
+    }
+
+    if (namazName == "asr") {
+      date = asr.split(" ");
+    }
+
+    if (namazName == "isha") {
+      date = isha.split(" ");
+    }
+
+    List time = date.first.split(":");
+
+    DateTime iqamah = getDate();
+
+    return DateTime(
+      iqamah.year,
+      iqamah.month,
+      iqamah.day,
+      int.parse(time[0]) + (date[1] == "PM" ? 12 : 0),
+      int.parse(time[1]),
+    );
+  }
 }
 
 List<StaticPrayarTime> iqamahTimings = [
   StaticPrayarTime(
-      startDate: "1/1",
-      // endDate: "14/1",
-      fjar: "6:30 AM",
-      zuhr: "2:00 PM",
-      asr: "4:15 PM",
-      magrib: "Sunset + 5 min",
-      isha: "7:30 PM"),
+    startDate: "1/1",
+    // endDate: "14/1",
+    fjar: "6:30 AM",
+    zuhr: "2:00 PM",
+    asr: "4:15 PM",
+    magrib: "Sunset + 5 min",
+    isha: "7:30 PM",
+  ),
   StaticPrayarTime(
       startDate: "15/1",
       // endDate: "31/1",
