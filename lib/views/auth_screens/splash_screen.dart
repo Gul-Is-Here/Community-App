@@ -1,4 +1,5 @@
 import 'package:community_islamic_app/constants/color.dart';
+import 'package:community_islamic_app/services/token_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -12,11 +13,13 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   VideoPlayerController? _controller;
-
+  final TokenService _tokenService = TokenService();
   @override
   void initState() {
     super.initState();
     _initializeVideoPlayer();
+    _tokenService.generateAndStoreToken();
+    _tokenService.handleTokenRefresh();
     _navigateToAppropriateScreen();
   }
 

@@ -4,6 +4,7 @@ import 'package:community_islamic_app/controllers/home_controller.dart';
 import 'package:community_islamic_app/controllers/home_events_controller.dart';
 import 'package:community_islamic_app/controllers/qibla_controller.dart';
 import 'package:community_islamic_app/firebase_options.dart';
+import 'package:community_islamic_app/services/token_service.dart';
 import 'package:community_islamic_app/views/auth_screens/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +26,7 @@ void main() async {
   HomeEventsController().fetchEventsData();
   // QiblahController();
   await QiblahController().getLocation();
+  
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
   DateTime today = DateTime.now();

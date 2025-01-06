@@ -63,6 +63,8 @@ class NotificationServices {
     await _flutterLocalNotificationPlugin.cancelAll();
   }
 
+  
+
   Future<void> initializeNotification() async {
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('logo');
