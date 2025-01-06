@@ -10,7 +10,7 @@ Color goldenColor = const Color(0xFFFDB408);
 Color goldenColor2 = const Color(0xFF956100);
 // Color goldenColor23 = Color.fromARGB(255, 176, 137, 64);
 Color lightColor = const Color(0xFFC4F1DD);
-Color secondaryColor = Color(0xFF00A53C);
+Color secondaryColor = Color(0xFF0E8041);
 
 /// Arabic Fonts
 const jameelNori1 = 'JameelNori1';

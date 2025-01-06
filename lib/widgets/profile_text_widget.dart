@@ -6,29 +6,33 @@ Widget buildTextField({
   required TextEditingController controller,
   void Function()? onTap,
 }) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 8),
-    child: Material(
-      elevation: 6,
-      shadowColor: primaryColor.withOpacity(0.6),
-      borderRadius: BorderRadius.circular(4),
-      child: TextFormField(
-        cursorColor: primaryColor,
-        controller: controller,
-        onTap: onTap,
-        style: const TextStyle(
-            color: Colors.black, fontSize: 13, fontFamily: popinsRegulr),
-        decoration: InputDecoration(
-          labelText: label,
-          filled: true,
-          fillColor: Colors.white,
-          labelStyle: TextStyle(
-              color: Colors.grey.shade600,
-              fontFamily: popinsRegulr,
-              fontSize: 13),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(4),
-            borderSide: BorderSide.none,
+  return Container(
+    // color: primaryColor,
+    child: Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Material(
+        elevation: 6,
+        color: primaryColor.withOpacity(.4),
+        shadowColor: primaryColor.withOpacity(0.6),
+        borderRadius: BorderRadius.circular(4),
+        child: TextFormField(
+          cursorColor: primaryColor,
+          controller: controller,
+          onTap: onTap,
+          style: const TextStyle(
+              color: Color(0xFF0E8041), fontSize: 13, fontFamily: popinsRegulr),
+          decoration: InputDecoration(
+            labelText: label,
+            filled: true,
+            fillColor: lightColor,
+            labelStyle: TextStyle(
+                color: Color(0xFF0E8041),
+                fontFamily: popinsRegulr,
+                fontSize: 13),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(4),
+              borderSide: BorderSide.none,
+            ),
           ),
         ),
       ),

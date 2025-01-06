@@ -1,4 +1,5 @@
 import 'package:community_islamic_app/app_classes/app_class.dart';
+import 'package:community_islamic_app/constants/image_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 // import 'package:velocity_x/velocity_x.dart';
@@ -173,7 +174,9 @@ class AnnouncementWidget extends StatelessWidget {
                       },
                     ),
                   ),
-                SizedBox(height: 10,),
+                  SizedBox(
+                    height: 10,
+                  ),
                   Obx(
                     () => Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -231,7 +234,7 @@ class AnnouncementWidget extends StatelessWidget {
                   ),
                   Container(
                     color: Colors.transparent,
-                    height: 49,
+                    height: 100,
                     width: screenWidth * 1,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
@@ -261,8 +264,8 @@ class AnnouncementWidget extends StatelessWidget {
                             },
                             child: Container(
                               margin: EdgeInsets.all(0),
-                              width: 225,
-                              height: screenHeight1 * .08,
+                              width: screenWidth * 1,
+                              height: screenHeight1 * .09,
                               decoration: const BoxDecoration(
                                 borderRadius: BorderRadius.only(
                                   topLeft: Radius.circular(
@@ -355,7 +358,9 @@ class AnnouncementWidget extends StatelessWidget {
                       },
                     ),
                   ),
-                SizedBox(height: 10,),
+                  SizedBox(
+                    height: 10,
+                  ),
                   Obx(
                     () => Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -413,7 +418,9 @@ class AnnouncementWidget extends StatelessWidget {
                     ],
                   ),
                 ),
-         SizedBox(height: 5,),
+                SizedBox(
+                  height: 5,
+                ),
                 // Carousel Slider with dots
                 Obx(() {
                   return Column(
@@ -425,7 +432,7 @@ class AnnouncementWidget extends StatelessWidget {
                           var alertsData = eventsController.alertsList[index];
 
                           return Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
                             child: GestureDetector(
                               onTap: () {
                                 // Navigate to AnnouncementsDetailsScreen
@@ -446,7 +453,7 @@ class AnnouncementWidget extends StatelessWidget {
                               child: Container(
                                 margin: EdgeInsets.all(0),
                                 width: 320,
-                                height: 50, // Adjusted height
+                                height: 100, // Adjusted height
                                 decoration: const BoxDecoration(
                                   borderRadius: BorderRadius.only(
                                     topLeft: Radius.circular(30),
@@ -462,36 +469,16 @@ class AnnouncementWidget extends StatelessWidget {
                                   child: Container(
                                     margin: EdgeInsets.all(0),
                                     decoration: BoxDecoration(
-                                      border: Border.all(
-                                        width: 1,
-                                        color: lightColor,
-                                      ),
-                                      borderRadius: BorderRadius.circular(30),
-                                      color: const Color(0xFF1E5045),
-                                    ),
+                                        borderRadius: BorderRadius.circular(10),
+                                        gradient: LinearGradient(
+                                            colors: [
+                                              Color(0xFF00A559),
+                                              Color(0xFF00A559),
+                                            ],
+                                            begin: Alignment.topLeft,
+                                            end: Alignment.bottomRight)),
                                     child: Row(
                                       children: [
-                                        Container(
-                                          height: 47,
-                                          width: 47,
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(30),
-                                            color: lightColor,
-                                          ),
-                                          child: Center(
-                                            child: Text(
-                                              AppClass().convertDate(alertsData
-                                                  .createdAt
-                                                  .toString()),
-                                              textAlign: TextAlign.center,
-                                              style: const TextStyle(
-                                                fontFamily: popinsSemiBold,
-                                                fontSize: 10,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
                                         Expanded(
                                           child: Padding(
                                             padding: const EdgeInsets.symmetric(
@@ -505,21 +492,60 @@ class AnnouncementWidget extends StatelessWidget {
                                                   CrossAxisAlignment.start,
                                               children: [
                                                 const SizedBox(height: 5),
-                                                Text(
-                                                  alertsData.alertTitle,
-                                                  maxLines: 2,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: TextStyle(
-                                                    fontSize: 11,
-                                                    color: whiteColor,
-                                                    fontFamily: popinsSemiBold,
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 12, top: 12),
+                                                  child: Text(
+                                                    alertsData.alertTitle,
+                                                    maxLines: 2,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                      color: whiteColor,
+                                                      fontFamily:
+                                                          popinsSemiBold,
+                                                    ),
                                                   ),
                                                 ),
+                                                Padding(
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      vertical: 2,
+                                                      horizontal: 12.0),
+                                                  child: Row(
+                                                    children: [
+                                                      Image.asset(
+                                                        eventIcon,
+                                                        width: 24,
+                                                        height: 24,
+                                                      ),
+                                                      Text(
+                                                        'Posted on ${AppClass().formatDate2(alertsData.createdAt.toString())}',
+                                                        style: TextStyle(
+                                                          color: whiteColor,
+                                                          fontFamily:
+                                                              popinsRegulr,
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                )
                                               ],
                                             ),
                                           ),
                                         ),
+                                        Container(
+                                          height: screenHeight1 * 1,
+                                          width: 10,
+                                          decoration: BoxDecoration(
+                                              color: goldenColor,
+                                              borderRadius: BorderRadius.only(
+                                                  topRight: Radius.circular(10),
+                                                  bottomRight:
+                                                      Radius.circular(10))),
+                                        )
                                       ],
                                     ),
                                   ),
@@ -529,7 +555,7 @@ class AnnouncementWidget extends StatelessWidget {
                           );
                         },
                         options: CarouselOptions(
-                          height: 50, // Adjust height as needed
+                          height: 100, // Adjust height as needed
                           autoPlay: true,
                           autoPlayInterval: const Duration(seconds: 3),
                           enlargeCenterPage: true,
@@ -542,7 +568,9 @@ class AnnouncementWidget extends StatelessWidget {
                       ),
 
                       // Indicator Dots
-                    SizedBox(height: 10,),
+                      SizedBox(
+                        height: 10,
+                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: List.generate(
@@ -564,7 +592,9 @@ class AnnouncementWidget extends StatelessWidget {
                     ],
                   );
                 }),
-              SizedBox(height: 10,),
+                SizedBox(
+                  height: 10,
+                ),
               ],
             );
           })

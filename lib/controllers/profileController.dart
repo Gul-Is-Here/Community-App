@@ -83,7 +83,7 @@ class ProfileController extends GetxController {
       if (response.statusCode == 200) {
         final jsonData = json.decode(response.body);
         userData.value = jsonData; // Store the entire response
-        print(userData);
+        // print(userData);
       } else {
         print("Failed to load user data");
       }

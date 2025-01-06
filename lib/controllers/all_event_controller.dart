@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import '../model/eventType_model.dart';
@@ -15,7 +13,6 @@ class EventTypeController extends GetxController {
     super.onInit();
     fetchEventTypes();
   }
-
   // API URL
   final String apiUrl =
       "https://rosenbergcommunitycenter.org/api/EventTypes?access=7b150e45-e0c1-43bc-9290-3c0bf6473a51332";

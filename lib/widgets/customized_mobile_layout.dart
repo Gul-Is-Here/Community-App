@@ -129,7 +129,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                             children: [
                               Obx(
                                 () => Text(
-                                  '${homeController.timeUntilNextPrayer} (${homeController.getNextPrayerTime()})',
+                                  '${homeController.timeUntilNextPrayer}',
                                   style: TextStyle(
                                       color: whiteColor,
                                       fontFamily: popinsRegulr,
@@ -233,7 +233,8 @@ class CustomizedMobileLayout extends StatelessWidget {
                                     children: [
                                       Obx(
                                         () => Text(
-                                          homeController.getNextPrayerTime(),
+                                          homeController
+                                              .getNextPrayerTimeWithIqama(),
                                           style: TextStyle(
                                               fontFamily: popinsBold,
                                               color: whiteColor,
@@ -262,12 +263,14 @@ class CustomizedMobileLayout extends StatelessWidget {
                                       ),
                                       Padding(
                                         padding: const EdgeInsets.only(top: 4),
-                                        child: Text(
-                                          ' (Azan Time)',
-                                          style: TextStyle(
-                                              fontFamily: popinsRegulr,
-                                              color: whiteColor,
-                                              fontSize: 11),
+                                        child: Obx(
+                                          () => Text(
+                                            ' (${homeController.getCurrentPhase()})',
+                                            style: TextStyle(
+                                                fontFamily: popinsRegulr,
+                                                color: whiteColor,
+                                                fontSize: 11),
+                                          ),
                                         ),
                                       ),
                                       //
