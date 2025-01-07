@@ -238,7 +238,7 @@ class StaticPrayarTime {
     );
   }
 
-  DateTime getNamazTime(String namazName) {
+  DateTime getNamazTime(String namazName, DateTime namaz) {
     List<String> date = [];
 
     if (namazName == "fajr") {
@@ -259,12 +259,10 @@ class StaticPrayarTime {
 
     List time = date.first.split(":");
 
-    DateTime iqamah = getDate();
-
     return DateTime(
-      iqamah.year,
-      iqamah.month,
-      iqamah.day,
+      namaz.year,
+      namaz.month,
+      namaz.day,
       int.parse(time[0]) + (date[1] == "PM" ? 12 : 0),
       int.parse(time[1]),
     );

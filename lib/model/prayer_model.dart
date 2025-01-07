@@ -18,15 +18,9 @@ class Prayer {
 
   factory Prayer.fromRawJson(String str) => Prayer.fromJson(json.decode(str));
 
-  String toRawJson() => json.encode(toJson());
-
   factory Prayer.fromJson(Map<String, dynamic> json) => Prayer(
         data: Data.fromJson(json["data"]),
       );
-
-  Map<String, dynamic> toJson() => {
-        "data": data?.toJson(),
-      };
 }
 
 class Data {
@@ -283,10 +277,10 @@ class GregorianWeekday {
 class Hijri {
   String date;
   String format;
-  int day;
+  String day;
   HijriWeekday weekday;
   HijriMonth month;
-  int year;
+  String year;
   Designation designation;
   List<dynamic> holidays;
   List<dynamic> adjustedHolidays;
@@ -308,10 +302,10 @@ class Hijri {
   Hijri copyWith({
     String? date,
     String? format,
-    int? day,
+    String? day,
     HijriWeekday? weekday,
     HijriMonth? month,
-    int? year,
+    String? year,
     Designation? designation,
     List<dynamic>? holidays,
     List<dynamic>? adjustedHolidays,

@@ -165,7 +165,9 @@ class HomeController extends GetxController {
           data.date.readable,
         );
 
-        DateTime fajrDateTimeIqamah = iqamahTime.getNamazTime("fajr");
+        DateTime fajrDateTimeIqamah = iqamahTime.getNamazTime("fajr", fajrDateTime);
+
+        print("mkiqmah1 $fajrDateTimeIqamah");
 
         if (fajrDateTime.isAfter(now)) {
           await _notificationServices.scheduleNotificationForAdhan(
@@ -188,7 +190,7 @@ class HomeController extends GetxController {
           data.date.readable,
         );
 
-        DateTime dhuhrDateTimeIqamah = iqamahTime.getNamazTime("dhuhr");
+        DateTime dhuhrDateTimeIqamah = iqamahTime.getNamazTime("dhuhr", dhuhrDateTime);
 
         if (dhuhrDateTime.isAfter(now)) {
           await _notificationServices.scheduleNotificationForAdhan(
@@ -211,7 +213,7 @@ class HomeController extends GetxController {
           data.date.readable,
         );
 
-        DateTime asrDateTimeIqamah = iqamahTime.getNamazTime("asr");
+        DateTime asrDateTimeIqamah = iqamahTime.getNamazTime("asr", asrDateTime);
 
         if (asrDateTime.isAfter(now)) {
           await _notificationServices.scheduleNotificationForAdhan(
@@ -259,7 +261,7 @@ class HomeController extends GetxController {
           data.date.readable,
         );
 
-        DateTime ishaDateTimeIqamah = iqamahTime.getNamazTime("isha");
+        DateTime ishaDateTimeIqamah = iqamahTime.getNamazTime("isha", ishaDateTime);
 
         if (ishaDateTime.isAfter(now)) {
           await _notificationServices.scheduleNotificationForAdhan(
