@@ -74,57 +74,103 @@ class HomeController extends GetxController {
     if (prayerTime.value.data?.timings != null) {
       final timings = prayerTime.value.data!.timings;
 
-      // Parse the prayer times and combine them with today's date
-      List<DateTime> prayerTimes = [
-        DateTime(
-            now.year,
-            now.month,
-            now.day,
-            DateFormat("HH:mm").parse(timings.fajr).hour,
-            DateFormat("HH:mm").parse(timings.fajr).minute),
-        DateTime(
-            now.year,
-            now.month,
-            now.day,
-            DateFormat("HH:mm").parse(timings.dhuhr).hour,
-            DateFormat("HH:mm").parse(timings.dhuhr).minute),
-        DateTime(
-            now.year,
-            now.month,
-            now.day,
-            DateFormat("HH:mm").parse(timings.asr).hour,
-            DateFormat("HH:mm").parse(timings.asr).minute),
-        DateTime(
-            now.year,
-            now.month,
-            now.day,
-            DateFormat("HH:mm").parse(timings.maghrib).hour,
-            DateFormat("HH:mm").parse(timings.maghrib).minute),
-        DateTime(
-            now.year,
-            now.month,
-            now.day,
-            DateFormat("HH:mm").parse(timings.isha).hour,
-            DateFormat("HH:mm").parse(timings.isha).minute),
+      // Parse Azan timings
+      final fajrTime = parseTimeWithDate("${timings.fajr} AM", now);
+      final dhuhrTime = parseTimeWithDate("${timings.dhuhr} PM", now);
+      final asrTime = parseTimeWithDate("${timings.asr} PM", now);
+      final maghribTime = parseTimeWithDate(timings.maghrib, now);
+      final ishaTime = parseTimeWithDate("${timings.isha} PM", now);
+
+      // Locate Iqama timings from iqamahTiming
+      final iqamaTiming = iqamahTiming.firstWhere(
+        (timing) {
+          final startDate = DateFormat("d/M").parse(timing.startDate);
+          final endDate = DateFormat("d/M").parse(timing.endDate);
+          print(
+              "Checking Iqama Timing: ${timing.startDate} - ${timing.endDate}");
+          print(
+              "Start Date: $startDate, End Date: $endDate, Current Date: $now");
+          return now.isAtSameMomentAs(startDate) ||
+              (now.isAfter(startDate) && now.isBefore(endDate)) ||
+              now.isAtSameMomentAs(endDate);
+        },
+        orElse: () {
+          print("No matching iqama timings found; using default.");
+          return iqamahTiming.first; // Fallback to the first timing
+        },
+      );
+
+      // Parse Iqama timings
+      final fajrIqama = parseTimeWithDate2(iqamaTiming.fjar, now);
+      final dhuhrIqama = parseTimeWithDate2(iqamaTiming.zuhr, now);
+      final asrIqama = parseTimeWithDate2(iqamaTiming.asr, now);
+      final maghribIqama = maghribTime
+          .add(const Duration(minutes: 5)); // Maghrib Iqama = Azan + 5 minutes
+      final ishaIqama = parseTimeWithDate2(iqamaTiming.isha, now);
+
+      // Debugging: Print Azan and Iqama times with AM/PM
+      print("Fajr Iqama: ${_formatTime2(fajrIqama)}");
+      print("Dhuhr Iqama: ${_formatTime2(dhuhrIqama)}");
+      print("Asr Iqama: ${_formatTime2(asrIqama)}");
+      print("Maghrib Iqama: ${_formatTime2(maghribIqama)}");
+      print("Isha Iqama: ${_formatTime2(ishaIqama)}");
+
+      // Combine Azan and Iqama times in order
+      List<DateTime> combinedTimes = [
+        fajrTime,
+        fajrIqama,
+        dhuhrTime,
+        dhuhrIqama,
+        asrTime,
+        asrIqama,
+        maghribTime,
+        maghribIqama,
+        ishaTime,
+        ishaIqama,
       ];
 
-      // Find the next prayer time
-      DateTime? nextPrayerTime;
-      for (var prayer in prayerTimes) {
-        if (prayer.isAfter(now)) {
-          nextPrayerTime = prayer;
+      // Find the next prayer or iqama time
+      DateTime? nextTime;
+      for (var time in combinedTimes) {
+        if (time.isAfter(now)) {
+          nextTime = time;
           break;
         }
       }
 
-      // If no future prayer found, set Fajr of the next day as the next prayer
-      nextPrayerTime ??= prayerTimes.first.add(Duration(days: 1));
+      // If no future time found, set the first Azan of the next day as the next time
+      nextTime ??= fajrTime.add(Duration(days: 1));
 
-      // Calculate the remaining time for the next prayer
-      final difference = nextPrayerTime.difference(now);
-      timeUntilNextPrayer.value =
-          formatDuration(difference); // Update observable value
+      // Calculate the remaining time
+      final difference = nextTime.difference(now);
+
+      // Update observable value
+      timeUntilNextPrayer.value = formatDuration(difference);
+
+      // Debug: Print the next event
+      print(
+          "Next Event: ${_formatTime2(nextTime)} (${nextTime.isBefore(dhuhrTime) ? 'Fajr' : nextTime.isBefore(asrTime) ? 'Dhuhr' : nextTime.isBefore(maghribTime) ? 'Asr' : 'Maghrib/Isha'})");
     }
+  }
+
+// Helper to parse time strings with AM/PM
+  DateTime parseTimeWithDate2(String timeString, DateTime referenceDate) {
+    try {
+      final format12Hour =
+          DateFormat("hh:mm a"); // Handle 12-hour format with AM/PM
+      final parsedTime = format12Hour.parse(timeString);
+      return DateTime(referenceDate.year, referenceDate.month,
+          referenceDate.day, parsedTime.hour, parsedTime.minute);
+    } catch (e) {
+      print("Error parsing time: $timeString - $e");
+      return referenceDate;
+    }
+  }
+
+// Helper to format time as hh:mm AM/PM
+  String _formatTime2(DateTime dateTime) {
+    final format = DateFormat("hh:mm a");
+    return format.format(dateTime);
   }
 
   String formatDuration(Duration duration) {
@@ -165,7 +211,8 @@ class HomeController extends GetxController {
           data.date.readable,
         );
 
-        DateTime fajrDateTimeIqamah = iqamahTime.getNamazTime("fajr", fajrDateTime);
+        DateTime fajrDateTimeIqamah =
+            iqamahTime.getNamazTime("fajr", fajrDateTime);
 
         print("mkiqmah1 $fajrDateTimeIqamah");
 
@@ -190,7 +237,8 @@ class HomeController extends GetxController {
           data.date.readable,
         );
 
-        DateTime dhuhrDateTimeIqamah = iqamahTime.getNamazTime("dhuhr", dhuhrDateTime);
+        DateTime dhuhrDateTimeIqamah =
+            iqamahTime.getNamazTime("dhuhr", dhuhrDateTime);
 
         if (dhuhrDateTime.isAfter(now)) {
           await _notificationServices.scheduleNotificationForAdhan(
@@ -213,7 +261,8 @@ class HomeController extends GetxController {
           data.date.readable,
         );
 
-        DateTime asrDateTimeIqamah = iqamahTime.getNamazTime("asr", asrDateTime);
+        DateTime asrDateTimeIqamah =
+            iqamahTime.getNamazTime("asr", asrDateTime);
 
         if (asrDateTime.isAfter(now)) {
           await _notificationServices.scheduleNotificationForAdhan(
@@ -261,7 +310,8 @@ class HomeController extends GetxController {
           data.date.readable,
         );
 
-        DateTime ishaDateTimeIqamah = iqamahTime.getNamazTime("isha", ishaDateTime);
+        DateTime ishaDateTimeIqamah =
+            iqamahTime.getNamazTime("isha", ishaDateTime);
 
         if (ishaDateTime.isAfter(now)) {
           await _notificationServices.scheduleNotificationForAdhan(
@@ -411,19 +461,19 @@ class HomeController extends GetxController {
           final timings = prayerTime.value.data!.timings;
 
           // Parse Azan timings from API
-          final fajrTime = _parseTimeWithDate(timings.fajr, now);
-          final dhuhrTime = _parseTimeWithDate(timings.dhuhr, now);
-          final asrTime = _parseTimeWithDate(timings.asr, now);
-          final maghribTime = _parseTimeWithDate(timings.maghrib, now);
-          final ishaTime = _parseTimeWithDate(timings.isha, now);
+          final fajrTime = parseTimeWithDate(timings.fajr, now);
+          final dhuhrTime = parseTimeWithDate(timings.dhuhr, now);
+          final asrTime = parseTimeWithDate(timings.asr, now);
+          final maghribTime = parseTimeWithDate(timings.maghrib, now);
+          final ishaTime = parseTimeWithDate(timings.isha, now);
 
           // Parse Iqama timings from static list
-          final fajrIqama = _parseTimeWithDate(timing.fjar, now);
-          final dhuhrIqama = _parseTimeWithDate(timing.zuhr, now);
-          final asrIqama = _parseTimeWithDate(timing.asr, now);
+          final fajrIqama = parseTimeWithDate(timing.fjar, now);
+          final dhuhrIqama = parseTimeWithDate(timing.zuhr, now);
+          final asrIqama = parseTimeWithDate(timing.asr, now);
           final maghribIqama = maghribTime
               .add(Duration(minutes: 5)); // Maghrib Iqama = Azan + 5 minutes
-          final ishaIqama = _parseTimeWithDate(timing.isha, now);
+          final ishaIqama = parseTimeWithDate(timing.isha, now);
 
           // Debugging: Log the parsed times
           print("Now: ${_formatTime(now)}");
@@ -494,7 +544,7 @@ class HomeController extends GetxController {
       }
     }
 
-    return "Prayer times not found.";
+    return "";
   }
 
   String getCurrentPrayerCurrent() {
@@ -736,19 +786,19 @@ class HomeController extends GetxController {
           final timings = prayerTime.value.data!.timings;
 
           // Parse Azan timings from API
-          final fajrTime = _parseTimeWithDate(timings.fajr, now);
-          final dhuhrTime = _parseTimeWithDate(timings.dhuhr, now);
-          final asrTime = _parseTimeWithDate(timings.asr, now);
-          final maghribTime = _parseTimeWithDate(timings.maghrib, now);
-          final ishaTime = _parseTimeWithDate(timings.isha, now);
+          final fajrTime = parseTimeWithDate(timings.fajr, now);
+          final dhuhrTime = parseTimeWithDate(timings.dhuhr, now);
+          final asrTime = parseTimeWithDate(timings.asr, now);
+          final maghribTime = parseTimeWithDate(timings.maghrib, now);
+          final ishaTime = parseTimeWithDate(timings.isha, now);
 
           // Parse Iqama timings from static list
-          final fajrIqama = _parseTimeWithDate(timing.fjar, now);
-          final dhuhrIqama = _parseTimeWithDate(timing.zuhr, now);
-          final asrIqama = _parseTimeWithDate(timing.asr, now);
+          final fajrIqama = parseTimeWithDate(timing.fjar, now);
+          final dhuhrIqama = parseTimeWithDate(timing.zuhr, now);
+          final asrIqama = parseTimeWithDate(timing.asr, now);
           final maghribIqama = maghribTime
               .add(Duration(minutes: 5)); // Maghrib Iqama = Azan + 5 minutes
-          final ishaIqama = _parseTimeWithDate(timing.isha, now);
+          final ishaIqama = parseTimeWithDate(timing.isha, now);
 
           // Debugging: Log the parsed times
           print("Now: ${_formatTime(now)}");
@@ -819,11 +869,11 @@ class HomeController extends GetxController {
       }
     }
 
-    return "Prayer times not found.";
+    return " ";
   }
 
 // Helper function to parse time with today's date
-  DateTime _parseTimeWithDate(String timeString, DateTime referenceDate) {
+  DateTime parseTimeWithDate(String timeString, DateTime referenceDate) {
     try {
       final format24Hour = DateFormat("HH:mm");
       final format12Hour = DateFormat("hh:mm a");
@@ -877,18 +927,18 @@ class HomeController extends GetxController {
           final timings = prayerTime.value.data!.timings;
 
           // Parse Azan timings
-          final fajrTime = _parseTimeWithDate(timings.fajr, now);
-          final dhuhrTime = _parseTimeWithDate(timings.dhuhr, now);
-          final asrTime = _parseTimeWithDate(timings.asr, now);
-          final maghribTime = _parseTimeWithDate(timings.maghrib, now);
-          final ishaTime = _parseTimeWithDate(timings.isha, now);
+          final fajrTime = parseTimeWithDate(timings.fajr, now);
+          final dhuhrTime = parseTimeWithDate(timings.dhuhr, now);
+          final asrTime = parseTimeWithDate(timings.asr, now);
+          final maghribTime = parseTimeWithDate(timings.maghrib, now);
+          final ishaTime = parseTimeWithDate(timings.isha, now);
 
           // Parse Iqama timings
-          final fajrIqama = _parseTimeWithDate(timing.fjar, now);
-          final dhuhrIqama = _parseTimeWithDate(timing.zuhr, now);
-          final asrIqama = _parseTimeWithDate(timing.asr, now);
+          final fajrIqama = parseTimeWithDate(timing.fjar, now);
+          final dhuhrIqama = parseTimeWithDate(timing.zuhr, now);
+          final asrIqama = parseTimeWithDate(timing.asr, now);
           final maghribIqama = maghribTime.add(Duration(minutes: 5));
-          final ishaIqama = _parseTimeWithDate(timing.isha, now);
+          final ishaIqama = parseTimeWithDate(timing.isha, now);
 
           // Log parsed times for debugging
           print(
@@ -934,6 +984,6 @@ class HomeController extends GetxController {
       }
     }
 
-    return "Prayer times not found.";
+    return "";
   }
 }
