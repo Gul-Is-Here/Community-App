@@ -238,8 +238,9 @@ class AudioPlayerController extends GetxController {
     isRepeating.value = !isRepeating.value;
     if (_audioHandler != null) {
       _audioHandler!.setRepeatMode(
-        (isRepeating.value ? LoopMode.one : LoopMode.off)
-            as AudioServiceRepeatMode,
+        isRepeating.value
+            ? AudioServiceRepeatMode.one // Use the correct enum value
+            : AudioServiceRepeatMode.none,
       );
     }
   }

@@ -3,7 +3,8 @@ import 'package:community_islamic_app/views/namaz_timmings/montly_prayer_times.d
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-// import 'package:velocity_x/velocity_x.dart';
+// import 'package:share/share.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../controllers/home_controller.dart';
 import '../../model/prayer_times_static_model.dart';
 import '../../constants/color.dart';
@@ -24,7 +25,7 @@ class NamazTimingsScreen extends StatelessWidget {
             Get.back();
           },
           icon: const Icon(
-            Icons.arrow_back,
+            Icons.arrow_back_ios_new,
             color: Colors.white,
           ),
         ),
@@ -38,6 +39,27 @@ class NamazTimingsScreen extends StatelessWidget {
         ),
         centerTitle: true,
         backgroundColor: primaryColor,
+        actions: [
+          IconButton(
+            onPressed: () async {
+              // Fetch the prayer and Iqama timings
+              final timings = homeController.prayerTime.value.data?.timings;
+              final iqamaTimes = getAllIqamaTimes();
+              if (timings != null) {
+                String shareContent = generateShareContent(timings, iqamaTimes);
+                Share.share(shareContent, subject: 'Namaz Timings');
+              } else {
+                Get.snackbar(
+                  'Error',
+                  'Prayer timings are not available.',
+                  backgroundColor: Colors.red,
+                  colorText: Colors.white,
+                );
+              }
+            },
+            icon: const Icon(Icons.share, color: Colors.white),
+          ),
+        ],
       ),
       body: Obx(() {
         if (homeController.prayerTime.value.data == null) {
@@ -82,7 +104,9 @@ class NamazTimingsScreen extends StatelessWidget {
                                 color: primaryColor,
                                 size: 24,
                               ),
-                          SizedBox(height: 10,),
+                              SizedBox(
+                                height: 10,
+                              ),
                               Column(
                                 children: [
                                   Text(
@@ -136,7 +160,9 @@ class NamazTimingsScreen extends StatelessWidget {
                                 color: primaryColor,
                                 size: 24,
                               ),
-                       SizedBox(height: 10,),
+                              SizedBox(
+                                height: 10,
+                              ),
                               Column(
                                 children: [
                                   Text(
@@ -167,28 +193,40 @@ class NamazTimingsScreen extends StatelessWidget {
                 ),
               ],
             ),
-         SizedBox(height: 5,),
+            SizedBox(
+              height: 5,
+            ),
             _buildPrayerTile(
                 'Fajr', timings.fajr, iqamatimes['Fajr']!, currentPrayer),
 
-         SizedBox(height: 5,),
+            SizedBox(
+              height: 5,
+            ),
             _buildPrayerTile(
                 'Dhuhr', timings.dhuhr, iqamatimes['Dhuhr']!, currentPrayer),
-         SizedBox(height: 5,),
+            SizedBox(
+              height: 5,
+            ),
             _buildPrayerTile(
                 'Asr', timings.asr, iqamatimes['Asr']!, currentPrayer),
-         SizedBox(height: 5,),
+            SizedBox(
+              height: 5,
+            ),
             _buildPrayerTile('Maghrib', timings.maghrib,
                 _calculateIqamaTime(timings.maghrib), currentPrayer),
 
-         SizedBox(height: 5,),
+            SizedBox(
+              height: 5,
+            ),
             _buildPrayerTile(
                 'Isha', timings.isha, iqamatimes['Isha']!, currentPrayer),
 
             // Jumma section
             const SizedBox(height: 20),
             const JummaPrayerTile(),
-           SizedBox(height: 10,),
+            SizedBox(
+              height: 10,
+            ),
             ElevatedButton(
                 style: ElevatedButton.styleFrom(
                     backgroundColor: whiteColor,
@@ -203,7 +241,9 @@ class NamazTimingsScreen extends StatelessWidget {
                   style: TextStyle(
                       fontFamily: popinsSemiBold, color: primaryColor),
                 )),
-       SizedBox(height: 10,),
+            SizedBox(
+              height: 10,
+            ),
             ElevatedButton(
                 style: ElevatedButton.styleFrom(
                     backgroundColor: whiteColor,
@@ -222,6 +262,21 @@ class NamazTimingsScreen extends StatelessWidget {
         );
       }),
     );
+  }
+
+  /// Helper function to generate the share content
+  String generateShareContent(dynamic timings, Map<String, String> iqamaTimes) {
+    return '''
+📿 *Today's Prayer Timings* 📿
+
+🌅 Fajr: ${formatPrayerTime(timings.fajr)} | Iqama: ${iqamaTimes['Fajr']}
+🌞 Dhuhr: ${formatPrayerTime(timings.dhuhr)} | Iqama: ${iqamaTimes['Dhuhr']}
+🌥️ Asr: ${formatPrayerTime(timings.asr)} | Iqama: ${iqamaTimes['Asr']}
+🌇 Maghrib: ${formatPrayerTime(timings.maghrib)} | Iqama: ${_calculateIqamaTime(timings.maghrib)}
+🌌 Isha: ${formatPrayerTime(timings.isha)} | Iqama: ${iqamaTimes['Isha']}
+
+*Shared from the Islamic App*
+    ''';
   }
 
   String _calculateIqamaTime(String maghribAzanTime) {

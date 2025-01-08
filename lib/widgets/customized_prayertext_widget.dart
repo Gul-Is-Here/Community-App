@@ -1,6 +1,8 @@
 import 'package:blinking_text/blinking_text.dart';
+import 'package:community_islamic_app/controllers/home_controller.dart';
 import 'package:community_islamic_app/widgets/blinkContainer.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../app_classes/app_class.dart';
 import '../constants/color.dart';

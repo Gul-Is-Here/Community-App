@@ -234,13 +234,12 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 
     // Initialize PageController with a starting index
     _pageController = PageController(
-      initialPage: _currentDate.month - 1, // Start from the current month
+      initialPage: _calculatePageIndex(_currentDate),
     );
   }
 
   void _initializeSelectedDateAndEvents() {
     // Display all events by default
-
     _selectedDate = null; // Reset selected date for "all events"
     _updateDisplayedEvents(); // Populate _displayedEvents immediately
   }
@@ -264,10 +263,18 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 
   void _onPageChanged(int pageIndex) {
     setState(() {
-      // Update the current date based on the page index (page 0 = January, page 1 = February, etc.)
-      _currentDate = DateTime(DateTime.now().year, pageIndex + 1, 1);
+      // Calculate the year and month based on the page index
+      int year = DateTime.now().year + ((pageIndex ~/ 12) - 1);
+      int month = (pageIndex % 12) + 1;
+
+      _currentDate = DateTime(year, month, 1);
     });
     _updateDisplayedEvents(); // Refresh events for the new page
+  }
+
+  int _calculatePageIndex(DateTime date) {
+    int currentYear = DateTime.now().year;
+    return (date.year - currentYear + 1) * 12 + date.month - 1;
   }
 
   @override
@@ -320,7 +327,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
         Expanded(
           child: PageView.builder(
             controller: _pageController,
-            itemCount: 12, // Number of months (from January to December)
+            itemCount: 12 *
+                3, // Allow navigation for 3 years (previous, current, next)
             onPageChanged: _onPageChanged,
             itemBuilder: (context, index) {
               return Column(
@@ -366,17 +374,21 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                                 GestureDetector(
                                   onTap: () {
                                     AppClass().EventDetailsShowModelBottomSheet(
-                                      context,
-                                      event.eventTitle,
-                                      event.eventStarttime.toString(),
-                                      event.eventEndtime.toString(),
-                                      event.eventhastype.eventtypeName,
-                                      event.paid == '0' ? 'Free Event' : 'Paid',
-                                      event.eventDate.toString(),
-                                      event.eventDetail,
-                                      event.eventImage,
-                                      event.venueName,
-                                    );
+                                        context,
+                                        event.eventTitle,
+                                        event.eventStarttime.toString(),
+                                        event.eventEndtime.toString(),
+                                        event.eventhastype.eventtypeName,
+                                        event.paid == '0'
+                                            ? 'Free Event'
+                                            : event.paid == '1'
+                                                ? 'Paid'
+                                                : '',
+                                        event.eventDate.toString(),
+                                        event.eventDetail,
+                                        event.eventImage,
+                                        event.venueName,
+                                        event.eventLink);
                                   },
                                   child: Column(
                                     crossAxisAlignment:
@@ -546,8 +558,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                         width: 6.0,
                         height: 6.0,
                         decoration: BoxDecoration(
-                          color: AppClass().hexToColor(event.eventhastype
-                              .eventtypeTextcolor), // Default color
+                          color: AppClass().hexToColor(event
+                              .eventhastype.eventtypeBgcolor), // Default color
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(
                             color: AppClass().hexToColor(

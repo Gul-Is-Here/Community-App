@@ -1,3 +1,4 @@
+import 'package:community_islamic_app/constants/color.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 // import 'package:velocity_x/velocity_x.dart';
@@ -14,9 +15,11 @@ class AudioPlayerBar extends StatelessWidget {
   final VoidCallback onPrevious;
   final String? totalVerseCount;
   final String? artistName;
+  final String surahName;
 
   const AudioPlayerBar({
     super.key,
+    required this.surahName,
     required this.audioPlayerController,
     required this.isPlaying,
     required this.currentAudio,
@@ -37,10 +40,11 @@ class AudioPlayerBar extends StatelessWidget {
       final playbackSpeed = audioPlayerController.playbackSpeed.value;
 
       return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-            color: const Color(0xFF006367),
-            borderRadius: BorderRadius.circular(10)),
+            color: primaryColor,
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(10), topRight: Radius.circular(10))),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -51,31 +55,42 @@ class AudioPlayerBar extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
+                      surahName,
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontFamily: popinsMedium,
+                          color: whiteColor),
+                    ),
+                    Text(
                       totalVerseCount ?? '',
                       style: const TextStyle(
                           color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold),
+                          fontSize: 12,
+                          fontFamily: popinsMedium),
                     ),
-                SizedBox(height: 5,),
+                    SizedBox(
+                      height: 5,
+                    ),
                     Text(
                       artistName ?? '',
                       style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                      ),
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontFamily: popinsMedium),
                     ),
                   ],
                 ),
                 Container(
+                  height: 45,
+                  width: 45,
                   decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: lightColor,
                       borderRadius: BorderRadius.circular(50)),
                   child: Padding(
                     padding: const EdgeInsets.all(2.0),
                     child: Container(
                       decoration: BoxDecoration(
-                        color: const Color(0xFF006367),
+                        color: primaryColor,
                         borderRadius: BorderRadius.circular(50),
                       ),
                       child: IconButton(
@@ -83,8 +98,8 @@ class AudioPlayerBar extends StatelessWidget {
                           '$playbackSpeed x',
                           style: const TextStyle(
                               color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold),
+                              fontSize: 11,
+                              fontFamily: popinsRegulr),
                         ),
                         onPressed: audioPlayerController.toggleSpeed,
                       ),
@@ -100,7 +115,7 @@ class AudioPlayerBar extends StatelessWidget {
                   icon: const Icon(
                     Icons.skip_previous,
                     color: Colors.white,
-                    size: 50,
+                    size: 35,
                   ),
                   onPressed: onPrevious,
                 ),
@@ -108,7 +123,7 @@ class AudioPlayerBar extends StatelessWidget {
                   icon: Icon(
                     isPlaying ? Icons.pause : Icons.play_arrow,
                     color: Colors.white,
-                    size: 50,
+                    size: 35,
                   ),
                   onPressed: onPlayPause,
                 ),
@@ -116,7 +131,7 @@ class AudioPlayerBar extends StatelessWidget {
                   icon: const Icon(
                     Icons.stop,
                     color: Colors.white,
-                    size: 50,
+                    size: 35,
                   ),
                   onPressed: onStop,
                 ),
@@ -124,7 +139,7 @@ class AudioPlayerBar extends StatelessWidget {
                   icon: const Icon(
                     Icons.skip_next,
                     color: Colors.white,
-                    size: 50,
+                    size: 35,
                   ),
                   onPressed: onNext,
                 ),
@@ -151,7 +166,7 @@ class AudioPlayerBar extends StatelessWidget {
                       height: 4.0,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(4.0),
-                        color: Colors.grey[800],
+                        color: lightColor,
                       ),
                     ),
                   ),

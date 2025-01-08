@@ -39,7 +39,7 @@ class EventDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFEFF6F0), // Light greenish background
+      backgroundColor: lightColor, // Light greenish background
       appBar: AppBar(
         backgroundColor: primaryColor,
         title: const Text(
@@ -124,21 +124,30 @@ class EventDetailPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 GestureDetector(
-                  onTap: () {
-                    AppClass().launchURL(locatinV);
-                  },
+                  onTap: () {},
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Icon(Icons.location_on,
                           color: Color(0xFF3FA27E), size: 20),
                       Expanded(
-                        child: Text(
-                          'Venue',
-                          style: TextStyle(
-                              fontFamily: popinsSemiBold,
-                              fontSize: 18,
-                              color: primaryColor),
+                        child: Row(
+                          children: [
+                            Text(
+                              'Venue ',
+                              style: TextStyle(
+                                  fontFamily: popinsSemiBold,
+                                  // fontSize: 18,
+                                  color: primaryColor),
+                            ),
+                            Text(
+                              '(click to locate)',
+                              style: TextStyle(
+                                  fontFamily: popinsRegulr,
+                                  fontSize: 11,
+                                  color: primaryColor),
+                            ),
+                          ],
                         ),
                       ),
                     ],
@@ -147,12 +156,18 @@ class EventDetailPage extends StatelessWidget {
                 SizedBox(
                   height: 5,
                 ),
-                Text(
-                  eventVenue,
-                  style: const TextStyle(
-                      fontSize: 14,
-                      color: Colors.black87,
-                      fontFamily: popinsRegulr),
+                GestureDetector(
+                  onTap: () {
+                    AppClass().launchURL(locatinV);
+                  },
+                  child: Text(
+                    eventVenue,
+                    style: TextStyle(
+                        decoration: TextDecoration.underline,
+                        fontSize: 14,
+                        color: primaryColor,
+                        fontFamily: popinsSemiBold),
+                  ),
                 ),
               ],
             ),

@@ -321,6 +321,7 @@ class _SurahDetailsScreenState extends State<SurahDetailsScreen> {
           ),
           Obx(() {
             return AudioPlayerBar(
+              surahName: widget.surahName,
               totalVerseCount: 'Verses ${widget.surahVerse.length}',
               audioPlayerController: audioController,
               isPlaying: audioController.isPlaying.value,
