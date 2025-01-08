@@ -224,8 +224,8 @@ class NotificationServices {
       uniqueId,
       title,
       body,
-      tz.TZDateTime.from(scheduleNotificationDateTime, tz.local), 
-      notificationDetails(  
+      tz.TZDateTime.from(scheduleNotificationDateTime, tz.local),
+      notificationDetails(
         title: payLoad,
       ),
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,

@@ -284,9 +284,9 @@ class EventsWidget extends StatelessWidget {
                                 autoPlay: true,
                                 autoPlayInterval: Duration(seconds: 3),
                                 height: 169,
-                                viewportFraction: 1,
+                                viewportFraction: 0.8,
                                 enableInfiniteScroll: true,
-                                enlargeCenterPage: true,
+                                // enlargeCenterPage: true,
                                 scrollDirection: Axis.horizontal,
                                 onPageChanged: (index, reason) {
                                   eventsController.updateSelectedIndex(index);

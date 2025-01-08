@@ -19,186 +19,210 @@ class QiblahScreen extends StatelessWidget {
   final homeController = Get.find<HomeController>();
   final loginController = Get.put(LoginController());
 
+  Future<bool> _onWillPop(BuildContext context) async {
+    return await showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            backgroundColor: primaryColor,
+            title: Text(
+              "Exit App",
+              style: TextStyle(fontFamily: popinsSemiBold, color: whiteColor),
+            ),
+            content: Text(
+              "Are you sure you want to quit the app?",
+              style: TextStyle(fontFamily: popinsMedium, color: whiteColor),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () =>
+                    Navigator.of(context).pop(false), // Stay on the app
+                child: Text(
+                  "No",
+                  style: TextStyle(fontFamily: popinsMedium, color: Colors.red),
+                ),
+              ),
+              TextButton(
+                onPressed: () =>
+                    Navigator.of(context).pop(true), // Exit the app
+                child: Text(
+                  "Yes",
+                  style: TextStyle(
+                      fontFamily: popinsMedium, color: secondaryColor),
+                ),
+              ),
+            ],
+          ),
+        ) ??
+        false;
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
 
-    return Scaffold(
-      backgroundColor: primaryColor,
-      appBar: AppBar(
-        leading: isNavigation
-            ? IconButton(
-                onPressed: () {
-                  Get.back();
-                },
-                icon: Icon(
-                  Icons.arrow_back_ios,
+    return WillPopScope(
+      onWillPop: () => _onWillPop(context),
+      child: Scaffold(
+        backgroundColor: primaryColor,
+        appBar: AppBar(
+          leading: isNavigation
+              ? IconButton(
+                  onPressed: () {
+                    Get.back();
+                  },
+                  icon: Icon(
+                    Icons.arrow_back_ios,
+                    color: whiteColor,
+                  ),
+                )
+              : SizedBox(),
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          title: Text(
+            'Qibla Direction',
+            style: TextStyle(
+              fontFamily: popinsSemiBold,
+              color: whiteColor,
+              fontSize: screenHeight * 0.022,
+            ),
+          ),
+          automaticallyImplyLeading: true,
+        ),
+        body: StreamBuilder(
+          stream: FlutterQiblah.qiblahStream,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: CircularProgressIndicator(
                   color: whiteColor,
                 ),
-              )
-            : SizedBox(),
-        // centerTitle: true,
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        title: Text(
-          'Qibla Direction',
-          style: TextStyle(
-            fontFamily: popinsSemiBold,
-            color: whiteColor,
-            fontSize: screenHeight * 0.022,
-          ),
-        ),
-        automaticallyImplyLeading: true,
-      ),
-      body: StreamBuilder(
-        stream: FlutterQiblah.qiblahStream,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: CircularProgressIndicator(
-                color: whiteColor,
-              ),
-            );
-          }
+              );
+            }
 
-          if (snapshot.hasData) {
-            final qiblahDirection = snapshot.data!;
-            controller.updateQiblahDirection(qiblahDirection.qiblah);
+            if (snapshot.hasData) {
+              final qiblahDirection = snapshot.data!;
+              controller.updateQiblahDirection(qiblahDirection.qiblah);
 
-            // Calculate the rotation angle for compass
-            // double rotationAngle = qiblahDirection.direction * (pi / 180) * -1;
-            // double compassRotation =
-            //     qiblahDirection.direction * (pi / 180) * -1;
-
-            return Center(
-              child: Column(
-                children: [
-                  SizedBox(height: screenHeight * 0.05),
-                  Container(
-                    height: 30,
-                    alignment: Alignment.center,
-                    width: 234,
-                    decoration: BoxDecoration(
-                        // color: Color(0xFF33803C),
-                        gradient: LinearGradient(
-                            colors: [Color(0xFF01823D), Color(0xFF01823D)],
-                            begin: Alignment.center,
-                            end: Alignment.center),
-                        borderRadius: BorderRadius.circular(5),
-                        border: Border.all(width: 1, color: Color(0xFF18423F))),
-                    child: Text(
-                      'Compass',
-                      style: TextStyle(
-                        fontFamily: popinsSemiBold,
-                        color: whiteColor,
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: screenHeight * 0.03),
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  //   children: [
-                  //     buildInfoCard(
-                  //       screenWidth: screenWidth,
-                  //       screenHeight: screenHeight,
-                  //       label: 'Your angle to Qibla',
-                  //       value:
-                  //           '${(qiblahDirection.qiblah % 360).toStringAsFixed(0)}°',
-                  //     ),
-                  //     buildInfoCard(
-                  //       screenWidth: screenWidth,
-                  //       screenHeight: screenHeight,
-                  //       label: 'Qibla angle from N',
-                  //       value:
-                  //           '${(qiblahDirection.direction % 360).toStringAsFixed(0)}°',
-                  //     ),
-                  //   ],
-                  // ),
-                  SizedBox(height: screenHeight * 0.08),
-                  Stack(
-                    clipBehavior: Clip.none,
-                    alignment: Alignment.center,
-                    children: [
-                      // Fixed Circular Line
-                      Image.asset(
-                        qiblaCircle,
-                        height: 230,
-                        width: 229,
-                        fit: BoxFit.cover,
-                      ),
-                      // Rotating Cardinal Compass Inside the Circle
-                      Transform.rotate(
-                        angle: (qiblahDirection.direction *
-                            (pi / 180) *
-                            -1), // Rotate based on magnetic north
-                        child: Image.asset(
-                          qiblaCompass, // Compass asset with N, S, E, W directions
-                          height: 200,
-                          width: 200,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-
-                      // Rotating Kaaba Icon Around the Edge of the Circle
-                      Transform.rotate(
-                        angle: (qiblahDirection.qiblah *
-                            (pi / 180) *
-                            -1), // Rotation angle based on Qibla direction
-                        child: Transform.translate(
-                          offset: const Offset(
-                              0, -130), // Offset to place the icon on the edge
-                          child: Image.asset(
-                            kabba, // Kaaba icon
-                            height: 34,
-                            width: 34,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                      Text(
-                        "${(qiblahDirection.direction % 360).toStringAsFixed(0)}°",
+              return Center(
+                child: Column(
+                  children: [
+                    SizedBox(height: screenHeight * 0.05),
+                    Container(
+                      height: 30,
+                      alignment: Alignment.center,
+                      width: 234,
+                      decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                              colors: [Color(0xFF01823D), Color(0xFF01823D)],
+                              begin: Alignment.center,
+                              end: Alignment.center),
+                          borderRadius: BorderRadius.circular(5),
+                          border:
+                              Border.all(width: 1, color: Color(0xFF18423F))),
+                      child: Text(
+                        'Compass',
                         style: TextStyle(
-                          fontSize: 16,
-                          // fontWeight: FontWeight.bold,
-                          fontFamily: popinsMedium,
+                          fontFamily: popinsSemiBold,
                           color: whiteColor,
                         ),
                       ),
-                    ],
-                  ),
-                  SizedBox(height: screenHeight * 0.03),
-                  Text(
-                    "Qibla angle :${(qiblahDirection.direction % 360).toStringAsFixed(0)}°",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: popinsRegulr,
-                      color: whiteColor,
                     ),
-                  ),
-                  const Spacer(),
-                  Image.asset(
-                    compassBg, // Replace with the footer masjid line asset
-                    width: screenWidth,
-                    fit: BoxFit.cover,
-                  ),
-                  SizedBox(
-                    height: 60,
-                  ),
-                ],
-              ),
-            );
-          } else {
-            return Center(
-              child: Text(
-                "Unable to get Qiblah direction,\nPlease restart the app",
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.black),
-              ),
-            );
-          }
-        },
+                    SizedBox(height: screenHeight * 0.03),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        buildInfoCard(
+                          screenWidth: screenWidth,
+                          screenHeight: screenHeight,
+                          label: 'Your angle to Qibla',
+                          value:
+                              '${(qiblahDirection.qiblah % 360).toStringAsFixed(0)}°',
+                        ),
+                        buildInfoCard(
+                          screenWidth: screenWidth,
+                          screenHeight: screenHeight,
+                          label: 'Qibla angle from N',
+                          value:
+                              '${(qiblahDirection.direction % 360).toStringAsFixed(0)}°',
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: screenHeight * 0.08),
+                    Stack(
+                      clipBehavior: Clip.none,
+                      alignment: Alignment.center,
+                      children: [
+                        Image.asset(
+                          qiblaCircle,
+                          height: 230,
+                          width: 229,
+                          fit: BoxFit.cover,
+                        ),
+                        Transform.rotate(
+                          angle: (qiblahDirection.direction * (pi / 180) * -1),
+                          child: Image.asset(
+                            qiblaCompass,
+                            height: 200,
+                            width: 200,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        Transform.rotate(
+                          angle: (qiblahDirection.qiblah * (pi / 180) * -1),
+                          child: Transform.translate(
+                            offset: const Offset(0, -130),
+                            child: Image.asset(
+                              kabba,
+                              height: 34,
+                              width: 34,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          "${(qiblahDirection.direction % 360).toStringAsFixed(0)}°",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontFamily: popinsMedium,
+                            color: whiteColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: screenHeight * 0.03),
+                    Text(
+                      "Qibla angle :${(qiblahDirection.direction % 360).toStringAsFixed(0)}°",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: popinsRegulr,
+                        color: whiteColor,
+                      ),
+                    ),
+                    const Spacer(),
+                    Image.asset(
+                      compassBg,
+                      width: screenWidth,
+                      fit: BoxFit.cover,
+                    ),
+                    SizedBox(
+                      height: 60,
+                    ),
+                  ],
+                ),
+              );
+            } else {
+              return Center(
+                child: Text(
+                  "Unable to get Qiblah direction,\nPlease restart the app",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.black),
+                ),
+              );
+            }
+          },
+        ),
       ),
     );
   }

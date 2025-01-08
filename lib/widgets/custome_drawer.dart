@@ -80,7 +80,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
               ],
             ),
             Padding(
-              padding: const EdgeInsets.only(left: 0, top: 50),
+              padding: const EdgeInsets.only(left: 0, top: 40),
               child: Obx(() {
                 if (profileController.userData.isEmpty ||
                     profileController.userData['user'] == null) {
@@ -92,18 +92,37 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         child: Row(
                           children: [
                             Container(
-                              height: 48,
-                              width: 48,
+                              height: 70,
+                              width: 70,
                               decoration: BoxDecoration(
-                                  color: lightColor,
-                                  borderRadius: BorderRadius.circular(30)),
-                              child: Icon(Icons.person),
+                                color: lightColor, // Outer container color
+                                borderRadius: BorderRadius.circular(40),
+                              ),
+                              child: Center(
+                                // Center the inner container
+                                child: Container(
+                                  height: 50,
+                                  width: 50,
+                                  decoration: BoxDecoration(
+                                    color: Color(
+                                        0xFF00A559), // Inner container color
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
+                                  child: Icon(
+                                    Icons.person,
+                                    size: 40,
+                                    color: lightColor,
+                                  ),
+                                ),
+                              ),
                             ),
                             // 10.widthBox
                             SizedBox(
                               height: 10,
                             ),
                             Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Row(
                                   children: [
@@ -127,7 +146,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                         Get.to(() => RegistrationScreen());
                                       },
                                       child: Text(
-                                        'Resgister',
+                                        'Register',
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                           fontFamily: popinsMedium,
@@ -140,16 +159,20 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                   ],
                                 ),
                                 Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    textDirection: TextDirection.ltr,
-                                    'Guest',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontFamily: popinsRegulr,
-                                      color: whiteColor,
-                                      // fontWeight: FontWeight.bold,
-                                      fontSize: 10,
+                                  // alignment: Alignment.centerLeft,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12),
+                                    child: Text(
+                                      // textDirection: TextDirection.ltr,
+                                      'Guest',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontFamily: popinsRegulr,
+                                        color: whiteColor,
+                                        // fontWeight: FontWeight.bold,
+                                        fontSize: 10,
+                                      ),
                                     ),
                                   ),
                                 ),

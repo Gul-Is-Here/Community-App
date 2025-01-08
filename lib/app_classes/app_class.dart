@@ -1,13 +1,18 @@
+import 'dart:io';
+
 import 'package:community_islamic_app/views/Gallery_Events/ask_imam_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:url_launcher/url_launcher.dart';
 // import 'package:velocity_x/velocity_x.dart';
-
+import 'package:http/http.dart' as http;
 import '../constants/color.dart';
 import '../constants/image_constants.dart';
+import '../views/home_screens/EventsAndannouncements/events_details_screen.dart';
 
 class AppClass {
   Future<void> launchURL(String url) async {
@@ -327,7 +332,10 @@ class AppClass {
                             context: context,
                             image: icNewsLetter,
                             label: 'Newsletters',
-                            onPressed: () async {},
+                            onPressed: () async {
+                              launchUrl(Uri.parse(
+                                  'https://rosenbergcommunitycenter.us21.list-manage.com/subscribe?u=7e6387230db8bce6af81ee41d&id=93bc7cf7b2'));
+                            },
                           ),
                           buildSocialMediaButton(
                             context: context,
@@ -462,18 +470,48 @@ class AppClass {
     );
   }
 
+  Future<void> _downloadAndShareImage(
+      String imageUrl, String title, String details) async {
+    try {
+      if (imageUrl.isEmpty) {
+        throw "Image URL is empty";
+      }
+      final uri = Uri.parse(imageUrl);
+      final response = await http.get(uri);
+      if (response.statusCode == 200) {
+        final tempDir = await getTemporaryDirectory();
+        final file = File('${tempDir.path}/event_image.png');
+        await file.writeAsBytes(response.bodyBytes);
+        await Share.shareXFiles([XFile(file.path)], text: "$title\n\n$details");
+      } else {
+        scaffoldMessengerKey.currentState?.showSnackBar(
+          SnackBar(
+              content: Text(
+                  "Failed to fetch image. Status Code: ${response.statusCode}")),
+        );
+      }
+    } catch (e) {
+      print("Error sharing image: $e");
+      scaffoldMessengerKey.currentState?.showSnackBar(
+        SnackBar(content: Text("Failed to share image: $e")),
+      );
+    }
+  }
+
   // ---- Show Model Bottom Sheet of Events Details Page
   Future<dynamic> EventDetailsShowModelBottomSheet(
-      BuildContext context,
-      String title,
-      String sTime,
-      String endTime,
-      String eventType,
-      String entry,
-      String eventDate,
-      String eventDetails,
-      String imageLink,
-      String locatinD) {
+    BuildContext context,
+    String title,
+    String sTime,
+    String endTime,
+    String eventType,
+    String entry,
+    String eventDate,
+    String eventDetails,
+    String imageLink,
+    String locatinD,
+    String eventLink,
+  ) {
     return showModalBottomSheet(
       isScrollControlled: true,
       backgroundColor: const Color(0xFFB3E8DA),
@@ -504,10 +542,16 @@ class AppClass {
                             color: Color(0xFF00A53C)),
                       ),
                     ),
-                    Image.asset(
-                      shareIcon,
-                      height: 30,
-                      width: 30,
+                    GestureDetector(
+                      onTap: () async {
+                        await _downloadAndShareImage(
+                            imageLink, title, eventDetails);
+                      },
+                      child: Image.asset(
+                        shareIcon,
+                        height: 30,
+                        width: 30,
+                      ),
                     )
                   ],
                 ),
@@ -543,7 +587,7 @@ class AppClass {
                           height: 5,
                         ),
                         Text(
-                          'ENd:  ${formatTimeToAMPM(endTime)}',
+                          'End:  ${formatTimeToAMPM(endTime)}',
                           style: const TextStyle(
                               fontFamily: popinsRegulr,
                               color: Colors.black,
@@ -644,6 +688,13 @@ class AppClass {
                           fontSize: 16,
                           color: secondaryColor),
                     ),
+                    Text(
+                      '(click to locate )',
+                      style: TextStyle(
+                          fontFamily: popinsRegulr,
+                          fontSize: 11,
+                          color: secondaryColor),
+                    ),
                   ],
                 ),
                 SizedBox(
@@ -651,16 +702,18 @@ class AppClass {
                 ),
                 GestureDetector(
                   onTap: () {
-                    AppClass().launchURL(locatinD);
+                    AppClass().launchURL(eventLink);
+                    print(eventLink);
                   },
                   child: Text(
                       maxLines: 4,
                       locatinD,
-                      style: const TextStyle(
+                      style: TextStyle(
+                          decoration: TextDecoration.underline,
                           overflow: TextOverflow.ellipsis,
                           fontSize: 16,
-                          fontFamily: popinsRegulr,
-                          color: Colors.black)),
+                          fontFamily: popinsSemiBold,
+                          color: primaryColor)),
                 ),
                 SizedBox(
                   height: 5,

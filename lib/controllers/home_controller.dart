@@ -26,6 +26,12 @@ class HomeController extends GetxController {
   RxString currentTime = ''.obs;
   int storeMonthPrayerTimes = 0;
   var prayerTimess;
+  var currentPrayerTitle =
+      ''.obs; // Reactive variable to store the current prayer
+  var currentPrayerTimes = ''.obs;
+  var currentPrayerIqama = ''.obs;
+  RxString currentPrayerHeighliter = ''.obs;
+
   String? currentPrayerTime;
   PrayerTimesModel? prayerTimes;
   var currentIqamaTime;
@@ -51,7 +57,10 @@ class HomeController extends GetxController {
     getPrayerTimesFromStorage();
     startNextPrayerTimer(); // Start the countdown timer
     _timer = Timer.periodic(Duration(seconds: 1), (_) {
+      updateCurrentPrayer();
       updateCurrentTime();
+
+      getNextPrayerTimeWithIqama();
     });
   }
 
@@ -64,6 +73,10 @@ class HomeController extends GetxController {
   Future<void> startNextPrayerTimer() async {
     _timer = Timer.periodic(const Duration(seconds: 1), (Timer timer) {
       updateTimeUntilNextPrayer(); // Update the countdown every second
+      getCurrentPhase();
+      getNextPrayerTimeWithIqama();
+      getCurrentPhase();
+      // getHeightliter();
     });
   }
 
@@ -86,10 +99,7 @@ class HomeController extends GetxController {
         (timing) {
           final startDate = DateFormat("d/M").parse(timing.startDate);
           final endDate = DateFormat("d/M").parse(timing.endDate);
-          print(
-              "Checking Iqama Timing: ${timing.startDate} - ${timing.endDate}");
-          print(
-              "Start Date: $startDate, End Date: $endDate, Current Date: $now");
+
           return now.isAtSameMomentAs(startDate) ||
               (now.isAfter(startDate) && now.isBefore(endDate)) ||
               now.isAtSameMomentAs(endDate);
@@ -107,13 +117,6 @@ class HomeController extends GetxController {
       final maghribIqama = maghribTime
           .add(const Duration(minutes: 5)); // Maghrib Iqama = Azan + 5 minutes
       final ishaIqama = parseTimeWithDate2(iqamaTiming.isha, now);
-
-      // Debugging: Print Azan and Iqama times with AM/PM
-      print("Fajr Iqama: ${_formatTime2(fajrIqama)}");
-      print("Dhuhr Iqama: ${_formatTime2(dhuhrIqama)}");
-      print("Asr Iqama: ${_formatTime2(asrIqama)}");
-      print("Maghrib Iqama: ${_formatTime2(maghribIqama)}");
-      print("Isha Iqama: ${_formatTime2(ishaIqama)}");
 
       // Combine Azan and Iqama times in order
       List<DateTime> combinedTimes = [
@@ -451,7 +454,88 @@ class HomeController extends GetxController {
   // void stopAzan() {
   //   _notificationServices.stopAzan();
   // }
-  String getCurrentPrayer() {
+  void updateCurrentPrayer() {
+    final now = DateTime.now();
+
+    final todayString = "${now.day}/${now.month}";
+
+    for (var timing in iqamahTiming) {
+      if (_isDateInRange(todayString, timing.startDate, timing.endDate)) {
+        if (prayerTime.value.data?.timings != null) {
+          final timings = prayerTime.value.data!.timings;
+
+          // Parse Azan timings from API
+          final fajrTime = parseTimeWithDate(timings.fajr, now);
+          final dhuhrTime = parseTimeWithDate(timings.dhuhr, now);
+          final asrTime = parseTimeWithDate(timings.asr, now);
+          final maghribTime = parseTimeWithDate(timings.maghrib, now);
+          final ishaTime = parseTimeWithDate(timings.isha, now);
+
+          // Parse Iqama timings from static list
+          final fajrIqama = parseTimeWithDate(timing.fjar, now);
+          final dhuhrIqama = parseTimeWithDate(timing.zuhr, now);
+          final asrIqama = parseTimeWithDate(timing.asr, now);
+          final maghribIqama = maghribTime.add(const Duration(minutes: 5));
+          final ishaIqama = parseTimeWithDate(timing.isha, now);
+
+          // Determine the current or next prayer
+          if (now.isBefore(fajrTime)) {
+            currentPrayerTitle.value = "Next: Fajr";
+            return;
+          }
+          if (now.isBefore(fajrIqama)) {
+            currentPrayerTitle.value = "Iqama: Fajr";
+            return;
+          }
+
+          if (now.isBefore(dhuhrTime)) {
+            currentPrayerTitle.value = "Next: Dhuhr";
+            return;
+          }
+          if (now.isBefore(dhuhrIqama)) {
+            currentPrayerTitle.value = "Iqama: Dhuhr";
+            return;
+          }
+
+          if (now.isBefore(asrTime)) {
+            currentPrayerTitle.value = "Next: Asr";
+            return;
+          }
+          if (now.isBefore(asrIqama)) {
+            currentPrayerTitle.value = "Iqama: Asr";
+            return;
+          }
+
+          if (now.isBefore(maghribTime)) {
+            currentPrayerTitle.value = "Next: Maghrib";
+            return;
+          }
+          if (now.isBefore(maghribIqama)) {
+            currentPrayerTitle.value = "Iqama: Maghrib";
+            return;
+          }
+
+          if (now.isBefore(ishaTime)) {
+            currentPrayerTitle.value = "Next: Isha";
+            return;
+          }
+          if (now.isBefore(ishaIqama)) {
+            currentPrayerTitle.value = "Iqama: Isha";
+            return;
+          }
+
+          // If all prayers for today have passed
+          currentPrayerTitle.value = "Next: Fajr";
+          return;
+        }
+      }
+    }
+
+    // Default if no timings match
+    currentPrayerTitle.value = " ";
+  }
+
+  RxString getCurrentPrayer() {
     final now = DateTime.now();
     final todayString = "${now.day}/${now.month}";
 
@@ -476,75 +560,64 @@ class HomeController extends GetxController {
           final ishaIqama = parseTimeWithDate(timing.isha, now);
 
           // Debugging: Log the parsed times
-          print("Now: ${_formatTime(now)}");
-          print(
-              "Fajr Azan: ${_formatTime(fajrTime)}, Fajr Iqama: ${_formatTime(fajrIqama)}");
-          print(
-              "Dhuhr Azan: ${_formatTime(dhuhrTime)}, Dhuhr Iqama: ${_formatTime(dhuhrIqama)}");
-          print(
-              "Asr Azan: ${_formatTime(asrTime)}, Asr Iqama: ${_formatTime(asrIqama)}");
-          print(
-              "Maghrib Azan: ${_formatTime(maghribTime)}, Maghrib Iqama: ${_formatTime(maghribIqama)}");
-          print(
-              "Isha Azan: ${_formatTime(ishaTime)}, Isha Iqama: ${_formatTime(ishaIqama)}");
 
           // Check for Fajr
           if (now.isBefore(fajrTime)) {
             print('Fajr Namaz Time : $fajrTime');
-            return "Next: Fajr";
+            return "Next: Fajr".obs;
           }
           if (now.isBefore(fajrIqama)) {
             print('Fajr I qamaTime : $fajrIqama');
-            return "Iqama: Fajr";
+            return "Iqama: Fajr".obs;
           }
 
           // Check for Dhuhr
           if (now.isBefore(dhuhrTime)) {
             print('Fajr duhur Time : $dhuhrTime');
-            return "Next: Dhuhr";
+            return "Next: Dhuhr".obs;
           }
           if (now.isBefore(dhuhrIqama)) {
             print('Duhur Iqama Time : $dhuhrIqama');
-            return "Iqama: Dhuhr";
+            return "Iqama: Dhuhr".obs;
           }
 
           // Check for Asr
           if (now.isBefore(asrTime)) {
             print('Asr Namaz Time : $asrTime');
-            return "Next: Asr";
+            return "Next: Asr".obs;
           }
           if (now.isBefore(asrIqama)) {
             print('asr Iqama Time : $asrIqama');
-            return "Iqama: Asr";
+            return "Iqama: Asr".obs;
           }
 
           // Check for Maghrib
           if (now.isBefore(maghribTime)) {
             print('Maghribjr Namaz Time : $maghribTime');
-            return "Next: Maghrib";
+            return "Next: Maghrib".obs;
           }
           if (now.isBefore(maghribIqama)) {
             print('Maghrib iqama Time: $maghribIqama');
-            return "Iqama: Maghrib";
+            return "Iqama: Maghrib".obs;
           }
 
           // Check for Isha
           if (now.isBefore(ishaTime)) {
             print('isha Namaz Time : $ishaTime');
-            return "Next: Isha";
+            return "Next: Isha".obs;
           }
           if (now.isBefore(ishaIqama)) {
             print('Isha Iqama Time : $ishaIqama');
-            return "Iqama: Isha";
+            return "Iqama: Isha".obs;
           }
 
           // All prayers for today have passed; show next day's Fajr
-          return "Next: Fajr";
+          return "Next: Fajr".obs;
         }
       }
     }
 
-    return "";
+    return "".obs;
   }
 
   String getCurrentPrayerCurrent() {
@@ -595,9 +668,9 @@ class HomeController extends GetxController {
 
       if (currentDate.isAfter(startDate.subtract(const Duration(days: 1))) &&
           currentDate.isBefore(endDate.add(const Duration(days: 1)))) {
-        String currentPrayer = getCurrentPrayer();
+        RxString currentPrayer = getCurrentPrayer();
 
-        switch (currentPrayer) {
+        switch (currentPrayer.value) {
           case 'Fajr':
             return timing.fjar;
           case 'Dhuhr':
@@ -619,11 +692,11 @@ class HomeController extends GetxController {
           case 'Isha':
             return timing.isha;
           default:
-            return "Invalid prayer time";
+            return "Invalid";
         }
       }
     }
-    return "Iqama time not found";
+    return "";
   }
 
   // Function to parse a date string in "d/M" format to DateTime
@@ -633,14 +706,14 @@ class HomeController extends GetxController {
 
   // Function to get prayer times
   Object? getPrayerTimes() {
-    String currentPrayer = getCurrentPrayer();
-    if (currentPrayer == 'Fajr') {
+    RxString currentPrayer = getCurrentPrayer();
+    if (currentPrayer.value == 'Fajr') {
       return prayerTime.value.data?.timings.fajr;
-    } else if (currentPrayer == 'Dhuhr') {
+    } else if (currentPrayer.value == 'Dhuhr') {
       return prayerTime.value.data?.timings.dhuhr;
-    } else if (currentPrayer == 'Asr') {
+    } else if (currentPrayer.value == 'Asr') {
       return prayerTime.value.data?.timings.asr;
-    } else if (currentPrayer == 'Maghrib') {
+    } else if (currentPrayer.value == 'Maghrib') {
       return prayerTime.value.data?.timings.maghrib;
     } else {
       return prayerTime.value.data?.timings.isha;
@@ -776,7 +849,7 @@ class HomeController extends GetxController {
     }
   }
 
-  String getNextPrayerTimeWithIqama() {
+  void getNextPrayerTimeWithIqama() {
     final now = DateTime.now();
     final todayString = "${now.day}/${now.month}";
 
@@ -796,80 +869,67 @@ class HomeController extends GetxController {
           final fajrIqama = parseTimeWithDate(timing.fjar, now);
           final dhuhrIqama = parseTimeWithDate(timing.zuhr, now);
           final asrIqama = parseTimeWithDate(timing.asr, now);
-          final maghribIqama = maghribTime
-              .add(Duration(minutes: 5)); // Maghrib Iqama = Azan + 5 minutes
+          final maghribIqama =
+              maghribTime.add(const Duration(minutes: 5)); // Azan + 5 minutes
           final ishaIqama = parseTimeWithDate(timing.isha, now);
 
-          // Debugging: Log the parsed times
-          print("Now: ${_formatTime(now)}");
-          print(
-              "Fajr Azan: ${_formatTime(fajrTime)}, Fajr Iqama: ${_formatTime(fajrIqama)}");
-          print(
-              "Dhuhr Azan: ${_formatTime(dhuhrTime)}, Dhuhr Iqama: ${_formatTime(dhuhrIqama)}");
-          print(
-              "Asr Azan: ${_formatTime(asrTime)}, Asr Iqama: ${_formatTime(asrIqama)}");
-          print(
-              "Maghrib Azan: ${_formatTime(maghribTime)}, Maghrib Iqama: ${_formatTime(maghribIqama)}");
-          print(
-              "Isha Azan: ${_formatTime(ishaTime)}, Isha Iqama: ${_formatTime(ishaIqama)}");
-
-          // Check for Fajr
+          // Check timings for the current day
           if (now.isBefore(fajrTime)) {
-            print('Fajr Namaz Time : $fajrTime');
-            return _formatTime(fajrTime);
+            currentPrayerTimes.value = _formatTime(fajrTime);
+            return;
           }
           if (now.isBefore(fajrIqama)) {
-            print('Fajr I qamaTime : $fajrIqama');
-            return _formatTime(fajrIqama);
+            currentPrayerTimes.value = _formatTime(fajrIqama);
+            return;
           }
 
-          // Check for Dhuhr
           if (now.isBefore(dhuhrTime)) {
-            print('Fajr duhur Time : $dhuhrTime');
-            return _formatTime(dhuhrTime);
+            currentPrayerTimes.value = _formatTime(dhuhrTime);
+            return;
           }
           if (now.isBefore(dhuhrIqama)) {
-            print('Duhur Iqama Time : $dhuhrIqama');
-            return _formatTime(dhuhrIqama);
+            currentPrayerTimes.value = _formatTime(dhuhrIqama);
+            return;
           }
 
-          // Check for Asr
           if (now.isBefore(asrTime)) {
-            print('Asr Namaz Time : $asrTime');
-            return _formatTime(asrTime);
+            currentPrayerTimes.value = _formatTime(asrTime);
+            return;
           }
           if (now.isBefore(asrIqama)) {
-            print('asr Iqama Time : $asrIqama');
-            return _formatTime(asrIqama);
+            currentPrayerTimes.value = _formatTime(asrIqama);
+            return;
           }
 
-          // Check for Maghrib
           if (now.isBefore(maghribTime)) {
-            print('Maghribjr Namaz Time : $maghribTime');
-            return _formatTime(maghribTime);
+            currentPrayerTimes.value = _formatTime(maghribTime);
+            return;
           }
           if (now.isBefore(maghribIqama)) {
-            print('Maghrib iqama Time: $maghribIqama');
-            return _formatTime(maghribIqama);
+            currentPrayerTimes.value = _formatTime(maghribIqama);
+            return;
           }
 
-          // Check for Isha
           if (now.isBefore(ishaTime)) {
-            print('isha Namaz Time : $ishaTime');
-            return _formatTime(ishaTime);
+            currentPrayerTimes.value = "${_formatTime(ishaTime)}";
+            return;
           }
           if (now.isBefore(ishaIqama)) {
-            print('Isha Iqama Time : $ishaIqama');
-            return _formatTime(ishaIqama);
+            currentPrayerTimes.value = "${_formatTime(ishaIqama)}";
+            return;
           }
 
-          // All prayers for today have passed; show next day's Fajr
-          return _formatTime(fajrTime.add(Duration(days: 1)));
+          // All prayers for today have passed; calculate next day's Fajr
+          final tomorrow = now.add(const Duration(days: 1));
+          final nextFajrTime = parseTimeWithDate(timings.fajr, tomorrow);
+          currentPrayerTimes.value = "${_formatTime(nextFajrTime)}";
+          return;
         }
       }
     }
 
-    return " ";
+    // Default if no timings match
+    currentPrayerTimes.value = "No Data Available";
   }
 
 // Helper function to parse time with today's date
@@ -911,8 +971,7 @@ class HomeController extends GetxController {
   }
 
   // Getting azan time and Iqama Time Text
-
-  String getCurrentPhase() {
+  void getCurrentPhase() {
     final now = DateTime.now();
     final todayString = "${now.day}/${now.month}";
 
@@ -941,49 +1000,54 @@ class HomeController extends GetxController {
           final ishaIqama = parseTimeWithDate(timing.isha, now);
 
           // Log parsed times for debugging
-          print(
-              "Fajr Azan: ${_formatTime(fajrTime)}, Fajr Iqama: ${_formatTime(fajrIqama)}");
-          print(
-              "Dhuhr Azan: ${_formatTime(dhuhrTime)}, Dhuhr Iqama: ${_formatTime(dhuhrIqama)}");
-          print(
-              "Asr Azan: ${_formatTime(asrTime)}, Asr Iqama: ${_formatTime(asrIqama)}");
-          print(
-              "Maghrib Azan: ${_formatTime(maghribTime)}, Maghrib Iqama: ${_formatTime(maghribIqama)}");
-          print(
-              "Isha Azan: ${_formatTime(ishaTime)}, Isha Iqama: ${_formatTime(ishaIqama)}");
 
           // Determine the next prayer time
           if (now.isBefore(fajrTime)) {
-            return "Azan Time}";
+            currentPrayerIqama.value = "Azan Time";
+            return;
           } else if (now.isBefore(fajrIqama)) {
-            return "Iqama Time";
+            currentPrayerIqama.value = "Iqama Time";
+            return;
           } else if (now.isBefore(dhuhrTime)) {
-            return "Azan Time";
+            currentPrayerIqama.value = "Azan Time";
+            return;
           } else if (now.isBefore(dhuhrIqama)) {
-            return "Iqama Time";
+            currentPrayerIqama.value = "Iqama Time";
+            return;
           } else if (now.isBefore(asrTime)) {
-            return "Azan Time";
+            currentPrayerIqama.value = "Azan Time";
+            return;
           } else if (now.isBefore(asrIqama)) {
-            return "Iqama Time";
+            currentPrayerIqama.value = "Iqama Time";
+            return;
           } else if (now.isBefore(maghribTime)) {
-            return "Azan Time";
+            currentPrayerIqama.value = "Azan Time";
+            return;
           } else if (now.isBefore(maghribIqama)) {
-            return "Iqama Time";
+            currentPrayerIqama.value = "Iqama Time";
+            return;
           } else if (now.isBefore(ishaTime)) {
-            return "Azan Time";
+            currentPrayerIqama.value = "Azan Time";
+            return;
           } else if (now.isBefore(ishaIqama)) {
-            return "Iqama Time";
+            currentPrayerIqama.value = "Iqama Time";
+            return;
           } else {
-            // Next day's Fajr
-            return "Azan Time";
+            // If all prayers for today have passed, calculate the next day's Fajr
+            final tomorrow = now.add(Duration(days: 1));
+            final nextDayFajrTime = parseTimeWithDate(timings.fajr, tomorrow);
+
+            currentPrayerIqama.value = "Azan Time";
+            return;
           }
         } else {
           print("Prayer timings not available in API response.");
-          return "";
+          currentPrayerIqama.value = "";
+          return;
         }
       }
     }
 
-    return "";
+    currentPrayerIqama.value = "";
   }
 }
