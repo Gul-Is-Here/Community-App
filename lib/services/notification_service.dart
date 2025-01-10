@@ -35,6 +35,14 @@ class NotificationServices {
         playSound: true,
       ),
       const AndroidNotificationChannel(
+        'iqamah_channel',
+        'Iqamah Notifications',
+        description: 'This channel is used for Iqamah notifications.',
+        importance: Importance.max,
+        sound: RawResourceAndroidNotificationSound("iqamah"),
+        playSound: true,
+      ),
+      const AndroidNotificationChannel(
         'default_channel',
         'Default Notifications',
         description:
@@ -127,30 +135,40 @@ class NotificationServices {
             ? "madina"
             : sound.toLowerCase();
 
+    if (title.contains("Iqamah")) {
+      sound = 'iqamah';
+    }
+
     return NotificationDetails(
       android: AndroidNotificationDetails(
-        sound == "disable" || sharedPreferencess!.getBool(title)!
+        sound == "disable" ||
+                sound == "iqamah" ||
+                sharedPreferencess!.getBool(title)!
             ? "${sound}_channel"
             : "default_channel",
-        sound == "disable" || sharedPreferencess!.getBool(title)!
+        sound == "disable" ||
+                sound == "iqamah" ||
+                sharedPreferencess!.getBool(title)!
             ? "${sound.capitalizeFirst} Notifications"
             : 'default Notifications',
         importance: sound == "disable" ? Importance.low : Importance.max,
         playSound:
             !(sharedPreferencess!.getString("selectedSound")! == "disable"),
         priority: Priority.high,
-        sound: sharedPreferencess!.getBool(title)!
-            ? sharedPreferencess!.getString("selectedSound")! == "Disable"
-                ? null
-                : RawResourceAndroidNotificationSound(
-                    sharedPreferencess!.getString("selectedSound")! ==
-                            "Adhan - Makkah"
-                        ? 'azan'
-                        : sharedPreferencess!.getString("selectedSound")! ==
-                                "Adhan - Madina"
-                            ? 'azanmadina'
-                            : "beep")
-            : const RawResourceAndroidNotificationSound('beep'),
+        sound: sound == "iqamah"
+            ? const RawResourceAndroidNotificationSound('iqamah')
+            : sharedPreferencess!.getBool(title)!
+                ? sharedPreferencess!.getString("selectedSound")! == "Disable"
+                    ? null
+                    : RawResourceAndroidNotificationSound(
+                        sharedPreferencess!.getString("selectedSound")! ==
+                                "Adhan - Makkah"
+                            ? 'azan'
+                            : sharedPreferencess!.getString("selectedSound")! ==
+                                    "Adhan - Madina"
+                                ? 'azanmadina'
+                                : "beep")
+                : const RawResourceAndroidNotificationSound('beep'),
         actions: [
           const AndroidNotificationAction("muteButton", "Mute"),
         ],
