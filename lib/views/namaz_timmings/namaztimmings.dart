@@ -254,7 +254,7 @@ class NamazTimingsScreen extends StatelessWidget {
                   Get.to(() => IqamaChangeTimeTable());
                 },
                 child: Text(
-                  'View Iqama Change Time Table',
+                  'View Iqamah Change Time Table',
                   style: TextStyle(
                       fontFamily: popinsSemiBold, color: primaryColor),
                 ))
@@ -275,7 +275,7 @@ class NamazTimingsScreen extends StatelessWidget {
 🌇 Maghrib: ${formatPrayerTime(timings.maghrib)} | Iqama: ${_calculateIqamaTime(timings.maghrib)}
 🌌 Isha: ${formatPrayerTime(timings.isha)} | Iqama: ${iqamaTimes['Isha']}
 
-*Shared from the Islamic App*
+*Shared from the Rosenberg Community App*
     ''';
   }
 

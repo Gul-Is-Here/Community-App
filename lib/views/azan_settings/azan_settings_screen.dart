@@ -87,16 +87,15 @@ class _AzanSettingsScreenState extends State<AzanSettingsScreen> {
             Get.back();
           },
           icon: const Icon(
-            Icons.arrow_back_ios,
+            Icons.arrow_back,
             color: Colors.white,
           ),
         ),
         title: const Text(
           "PRAYER NOTIFICATION",
           style: TextStyle(
-            // fontSize: 24,
-            fontFamily: popinsSemiBold,
-            // fontWeight: FontWeight,
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
             color: Colors.white,
           ),
         ),
@@ -109,34 +108,31 @@ class _AzanSettingsScreenState extends State<AzanSettingsScreen> {
           const SizedBox(height: 20),
           GestureDetector(
             onTap: () async {
-              final allAzanOn = _azanTimes.values.every((val) => val);
-              final allIqamahOn = _iqamahTimes.values.every((val) => val);
+              if (_azanTimes.values.every((val) => val)) {
+                for (var azanTime in _azanTimes.keys) {
+                  _azanTimes[azanTime] = false;
 
-              if (allAzanOn && allIqamahOn) {
-                // Turn off all notifications
-                for (var key in _azanTimes.keys) {
-                  _azanTimes[key] = false;
-                  _iqamahTimes[key] = false; // Turn off Iqamah as well
-                  sharedPreferences!.setBool(key.toLowerCase(), false);
-                  sharedPreferences!
-                      .setBool("${key.toLowerCase()}Iqamah", false);
+                  sharedPreferences!.setBool(azanTime.toLowerCase(), false);
                 }
+
+                setState(() {});
+
+                await NotificationServices().cancelAll();
+
+                await homeController.setNotifications();
               } else {
-                // Turn on all notifications
-                for (var key in _azanTimes.keys) {
-                  _azanTimes[key] = true;
-                  _iqamahTimes[key] = true; // Turn on Iqamah as well
-                  sharedPreferences!.setBool(key.toLowerCase(), true);
-                  sharedPreferences!
-                      .setBool("${key.toLowerCase()}Iqamah", true);
+                for (var azanTime in _azanTimes.keys) {
+                  _azanTimes[azanTime] = true;
+
+                  sharedPreferences!.setBool(azanTime.toLowerCase(), true);
                 }
+
+                setState(() {});
+
+                await NotificationServices().cancelAll();
+
+                await homeController.setNotifications();
               }
-
-              setState(() {}); // Update UI
-
-              await NotificationServices()
-                  .cancelAll(); // Clear existing notifications
-              await homeController.setNotifications(); // Reset notifications
             },
             child: Container(
               width: double.maxFinite,
@@ -151,20 +147,17 @@ class _AzanSettingsScreenState extends State<AzanSettingsScreen> {
                 children: [
                   const SizedBox(),
                   Text(
-                    _azanTimes.values.every((val) => val) &&
-                            _iqamahTimes.values.every((val) => val)
+                    _azanTimes.values.every((val) => val)
                         ? "Turn off Notification"
                         : "Turn on Notification",
                     style: const TextStyle(
                       fontSize: 12,
-                      // fontWeight: FontWeight.bold,
-                      fontFamily: popinsMedium,
+                      fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
                   ),
                   Icon(
-                    _azanTimes.values.every((val) => val) &&
-                            _iqamahTimes.values.every((val) => val)
+                    _azanTimes.values.every((val) => val)
                         ? Icons.check_circle_outline
                         : Icons.circle_outlined,
                     color: Colors.white,
@@ -230,7 +223,7 @@ class _AzanSettingsScreenState extends State<AzanSettingsScreen> {
         children: [
           const Text(
             'Azan Sound',
-            style: TextStyle(fontSize: 18, fontFamily: popinsSemiBold),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 10),
           Column(
@@ -262,10 +255,7 @@ class _AzanSettingsScreenState extends State<AzanSettingsScreen> {
           await homeController.setNotifications();
         },
       ),
-      title: Text(
-        title,
-        style: TextStyle(fontFamily: popinsRegulr),
-      ),
+      title: Text(title),
       trailing: title != 'Disable' && title != 'Default'
           ? IconButton(
               icon: _isPlaying[title] == true
@@ -330,18 +320,24 @@ class _AzanSettingsScreenState extends State<AzanSettingsScreen> {
               Expanded(
                 child: Text(
                   'Prayer Time',
-                  style: TextStyle(fontSize: 14, fontFamily: popinsRegulr),
+                  style: TextStyle(
+                    fontSize: 14,
+                  ),
                 ),
               ),
               Expanded(
                 child: Text(
                   'Time',
-                  style: TextStyle(fontSize: 14, fontFamily: popinsRegulr),
+                  style: TextStyle(
+                    fontSize: 14,
+                  ),
                 ),
               ),
               Text(
                 'Azan',
-                style: TextStyle(fontSize: 14, fontFamily: popinsRegulr),
+                style: TextStyle(
+                  fontSize: 14,
+                ),
               ),
               SizedBox(
                 width: 10,
@@ -349,7 +345,6 @@ class _AzanSettingsScreenState extends State<AzanSettingsScreen> {
               Text(
                 'Iqamah',
                 style: TextStyle(
-                  fontFamily: popinsRegulr,
                   fontSize: 14,
                 ),
               ),
@@ -370,13 +365,12 @@ class _AzanSettingsScreenState extends State<AzanSettingsScreen> {
                     child: Text(
                       time.key,
                       style: TextStyle(
-                          color: time.key == "Sunrise"
-                              ? primaryColor
-                              : Colors.black,
-                          fontWeight: time.key == "Sunrise"
-                              ? FontWeight.bold
-                              : FontWeight.normal,
-                          fontFamily: popinsRegulr),
+                        color:
+                            time.key == "Sunrise" ? primaryColor : Colors.black,
+                        fontWeight: time.key == "Sunrise"
+                            ? FontWeight.bold
+                            : FontWeight.normal,
+                      ),
                     ),
                   ),
                   Expanded(
@@ -384,7 +378,6 @@ class _AzanSettingsScreenState extends State<AzanSettingsScreen> {
                       homeController.prayerTimes!
                           .convertTimeFormat(time.value.toString()),
                       style: TextStyle(
-                        fontFamily: popinsRegulr,
                         color:
                             time.key == "Sunrise" ? primaryColor : Colors.black,
                         fontWeight: time.key == "Sunrise"

@@ -50,7 +50,7 @@ class EventDetailPage extends StatelessWidget {
               fontFamily: popinsRegulr),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
           onPressed: () => Navigator.of(context).pop(),
         ),
         actions: [
@@ -198,7 +198,8 @@ class EventDetailPage extends StatelessWidget {
         final tempDir = await getTemporaryDirectory();
         final file = File('${tempDir.path}/event_image.png');
         await file.writeAsBytes(response.bodyBytes);
-        await Share.shareXFiles([XFile(file.path)], text: "$title\n\n$details");
+        await Share.shareXFiles([XFile(file.path)],
+            text: "$title\n\n$details\n\nfrom Rosenberg Community Center");
       } else {
         scaffoldMessengerKey.currentState?.showSnackBar(
           SnackBar(
@@ -222,6 +223,7 @@ class EventDetailPage extends StatelessWidget {
         Text(
           title,
           style: TextStyle(
+              fontSize: 16,
               fontWeight: FontWeight.bold,
               color: primaryColor,
               fontFamily: popinsRegulr),

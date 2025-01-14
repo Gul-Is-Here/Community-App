@@ -183,7 +183,7 @@ class NotificationServices {
 
   Future scheduleNotificationForAdhan({
     // int id = 0,
-    String title = "Adhan Reminder",
+    String title = "ADHAN REMINDER",
     String? body,
     required String payLoad,
     required DateTime scheduleNotificationDateTime,
@@ -255,4 +255,79 @@ class NotificationServices {
       "this is here",
     );
   }
+
+  // Future scheduleNotificationForIqamah({
+  //   // int id = 0,
+  //   String title = "IQAMAH REMINDER",
+  //   String? body,
+  //   required String payLoad,
+  //   required DateTime scheduleNotificationDateTime,
+  // }) async {
+  //   debugPrint(
+  //     "Scheduling Notification for $payLoad Will run at ${scheduleNotificationDateTime.day}-${scheduleNotificationDateTime.month} ${scheduleNotificationDateTime.hour} : ${scheduleNotificationDateTime.minute}",
+  //   );
+
+  //   int flag = 0;
+
+  //   // if (payLoad == "fajr") {
+  //   //   flag = 1;
+  //   // }
+
+  //   // if (payLoad == "dhuhr") {
+  //   //   flag = 2;
+  //   // }
+
+  //   // if (payLoad == "asr") {
+  //   //   flag = 3;
+  //   // }
+
+  //   // if (payLoad == "maghrib") {
+  //   //   flag = 4;
+  //   // }
+
+  //   // if (payLoad == "isha") {
+  //   //   flag = 5;
+  //   // }
+
+  //   if (payLoad == "fajrIqamah") {
+  //     flag = 6;
+  //   }
+
+  //   if (payLoad == "dhuhrIqamah") {
+  //     flag = 7;
+  //   }
+
+  //   if (payLoad == "asrIqamah") {
+  //     flag = 8;
+  //   }
+
+  //   if (payLoad == "maghribIqamah") {
+  //     flag = 9;
+  //   }
+
+  //   if (payLoad == "ishaIqamah") {
+  //     flag = 10;
+  //   }
+
+  //   int dayOfYear = getDayOfYear(scheduleNotificationDateTime);
+
+  //   int uniqueId = dayOfYear * 10 + flag;
+
+  //   await _flutterLocalNotificationPlugin.zonedSchedule(
+  //     uniqueId,
+  //     title,
+  //     body,
+  //     tz.TZDateTime.from(scheduleNotificationDateTime, tz.local),
+  //     notificationDetails(
+  //       title: payLoad,
+  //     ),
+  //     androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+  //     uiLocalNotificationDateInterpretation:
+  //         UILocalNotificationDateInterpretation.absoluteTime,
+  //   );
+
+  //   debugPrint(
+  //     "this is here",
+  //   );
+  // }
 }

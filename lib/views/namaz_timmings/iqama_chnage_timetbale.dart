@@ -32,7 +32,7 @@ class IqamaChangeTimeTable extends StatelessWidget {
           ),
         ),
         title: const Text(
-          "Iqama Change Times",
+          "Iqamah Change Times",
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 20,
@@ -121,7 +121,9 @@ class IqamaChangeTimeTable extends StatelessWidget {
             ),
           ),
 
-      const SizedBox(height: 10,),
+          const SizedBox(
+            height: 10,
+          ),
           const Card(
             child: Column(
               children: [
@@ -137,7 +139,7 @@ class IqamaChangeTimeTable extends StatelessWidget {
                           style: TextStyle(fontFamily: popinsSemiBold),
                         ),
                         Text(
-                          'Iqama Time Always 2:00 PM',
+                          'Iqamah Time Always 2:00 PM',
                           style: TextStyle(fontFamily: popinsSemiBold),
                         ),
                       ],
@@ -152,7 +154,7 @@ class IqamaChangeTimeTable extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Magrib',
+                          'Maghrib',
                           style: TextStyle(fontFamily: popinsSemiBold),
                         ),
                         Text(
