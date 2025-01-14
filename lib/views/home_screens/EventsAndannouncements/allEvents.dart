@@ -255,6 +255,10 @@ class _CalendarWidgetState extends State<CalendarWidget> {
         // Show events for the selected date
         _displayedEvents = widget.eventDates[_selectedDate!] ?? [];
       }
+
+      // Sort events by addition time or start time (most recent last)
+      _displayedEvents.sort(
+          (a, b) => b.eventDate.toString().compareTo(a.eventDate.toString()));
     });
 
     widget
@@ -433,7 +437,9 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                                             Text(
                                               event.paid == '0'
                                                   ? 'Free Event'
-                                                  : 'Paid Event',
+                                                  : event.paid == '1'
+                                                      ? 'Paid Event'
+                                                      : '',
                                               style: TextStyle(
                                                 fontFamily: popinsMedium,
                                                 fontSize: 14,

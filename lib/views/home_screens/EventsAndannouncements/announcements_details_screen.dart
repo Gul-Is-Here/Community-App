@@ -49,7 +49,8 @@ class AnnouncementsDetailsScreen extends StatelessWidget {
             icon: Icon(Icons.share, color: goldenColor),
             onPressed: () {
               // Share functionality
-              Share.share('Check out this announcement: $title\n\n$alertDisc');
+              Share.share(
+                  'Announcement from Rosenberg Community Center: $title\n\n$alertDisc');
             },
           ),
         ],

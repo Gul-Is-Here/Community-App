@@ -535,24 +535,22 @@ class AppClass {
                       child: Text(
                         maxLines: 2,
                         title,
-                        style: const TextStyle(
+                        style: TextStyle(
                             overflow: TextOverflow.ellipsis,
                             fontSize: 18,
                             fontFamily: popinsSemiBold,
-                            color: Color(0xFF00A53C)),
+                            color: secondaryColor),
                       ),
                     ),
                     GestureDetector(
-                      onTap: () async {
-                        await _downloadAndShareImage(
-                            imageLink, title, eventDetails);
-                      },
-                      child: Image.asset(
-                        shareIcon,
-                        height: 30,
-                        width: 30,
-                      ),
-                    )
+                        onTap: () async {
+                          await _downloadAndShareImage(
+                              imageLink, title, eventDetails);
+                        },
+                        child: Icon(
+                          Icons.share,
+                          color: secondaryColor,
+                        ))
                   ],
                 ),
                 SizedBox(

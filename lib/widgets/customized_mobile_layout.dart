@@ -151,7 +151,7 @@ class _CustomizedMobileLayoutState extends State<CustomizedMobileLayout> {
             // 10.heightBox,
             Center(
               child: SizedBox(
-                  height: 150,
+                  height: screenHeight1 * .19,
                   width: 350,
                   child: Card(
                     color: Colors.transparent,
@@ -316,6 +316,9 @@ class _CustomizedMobileLayoutState extends State<CustomizedMobileLayout> {
                                       //
                                     ],
                                   ),
+                                  SizedBox(
+                                    height: 2,
+                                  ),
                                   Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceAround,
@@ -375,6 +378,9 @@ class _CustomizedMobileLayoutState extends State<CustomizedMobileLayout> {
                                 },
                                 child: Column(
                                   children: [
+                                    SizedBox(
+                                      height: 6,
+                                    ),
                                     Image.asset(
                                       shareIcon,
                                       width: 30,
