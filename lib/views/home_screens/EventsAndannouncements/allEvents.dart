@@ -246,24 +246,48 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 
   void _updateDisplayedEvents() {
     setState(() {
-      if (_selectedDate == null) {
-        // Show all events when no specific date is selected
-        _displayedEvents = widget.eventDates.values
-            .expand((events) => events)
-            .toList(); // No filtering by date, just all events
-      } else {
-        // Show events for the selected date
+      if (_selectedDate != null) {
+        // Show only events for the selected date
         _displayedEvents = widget.eventDates[_selectedDate!] ?? [];
+      } else {
+        // Show only events within the current month and year
+        _displayedEvents = widget.eventDates.entries
+            .where((entry) =>
+                entry.key.year == _currentDate.year &&
+                entry.key.month == _currentDate.month)
+            .expand((entry) => entry.value)
+            .toList();
       }
 
-      // Sort events by addition time or start time (most recent last)
-      _displayedEvents.sort(
-          (a, b) => b.eventDate.toString().compareTo(a.eventDate.toString()));
+      // Sort events by date (ascending or descending as needed)
+      _displayedEvents
+          .sort((a, b) => a.eventDate.compareTo(b.eventDate)); // Ascending
     });
 
-    widget
-        .onEventsUpdated(_displayedEvents); // Notify parent with updated events
+    // Notify the parent widget with the updated list of events
+    widget.onEventsUpdated(_displayedEvents);
   }
+
+  // void _updateDisplayedEvents() {
+  //   setState(() {
+  //     if (_selectedDate == null) {
+  //       // Show all events when no specific date is selected
+  //       _displayedEvents = widget.eventDates.values
+  //           .expand((events) => events)
+  //           .toList(); // No filtering by date, just all events
+  //     } else {
+  //       // Show events for the selected date
+  //       _displayedEvents = widget.eventDates[_selectedDate!] ?? [];
+  //     }
+
+  //     // Sort events by addition time or start time (most recent last)
+  //     _displayedEvents.sort(
+  //         (a, b) => b.eventDate.toString().compareTo(a.eventDate.toString()));
+  //   });
+
+  //   widget
+  //       .onEventsUpdated(_displayedEvents); // Notify parent with updated events
+  // }
 
   void _onPageChanged(int pageIndex) {
     setState(() {

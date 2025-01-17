@@ -117,11 +117,38 @@ class AppClass {
       // Parse the input string to DateTime
       DateTime parsedDate = DateTime.parse(dateString);
 
-      // Format the DateTime to "MMM d, yyyy"
-      return DateFormat('d. MMMM yyyy').format(parsedDate);
+      // Extract day, month, and weekday
+      String weekday =
+          DateFormat('EEEE').format(parsedDate); // Full day name (e.g., Friday)
+      String month = DateFormat('MMMM')
+          .format(parsedDate); // Full month name (e.g., January)
+      int day = parsedDate.day;
+
+      // Add the appropriate ordinal suffix
+      String suffix = _getDaySuffix(day);
+
+      // Format as "Friday, January 17th"
+      return '$weekday, $month $day$suffix';
     } catch (e) {
       print("Error parsing date: $e");
       return ""; // Return an empty string or handle the error as needed
+    }
+  }
+
+// Helper function to get the ordinal suffix
+  String _getDaySuffix(int day) {
+    if (day >= 11 && day <= 13) {
+      return 'th'; // Special case for 11th, 12th, 13th
+    }
+    switch (day % 10) {
+      case 1:
+        return 'st';
+      case 2:
+        return 'nd';
+      case 3:
+        return 'rd';
+      default:
+        return 'th';
     }
   }
 
@@ -482,7 +509,10 @@ class AppClass {
         final tempDir = await getTemporaryDirectory();
         final file = File('${tempDir.path}/event_image.png');
         await file.writeAsBytes(response.bodyBytes);
-        await Share.shareXFiles([XFile(file.path)], text: "$title\n\n$details");
+        await Share.shareXFiles([XFile(file.path)],
+            text:
+                '''$title\n\n$details\n\n*Shared From Rosenberg Community Center App*
+        ''');
       } else {
         scaffoldMessengerKey.currentState?.showSnackBar(
           SnackBar(
@@ -518,218 +548,220 @@ class AppClass {
       context: context,
       builder: (context) => FractionallySizedBox(
         heightFactor: .75,
-        child: Container(
-          // height: 600,
-          width: double.infinity,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SizedBox(
-                      width: 250,
-                      child: Text(
-                        maxLines: 2,
-                        title,
+        child: SingleChildScrollView(
+          child: Container(
+            // height: 600,
+            width: double.infinity,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                        width: 250,
+                        child: Text(
+                          maxLines: 2,
+                          title,
+                          style: TextStyle(
+                              overflow: TextOverflow.ellipsis,
+                              fontSize: 18,
+                              fontFamily: popinsSemiBold,
+                              color: secondaryColor),
+                        ),
+                      ),
+                      GestureDetector(
+                          onTap: () async {
+                            await _downloadAndShareImage(
+                                imageLink, title, eventDetails);
+                          },
+                          child: Icon(
+                            Icons.share,
+                            color: secondaryColor,
+                          ))
+                    ],
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Event Time',
+                            style: TextStyle(
+                                fontFamily: popinsSemiBold,
+                                fontSize: 16,
+                                color: secondaryColor),
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            'Start: ${formatTimeToAMPM(sTime)}',
+                            style: const TextStyle(
+                                fontFamily: popinsRegulr,
+                                color: Colors.black,
+                                fontSize: 12),
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            'End:  ${formatTimeToAMPM(endTime)}',
+                            style: const TextStyle(
+                                fontFamily: popinsRegulr,
+                                color: Colors.black,
+                                fontSize: 12),
+                          )
+                        ],
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Event',
+                            style: TextStyle(
+                                fontFamily: popinsSemiBold,
+                                fontSize: 16,
+                                color: secondaryColor),
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            'Type: $eventType',
+                            style: const TextStyle(
+                                fontFamily: popinsRegulr,
+                                color: Colors.black,
+                                fontSize: 12),
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            'Entry: $entry',
+                            style: const TextStyle(
+                                fontFamily: popinsRegulr,
+                                color: Colors.black,
+                                fontSize: 12),
+                          )
+                        ],
+                      )
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Text(
+                    'Event Date',
+                    style: TextStyle(
+                        fontFamily: popinsSemiBold,
+                        fontSize: 16,
+                        color: secondaryColor),
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    '${AppClass().formatDate2(eventDate)}',
+                    style: const TextStyle(
+                        fontFamily: popinsRegulr,
+                        color: Colors.black,
+                        fontSize: 12),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Text(
+                    'Details',
+                    style: TextStyle(
+                        fontFamily: popinsSemiBold,
+                        fontSize: 16,
+                        color: secondaryColor),
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    maxLines: 8,
+                    eventDetails,
+                    style: const TextStyle(
+                        overflow: TextOverflow.ellipsis,
+                        fontSize: 16,
+                        fontFamily: popinsRegulr,
+                        color: Colors.black),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: [
+                      Image.asset(icLocation),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        'Venue',
                         style: TextStyle(
-                            overflow: TextOverflow.ellipsis,
-                            fontSize: 18,
                             fontFamily: popinsSemiBold,
+                            fontSize: 16,
                             color: secondaryColor),
                       ),
-                    ),
-                    GestureDetector(
-                        onTap: () async {
-                          await _downloadAndShareImage(
-                              imageLink, title, eventDetails);
-                        },
-                        child: Icon(
-                          Icons.share,
-                          color: secondaryColor,
-                        ))
-                  ],
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Event Time',
-                          style: TextStyle(
-                              fontFamily: popinsSemiBold,
-                              fontSize: 16,
-                              color: secondaryColor),
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text(
-                          'Start: ${formatTimeToAMPM(sTime)}',
-                          style: const TextStyle(
-                              fontFamily: popinsRegulr,
-                              color: Colors.black,
-                              fontSize: 12),
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text(
-                          'End:  ${formatTimeToAMPM(endTime)}',
-                          style: const TextStyle(
-                              fontFamily: popinsRegulr,
-                              color: Colors.black,
-                              fontSize: 12),
-                        )
-                      ],
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Event',
-                          style: TextStyle(
-                              fontFamily: popinsSemiBold,
-                              fontSize: 16,
-                              color: secondaryColor),
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text(
-                          'Type: $eventType',
-                          style: const TextStyle(
-                              fontFamily: popinsRegulr,
-                              color: Colors.black,
-                              fontSize: 12),
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text(
-                          'Entry: $entry',
-                          style: const TextStyle(
-                              fontFamily: popinsRegulr,
-                              color: Colors.black,
-                              fontSize: 12),
-                        )
-                      ],
-                    )
-                  ],
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Text(
-                  'Event Date',
-                  style: TextStyle(
-                      fontFamily: popinsSemiBold,
-                      fontSize: 16,
-                      color: secondaryColor),
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                Text(
-                  '${AppClass().formatDate2(eventDate)}',
-                  style: const TextStyle(
-                      fontFamily: popinsRegulr,
-                      color: Colors.black,
-                      fontSize: 12),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Text(
-                  'Details',
-                  style: TextStyle(
-                      fontFamily: popinsSemiBold,
-                      fontSize: 16,
-                      color: secondaryColor),
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                Text(
-                  maxLines: 8,
-                  eventDetails,
-                  style: const TextStyle(
-                      overflow: TextOverflow.ellipsis,
-                      fontSize: 16,
-                      fontFamily: popinsRegulr,
-                      color: Colors.black),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Row(
-                  children: [
-                    Image.asset(icLocation),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Text(
-                      'Venue',
-                      style: TextStyle(
-                          fontFamily: popinsSemiBold,
-                          fontSize: 16,
-                          color: secondaryColor),
-                    ),
-                    Text(
-                      '(click to locate )',
-                      style: TextStyle(
-                          fontFamily: popinsRegulr,
-                          fontSize: 11,
-                          color: secondaryColor),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                GestureDetector(
-                  onTap: () {
-                    AppClass().launchURL(eventLink);
-                    print(eventLink);
-                  },
-                  child: Text(
-                      maxLines: 4,
-                      locatinD,
-                      style: TextStyle(
-                          decoration: TextDecoration.underline,
-                          overflow: TextOverflow.ellipsis,
-                          fontSize: 16,
-                          fontFamily: popinsSemiBold,
-                          color: primaryColor)),
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                Container(
-                    height: 200,
-                    width: double.infinity,
-                    decoration:
-                        BoxDecoration(borderRadius: BorderRadius.circular(10)),
-                    child: Image.network(
-                      imageLink,
-                      // fit: BoxFit.cover,
-                      height: 250,
-                    )),
-                SizedBox(
-                  height: 10,
-                )
-              ],
+                      Text(
+                        '(click to locate )',
+                        style: TextStyle(
+                            fontFamily: popinsRegulr,
+                            fontSize: 11,
+                            color: secondaryColor),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      AppClass().launchURL(eventLink);
+                      print(eventLink);
+                    },
+                    child: Text(
+                        maxLines: 4,
+                        locatinD,
+                        style: TextStyle(
+                            decoration: TextDecoration.underline,
+                            overflow: TextOverflow.ellipsis,
+                            fontSize: 16,
+                            fontFamily: popinsSemiBold,
+                            color: primaryColor)),
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Container(
+                      height: 200,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Image.network(
+                        imageLink,
+                        // fit: BoxFit.cover,
+                        height: 250,
+                      )),
+                  SizedBox(
+                    height: 10,
+                  )
+                ],
+              ),
             ),
           ),
         ),

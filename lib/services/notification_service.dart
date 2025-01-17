@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
@@ -57,6 +58,22 @@ class NotificationServices {
         description:
             'This channel is used for prayer notifications with sound disabled.',
         importance: Importance.low,
+        sound: null,
+        playSound: false,
+      ),
+      const AndroidNotificationChannel(
+        'events_channel',
+        'Events Notifications',
+        description: 'This channel is used for events and announcements .',
+        importance: Importance.max,
+        sound: null,
+        playSound: false,
+      ),
+      const AndroidNotificationChannel(
+        'announcement_channel',
+        'Announcement Notifications',
+        description: 'This channel is used for events and announcements .',
+        importance: Importance.max,
         sound: null,
         playSound: false,
       ),
@@ -135,7 +152,8 @@ class NotificationServices {
             ? "madina"
             : sound.toLowerCase();
 
-    if (title.contains("Iqamah")) {
+    if (title.contains("Iqamah") &&
+        (sound == 'Adhan - Makkah' || sound == 'Adhan - Madina')) {
       sound = 'iqamah';
     }
 
@@ -256,78 +274,53 @@ class NotificationServices {
     );
   }
 
-  // Future scheduleNotificationForIqamah({
-  //   // int id = 0,
-  //   String title = "IQAMAH REMINDER",
-  //   String? body,
-  //   required String payLoad,
-  //   required DateTime scheduleNotificationDateTime,
-  // }) async {
-  //   debugPrint(
-  //     "Scheduling Notification for $payLoad Will run at ${scheduleNotificationDateTime.day}-${scheduleNotificationDateTime.month} ${scheduleNotificationDateTime.hour} : ${scheduleNotificationDateTime.minute}",
-  //   );
+  /// -------- Announcements------------------
+  Future<void> notifcationsForAnnouncements(
+    RemoteMessage message,
+  ) async {
+    if (sharedPreferencess?.getBool('annoucement') ?? false) {
+      await _flutterLocalNotificationPlugin.show(
+        1,
+        message.notification?.title ?? 'Announcement Notification',
+        message.notification?.body ?? 'This is Announcement Notification',
+        const NotificationDetails(
+          android: AndroidNotificationDetails(
+            'announcement_channel',
+            'Announcement Notifications',
+            importance: Importance.max,
+            playSound: false,
+            priority: Priority.high,
+          ),
+          iOS: DarwinNotificationDetails(),
+        ),
+      );
+    }
+    debugPrint(
+      "this is here",
+    );
+  }
 
-  //   int flag = 0;
+  ///------------ Events-----------
 
-  //   // if (payLoad == "fajr") {
-  //   //   flag = 1;
-  //   // }
-
-  //   // if (payLoad == "dhuhr") {
-  //   //   flag = 2;
-  //   // }
-
-  //   // if (payLoad == "asr") {
-  //   //   flag = 3;
-  //   // }
-
-  //   // if (payLoad == "maghrib") {
-  //   //   flag = 4;
-  //   // }
-
-  //   // if (payLoad == "isha") {
-  //   //   flag = 5;
-  //   // }
-
-  //   if (payLoad == "fajrIqamah") {
-  //     flag = 6;
-  //   }
-
-  //   if (payLoad == "dhuhrIqamah") {
-  //     flag = 7;
-  //   }
-
-  //   if (payLoad == "asrIqamah") {
-  //     flag = 8;
-  //   }
-
-  //   if (payLoad == "maghribIqamah") {
-  //     flag = 9;
-  //   }
-
-  //   if (payLoad == "ishaIqamah") {
-  //     flag = 10;
-  //   }
-
-  //   int dayOfYear = getDayOfYear(scheduleNotificationDateTime);
-
-  //   int uniqueId = dayOfYear * 10 + flag;
-
-  //   await _flutterLocalNotificationPlugin.zonedSchedule(
-  //     uniqueId,
-  //     title,
-  //     body,
-  //     tz.TZDateTime.from(scheduleNotificationDateTime, tz.local),
-  //     notificationDetails(
-  //       title: payLoad,
-  //     ),
-  //     androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-  //     uiLocalNotificationDateInterpretation:
-  //         UILocalNotificationDateInterpretation.absoluteTime,
-  //   );
-
-  //   debugPrint(
-  //     "this is here",
-  //   );
-  // }
+  Future<void> notifcationsForEvents(
+    RemoteMessage message,
+  ) async {
+    if (sharedPreferencess?.getBool('event') ?? false) {
+      await _flutterLocalNotificationPlugin.show(
+        1,
+        message.notification?.title ?? 'Event Notification',
+        message.notification?.body ?? 'This is Event Notification',
+        const NotificationDetails(
+          android: AndroidNotificationDetails(
+            'events_channel',
+            'Events Notifications',
+            importance: Importance.max,
+            playSound: false,
+            priority: Priority.high,
+          ),
+          iOS: DarwinNotificationDetails(),
+        ),
+      );
+    }
+  }
 }

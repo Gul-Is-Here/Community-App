@@ -165,7 +165,7 @@ class _CustomizedMobileLayoutState extends State<CustomizedMobileLayout> {
                             children: [
                               Obx(
                                 () => Text(
-                                  '${homeController.timeUntilNextPrayer}',
+                                  'Remaining Time (${homeController.timeUntilNextPrayer})',
                                   style: TextStyle(
                                       color: whiteColor,
                                       fontFamily: popinsRegulr,

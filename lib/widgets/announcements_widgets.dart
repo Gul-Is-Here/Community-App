@@ -870,7 +870,7 @@ class AnnouncementWidget extends StatelessWidget {
                             child: Container(
                               margin: EdgeInsets.all(0),
                               width: screenWidth * 1,
-                              height: screenHeight1 * .09,
+                              height: screenHeight1 * .08,
                               decoration: const BoxDecoration(
                                 borderRadius: BorderRadius.only(
                                   topLeft: Radius.circular(

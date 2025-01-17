@@ -50,7 +50,7 @@ class AnnouncementsDetailsScreen extends StatelessWidget {
             onPressed: () {
               // Share functionality
               Share.share(
-                  'Announcement from Rosenberg Community Center: $title\n\n$alertDisc');
+                  ''' $title\n\n$alertDisc\n\n*Shared from Rosenberg Community Center App*''');
             },
           ),
         ],
