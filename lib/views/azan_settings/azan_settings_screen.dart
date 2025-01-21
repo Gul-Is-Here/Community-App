@@ -92,10 +92,11 @@ class _AzanSettingsScreenState extends State<AzanSettingsScreen> {
           ),
         ),
         title: const Text(
-          "PRAYER NOTIFICATION",
+          "Prayer Notification",
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
+            fontFamily: popinsSemiBold,
             color: Colors.white,
           ),
         ),
@@ -115,18 +116,29 @@ class _AzanSettingsScreenState extends State<AzanSettingsScreen> {
                   sharedPreferences!.setBool(azanTime.toLowerCase(), false);
                 }
 
+                for (var iqamahTime in _iqamahTimes.keys) {
+                  _iqamahTimes[iqamahTime] = false;
+
+                  sharedPreferences!
+                      .setBool("${iqamahTime.toLowerCase()}Iqamah", false);
+                }
                 setState(() {});
 
                 await NotificationServices().cancelAll();
 
-                await homeController.setNotifications();
+                // await homeController.setNotifications();`
               } else {
                 for (var azanTime in _azanTimes.keys) {
                   _azanTimes[azanTime] = true;
 
                   sharedPreferences!.setBool(azanTime.toLowerCase(), true);
                 }
+                for (var iqamahTime in _iqamahTimes.keys) {
+                  _iqamahTimes[iqamahTime] = true;
 
+                  sharedPreferences!
+                      .setBool("${iqamahTime.toLowerCase()}Iqamah", true);
+                }
                 setState(() {});
 
                 await NotificationServices().cancelAll();
@@ -151,7 +163,8 @@ class _AzanSettingsScreenState extends State<AzanSettingsScreen> {
                         ? "Turn off Notification"
                         : "Turn on Notification",
                     style: const TextStyle(
-                      fontSize: 12,
+                      fontSize: 17,
+                      fontFamily: popinsMedium,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
@@ -175,35 +188,6 @@ class _AzanSettingsScreenState extends State<AzanSettingsScreen> {
     );
   }
 
-  Widget _buildHeader() {
-    return Stack(
-      children: [
-        const Projectbackground(title: 'PRAYER NOTIFICATION'),
-        Padding(
-          padding: const EdgeInsets.only(top: 205),
-          child: Container(
-            height: 45,
-            width: double.infinity,
-            decoration: BoxDecoration(color: containerConlor),
-            child: const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8),
-              child: Center(
-                child: Text(
-                  'PRAYER NOTIFICATION',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
   Widget _buildAzanSelection() {
     return Container(
       padding: const EdgeInsets.all(16),
@@ -221,9 +205,12 @@ class _AzanSettingsScreenState extends State<AzanSettingsScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Azan Sound',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                fontFamily: popinsSemiBold),
           ),
           const SizedBox(height: 10),
           Column(
@@ -255,7 +242,10 @@ class _AzanSettingsScreenState extends State<AzanSettingsScreen> {
           await homeController.setNotifications();
         },
       ),
-      title: Text(title),
+      title: Text(
+        title,
+        style: TextStyle(fontFamily: popinsRegulr),
+      ),
       trailing: title != 'Disable' && title != 'Default'
           ? IconButton(
               icon: _isPlaying[title] == true
@@ -321,6 +311,7 @@ class _AzanSettingsScreenState extends State<AzanSettingsScreen> {
                 child: Text(
                   'Prayer Time',
                   style: TextStyle(
+                    fontFamily: popinsMedium,
                     fontSize: 14,
                   ),
                 ),
@@ -329,13 +320,15 @@ class _AzanSettingsScreenState extends State<AzanSettingsScreen> {
                 child: Text(
                   'Time',
                   style: TextStyle(
+                    fontFamily: popinsMedium,
                     fontSize: 14,
                   ),
                 ),
               ),
               Text(
-                'Azan',
+                'Adhan',
                 style: TextStyle(
+                  fontFamily: popinsMedium,
                   fontSize: 14,
                 ),
               ),
@@ -345,6 +338,7 @@ class _AzanSettingsScreenState extends State<AzanSettingsScreen> {
               Text(
                 'Iqamah',
                 style: TextStyle(
+                  fontFamily: popinsMedium,
                   fontSize: 14,
                 ),
               ),
@@ -365,6 +359,7 @@ class _AzanSettingsScreenState extends State<AzanSettingsScreen> {
                     child: Text(
                       time.key,
                       style: TextStyle(
+                        fontFamily: popinsRegulr,
                         color:
                             time.key == "Sunrise" ? primaryColor : Colors.black,
                         fontWeight: time.key == "Sunrise"
@@ -378,6 +373,7 @@ class _AzanSettingsScreenState extends State<AzanSettingsScreen> {
                       homeController.prayerTimes!
                           .convertTimeFormat(time.value.toString()),
                       style: TextStyle(
+                        fontFamily: popinsRegulr,
                         color:
                             time.key == "Sunrise" ? primaryColor : Colors.black,
                         fontWeight: time.key == "Sunrise"

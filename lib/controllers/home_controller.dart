@@ -151,8 +151,8 @@ class HomeController extends GetxController {
       timeUntilNextPrayer.value = formatDuration(difference);
 
       // Debug: Print the next event
-      print(
-          "Next Event: ${_formatTime2(nextTime)} (${nextTime.isBefore(dhuhrTime) ? 'Fajr' : nextTime.isBefore(asrTime) ? 'Dhuhr' : nextTime.isBefore(maghribTime) ? 'Asr' : 'Maghrib/Isha'})");
+      // print(
+      // "Next Event: ${_formatTime2(nextTime)} (${nextTime.isBefore(dhuhrTime) ? 'Fajr' : nextTime.isBefore(asrTime) ? 'Dhuhr' : nextTime.isBefore(maghribTime) ? 'Asr' : 'Maghrib/Isha'})");
     }
   }
 
@@ -568,51 +568,51 @@ class HomeController extends GetxController {
 
           // Check for Fajr
           if (now.isBefore(fajrTime)) {
-            print('Fajr Namaz Time : $fajrTime');
+            // print('Fajr Namaz Time : $fajrTime');
             return "Next: Fajr".obs;
           }
           if (now.isBefore(fajrIqama)) {
-            print('Fajr I qamaTime : $fajrIqama');
+            // print('Fajr I qamaTime : $fajrIqama');
             return "Iqama: Fajr".obs;
           }
 
           // Check for Dhuhr
           if (now.isBefore(dhuhrTime)) {
-            print('Fajr duhur Time : $dhuhrTime');
+            // print('Fajr duhur Time : $dhuhrTime');
             return "Next: Dhuhr".obs;
           }
           if (now.isBefore(dhuhrIqama)) {
-            print('Duhur Iqama Time : $dhuhrIqama');
+            // print('Duhur Iqama Time : $dhuhrIqama');
             return "Iqama: Dhuhr".obs;
           }
 
           // Check for Asr
           if (now.isBefore(asrTime)) {
-            print('Asr Namaz Time : $asrTime');
+            // print('Asr Namaz Time : $asrTime');
             return "Next: Asr".obs;
           }
           if (now.isBefore(asrIqama)) {
-            print('asr Iqama Time : $asrIqama');
+            // print('asr Iqama Time : $asrIqama');
             return "Iqama: Asr".obs;
           }
 
           // Check for Maghrib
           if (now.isBefore(maghribTime)) {
-            print('Maghribjr Namaz Time : $maghribTime');
+            // print('Maghribjr Namaz Time : $maghribTime');
             return "Next: Maghrib".obs;
           }
           if (now.isBefore(maghribIqama)) {
-            print('Maghrib iqama Time: $maghribIqama');
+            // print('Maghrib iqama Time: $maghribIqama');
             return "Iqama: Maghrib".obs;
           }
 
           // Check for Isha
           if (now.isBefore(ishaTime)) {
-            print('isha Namaz Time : $ishaTime');
+            // print('isha Namaz Time : $ishaTime');
             return "Next: Isha".obs;
           }
           if (now.isBefore(ishaIqama)) {
-            print('Isha Iqama Time : $ishaIqama');
+            // print('Isha Iqama Time : $ishaIqama');
             return "Iqama: Isha".obs;
           }
 
@@ -916,18 +916,18 @@ class HomeController extends GetxController {
           }
 
           if (now.isBefore(ishaTime)) {
-            currentPrayerTimes.value = "${_formatTime(ishaTime)}";
+            currentPrayerTimes.value = _formatTime(ishaTime);
             return;
           }
           if (now.isBefore(ishaIqama)) {
-            currentPrayerTimes.value = "${_formatTime(ishaIqama)}";
+            currentPrayerTimes.value = _formatTime(ishaIqama);
             return;
           }
 
           // All prayers for today have passed; calculate next day's Fajr
           final tomorrow = now.add(const Duration(days: 1));
           final nextFajrTime = parseTimeWithDate(timings.fajr, tomorrow);
-          currentPrayerTimes.value = "${_formatTime(nextFajrTime)}";
+          currentPrayerTimes.value = _formatTime(nextFajrTime);
           return;
         }
       }
@@ -980,12 +980,12 @@ class HomeController extends GetxController {
     final now = DateTime.now();
     final todayString = "${now.day}/${now.month}";
 
-    print("Now: ${_formatTime(now)}"); // Log current time
-    print("Today: $todayString"); // Log today's date
+    // print("Now: ${_formatTime(now)}"); // Log current time
+    // print("Today: $todayString"); // Log today's date
 
     for (var timing in iqamahTiming) {
-      print(
-          "Checking range: ${timing.startDate} - ${timing.endDate}"); // Log date ranges
+      // print(
+      //     "Checking range: ${timing.startDate} - ${timing.endDate}"); // Log date ranges
       if (_isDateInRange(todayString, timing.startDate, timing.endDate)) {
         if (prayerTime.value.data?.timings != null) {
           final timings = prayerTime.value.data!.timings;

@@ -5,12 +5,28 @@ import 'package:community_islamic_app/controllers/qibla_controller.dart';
 import 'package:community_islamic_app/firebase_options.dart';
 import 'package:community_islamic_app/views/auth_screens/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'services/notification_service.dart';
+
+Future<bool> initFirebaseMessagingNoti() async {
+  final messaging = FirebaseMessaging.instance;
+  final notiReq = await messaging.requestPermission(
+    alert: true,
+    announcement: true,
+    badge: true,
+    carPlay: false,
+    criticalAlert: true,
+    provisional: false,
+    sound: true,
+  );
+
+  return notiReq.authorizationStatus == AuthorizationStatus.authorized;
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -79,7 +95,24 @@ void main() async {
   if (!sharedPreferences.containsKey("ishaIqamah")) {
     sharedPreferences.setBool("ishaIqamah", true);
   }
+  if (!sharedPreferences.containsKey("event")) {
+    sharedPreferences.setBool("event", true);
+  }
+  if (!sharedPreferences.containsKey("annoucement")) {
+    sharedPreferences.setBool("annoucement", true);
+  }
 
+  bool isAllow = await initFirebaseMessagingNoti();
+  bool isAllowAnnouncement = await initFirebaseMessagingNoti();
+  if (isAllow) {
+    FirebaseMessaging.onBackgroundMessage(
+        NotificationServices().notifcationsForEvents);
+  }
+  if(isAllowAnnouncement){
+ FirebaseMessaging.onBackgroundMessage(
+        NotificationServices().notifcationsForAnnouncements);
+  
+  }
   runApp(const MyApp());
 }
 

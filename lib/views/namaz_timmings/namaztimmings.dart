@@ -269,13 +269,13 @@ class NamazTimingsScreen extends StatelessWidget {
     return '''
 📿 *Today's Prayer Timings* 📿
 
-🌅 Fajr: ${formatPrayerTime(timings.fajr)} | Iqama: ${iqamaTimes['Fajr']}
-🌞 Dhuhr: ${formatPrayerTime(timings.dhuhr)} | Iqama: ${iqamaTimes['Dhuhr']}
-🌥️ Asr: ${formatPrayerTime(timings.asr)} | Iqama: ${iqamaTimes['Asr']}
-🌇 Maghrib: ${formatPrayerTime(timings.maghrib)} | Iqama: ${_calculateIqamaTime(timings.maghrib)}
-🌌 Isha: ${formatPrayerTime(timings.isha)} | Iqama: ${iqamaTimes['Isha']}
+🌅 Fajr: ${formatPrayerTime(timings.fajr)} | Iqamah: ${iqamaTimes['Fajr']}
+🌞 Dhuhr: ${formatPrayerTime(timings.dhuhr)} | Iqamah: ${iqamaTimes['Dhuhr']}
+🌥️ Asr: ${formatPrayerTime(timings.asr)} | Iqamah: ${iqamaTimes['Asr']}
+🌇 Maghrib: ${formatPrayerTime(timings.maghrib)} | Iqamah: ${_calculateIqamaTime(timings.maghrib)}
+🌌 Isha: ${formatPrayerTime(timings.isha)} | Iqamah: ${iqamaTimes['Isha']}
 
-*Shared from the Rosenberg Community App*
+*Shared from Rosenberg Community App*
     ''';
   }
 

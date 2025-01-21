@@ -1,12 +1,17 @@
 import 'dart:io';
 
+import 'package:community_islamic_app/constants/globals.dart';
+import 'package:community_islamic_app/services/reminderUtilles.dart';
 import 'package:community_islamic_app/views/Gallery_Events/ask_imam_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:timezone/timezone.dart' as tz;
 import 'package:url_launcher/url_launcher.dart';
 // import 'package:velocity_x/velocity_x.dart';
 import 'package:http/http.dart' as http;
@@ -117,11 +122,38 @@ class AppClass {
       // Parse the input string to DateTime
       DateTime parsedDate = DateTime.parse(dateString);
 
-      // Format the DateTime to "MMM d, yyyy"
-      return DateFormat('d. MMMM yyyy').format(parsedDate);
+      // Extract day, month, and weekday
+      String weekday =
+          DateFormat('EEEE').format(parsedDate); // Full day name (e.g., Friday)
+      String month = DateFormat('MMMM')
+          .format(parsedDate); // Full month name (e.g., January)
+      int day = parsedDate.day;
+
+      // Add the appropriate ordinal suffix
+      String suffix = _getDaySuffix(day);
+
+      // Format as "Friday, January 17th"
+      return '$weekday, $month $day$suffix';
     } catch (e) {
       print("Error parsing date: $e");
       return ""; // Return an empty string or handle the error as needed
+    }
+  }
+
+// Helper function to get the ordinal suffix
+  String _getDaySuffix(int day) {
+    if (day >= 11 && day <= 13) {
+      return 'th'; // Special case for 11th, 12th, 13th
+    }
+    switch (day % 10) {
+      case 1:
+        return 'st';
+      case 2:
+        return 'nd';
+      case 3:
+        return 'rd';
+      default:
+        return 'th';
     }
   }
 
@@ -471,36 +503,87 @@ class AppClass {
   }
 
   Future<void> _downloadAndShareImage(
-      String imageUrl, String title, String details) async {
+    String imageUrl,
+    String title,
+    String details,
+    String eventDate,
+    String eventType,
+    String sTime,
+    String endTime,
+    String eventLink,
+  ) async {
     try {
+      // Validate and format times
+      String formattedStartTime;
+      String formattedEndTime;
+
+      try {
+        formattedStartTime = AppClass().formatTimeToAMPM(sTime);
+      } catch (e) {
+        formattedStartTime = "Invalid Time";
+      }
+
+      try {
+        formattedEndTime = AppClass().formatTimeToAMPM(endTime);
+      } catch (e) {
+        formattedEndTime = "Invalid Time";
+      }
+
+      // Construct the formatted event details
+      String formattedDetails = '''
+Join Us for a Special Gathering at the Rosenberg Community Center
+
+📅 Date: ${AppClass().formatDate2(eventDate)}
+⏰ Time: $formattedStartTime – $formattedEndTime
+📍 Location: $eventType
+
+🌟 Theme: $title
+
+$details
+
+📌 RSVP Required: $eventLink
+
+*Shared from Rosenberg Community Center App*.
+''';
+
       if (imageUrl.isEmpty) {
         throw "Image URL is empty";
       }
+
       final uri = Uri.parse(imageUrl);
       final response = await http.get(uri);
+
       if (response.statusCode == 200) {
         final tempDir = await getTemporaryDirectory();
         final file = File('${tempDir.path}/event_image.png');
         await file.writeAsBytes(response.bodyBytes);
-        await Share.shareXFiles([XFile(file.path)], text: "$title\n\n$details");
+
+        await Share.shareXFiles(
+          [XFile(file.path)],
+          text: formattedDetails,
+        );
       } else {
-        scaffoldMessengerKey.currentState?.showSnackBar(
+        globals.scaffoldMessengerKey.currentState?.showSnackBar(
           SnackBar(
-              content: Text(
-                  "Failed to fetch image. Status Code: ${response.statusCode}")),
+            content: Text(
+              "Failed to fetch image. Status Code: ${response.statusCode}",
+            ),
+          ),
         );
       }
     } catch (e) {
       print("Error sharing image: $e");
-      scaffoldMessengerKey.currentState?.showSnackBar(
+      globals.scaffoldMessengerKey.currentState?.showSnackBar(
         SnackBar(content: Text("Failed to share image: $e")),
       );
     }
   }
 
   // ---- Show Model Bottom Sheet of Events Details Page
+
   Future<dynamic> EventDetailsShowModelBottomSheet(
     BuildContext context,
+    int eventId,
     String title,
     String sTime,
     String endTime,
@@ -512,227 +595,342 @@ class AppClass {
     String locatinD,
     String eventLink,
   ) {
+    DateTime? _reminderDateTime;
+
+    Future<void> _loadReminder() async {
+      _reminderDateTime = await ReminderUtil.loadReminderFromStorage(title);
+    }
+
+    Future<void> _showDateTimePicker() async {
+      DateTime eventDateTime = DateFormat('yyyy-MM-dd HH:mm')
+          .parse('$eventDate $sTime'); // Combine date and time
+
+      DateTime? selectedDate = await showDatePicker(
+        context: context,
+        initialDate: eventDateTime.subtract(const Duration(hours: 1)),
+        firstDate: DateTime.now(),
+        lastDate: eventDateTime,
+      );
+
+      if (selectedDate != null) {
+        TimeOfDay? selectedTime = await showTimePicker(
+          context: context,
+          initialTime: TimeOfDay.fromDateTime(eventDateTime),
+        );
+
+        if (selectedTime != null) {
+          final reminderDateTime = DateTime(
+            selectedDate.year,
+            selectedDate.month,
+            selectedDate.day,
+            selectedTime.hour,
+            selectedTime.minute,
+          );
+
+          if (reminderDateTime.isBefore(eventDateTime)) {
+            try {
+              await ReminderUtil.setReminder(
+                eventId: eventId.toString(),
+                // key: title,
+                title: title,
+                details: eventDetails,
+                reminderDateTime: reminderDateTime,
+              );
+              _reminderDateTime = reminderDateTime;
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    'Reminder set for ${DateFormat('yyyy-MM-dd HH:mm').format(reminderDateTime)}',
+                  ),
+                ),
+              );
+            } catch (e) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(e.toString())),
+              );
+            }
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                  content: Text('Reminder must be set before the event time.')),
+            );
+          }
+        }
+      }
+    }
+
     return showModalBottomSheet(
       isScrollControlled: true,
       backgroundColor: const Color(0xFFB3E8DA),
       context: context,
-      builder: (context) => FractionallySizedBox(
-        heightFactor: .75,
-        child: Container(
-          // height: 600,
-          width: double.infinity,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SizedBox(
-                      width: 250,
-                      child: Text(
-                        maxLines: 2,
-                        title,
+      builder: (context) => FutureBuilder(
+        future: _loadReminder(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState != ConnectionState.done) {
+            // Show loading indicator while loading the reminder date
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          return FractionallySizedBox(
+            heightFactor: .75,
+            child: SingleChildScrollView(
+              child: Container(
+                width: double.infinity,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox(
+                            width: 250,
+                            child: Text(
+                              maxLines: 2,
+                              title,
+                              style: TextStyle(
+                                  overflow: TextOverflow.ellipsis,
+                                  fontSize: 18,
+                                  fontFamily: popinsSemiBold,
+                                  color: secondaryColor),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () async {
+                              await _downloadAndShareImage(
+                                  imageLink,
+                                  title,
+                                  eventDetails,
+                                  eventDate,
+                                  eventType,
+                                  sTime,
+                                  endTime,
+                                  locatinD);
+                            },
+                            child: Icon(
+                              Icons.share,
+                              color: secondaryColor,
+                            ),
+                          )
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Event Time',
+                                style: TextStyle(
+                                    fontFamily: popinsSemiBold,
+                                    fontSize: 16,
+                                    color: secondaryColor),
+                              ),
+                              const SizedBox(height: 5),
+                              Text(
+                                'Start: ${formatTimeToAMPM(sTime)}',
+                                style: const TextStyle(
+                                    fontFamily: popinsRegulr,
+                                    color: Colors.black,
+                                    fontSize: 12),
+                              ),
+                              const SizedBox(height: 5),
+                              Text(
+                                'End: ${formatTimeToAMPM(endTime)}',
+                                style: const TextStyle(
+                                    fontFamily: popinsRegulr,
+                                    color: Colors.black,
+                                    fontSize: 12),
+                              ),
+                            ],
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Event',
+                                style: TextStyle(
+                                    fontFamily: popinsSemiBold,
+                                    fontSize: 16,
+                                    color: secondaryColor),
+                              ),
+                              const SizedBox(height: 5),
+                              Text(
+                                'Type: $eventType',
+                                style: const TextStyle(
+                                    fontFamily: popinsRegulr,
+                                    color: Colors.black,
+                                    fontSize: 12),
+                              ),
+                              const SizedBox(height: 5),
+                              Text(
+                                'Entry: $entry',
+                                style: const TextStyle(
+                                    fontFamily: popinsRegulr,
+                                    color: Colors.black,
+                                    fontSize: 12),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        'Event Date',
                         style: TextStyle(
-                            overflow: TextOverflow.ellipsis,
-                            fontSize: 18,
                             fontFamily: popinsSemiBold,
+                            fontSize: 16,
                             color: secondaryColor),
                       ),
-                    ),
-                    GestureDetector(
-                        onTap: () async {
-                          await _downloadAndShareImage(
-                              imageLink, title, eventDetails);
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        '${AppClass().formatDate2(eventDate)}',
+                        style: const TextStyle(
+                            fontFamily: popinsRegulr,
+                            color: Colors.black,
+                            fontSize: 12),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        'Details',
+                        style: TextStyle(
+                            fontFamily: popinsSemiBold,
+                            fontSize: 16,
+                            color: secondaryColor),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        maxLines: 8,
+                        eventDetails,
+                        style: const TextStyle(
+                            overflow: TextOverflow.ellipsis,
+                            fontSize: 16,
+                            fontFamily: popinsRegulr,
+                            color: Colors.black),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        children: [
+                          Image.asset(icLocation),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            'Location',
+                            style: TextStyle(
+                                fontFamily: popinsSemiBold,
+                                fontSize: 16,
+                                color: secondaryColor),
+                          ),
+                          Text(
+                            '(click to locate )',
+                            style: TextStyle(
+                                fontFamily: popinsRegulr,
+                                fontSize: 11,
+                                color: secondaryColor),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          AppClass().launchURL(eventLink);
+                          print(eventLink);
                         },
-                        child: Icon(
-                          Icons.share,
-                          color: secondaryColor,
-                        ))
-                  ],
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Event Time',
-                          style: TextStyle(
-                              fontFamily: popinsSemiBold,
-                              fontSize: 16,
-                              color: secondaryColor),
+                        child: Text(
+                            maxLines: 4,
+                            locatinD,
+                            style: TextStyle(
+                                decoration: TextDecoration.underline,
+                                overflow: TextOverflow.ellipsis,
+                                fontSize: 16,
+                                fontFamily: popinsSemiBold,
+                                color: primaryColor)),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      const SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                backgroundColor: primaryColor),
+                            onPressed: () async {
+                              await _showDateTimePicker();
+                            },
+                            child: Text(
+                              "Set Reminder",
+                              style: TextStyle(
+                                  fontFamily: popinsMedium, color: whiteColor),
+                            ),
+                          ),
+                          if (_reminderDateTime != null) ...[
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Reminder Set",
+                                  style: TextStyle(
+                                      fontFamily: popinsSemiBold,
+                                      fontSize: 16,
+                                      color: secondaryColor),
+                                ),
+                                Text(
+                                  DateFormat('yyyy-MM-dd HH:mm')
+                                      .format(_reminderDateTime!),
+                                  style: const TextStyle(
+                                      fontFamily: popinsRegulr,
+                                      color: Colors.black,
+                                      fontSize: 12),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ],
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10)),
+                        child: Center(
+                          child: Image.network(
+                            height: 250,
+                            imageLink,
+                            fit: BoxFit.cover,
+                          ),
                         ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text(
-                          'Start: ${formatTimeToAMPM(sTime)}',
-                          style: const TextStyle(
-                              fontFamily: popinsRegulr,
-                              color: Colors.black,
-                              fontSize: 12),
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text(
-                          'End:  ${formatTimeToAMPM(endTime)}',
-                          style: const TextStyle(
-                              fontFamily: popinsRegulr,
-                              color: Colors.black,
-                              fontSize: 12),
-                        )
-                      ],
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Event',
-                          style: TextStyle(
-                              fontFamily: popinsSemiBold,
-                              fontSize: 16,
-                              color: secondaryColor),
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text(
-                          'Type: $eventType',
-                          style: const TextStyle(
-                              fontFamily: popinsRegulr,
-                              color: Colors.black,
-                              fontSize: 12),
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text(
-                          'Entry: $entry',
-                          style: const TextStyle(
-                              fontFamily: popinsRegulr,
-                              color: Colors.black,
-                              fontSize: 12),
-                        )
-                      ],
-                    )
-                  ],
+                      )
+                    ],
+                  ),
                 ),
-                SizedBox(
-                  height: 20,
-                ),
-                Text(
-                  'Event Date',
-                  style: TextStyle(
-                      fontFamily: popinsSemiBold,
-                      fontSize: 16,
-                      color: secondaryColor),
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                Text(
-                  '${AppClass().formatDate2(eventDate)}',
-                  style: const TextStyle(
-                      fontFamily: popinsRegulr,
-                      color: Colors.black,
-                      fontSize: 12),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Text(
-                  'Details',
-                  style: TextStyle(
-                      fontFamily: popinsSemiBold,
-                      fontSize: 16,
-                      color: secondaryColor),
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                Text(
-                  maxLines: 8,
-                  eventDetails,
-                  style: const TextStyle(
-                      overflow: TextOverflow.ellipsis,
-                      fontSize: 16,
-                      fontFamily: popinsRegulr,
-                      color: Colors.black),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Row(
-                  children: [
-                    Image.asset(icLocation),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Text(
-                      'Venue',
-                      style: TextStyle(
-                          fontFamily: popinsSemiBold,
-                          fontSize: 16,
-                          color: secondaryColor),
-                    ),
-                    Text(
-                      '(click to locate )',
-                      style: TextStyle(
-                          fontFamily: popinsRegulr,
-                          fontSize: 11,
-                          color: secondaryColor),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                GestureDetector(
-                  onTap: () {
-                    AppClass().launchURL(eventLink);
-                    print(eventLink);
-                  },
-                  child: Text(
-                      maxLines: 4,
-                      locatinD,
-                      style: TextStyle(
-                          decoration: TextDecoration.underline,
-                          overflow: TextOverflow.ellipsis,
-                          fontSize: 16,
-                          fontFamily: popinsSemiBold,
-                          color: primaryColor)),
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                Container(
-                    height: 200,
-                    width: double.infinity,
-                    decoration:
-                        BoxDecoration(borderRadius: BorderRadius.circular(10)),
-                    child: Image.network(
-                      imageLink,
-                      // fit: BoxFit.cover,
-                      height: 250,
-                    )),
-                SizedBox(
-                  height: 10,
-                )
-              ],
+              ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }

@@ -400,6 +400,9 @@ class EventsWidget extends StatelessWidget {
                                               GestureDetector(
                                                 onTap: () {
                                                   Get.to(() => EventDetailPage(
+                                                        eventId: eventData
+                                                            .events[index]
+                                                            .eventId,
                                                         eventVenue: eventData
                                                             .events[index]
                                                             .venueName,
@@ -417,8 +420,14 @@ class EventsWidget extends StatelessWidget {
                                                                         index]
                                                                     .paid ==
                                                                 '0'
-                                                            ? 'Free'
-                                                            : 'Paid',
+                                                            ? 'Free Event'
+                                                            : eventData
+                                                                        .events[
+                                                                            index]
+                                                                        .paid ==
+                                                                    '1'
+                                                                ? 'Paid Event'
+                                                                : '',
                                                         eventDate: eventData
                                                             .events[index]
                                                             .eventDate
