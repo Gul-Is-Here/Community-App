@@ -61,7 +61,7 @@ class EventsScreen extends StatelessWidget {
                   shadowColor: Colors.grey.withOpacity(0.3),
                   child: InkWell(
                     onTap: () {
-                      Get.to(() => EventDetailPage(eventVenue: event.venueName,
+                      Get.to(() => EventDetailPage(eventVenue: event.venueName,eventId: event.eventId,
                             title: event.eventTitle,
                             sTime: event.eventStarttime,
                             endTime: event.eventEndtime,

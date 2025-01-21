@@ -1056,7 +1056,7 @@ class AnnouncementWidget extends StatelessWidget {
                                     ));
                               },
                               child: SizedBox(
-                                height: 200,
+                                height: screenHeight1 * .24,
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Card(
@@ -1110,12 +1110,17 @@ class AnnouncementWidget extends StatelessWidget {
                                                         width: 24,
                                                         height: 24,
                                                       ),
-                                                      Text(
-                                                        'Posted on ${AppClass().formatDate2(alertsData.createdAt.toString())}',
-                                                        style: TextStyle(
-                                                          color: whiteColor,
-                                                          fontFamily:
-                                                              popinsRegulr,
+                                                      Expanded(
+                                                        child: Text(
+                                                          maxLines: 1,
+                                                          'Posted on ${AppClass().formatDate2(alertsData.createdAt.toString())}',
+                                                          style: TextStyle(
+                                                              color: whiteColor,
+                                                              fontFamily:
+                                                                  popinsRegulr,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis),
                                                         ),
                                                       )
                                                     ],
@@ -1144,7 +1149,7 @@ class AnnouncementWidget extends StatelessWidget {
                           );
                         },
                         options: CarouselOptions(
-                          height: 100, // Adjust height as needed
+                          height: screenWidth * .285, // Adjust height as needed
                           autoPlay: true,
                           autoPlayInterval: const Duration(seconds: 3),
                           enlargeCenterPage: true,

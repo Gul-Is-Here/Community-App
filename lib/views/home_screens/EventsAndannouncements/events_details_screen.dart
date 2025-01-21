@@ -1,17 +1,19 @@
-import 'dart:core';
+// import 'package:your_project_path/reminder_util.dart';
 import 'dart:io';
-import 'package:community_islamic_app/app_classes/app_class.dart';
-import 'package:community_islamic_app/constants/color.dart';
+
 import 'package:flutter/material.dart';
-import 'package:share_plus/share_plus.dart';
-// import 'package:velocity_x/velocity_x.dart';
-import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:http/http.dart' as http;
+import '../../../app_classes/app_class.dart';
+import '../../../constants/color.dart';
+import '../../../constants/image_constants.dart';
+import '../../../services/reminderUtilles.dart';
 
-final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
-    GlobalKey<ScaffoldMessengerState>();
-
-class EventDetailPage extends StatelessWidget {
+class EventDetailPage extends StatefulWidget {
+  final int eventId;
   final String title;
   final String sTime;
   final String endTime;
@@ -23,23 +25,111 @@ class EventDetailPage extends StatelessWidget {
   final String locatinV;
   final String eventVenue;
 
-  const EventDetailPage(
-      {super.key,
-      required this.title,
-      required this.sTime,
-      required this.endTime,
-      required this.entry,
-      required this.eventDate,
-      required this.eventDetails,
-      required this.eventType,
-      required this.imageLink,
-      required this.locatinV,
-      required this.eventVenue});
+  const EventDetailPage({
+    super.key,
+    required this.eventId,
+    required this.title,
+    required this.sTime,
+    required this.endTime,
+    required this.entry,
+    required this.eventDate,
+    required this.eventDetails,
+    required this.eventType,
+    required this.imageLink,
+    required this.locatinV,
+    required this.eventVenue,
+  });
+
+  @override
+  _EventDetailPageState createState() => _EventDetailPageState();
+}
+
+class _EventDetailPageState extends State<EventDetailPage> {
+  DateTime? _reminderDateTime;
+
+  @override
+  void initState() {
+    super.initState();
+    ReminderUtil.initializeNotifications();
+    _loadReminder();
+  }
+
+  Future<void> _loadReminder() async {
+    final reminder = await ReminderUtil.loadReminderFromStorage(widget.title);
+    setState(() {
+      _reminderDateTime = reminder;
+    });
+  }
+
+  Future<void> _setReminder(DateTime reminderDateTime) async {
+    try {
+      await ReminderUtil.setReminder(
+        eventId: widget.eventId.toString(),
+        title: widget.title,
+        details: widget.eventDetails,
+        reminderDateTime: reminderDateTime,
+      );
+      await ReminderUtil.saveReminderToStorage(widget.title, reminderDateTime);
+      setState(() {
+        _reminderDateTime = reminderDateTime;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text(
+                'Reminder set for ${DateFormat('yyyy-MM-dd HH:mm:a').format(reminderDateTime)}')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString())),
+      );
+    }
+  }
+
+  Future<void> _showDateTimePicker() async {
+    // Pick a date
+    final DateTime? selectedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateFormat('yyyy-MM-dd').parse(widget.eventDate),
+    );
+
+    if (selectedDate != null) {
+      // Pick a time
+      final TimeOfDay? selectedTime = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.now(),
+      );
+
+      if (selectedTime != null) {
+        final DateTime reminderDateTime = DateTime(
+          selectedDate.year,
+          selectedDate.month,
+          selectedDate.day,
+          selectedTime.hour,
+          selectedTime.minute,
+        );
+
+        final DateTime eventDateTime = DateFormat('yyyy-MM-dd HH:mm').parse(
+          '${widget.eventDate} ${widget.sTime}',
+        );
+
+        if (reminderDateTime.isBefore(eventDateTime)) {
+          await _setReminder(reminderDateTime);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+                content: Text('Reminder must be set before the event time.')),
+          );
+        }
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: lightColor, // Light greenish background
+      backgroundColor: lightColor,
       appBar: AppBar(
         backgroundColor: primaryColor,
         title: const Text(
@@ -57,7 +147,8 @@ class EventDetailPage extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.share, color: Colors.white),
             onPressed: () async {
-              await _downloadAndShareImage(imageLink, title, eventDetails);
+              await _downloadAndShareImage(
+                  widget.imageLink, widget.title, widget.eventDetails);
             },
           ),
         ],
@@ -69,9 +160,8 @@ class EventDetailPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Title Section
             Text(
-              title,
+              widget.title,
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -80,36 +170,31 @@ class EventDetailPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 12),
-
-            // Event Time and Type
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 _buildEventDetailItem("Event Time",
-                    "Start: ${AppClass().formatTimeToAMPM(sTime)}\nEnd: ${AppClass().formatTimeToAMPM(endTime)}"),
-                _buildEventDetailItem(
-                    "Event", "Type: $eventType\nEntry: $entry"),
+                    "Start: ${AppClass().formatTimeToAMPM(widget.sTime)}\nEnd: ${AppClass().formatTimeToAMPM(widget.endTime)}"),
+                _buildEventDetailItem("Event",
+                    "Type: ${widget.eventType}\nEntry: ${widget.entry}"),
               ],
             ),
-            const SizedBox(height: 20),
 
-            // Event Date
+            const SizedBox(height: 20),
             _buildSectionTitle("Event Date"),
             const SizedBox(height: 8),
             Text(
-              "${AppClass().formatDate2(eventDate)}",
+              AppClass().formatDate2(widget.eventDate),
               style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
                   fontFamily: popinsRegulr),
             ),
             const SizedBox(height: 20),
-
-            // Details Section
             _buildSectionTitle("Details"),
             const SizedBox(height: 8),
             Text(
-              eventDetails,
+              widget.eventDetails,
               style: const TextStyle(
                   fontSize: 14,
                   height: 1.5,
@@ -117,66 +202,103 @@ class EventDetailPage extends StatelessWidget {
                   fontFamily: popinsRegulr),
             ),
             const SizedBox(height: 20),
-
-            // Venue Section
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
+            // ElevatedButton(
+            //   onPressed: _showDateTimePicker,
+            //   child: const Text("Set Reminder"),
+            // ),
+            // const SizedBox(height: 20),
+            Row(
               children: [
-                GestureDetector(
-                  onTap: () {},
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Icon(Icons.location_on,
-                          color: Color(0xFF3FA27E), size: 20),
-                      Expanded(
-                        child: Row(
-                          children: [
-                            Text(
-                              'Venue ',
-                              style: TextStyle(
-                                  fontFamily: popinsSemiBold,
-                                  // fontSize: 18,
-                                  color: primaryColor),
-                            ),
-                            Text(
-                              '(click to locate)',
-                              style: TextStyle(
-                                  fontFamily: popinsRegulr,
-                                  fontSize: 11,
-                                  color: primaryColor),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                Image.asset(icLocation),
                 SizedBox(
-                  height: 5,
+                  width: 10,
                 ),
-                GestureDetector(
-                  onTap: () {
-                    AppClass().launchURL(locatinV);
-                  },
-                  child: Text(
-                    eventVenue,
-                    style: TextStyle(
-                        decoration: TextDecoration.underline,
-                        fontSize: 14,
-                        color: primaryColor,
-                        fontFamily: popinsSemiBold),
-                  ),
+                Text(
+                  'Location',
+                  style: TextStyle(
+                      fontFamily: popinsSemiBold,
+                      fontSize: 16,
+                      color: secondaryColor),
+                ),
+                Text(
+                  '(click to locate )',
+                  style: TextStyle(
+                      fontFamily: popinsRegulr,
+                      fontSize: 11,
+                      color: secondaryColor),
                 ),
               ],
             ),
-            const SizedBox(height: 20),
+            SizedBox(
+              height: 5,
+            ),
+            GestureDetector(
+              onTap: () {
+                AppClass().launchURL(widget.locatinV);
+                // print(eventLink);
+              },
+              child: Text(
+                  maxLines: 4,
+                  widget.eventVenue,
+                  style: TextStyle(
+                      decoration: TextDecoration.underline,
+                      overflow: TextOverflow.ellipsis,
+                      fontSize: 16,
+                      fontFamily: popinsSemiBold,
+                      color: primaryColor)),
+            ),
+            SizedBox(
+              height: 5,
+            ),
 
-            // Image Section
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                          10,
+                        ),
+                      ),
+                      backgroundColor: primaryColor),
+                  onPressed: _showDateTimePicker,
+                  child: Text(
+                    "Set Reminder",
+                    style:
+                        TextStyle(fontFamily: popinsMedium, color: whiteColor),
+                  ),
+                ),
+                if (_reminderDateTime != null) ...[
+                  const SizedBox(height: 10),
+                  Column(
+                    children: [
+                      Text(
+                        "Reminder Set",
+                        style: TextStyle(
+                            fontFamily: popinsSemiBold,
+                            fontSize: 16,
+                            color: secondaryColor),
+                      ),
+                      // const SizedBox(height: 5),
+                      Text(
+                        DateFormat('yyyy-MM-dd HH:mm')
+                            .format(_reminderDateTime!),
+                        style: const TextStyle(
+                            fontFamily: popinsRegulr,
+                            color: Colors.black,
+                            fontSize: 12),
+                      ),
+                    ],
+                  ),
+                ],
+              ],
+            ),
+            const SizedBox(
+              height: 20,
+            ),
             Image.network(
-              imageLink,
-              // fit: BoxFit.cover,
+              widget.imageLink,
               height: 250,
               width: double.infinity,
             ),
@@ -189,33 +311,41 @@ class EventDetailPage extends StatelessWidget {
   Future<void> _downloadAndShareImage(
       String imageUrl, String title, String details) async {
     try {
-      if (imageUrl.isEmpty) {
-        throw "Image URL is empty";
-      }
+      String formattedDetails = """
+Join Us for a Special Gathering at the Rosenberg Community Center
+
+📅 Date: ${AppClass().formatDate2(widget.eventDate)}
+⏰ Time: ${AppClass().formatTimeToAMPM(widget.sTime)} – ${AppClass().formatTimeToAMPM(widget.endTime)}
+📍 Location: ${widget.eventVenue}
+
+🌟 Theme: ${widget.title}
+
+$details
+
+📌 RSVP Required: ${widget.locatinV}
+
+*Shared from Rosenberg Community Center App*
+""";
+
       final uri = Uri.parse(imageUrl);
       final response = await http.get(uri);
       if (response.statusCode == 200) {
         final tempDir = await getTemporaryDirectory();
         final file = File('${tempDir.path}/event_image.png');
         await file.writeAsBytes(response.bodyBytes);
-        await Share.shareXFiles([XFile(file.path)],
-            text: "$title\n\n$details\n\nfrom Rosenberg Community Center");
+        await Share.shareXFiles([XFile(file.path)], text: formattedDetails);
       } else {
-        scaffoldMessengerKey.currentState?.showSnackBar(
-          SnackBar(
-              content: Text(
-                  "Failed to fetch image. Status Code: ${response.statusCode}")),
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Failed to fetch image.")),
         );
       }
     } catch (e) {
-      print("Error sharing image: $e");
-      scaffoldMessengerKey.currentState?.showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Failed to share image: $e")),
       );
     }
   }
 
-  // Reusable Widget for Event Time and Type
   Widget _buildEventDetailItem(String title, String value) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -238,7 +368,6 @@ class EventDetailPage extends StatelessWidget {
     );
   }
 
-  // Reusable Widget for Section Titles
   Widget _buildSectionTitle(String title) {
     return Text(
       title,

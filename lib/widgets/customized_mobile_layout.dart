@@ -82,8 +82,8 @@ class _CustomizedMobileLayoutState extends State<CustomizedMobileLayout> {
     final LoginController loginController = Get.put(LoginController());
     final screenHeight1 = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
-    print('Height : $screenHeight1');
-    print('width : $screenWidth');
+    // print('Height : $screenHeight1');
+    // print('width : $screenWidth');
     var iqamatimes = getAllIqamaTimes();
     homeController.getCurrentPrayer();
     // homeController.getCurrentPrayer2();
