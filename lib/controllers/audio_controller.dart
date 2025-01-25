@@ -25,12 +25,13 @@ class AudioPlayerController extends GetxController {
   void onInit() {
     super.onInit();
     _initAudioService();
-    bismillahAudioPlayer.setAsset("assets/bismillah.mp3");
+    _initBismillahAudioPlayer();
   }
 
   @override
   void onClose() {
     _disposeAudioService();
+    _disposeBismillahAudioPlayer();
     super.onClose();
   }
 
@@ -50,7 +51,6 @@ class AudioPlayerController extends GetxController {
       isAudioHandlerInitialized.value = true;
 
       _audioHandler?.playbackState.listen((playbackState) {
-        // Update the state based on the playback state
         isPlaying.value = playbackState.playing;
         progress.value = playbackState.position.inMilliseconds.toDouble();
         buffereDuration.value =
@@ -76,11 +76,30 @@ class AudioPlayerController extends GetxController {
     }
   }
 
+  Future<void> _initBismillahAudioPlayer() async {
+    try {
+      await bismillahAudioPlayer.setAsset("assets/bismillah.mp3");
+    } catch (e) {
+      print('Error initializing bismillahAudioPlayer: $e');
+    }
+  }
+
   Future<void> _disposeAudioService() async {
     if (_audioHandler != null) {
       await _audioHandler!.stop();
       _audioHandler = null;
       isAudioHandlerInitialized.value = false;
+    }
+  }
+
+  void _disposeBismillahAudioPlayer() {
+    try {
+      if (bismillahAudioPlayer.playing) {
+        bismillahAudioPlayer.stop();
+      }
+      bismillahAudioPlayer.dispose();
+    } catch (e) {
+      print('Error disposing bismillahAudioPlayer: $e');
     }
   }
 
@@ -96,29 +115,20 @@ class AudioPlayerController extends GetxController {
     }
 
     try {
-      print('Current Audio: ${currentAudio.value}');
-      print('Audio to play/pause: $audio');
-
       if (currentAudio.value?.id == audio.id) {
         if (isPlaying.value) {
-          // Pause if currently playing
-          print('Pausing audio');
           await _audioHandler!.pause();
           isPlaying.value = false;
         } else {
-          // Resume if currently paused
-          print('Resuming audio');
           await _audioHandler!.play();
           isPlaying.value = true;
         }
       } else {
-        // Stop current audio and play new one
-        print('Stopping current audio and playing new one');
         currentAudio.value = audio;
         progress.value = 0.0;
         buffereDuration.value = 1.0;
+
         await _audioHandler!.stop();
-        // isLoading.value = !isLoading.value;
         EasyLoading.show(status: "Loading...");
         await _audioHandler!.setAudioFile(audio);
         duration.value = (await _audioHandler?.getDuration(audio.audioUrl))
@@ -126,37 +136,23 @@ class AudioPlayerController extends GetxController {
                 .toDouble() ??
             1.0;
         EasyLoading.dismiss();
-        // isLoading.value = !isLoading.value;
-        // if (bismillahAudioPlayer != null) {
-        //   bismillahAudioPlayer!.stop();
-        //   bismillahAudioPlayer!.dispose();
-        // }
-
-        // bismillahAudioPlayer = AudioPlayer();
 
         if (bismillahAudioPlayer.playing ||
             bismillahAudioPlayer.playerState.processingState ==
                 ProcessingState.completed) {
-          await bismillahAudioPlayer.seek(Duration(
-            seconds: 1,
-          ));
           await bismillahAudioPlayer.stop();
         }
 
         if (audio.chapterId != 1) {
           await bismillahAudioPlayer.play();
-          // .whenComplete(() async {
-          //   await bismillahAudioPlayer.stop();
-          // });
         }
-
-        // await bismillahAudioPlayer.dispose();
 
         await _audioHandler!.play();
         isPlaying.value = true;
       }
     } catch (e) {
       print('Error playing or pausing audio: $e');
+      EasyLoading.dismiss();
     }
   }
 
@@ -168,7 +164,6 @@ class AudioPlayerController extends GetxController {
 
     try {
       if (isPlaying.value) {
-        print('Pausing audio');
         await _audioHandler!.pause();
         isPlaying.value = false;
       }
@@ -184,12 +179,9 @@ class AudioPlayerController extends GetxController {
     }
 
     try {
-      print('Stopping audio');
       await _audioHandler!.stop();
-      //
       isPlaying.value = false;
       currentAudio.value = null;
-      // _initAudioService();
     } catch (e) {
       print('Error stopping audio: $e');
     }
@@ -239,7 +231,7 @@ class AudioPlayerController extends GetxController {
     if (_audioHandler != null) {
       _audioHandler!.setRepeatMode(
         isRepeating.value
-            ? AudioServiceRepeatMode.one // Use the correct enum value
+            ? AudioServiceRepeatMode.one
             : AudioServiceRepeatMode.none,
       );
     }

@@ -596,14 +596,15 @@ $details
     String eventLink,
   ) {
     DateTime? _reminderDateTime;
+    bool isSharing = false; // State to manage sharing loader
 
     Future<void> _loadReminder() async {
       _reminderDateTime = await ReminderUtil.loadReminderFromStorage(title);
     }
 
     Future<void> _showDateTimePicker() async {
-      DateTime eventDateTime = DateFormat('yyyy-MM-dd HH:mm')
-          .parse('$eventDate $sTime'); // Combine date and time
+      DateTime eventDateTime =
+          DateFormat('yyyy-MM-dd HH:mm').parse('$eventDate $sTime');
 
       DateTime? selectedDate = await showDatePicker(
         context: context,
@@ -631,7 +632,6 @@ $details
             try {
               await ReminderUtil.setReminder(
                 eventId: eventId.toString(),
-                // key: title,
                 title: title,
                 details: eventDetails,
                 reminderDateTime: reminderDateTime,
@@ -659,6 +659,28 @@ $details
       }
     }
 
+    Future<void> _shareEvent() async {
+      isSharing = true;
+      try {
+        await _downloadAndShareImage(
+          imageLink,
+          title,
+          eventDetails,
+          eventDate,
+          eventType,
+          sTime,
+          endTime,
+          locatinD,
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error sharing: $e')),
+        );
+      } finally {
+        isSharing = false;
+      }
+    }
+
     return showModalBottomSheet(
       isScrollControlled: true,
       backgroundColor: const Color(0xFFB3E8DA),
@@ -667,19 +689,16 @@ $details
         future: _loadReminder(),
         builder: (context, snapshot) {
           if (snapshot.connectionState != ConnectionState.done) {
-            // Show loading indicator while loading the reminder date
             return const Center(child: CircularProgressIndicator());
           }
 
-          return FractionallySizedBox(
-            heightFactor: .75,
-            child: SingleChildScrollView(
-              child: Container(
-                width: double.infinity,
+          return StatefulBuilder(builder: (context, setState) {
+            return FractionallySizedBox(
+              heightFactor: .75,
+              child: SingleChildScrollView(
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
@@ -688,32 +707,40 @@ $details
                           SizedBox(
                             width: 250,
                             child: Text(
-                              maxLines: 2,
                               title,
+                              maxLines: 2,
                               style: TextStyle(
-                                  overflow: TextOverflow.ellipsis,
-                                  fontSize: 18,
-                                  fontFamily: popinsSemiBold,
-                                  color: secondaryColor),
+                                overflow: TextOverflow.ellipsis,
+                                fontSize: 18,
+                                fontFamily: popinsSemiBold,
+                                color: secondaryColor,
+                              ),
                             ),
                           ),
                           GestureDetector(
                             onTap: () async {
-                              await _downloadAndShareImage(
-                                  imageLink,
-                                  title,
-                                  eventDetails,
-                                  eventDate,
-                                  eventType,
-                                  sTime,
-                                  endTime,
-                                  locatinD);
+                              setState(() {
+                                isSharing = true; // Show loader
+                              });
+                              await _shareEvent();
+                              setState(() {
+                                isSharing = false; // Hide loader
+                              });
                             },
-                            child: Icon(
-                              Icons.share,
-                              color: secondaryColor,
-                            ),
-                          )
+                            child: isSharing
+                                ? SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: secondaryColor,
+                                    ),
+                                  )
+                                : Icon(
+                                    Icons.share,
+                                    color: secondaryColor,
+                                  ),
+                          ),
                         ],
                       ),
                       const SizedBox(height: 10),
@@ -928,8 +955,8 @@ $details
                   ),
                 ),
               ),
-            ),
-          );
+            );
+          });
         },
       ),
     );

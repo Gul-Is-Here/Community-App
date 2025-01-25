@@ -35,11 +35,11 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   tz.initializeTimeZones();
   await NotificationServices().initializeNotification();
-  await HomeController().fetchPrayerTimes();
-  HomeController().getCurrentPrayerCurrent();
-  HomeEventsController().fetchEventsData();
+  // await HomeController().fetchPrayerTimes();
+  // HomeController().getCurrentPrayerCurrent();
+  // HomeEventsController().fetchEventsData();
   // QiblahController();
-  await QiblahController().getLocation();
+  // await QiblahController().getLocation();
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
   DateTime today = DateTime.now();
@@ -108,10 +108,9 @@ void main() async {
     FirebaseMessaging.onBackgroundMessage(
         NotificationServices().notifcationsForEvents);
   }
-  if(isAllowAnnouncement){
- FirebaseMessaging.onBackgroundMessage(
+  if (isAllowAnnouncement) {
+    FirebaseMessaging.onBackgroundMessage(
         NotificationServices().notifcationsForAnnouncements);
-  
   }
   runApp(const MyApp());
 }

@@ -28,16 +28,11 @@ import 'customized_prayertext_widget.dart';
 import 'eventsWidgets.dart';
 
 // ignore: must_be_immutable
-class CustomizedMobileLayout extends StatefulWidget {
+class CustomizedMobileLayout extends StatelessWidget {
   final double screenHeight;
 
   CustomizedMobileLayout({super.key, required this.screenHeight});
 
-  @override
-  State<CustomizedMobileLayout> createState() => _CustomizedMobileLayoutState();
-}
-
-class _CustomizedMobileLayoutState extends State<CustomizedMobileLayout> {
   final HomeController homeController = Get.put(HomeController());
 
   final NotificationServices notificationServices = NotificationServices();
@@ -46,49 +41,25 @@ class _CustomizedMobileLayoutState extends State<CustomizedMobileLayout> {
 
   // String? currentIqamaTime;
   String? currentIqamaTime;
-  RxString heighlite = ''.obs;
+
   final appClass = AppClass();
-
-  late Timer _timer;
-
-  // Initial value of the timer
-  @override
-  void initState() {
-    super.initState();
-    startTimer(); // Start the timer when the screen is built
-  }
-
-  @override
-  void dispose() {
-    _timer.cancel(); // Cancel the timer when the widget is disposed
-    super.dispose();
-  }
-
-  void startTimer() {
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
-      setState(() {
-        getCurrentPrayer();
-        heighlite.value = getCurrentPrayer();
-        // Increment the timer value every second
-      });
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     eventsController.feedsList;
 
-    homeController.jummaTimes.value;
-    final LoginController loginController = Get.put(LoginController());
+    // homeController.getNextPrayerTime;
+    // homeController.jummaTimes.value;
+    // final LoginController loginController = Get.put(LoginController());
     final screenHeight1 = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     // print('Height : $screenHeight1');
     // print('width : $screenWidth');
     var iqamatimes = getAllIqamaTimes();
-    homeController.getCurrentPrayer();
+    // homeController.getCurrentPrayer();
     // homeController.getCurrentPrayer2();
 
-    heighlite.value = getCurrentPrayer();
+    //  = getCurrentPrayer();
     return Container(
       decoration: BoxDecoration(
         color: primaryColor,
@@ -151,7 +122,7 @@ class _CustomizedMobileLayoutState extends State<CustomizedMobileLayout> {
             // 10.heightBox,
             Center(
               child: SizedBox(
-                  height: screenHeight1 * .19,
+                  height: screenHeight1 * .22,
                   width: 350,
                   child: Card(
                     color: Colors.transparent,
@@ -447,7 +418,7 @@ class _CustomizedMobileLayoutState extends State<CustomizedMobileLayout> {
                         // Check if the prayerTime data is null before accessing it
                         if (homeController.prayerTime.value.data == null) {
                           return PrayerTimeWidget(
-                            currentPrayer: heighlite.value,
+                            currentPrayer: homeController.heighlite.value,
                             namazName: 'Fajr',
                             timings:
                                 '6:33 AM', // Default value when prayerTime data is null
@@ -458,7 +429,7 @@ class _CustomizedMobileLayoutState extends State<CustomizedMobileLayout> {
 
                         // If the data is not null, use the actual prayer time
                         return PrayerTimeWidget(
-                          currentPrayer: heighlite.value,
+                          currentPrayer: homeController.heighlite.value,
                           namazName: 'Fajr',
                           timings: homeController
                               .prayerTime.value.data!.timings.fajr,
@@ -476,7 +447,7 @@ class _CustomizedMobileLayoutState extends State<CustomizedMobileLayout> {
                           // heighlite.value = getCurrentPrayer();
                           if (homeController.jummaTimes.value.data == null) {
                             return PrayerTimeWidget(
-                              currentPrayer: heighlite.value,
+                              currentPrayer: homeController.heighlite.value,
                               namazName: 'Dhuhr',
                               timings:
                                   '12:10 PM', // Default value when prayerTime data is null
@@ -485,7 +456,7 @@ class _CustomizedMobileLayoutState extends State<CustomizedMobileLayout> {
                             );
                           }
                           return PrayerTimeWidget(
-                            currentPrayer: heighlite.value,
+                            currentPrayer: homeController.heighlite.value,
                             namazName: 'Dhuhr',
                             timings: homeController
                                 .jummaTimes.value.data!.jumah.prayerTiming,
@@ -495,7 +466,7 @@ class _CustomizedMobileLayoutState extends State<CustomizedMobileLayout> {
                         } else {
                           if (homeController.prayerTime.value.data == null) {
                             return PrayerTimeWidget(
-                              currentPrayer: heighlite.value,
+                              currentPrayer: homeController.heighlite.value,
                               namazName: 'Dhuhr',
                               timings:
                                   '12:10 PM', // Default value when prayerTime data is null
@@ -504,7 +475,7 @@ class _CustomizedMobileLayoutState extends State<CustomizedMobileLayout> {
                             );
                           }
                           return PrayerTimeWidget(
-                            currentPrayer: heighlite.value,
+                            currentPrayer: homeController.heighlite.value,
                             namazName: 'Dhuhr',
                             timings: homeController
                                 .prayerTime.value.data!.timings.dhuhr,
@@ -518,7 +489,7 @@ class _CustomizedMobileLayoutState extends State<CustomizedMobileLayout> {
                         if (homeController.prayerTime.value.data == null) {
                           // heighlite.value = getCurrentPrayer();
                           return PrayerTimeWidget(
-                            currentPrayer: heighlite.value,
+                            currentPrayer: homeController.heighlite.value,
                             namazName: 'Asr',
                             timings:
                                 '03:04 PM', // Default value when prayerTime data is null
@@ -527,7 +498,7 @@ class _CustomizedMobileLayoutState extends State<CustomizedMobileLayout> {
                           );
                         }
                         return PrayerTimeWidget(
-                          currentPrayer: heighlite.value,
+                          currentPrayer: homeController.heighlite.value,
                           namazName: 'Asr',
                           timings:
                               homeController.prayerTime.value.data!.timings.asr,
@@ -540,7 +511,7 @@ class _CustomizedMobileLayoutState extends State<CustomizedMobileLayout> {
                         if (homeController.prayerTime.value.data == null) {
                           // heighlite.value = getCurrentPrayer();
                           return PrayerTimeWidget(
-                            currentPrayer: heighlite.value,
+                            currentPrayer: homeController.heighlite.value,
                             namazName: 'Maghrib',
                             timings:
                                 '05:23 PM', // Default value when prayerTime data is null
@@ -549,7 +520,7 @@ class _CustomizedMobileLayoutState extends State<CustomizedMobileLayout> {
                           );
                         }
                         return PrayerTimeWidget(
-                          currentPrayer: heighlite.value,
+                          currentPrayer: homeController.heighlite.value,
                           namazName: 'Maghrib',
                           timings: homeController
                               .prayerTime.value.data!.timings.maghrib,
@@ -561,7 +532,7 @@ class _CustomizedMobileLayoutState extends State<CustomizedMobileLayout> {
                       Obx(() {
                         if (homeController.prayerTime.value.data == null) {
                           return PrayerTimeWidget(
-                            currentPrayer: heighlite.value,
+                            currentPrayer: homeController.heighlite.value,
                             namazName: 'Isha',
                             timings:
                                 '06:33 PM', // Default value when prayerTime data is null
@@ -570,7 +541,7 @@ class _CustomizedMobileLayoutState extends State<CustomizedMobileLayout> {
                           );
                         }
                         return PrayerTimeWidget(
-                          currentPrayer: heighlite.value,
+                          currentPrayer: homeController.heighlite.value,
                           namazName: 'Isha',
                           timings: homeController
                               .prayerTime.value.data!.timings.isha,
@@ -835,108 +806,8 @@ class _CustomizedMobileLayoutState extends State<CustomizedMobileLayout> {
       'Isha': '',
     };
   }
-
-  bool isDateInRange(String today, String start, String end) {
-    final format = DateFormat("d/M");
-    final todayDate = format.parse(today);
-    final startDate = format.parse(start);
-    final endDate = format.parse(end);
-
-    return todayDate.isAfter(startDate.subtract(Duration(days: 1))) &&
-        todayDate.isBefore(endDate.add(Duration(days: 1)));
-  }
-
-  String getCurrentPrayer() {
-    final now = DateTime.now();
-    final todayString = "${now.day}/${now.month}";
-
-    for (var timing in iqamahTiming) {
-      if (isDateInRange(todayString, timing.startDate, timing.endDate)) {
-        if (homeController.prayerTime.value.data?.timings != null) {
-          final timings = homeController.prayerTime.value.data!.timings;
-
-          // Parse Azan timings from API
-          final fajrTime =
-              homeController.parseTimeWithDate("${timings.fajr} AM", now);
-          final dhuhrTime =
-              homeController.parseTimeWithDate("${timings.dhuhr} PM", now);
-          final asrTime =
-              homeController.parseTimeWithDate("${timings.asr} PM", now);
-          final maghribTime =
-              homeController.parseTimeWithDate("${timings.maghrib}", now);
-          final ishaTime =
-              homeController.parseTimeWithDate("${timings.isha} PM", now);
-
-          // Parse Iqama timings from static list
-          final fajrIqama = homeController.parseTimeWithDate(timing.fjar, now);
-          final dhuhrIqama = homeController.parseTimeWithDate(timing.zuhr, now);
-          final asrIqama = homeController.parseTimeWithDate(timing.asr, now);
-          final maghribIqama = maghribTime
-              .add(Duration(minutes: 5)); // Maghrib Iqama = Azan + 5 minutes
-          final ishaIqama = homeController.parseTimeWithDate(timing.isha, now);
-
-          // Check for Fajr
-          if (now.isBefore(fajrTime)) {
-            print('Fajr Namaz Time : $fajrTime');
-            return "Fajr";
-          }
-          if (now.isBefore(fajrIqama)) {
-            print('Fajr Iqama Time : $fajrIqama');
-            return "Fajr";
-          }
-
-          // Check for Dhuhr
-          if (now.isBefore(dhuhrTime)) {
-            print('Dhuhr Namaz Time : $dhuhrTime');
-            return 'Dhuhr';
-          }
-          if (now.isBefore(dhuhrIqama)) {
-            print('Dhuhr Iqama Time : $dhuhrIqama');
-            return 'Dhuhr';
-          }
-
-          // Check for Asr
-          if (now.isBefore(asrTime)) {
-            print('Asr Namaz Time : $asrTime');
-            return 'Asr';
-          }
-          if (now.isBefore(asrIqama)) {
-            print('Asr Iqama Time : $asrIqama');
-            return 'Asr';
-          }
-
-          // Check for Maghrib
-          if (now.isBefore(maghribTime)) {
-            print('Maghrib Namaz Time : $maghribTime');
-            return "Maghrib";
-          }
-          if (now.isBefore(maghribIqama)) {
-            print('Maghrib Iqama Time: $maghribIqama');
-            return "Maghrib";
-          }
-
-          // Check for Isha
-          if (now.isBefore(ishaTime)) {
-            print('Isha Namaz Time : $ishaTime');
-            return "Isha";
-          }
-          if (now.isBefore(ishaIqama)) {
-            print('Isha Iqama Time : $ishaIqama');
-            return "Isha";
-          }
-
-          // All prayers for today have passed; show next day's Fajr Azan
-          final nextDayFajr = fajrTime.add(Duration(days: 1));
-          // print("Next Day Fajr: ${_formatTime(nextDayFajr)}");
-          return "Fajr";
-        }
-      }
-    }
-
-    // Default to Fajr if no timings match
-    return "Fajr";
-  }
 }
+
 // Function to find and return Azan names for all prayers based on the date range
 
   // Function to format prayer time

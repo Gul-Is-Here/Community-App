@@ -46,6 +46,7 @@ class EventDetailPage extends StatefulWidget {
 
 class _EventDetailPageState extends State<EventDetailPage> {
   DateTime? _reminderDateTime;
+  bool isSharing = false; // State for managing loading indicator
 
   @override
   void initState() {
@@ -86,7 +87,6 @@ class _EventDetailPageState extends State<EventDetailPage> {
   }
 
   Future<void> _showDateTimePicker() async {
-    // Pick a date
     final DateTime? selectedDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -95,7 +95,6 @@ class _EventDetailPageState extends State<EventDetailPage> {
     );
 
     if (selectedDate != null) {
-      // Pick a time
       final TimeOfDay? selectedTime = await showTimePicker(
         context: context,
         initialTime: TimeOfDay.now(),
@@ -126,6 +125,51 @@ class _EventDetailPageState extends State<EventDetailPage> {
     }
   }
 
+  Future<void> _downloadAndShareImage(
+      String imageUrl, String title, String details) async {
+    setState(() {
+      isSharing = true; // Show loading indicator
+    });
+    try {
+      String formattedDetails = """
+Join Us for a Special Gathering at the Rosenberg Community Center
+
+📅 Date: ${AppClass().formatDate2(widget.eventDate)}
+⏰ Time: ${AppClass().formatTimeToAMPM(widget.sTime)} – ${AppClass().formatTimeToAMPM(widget.endTime)}
+📍 Location: ${widget.eventVenue}
+
+🌟 Theme: ${widget.title}
+
+$details
+
+📌 RSVP Required: ${widget.locatinV}
+
+*Shared from Rosenberg Community Center App*
+""";
+
+      final uri = Uri.parse(imageUrl);
+      final response = await http.get(uri);
+      if (response.statusCode == 200) {
+        final tempDir = await getTemporaryDirectory();
+        final file = File('${tempDir.path}/event_image.png');
+        await file.writeAsBytes(response.bodyBytes);
+        await Share.shareXFiles([XFile(file.path)], text: formattedDetails);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Failed to fetch image.")),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Failed to share image: $e")),
+      );
+    } finally {
+      setState(() {
+        isSharing = false; // Hide loading indicator
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -145,11 +189,23 @@ class _EventDetailPageState extends State<EventDetailPage> {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.share, color: Colors.white),
-            onPressed: () async {
-              await _downloadAndShareImage(
-                  widget.imageLink, widget.title, widget.eventDetails);
-            },
+            icon: isSharing
+                ? const SizedBox(
+                    height: 20,
+                    width: 20,
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 2,
+                    ),
+                  )
+                : const Icon(Icons.share, color: Colors.white),
+            onPressed: isSharing
+                ? null // Disable button while sharing
+                : () => _downloadAndShareImage(
+                      widget.imageLink,
+                      widget.title,
+                      widget.eventDetails,
+                    ),
           ),
         ],
         centerTitle: false,
@@ -308,7 +364,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
     );
   }
 
-  Future<void> _downloadAndShareImage(
+  Future<void> downloadAndShareImage(
       String imageUrl, String title, String details) async {
     try {
       String formattedDetails = """

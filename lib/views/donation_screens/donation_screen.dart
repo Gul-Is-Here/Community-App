@@ -37,7 +37,10 @@ class DonationScreen extends StatelessWidget {
               color: whiteColor,
             ));
           } else if (snapshot.hasError) {
-            return Center(child: Text("${snapshot.error}"));
+            return Center(
+                child: Text("No Data Available",
+                    style: TextStyle(
+                        fontFamily: popinsRegulr, color: whiteColor)));
           } else if (snapshot.hasData) {
             final donations = snapshot.data!.data.donate;
             return Column(

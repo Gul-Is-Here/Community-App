@@ -88,7 +88,9 @@ class _CustomizedSurahWidgetState extends State<CustomizedSurahWidget> {
             ),
           ),
           // 10.widthBox,
-          SizedBox(height: 10,),
+          SizedBox(
+            width: 10,
+          ),
           Container(
             decoration: BoxDecoration(
               color: primaryColor,
@@ -138,7 +140,9 @@ class _CustomizedSurahWidgetState extends State<CustomizedSurahWidget> {
               ),
             ),
           ),
-          SizedBox(height: 10,),
+          SizedBox(
+            height: 10,
+          ),
           Expanded(
             child: Column(
               children: [
@@ -161,7 +165,9 @@ class _CustomizedSurahWidgetState extends State<CustomizedSurahWidget> {
             ),
           ),
           // 10.widthBox,
-          SizedBox(height: 10,),
+          SizedBox(
+            height: 10,
+          ),
           Container(
               decoration: BoxDecoration(
                 color: primaryColor,
@@ -183,7 +189,9 @@ class _CustomizedSurahWidgetState extends State<CustomizedSurahWidget> {
                     ),
                   ))),
           // 10.widthBox,
-          SizedBox(height: 10,),
+          SizedBox(
+            height: 10,
+          ),
         ],
       ),
     );

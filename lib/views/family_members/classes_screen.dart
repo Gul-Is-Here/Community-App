@@ -77,13 +77,18 @@ class _ClassesScreenState extends State<ClassesScreen> {
           itemCount: relations.length,
           itemBuilder: (context, index) {
             var member = relations[index] ?? {};
+            print(member);
             List<dynamic> enrollent = member['hasenrollments'] ?? [];
-            var enrolCount =
-                enrollent.where((e) => e != null && e['_active'] == '1').length;
+            print('Realtions $relations');
+            var enrolCount = member['hasenrollments']
+                .where((enrollment) => enrollment['_active'] == '1')
+                .length;
+
+            print(enrolCount);
 
             return Column(
               children: [
-                buildFamilyMemberCardClasses(member, enrolCount, () {
+                buildFamilyMemberCardClasses(member, relations.length, () {
                   setState(() {
                     showClassesMap[index] = !(showClassesMap[index] ?? false);
                   });
@@ -112,7 +117,8 @@ class _ClassesScreenState extends State<ClassesScreen> {
                                       classData['class_gender'];
 
                           String enrollmentStatus = getEnrollmentStatus(
-                              enrollent, classData['class_id']);
+                            enrollent,
+                          );
 
                           if (ageMatch && genderMatch) {
                             return Padding(
@@ -200,6 +206,8 @@ class _ClassesScreenState extends State<ClassesScreen> {
                                                         ),
                                                       ),
                                                       onPressed: () {
+                                                        print(
+                                                            'enrollmentStatus  :  $enrollmentStatus');
                                                         if (enrollmentStatus ==
                                                             '') {
                                                           showEnrollDialog(
@@ -279,15 +287,25 @@ class _ClassesScreenState extends State<ClassesScreen> {
     );
   }
 
-  String getEnrollmentStatus(List<dynamic> enrollments, int classId) {
-    // Check if any enrollment matches the given classId
+  String getEnrollmentStatus(
+    List<dynamic> enrollments,
+  ) {
+    // Loop through enrollments to find the matching class ID
     for (var enrollment in enrollments) {
-      if (enrollment['_active'] == '0') return '0'; // Waiting for Approval
-      if (enrollment['_active'] == '1') return '1'; // Enrolled
-      if (enrollment['_active'] == '2') return '2'; // Hold On
-      if (enrollment['_active'] == '3') return '3'; // Rejected
+      switch (enrollment['_active']) {
+        case '0':
+          return '0'; // Waiting for Approval
+        case '1':
+          return '1'; // Approved
+        case '2':
+          return '2'; // Hold On
+        case '3':
+          return '3'; // Rejected
+        default:
+          return ''; // No matching status
+      }
     }
-    return ''; // Default to "Enroll" if no matching enrollment is found
+    return ''; // No enrollment found for this class
   }
 
   String _getEnrollButtonText(String status) {

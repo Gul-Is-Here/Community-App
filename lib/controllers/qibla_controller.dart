@@ -80,9 +80,9 @@ class QiblahController extends GetxController
     }
   }
 
-  @override
-  void onClose() {
-    animationController.dispose();
-    super.onClose();
-  }
+  // @override
+  // void onClose() {
+  //   animationController.dispose();
+  //   super.onClose();
+  // }
 }
