@@ -23,6 +23,7 @@ class HomeController extends GetxController {
   var timmngs = ''.obs;
   var jummaTimes = Jumma().obs;
   var isLoading = true.obs;
+  RxString heighlite = ''.obs;
   RxString currentTime = ''.obs;
   int storeMonthPrayerTimes = 0;
   var prayerTimess;
@@ -76,6 +77,7 @@ class HomeController extends GetxController {
       getCurrentPhase();
       getNextPrayerTimeWithIqama();
       getCurrentPhase();
+      heighlite.value = getCurrentPrayerForHeighlit();
       // getHeightliter();
     });
   }
@@ -221,7 +223,7 @@ class HomeController extends GetxController {
 
         if (fajrDateTime.isAfter(now)) {
           await _notificationServices.scheduleNotificationForAdhan(
-            body: "Its Fajr Time now",
+            body: "Its Fajr Athan Time",
             scheduleNotificationDateTime: fajrDateTime,
             payLoad: "fajr",
           );
@@ -230,7 +232,7 @@ class HomeController extends GetxController {
         if (fajrDateTimeIqamah.isAfter(now)) {
           await _notificationServices.scheduleNotificationForAdhan(
             title: "IQAMAH REMINDER",
-            body: "Its iqamah Time now",
+            body: "Its Fajr Iqamah Time",
             scheduleNotificationDateTime: fajrDateTimeIqamah,
             payLoad: "fajrIqamah",
           );
@@ -246,7 +248,7 @@ class HomeController extends GetxController {
 
         if (dhuhrDateTime.isAfter(now)) {
           await _notificationServices.scheduleNotificationForAdhan(
-            body: "Its Zuhr Time now",
+            body: "Its Zuhr Athan Time",
             scheduleNotificationDateTime: dhuhrDateTime,
             payLoad: "dhuhr",
           );
@@ -255,7 +257,7 @@ class HomeController extends GetxController {
         if (dhuhrDateTimeIqamah.isAfter(now)) {
           await _notificationServices.scheduleNotificationForAdhan(
             title: "IQAMAH REMINDER",
-            body: "Its Zuhr Iqamah time",
+            body: "Its Zuhr Iqamah Time",
             scheduleNotificationDateTime: dhuhrDateTimeIqamah,
             payLoad: "dhuhrIqamah",
           );
@@ -271,7 +273,7 @@ class HomeController extends GetxController {
 
         if (asrDateTime.isAfter(now)) {
           await _notificationServices.scheduleNotificationForAdhan(
-            body: "Its Asr Time now",
+            body: "Its Asr Athan Time",
             scheduleNotificationDateTime: asrDateTime,
             payLoad: "asr",
           );
@@ -280,7 +282,7 @@ class HomeController extends GetxController {
         if (asrDateTimeIqamah.isAfter(now)) {
           await _notificationServices.scheduleNotificationForAdhan(
             title: "IQAMAH REMINDER",
-            body: "Its Asr Iqamah time",
+            body: "Its Asr Iqamah Time",
             scheduleNotificationDateTime: asrDateTimeIqamah,
             payLoad: "asrIqamah",
           );
@@ -297,7 +299,7 @@ class HomeController extends GetxController {
 
         if (maghribDateTime.isAfter(now)) {
           await _notificationServices.scheduleNotificationForAdhan(
-            body: "Its Maghrib Time now",
+            body: "Its Maghrib Athan Time",
             scheduleNotificationDateTime: maghribDateTime,
             payLoad: "maghrib",
           );
@@ -306,7 +308,7 @@ class HomeController extends GetxController {
         if (maghribDateTimeIqamah.isAfter(now)) {
           await _notificationServices.scheduleNotificationForAdhan(
             title: "IQAMAH REMINDER",
-            body: "Its Maghrib Iqamah time",
+            body: "Its Maghrib Iqamah Time",
             scheduleNotificationDateTime: maghribDateTimeIqamah,
             payLoad: "maghribIqamah",
           );
@@ -322,7 +324,7 @@ class HomeController extends GetxController {
 
         if (ishaDateTime.isAfter(now)) {
           await _notificationServices.scheduleNotificationForAdhan(
-            body: "Its Isha Time now",
+            body: "Its Isha Athan Time",
             scheduleNotificationDateTime: ishaDateTime,
             payLoad: "isha",
           );
@@ -331,7 +333,7 @@ class HomeController extends GetxController {
         if (ishaDateTimeIqamah.isAfter(now)) {
           await _notificationServices.scheduleNotificationForAdhan(
             title: "IQAMAH REMINDER",
-            body: "Its Isha Iqamah time",
+            body: "Its Isha Iqamah Time",
             scheduleNotificationDateTime: ishaDateTimeIqamah,
             payLoad: "ishaIqamah",
           );
@@ -1054,5 +1056,101 @@ class HomeController extends GetxController {
     }
 
     currentPrayerIqama.value = "";
+  }
+
+  bool isDateInRange(String today, String start, String end) {
+    final format = DateFormat("d/M");
+    final todayDate = format.parse(today);
+    final startDate = format.parse(start);
+    final endDate = format.parse(end);
+
+    return todayDate.isAfter(startDate.subtract(Duration(days: 1))) &&
+        todayDate.isBefore(endDate.add(Duration(days: 1)));
+  }
+
+  String getCurrentPrayerForHeighlit() {
+    final now = DateTime.now();
+    final todayString = "${now.day}/${now.month}";
+
+    for (var timing in iqamahTiming) {
+      if (isDateInRange(todayString, timing.startDate, timing.endDate)) {
+        if (prayerTime.value.data?.timings != null) {
+          final timings = prayerTime.value.data!.timings;
+
+          // Parse Azan timings from API
+          final fajrTime = parseTimeWithDate("${timings.fajr} AM", now);
+          final dhuhrTime = parseTimeWithDate("${timings.dhuhr} PM", now);
+          final asrTime = parseTimeWithDate("${timings.asr} PM", now);
+          final maghribTime = parseTimeWithDate("${timings.maghrib}", now);
+          final ishaTime = parseTimeWithDate("${timings.isha} PM", now);
+
+          // Parse Iqama timings from static list
+          final fajrIqama = parseTimeWithDate(timing.fjar, now);
+          final dhuhrIqama = parseTimeWithDate(timing.zuhr, now);
+          final asrIqama = parseTimeWithDate(timing.asr, now);
+          final maghribIqama = maghribTime
+              .add(Duration(minutes: 1)); // Maghrib Iqama = Azan + 5 minutes
+          final ishaIqama = parseTimeWithDate(timing.isha, now);
+
+          // Check for Fajr
+          if (now.isBefore(fajrTime)) {
+            print('Fajr Namaz Time : $fajrTime');
+            return "Fajr";
+          }
+          if (now.isBefore(fajrIqama)) {
+            print('Fajr Iqama Time : $fajrIqama');
+            return "Fajr";
+          }
+
+          // Check for Dhuhr
+          if (now.isBefore(dhuhrTime)) {
+            print('Dhuhr Namaz Time : $dhuhrTime');
+            return 'Dhuhr';
+          }
+          if (now.isBefore(dhuhrIqama)) {
+            print('Dhuhr Iqama Time : $dhuhrIqama');
+            return 'Dhuhr';
+          }
+
+          // Check for Asr
+          if (now.isBefore(asrTime)) {
+            print('Asr Namaz Time : $asrTime');
+            return 'Asr';
+          }
+          if (now.isBefore(asrIqama)) {
+            print('Asr Iqama Time : $asrIqama');
+            return 'Asr';
+          }
+
+          // Check for Maghrib
+          if (now.isBefore(maghribTime)) {
+            print('Maghrib Namaz Time : $maghribTime');
+            return "Maghrib";
+          }
+          if (now.isBefore(maghribIqama)) {
+            print('Maghrib Iqama Time: $maghribIqama');
+            return "Maghrib";
+          }
+
+          // Check for Isha
+          if (now.isBefore(ishaTime)) {
+            print('Isha Namaz Time : $ishaTime');
+            return "Isha";
+          }
+          if (now.isBefore(ishaIqama)) {
+            print('Isha Iqama Time : $ishaIqama');
+            return "Isha";
+          }
+
+          // All prayers for today have passed; show next day's Fajr Azan
+          final nextDayFajr = fajrTime.add(Duration(days: 1));
+          // print("Next Day Fajr: ${_formatTime(nextDayFajr)}");
+          return "Fajr";
+        }
+      }
+    }
+
+    // Default to Fajr if no timings match
+    return "Fajr";
   }
 }

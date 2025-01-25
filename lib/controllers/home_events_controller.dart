@@ -10,7 +10,7 @@ import '../model/home_events_model.dart';
 class HomeEventsController extends GetxController {
   RxInt? selectedEventType;
   var isLoading = false.obs; // Observable to track loading state
-  var events = Rxn<Events>(); // Observable to store the fetched events
+  Rxn events = Rxn<Events>(); // Observable to store the fetched events
   var feedsList = <Feed>[].obs; // Observable list to store the fetched feeds
   var alertsList = <Alert>[].obs; // Observable list of Alert objects
   var currentIndex = 0.obs;

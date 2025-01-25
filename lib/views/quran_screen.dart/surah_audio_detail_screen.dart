@@ -196,42 +196,6 @@ class _SurahDetailsScreenState extends State<SurahDetailsScreen> {
           style: const TextStyle(
               color: Colors.white, fontSize: 18, fontFamily: popinsSemiBold),
         ),
-        actions: [
-          isDownloading
-              ? Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      value: downloadProgress / 100,
-                      valueColor:
-                          const AlwaysStoppedAnimation<Color>(Colors.white),
-                    ),
-                  ),
-                )
-              : isAudioDownloaded
-                  ? IconButton(
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text(
-                            'Audio already downloaded',
-                            style: TextStyle(fontFamily: popinsMedium),
-                          )),
-                        );
-                      },
-                      icon: const Icon(
-                        Icons.done,
-                        color: Colors.white,
-                      ),
-                    )
-                  : IconButton(
-                      onPressed: downloadSurahAudio,
-                      icon: const Icon(
-                        Icons.download,
-                        color: Colors.white,
-                      ),
-                    ),
-        ],
       ),
       body: Column(
         children: [

@@ -10,10 +10,10 @@ import 'login_controller.dart';
 class ProfileController extends GetxController {
   var userData = <String, dynamic>{}.obs; // Observable map for userData
   var isLoading = true.obs; // Observable loading stat
-  final _userDataController =
+  final userDataController =
       StreamController<Map<String, dynamic>>.broadcast();
 
-  Stream<Map<String, dynamic>> get userDataStream => _userDataController.stream;
+  Stream<Map<String, dynamic>> get userDataStream => userDataController.stream;
 
   final LoginController loginController = Get.put(LoginController());
   // var serData = {}.obs;
@@ -49,21 +49,21 @@ class ProfileController extends GetxController {
         final jsonData = json.decode(response.body);
         globals.userId.value = jsonData['user']['id'].toString();
         print("User data fetched: $jsonData"); // Log the fetched data
-        _userDataController.add(jsonData); // Emit the data
+        userDataController.add(jsonData); // Emit the data
       } else {
         print("Failed to load user data. Status code: ${response.statusCode}");
         print("Response Body: ${response.body}");
-        _userDataController.addError('Failed to load user data');
+        userDataController.addError('Failed to load user data');
       }
     } catch (e) {
       print("Error fetching user data: $e");
-      _userDataController.addError('Error fetching user data');
+      userDataController.addError('Error fetching user data');
     }
   }
 
   @override
   void onClose() {
-    _userDataController
+    userDataController
         .close(); // Close the stream when the controller is disposed
     super.onClose();
   }
