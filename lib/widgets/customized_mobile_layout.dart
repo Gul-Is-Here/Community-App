@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:community_islamic_app/app_classes/app_class.dart';
+import 'package:community_islamic_app/controllers/live_stream_controller.dart';
+import 'package:community_islamic_app/views/azan_settings/events_notification_settinons';
 import 'package:community_islamic_app/views/home_screens/comming_soon_screen.dart';
 import 'package:community_islamic_app/views/namaz_timmings/namaztimmings.dart';
 import 'package:community_islamic_app/views/qibla_screen/qibla_screen.dart';
@@ -23,6 +25,8 @@ import '../hijri_calendar.dart';
 import '../model/prayer_times_static_model.dart';
 import '../services/notification_service.dart';
 import '../views/azan_settings/azan_settings_screen.dart';
+import '../views/liveStream/liveStream_page.dart';
+import '../views/liveStream/youtube_player_widget.dart';
 import 'announcements_widgets.dart';
 import 'customized_prayertext_widget.dart';
 import 'eventsWidgets.dart';
@@ -34,6 +38,7 @@ class CustomizedMobileLayout extends StatelessWidget {
   CustomizedMobileLayout({super.key, required this.screenHeight});
 
   final HomeController homeController = Get.put(HomeController());
+  final controller = LiveStreamController();
 
   final NotificationServices notificationServices = NotificationServices();
 
@@ -332,6 +337,22 @@ class CustomizedMobileLayout extends StatelessWidget {
                                               fontSize: 11),
                                         ),
                                       ),
+                                      SizedBox(
+                                        height: 2,
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          Get.to(
+                                              () => NotificationSettingsPage());
+                                        },
+                                        child: Text(
+                                          '  Events',
+                                          style: TextStyle(
+                                              fontFamily: popinsRegulr,
+                                              color: whiteColor,
+                                              fontSize: 11),
+                                        ),
+                                      ),
                                       // Text(
                                       //   ' Today Goal',
                                       //   style: TextStyle(
@@ -349,7 +370,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                                 },
                                 child: Column(
                                   children: [
-                                    SizedBox(
+                                    const SizedBox(
                                       height: 6,
                                     ),
                                     Image.asset(
@@ -393,10 +414,79 @@ class CustomizedMobileLayout extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: Text(
-                'Prayer Time',
-                style: TextStyle(
-                    fontFamily: popinsBold, fontSize: 16, color: whiteColor),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Prayer Time',
+                    style: TextStyle(
+                        fontFamily: popinsBold,
+                        fontSize: 16,
+                        color: whiteColor),
+                  ),
+                  Obx(() {
+                    if (controller.isLoading.value) {
+                      return Text(
+                        'Live',
+                        style: TextStyle(
+                            fontFamily: popinsRegulr, color: whiteColor),
+                      );
+                    }
+
+                    bool isYouTubeLink =
+                        controller.liveUrl.value.contains("youtube.com") ||
+                            controller.liveUrl.value.contains("youtu.be");
+
+                    bool isLive = controller
+                        .liveUrl.value.isNotEmpty; // Assume live if URL exists
+
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        if (isLive)
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              AnimatedContainer(
+                                duration: Duration(seconds: 1),
+                                width: 10,
+                                height: 10,
+                                decoration: BoxDecoration(
+                                  color: Colors.red,
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                              SizedBox(width: 5),
+                              Text(
+                                "LIVE",
+                                style: TextStyle(
+                                  fontFamily: popinsRegulr,
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        SizedBox(height: 10),
+                        ElevatedButton(
+                          onPressed: isLive
+                              ? () {
+                                  Get.to(() => isYouTubeLink
+                                      ? YouTubePlayerPage()
+                                      : LiveStreamPage());
+                                }
+                              : null, // Disable button if not live
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: isLive
+                                ? Colors.red
+                                : Colors.grey, // Red when live, grey when not
+                          ),
+                          child: Text("Watch Live Stream"),
+                        ),
+                      ],
+                    );
+                  })
+                ],
               ),
             ),
             SizedBox(

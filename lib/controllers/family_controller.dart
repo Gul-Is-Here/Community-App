@@ -1,67 +1,58 @@
 import 'dart:convert';
-import 'package:community_islamic_app/constants/globals.dart';
-import 'package:community_islamic_app/controllers/profileController.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
-class FamilyController extends GetxController {
-  // Make classesList an observable list
-  var classesList = <dynamic>[].obs;
-  // var inrolments = <dynamic>[].obs; // Make it reactive
+import 'package:community_islamic_app/constants/globals.dart';
+import 'package:community_islamic_app/controllers/profileController.dart';
 
-  var isLoading = false.obs; // Observable loading state
-  var errorMessage = ''.obs; // Observable for error messages
+class FamilyController extends GetxController {
+  var classesList = <dynamic>[].obs; // Reactive list for classes
+  var isLoading = false.obs; // Reactive loading state
+  var errorMessage = ''.obs; // Reactive error message
 
   @override
   void onInit() {
     super.onInit();
-    fetchData(); // Fetch data when the controller is initialized
+    fetchClasses(); // Fetch classes when initialized
   }
 
-  // Method to get data from API and save to a dynamic variable
-  Future<void> fetchData() async {
+  /// Fetch Classes from API
+  Future<void> fetchClasses() async {
+    isLoading(true);
+    const String url =
+        'https://rosenbergcommunitycenter.org/api/ClassApi?access=7b150e45-e0c1-43bc-9290-3c0bf6473a51332';
+
     try {
-      // isLoading(true); // Start loading state
-      // Replace with your API call logic
-      final response = await http.get(Uri.parse(
-          'https://rosenbergcommunitycenter.org/api/ClassApi?access=7b150e45-e0c1-43bc-9290-3c0bf6473a51332'));
+      final response = await http.get(Uri.parse(url));
 
       if (response.statusCode == 200) {
-        // Decode the JSON response
-        var data = json.decode(response.body);
-
-        // Store the classes data in a reactive list
-        classesList.value = data['data']['Classes'];
-
-        // Debug print to check the response data
-        for (var singleClass in classesList) {
-          print(singleClass[
-              'class_name']); // Accessing class_name field for each class
-        }
+        var data = jsonDecode(response.body);
+        classesList.value =
+            data['data']['Classes'] ?? []; // Assign fetched classes
       } else {
         errorMessage.value =
-            'Failed to load data. Status code: ${response.statusCode}';
+            'Failed to load classes. Status code: ${response.statusCode}';
       }
     } catch (e) {
       errorMessage.value = 'Error occurred: $e';
     } finally {
-      isLoading(false); // Stop loading
+      isLoading(false);
     }
   }
 
+  /// Register User for Class
   Future<void> registerForClass({
     required BuildContext context,
     required String token,
     required int classId,
-    required int id,
+    required int userId,
     required String relationId,
     required String emergencyContact,
     required String emergencyContactName,
     required String allergiesDetail,
   }) async {
     isLoading(true);
-
     const String url =
         'https://rosenbergcommunitycenter.org/api/RegisterClassApi';
 
@@ -72,8 +63,8 @@ class FamilyController extends GetxController {
 
     Map<String, dynamic> body = {
       'class_id': classId.toString(),
-      'id': id.toString(),
-      'relation_id': relationId.toString(),
+      'id': userId.toString(),
+      'relation_id': relationId,
       'emergency_contact': emergencyContact,
       'emergencycontact_name': emergencyContactName,
       'allergies_detail': allergiesDetail,
@@ -87,26 +78,23 @@ class FamilyController extends GetxController {
       );
 
       if (response.statusCode == 200) {
-        ProfileController().userDataStream;
-        // inrolments.refresh();
-        print(ProfileController().userData); // Fetch updated user data
+        _updateEnrollmentStatus(classId); // Update local enrollment status
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Successfully enrolled for the class.'),
+          SnackBar(
+            content: Text('Successfully enrolled in the class!'),
             backgroundColor: Colors.green,
           ),
         );
-      } else
+      } else {
+        var responseBody = jsonDecode(response.body);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Already enrolled in this class.'),
+          SnackBar(
+            content: Text(responseBody['msg'] ?? 'Failed to enroll.'),
             backgroundColor: Colors.orange,
           ),
         );
-
-      print('Error: ${response.body}');
+      }
     } catch (e) {
-      print('Error: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('An error occurred: $e'),
@@ -118,17 +106,20 @@ class FamilyController extends GetxController {
     }
   }
 
-// Method to update the enrollment status in the observable list after a successful enrollment
+  /// Update Enrollment Status Locally
   void _updateEnrollmentStatus(int classId) {
-    for (var enrollment in ProfileController().userData['relations']
-        ['hasenrollments']) {
-      if (enrollment['class_id'] == classId) {
-        enrollment['_active'] = '1'; // Mark the class as 'Enrolled'
-        break;
+    var userData = ProfileController().userData;
+
+    if (userData != null && userData['relations'] != null) {
+      for (var relation in userData['relations']) {
+        for (var enrollment in relation['hasenrollments'] ?? []) {
+          if (enrollment['class_id'] == classId) {
+            enrollment['_active'] = '1'; // Update status to Enrolled
+            break;
+          }
+        }
       }
+      ProfileController().userData.refresh(); // Trigger UI update
     }
-    ProfileController()
-        .userData
-        .refresh(); // Trigger GetX to refresh the userData observable
   }
 }

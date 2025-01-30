@@ -57,7 +57,9 @@ class RegistrationScreen extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              SizedBox(height: 50,),
+                              SizedBox(
+                                height: 50,
+                              ),
                               const Text(
                                 'Register',
                                 style: TextStyle(
@@ -65,7 +67,9 @@ class RegistrationScreen extends StatelessWidget {
                                     fontSize: 24,
                                     fontWeight: FontWeight.bold),
                               ),
-                              SizedBox(height: 30,),
+                              SizedBox(
+                                height: 30,
+                              ),
                               // First Name
                               TextFormField(
                                 cursorColor: primaryColor,
@@ -73,12 +77,7 @@ class RegistrationScreen extends StatelessWidget {
                                     .firstName.value = value,
                                 decoration: InputDecoration(
                                     labelText: 'First Name',
-                                    prefix: Text(
-                                      '***   ',
-                                      style: TextStyle(
-                                          fontFamily: popinsSemiBold,
-                                          color: primaryColor),
-                                    ),
+                                    prefixIcon: Icon(Icons.person),
                                     labelStyle: TextStyle(
                                         fontFamily: popinsRegulr,
                                         color: primaryColor),
@@ -101,19 +100,16 @@ class RegistrationScreen extends StatelessWidget {
                                     fillColor: Colors.white,
                                     filled: true),
                               ),
-                      SizedBox(height: 20,),
+                              SizedBox(
+                                height: 20,
+                              ),
                               // Last Name
                               TextFormField(
                                 cursorColor: primaryColor,
                                 onChanged: (value) => registrationController
                                     .lastName.value = value,
                                 decoration: InputDecoration(
-                                    prefix: Text(
-                                      '***   ',
-                                      style: TextStyle(
-                                          fontFamily: popinsSemiBold,
-                                          color: primaryColor),
-                                    ),
+                                    prefixIcon: Icon(Icons.person),
                                     labelStyle: TextStyle(
                                         fontFamily: popinsRegulr,
                                         color: primaryColor),
@@ -137,7 +133,9 @@ class RegistrationScreen extends StatelessWidget {
                                     fillColor: Colors.white,
                                     filled: true),
                               ),
-                  SizedBox(height: 20,),
+                              SizedBox(
+                                height: 20,
+                              ),
                               // Email
                               TextFormField(
                                 cursorColor: primaryColor,
@@ -171,7 +169,9 @@ class RegistrationScreen extends StatelessWidget {
                                     fillColor: Colors.white,
                                     filled: true),
                               ),
-                          SizedBox(height: 20,),
+                              SizedBox(
+                                height: 20,
+                              ),
                               // Username
                               TextFormField(
                                 onChanged: (value) => registrationController
@@ -206,7 +206,9 @@ class RegistrationScreen extends StatelessWidget {
                                     fillColor: Colors.white,
                                     filled: true),
                               ),
-                             SizedBox(height: 20,),
+                              SizedBox(
+                                height: 20,
+                              ),
                               // Register Button
                               Center(
                                 child: Obx(
@@ -249,7 +251,9 @@ class RegistrationScreen extends StatelessWidget {
                                         ),
                                 ),
                               ),
-                           SizedBox(height: 10,),
+                              SizedBox(
+                                height: 10,
+                              ),
                               // Sign In Redirect
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,

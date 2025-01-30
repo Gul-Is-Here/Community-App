@@ -35,7 +35,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   // Navigate to the appropriate screen based on login state
   Future<void> _navigateToAppropriateScreen() async {
-    await Future.delayed(const Duration(seconds: 5)); // Wait for 5 seconds
+    await Future.delayed(const Duration(seconds: 7)); // Wait for 5 seconds
 
     final prefs = await SharedPreferences.getInstance();
     final isLoggedIn = prefs.getBool('isLoggedIn') ?? false;

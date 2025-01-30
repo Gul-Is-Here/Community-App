@@ -146,34 +146,31 @@ class NotificationServices {
   NotificationDetails notificationDetails({required String title}) {
     String sound = sharedPreferencess!.getString("selectedSound")!;
 
-    sound = sound == 'Adhan - Makkah'
-        ? "makkah"
-        : sound == 'Adhan - Madina'
-            ? "madina"
-            : sound.toLowerCase();
-
-    if (title.contains("Iqamah") &&
-        (sound == 'Adhan - Makkah' || sound == 'Adhan - Madina')) {
+    // Handle Iqamah notifications separately
+    if (title.contains("Iqamah")) {
       sound = 'iqamah';
+    } else {
+      // Handle Adhan notifications
+      sound = sound == 'Adhan - Makkah'
+          ? "makkah"
+          : sound == 'Adhan - Madina'
+              ? "madina"
+              : sound.toLowerCase();
     }
 
     return NotificationDetails(
       android: AndroidNotificationDetails(
-        sound == "disable" ||
-                sound == "iqamah" ||
-                sharedPreferencess!.getBool(title)!
+        sound == "disable" || sharedPreferencess!.getBool(title)!
             ? "${sound}_channel"
             : "default_channel",
-        sound == "disable" ||
-                sound == "iqamah" ||
-                sharedPreferencess!.getBool(title)!
+        sound == "disable" || sharedPreferencess!.getBool(title)!
             ? "${sound.capitalizeFirst} Notifications"
-            : 'default Notifications',
+            : 'Default Notifications',
         importance: sound == "disable" ? Importance.low : Importance.max,
         playSound:
             !(sharedPreferencess!.getString("selectedSound")! == "disable"),
         priority: Priority.high,
-        sound: sound == "iqamah"
+        sound: sound == 'iqamah'
             ? const RawResourceAndroidNotificationSound('iqamah')
             : sharedPreferencess!.getBool(title)!
                 ? sharedPreferencess!.getString("selectedSound")! == "Disable"
@@ -200,8 +197,7 @@ class NotificationServices {
   }
 
   Future scheduleNotificationForAdhan({
-    // int id = 0,
-    String title = "ADHAN REMINDER",
+    String title = "ATHAN REMINDER",
     String? body,
     required String payLoad,
     required DateTime scheduleNotificationDateTime,
@@ -301,7 +297,6 @@ class NotificationServices {
   }
 
   ///------------ Events-----------
-
   Future<void> notifcationsForEvents(
     RemoteMessage message,
   ) async {

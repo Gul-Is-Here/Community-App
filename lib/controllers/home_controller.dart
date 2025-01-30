@@ -172,11 +172,11 @@ class HomeController extends GetxController {
     }
   }
 
-// Helper to format time as hh:mm AM/PM
-  String _formatTime2(DateTime dateTime) {
-    final format = DateFormat("hh:mm a");
-    return format.format(dateTime);
-  }
+// // Helper to format time as hh:mm AM/PM
+//   String _formatTime2(DateTime dateTime) {
+//     final format = DateFormat("hh:mm a");
+//     return format.format(dateTime);
+  // }
 
   String formatDuration(Duration duration) {
     int hours = duration.inHours;
