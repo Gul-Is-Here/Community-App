@@ -156,11 +156,17 @@ class _EditFamilyMemberScreenState extends State<EditFamilyMemberScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Text(
+                  'First Name',
+                  style:
+                      TextStyle(fontFamily: popinsMedium, color: Colors.green),
+                ),
+                SizedBox(
+                  height: 5,
+                ),
                 TextField(
                   controller: firstNameController,
                   decoration: InputDecoration(
-                    labelText: 'First Name',
-                    labelStyle: TextStyle(color: Color(0xFF0E7539)),
                     filled: true,
                     fillColor: lightColor, // Light green shade
                     border: OutlineInputBorder(
@@ -170,11 +176,17 @@ class _EditFamilyMemberScreenState extends State<EditFamilyMemberScreen> {
                   ),
                 ),
                 SizedBox(height: 16),
+                Text(
+                  'Last Name',
+                  style:
+                      TextStyle(fontFamily: popinsMedium, color: Colors.green),
+                ),
+                SizedBox(
+                  height: 5,
+                ),
                 TextField(
                   controller: lastNameController,
                   decoration: InputDecoration(
-                    labelText: 'Last Name',
-                    labelStyle: TextStyle(color: Color(0xFF0E7539)),
                     filled: true,
                     fillColor: lightColor,
                     border: OutlineInputBorder(
@@ -184,8 +196,13 @@ class _EditFamilyMemberScreenState extends State<EditFamilyMemberScreen> {
                   ),
                 ),
                 SizedBox(height: 16),
+                Text(
+                  'Relationship',
+                  style:
+                      TextStyle(fontFamily: popinsMedium, color: Colors.green),
+                ),
                 buildDropdownField(
-                  label: "Relationship",
+                  label: "",
                   value: selectedRelation,
                   items: relation,
                   onChanged: (newValue) {
@@ -193,8 +210,16 @@ class _EditFamilyMemberScreenState extends State<EditFamilyMemberScreen> {
                   },
                 ),
                 SizedBox(height: 16),
+                Text(
+                  'Date of Birth',
+                  style:
+                      TextStyle(fontFamily: popinsMedium, color: Colors.green),
+                ),
+                SizedBox(
+                  height: 5,
+                ),
                 buildTextField(
-                  label: "Date of Birth",
+                  label: "",
                   controller: dobController,
                   onTap: () async {
                     DateTime? pickedDate = await showDatePicker(

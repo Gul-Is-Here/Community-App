@@ -1,17 +1,16 @@
+import 'package:community_islamic_app/views/family_members/enroll_form_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
-import 'package:community_islamic_app/constants/color.dart';
 import 'package:community_islamic_app/controllers/family_controller.dart';
 import 'package:community_islamic_app/controllers/profileController.dart';
 import '../../app_classes/app_class.dart';
+import '../../constants/color.dart';
 import '../../constants/globals.dart';
-import 'buildFamilyMemeberWidget.dart';
+import '../../constants/image_constants.dart';
 
 class ClassesScreen extends StatefulWidget {
-  ClassesScreen({super.key});
-
   @override
   State<ClassesScreen> createState() => _ClassesScreenState();
 }
@@ -25,22 +24,15 @@ class _ClassesScreenState extends State<ClassesScreen> {
   void initState() {
     super.initState();
     profileController.fetchUserData();
+    familyController.fetchClasses();
   }
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: primaryColor,
       appBar: AppBar(
-        leading: IconButton(
-          onPressed: () {
-            Get.back();
-          },
-          icon: Icon(
-            Icons.arrow_back_ios,
-            color: whiteColor,
-          ),
-        ),
         bottom: const PreferredSize(
           preferredSize: Size.fromHeight(1.0),
           child: Padding(
@@ -48,279 +40,378 @@ class _ClassesScreenState extends State<ClassesScreen> {
             child: Divider(color: Colors.white, thickness: 1),
           ),
         ),
-        title: Text('Classes',
-            style: TextStyle(
-                fontSize: 20, fontFamily: popinsRegulr, color: whiteColor)),
         backgroundColor: primaryColor,
+        title: Text(
+          'Classes',
+          style: TextStyle(fontFamily: popinsMedium, color: whiteColor),
+        ),
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: whiteColor,
+          ),
+          onPressed: () => Get.back(),
+        ),
       ),
       body: Obx(() {
         if (familyController.isLoading.value) {
-          return Center(
-            child: SpinKitFadingCircle(color: whiteColor, size: 50.0),
-          );
+          return const Center(child: CircularProgressIndicator());
         }
 
+        // Get relations (family members) and classes
         List<dynamic> relations = profileController.userData['relations'] ?? [];
+        List<dynamic> availableClasses = familyController.classesList;
+
         if (relations.isEmpty) {
-          return Center(
-            child: Text(
-              'No members available.',
-              style: TextStyle(
-                color: whiteColor,
-                fontSize: 18,
-              ),
-            ),
-          );
+          return const Center(child: Text("No members available."));
         }
 
         return ListView.builder(
           itemCount: relations.length,
           itemBuilder: (context, index) {
-            var member = relations[index] ?? {};
-            print(member);
-            List<dynamic> enrollent = member['hasenrollments'] ?? [];
-            print('Realtions $relations');
-            var enrolCount = member['hasenrollments']
-                .where((enrollment) => enrollment['_active'] == '1')
+            var member = relations[index];
+            List<dynamic> enrollments = member['hasenrollments'] ?? [];
+            var enrolCount = enrollments
+                .where((e) => e != null && e['_active'] == '1')
                 .length;
-
-            print(enrolCount);
-
-            return Column(
-              children: [
-                buildFamilyMemberCardClasses(member, relations.length, () {
-                  setState(() {
-                    showClassesMap[index] = !(showClassesMap[index] ?? false);
-                  });
-                  profileController.fetchUserData();
-                }),
-                if (showClassesMap[index] ?? false)
-                  Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 12.0, horizontal: 8.0),
-                      child: Column(
-                        children: familyController.classesList.map((classData) {
-                          int memberAge =
-                              AppClass().calculateAge(member['dob']);
-                          int minimumAge = int.tryParse(
-                                  classData['minimum_age'].toString()) ??
-                              0;
-                          int maximumAge = int.tryParse(
-                                  classData['maximum_age'].toString()) ??
-                              100;
-
-                          bool ageMatch = memberAge >= minimumAge &&
-                              memberAge <= maximumAge;
-                          bool genderMatch =
-                              classData['class_gender'] == 'All' ||
-                                  member['relation_type'] ==
-                                      classData['class_gender'];
-
-                          String enrollmentStatus = getEnrollmentStatus(
-                            enrollent,
-                          );
-
-                          if (ageMatch && genderMatch) {
-                            return Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 8.0),
-                              child: Container(
-                                alignment: Alignment.centerLeft,
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFF315B5A),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                height: 100,
-                                child: Card(
-                                  color: const Color(0xFF315B5A),
-                                  margin: const EdgeInsets.all(0),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(30),
-                                  ),
-                                  child: Center(
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 4),
+            return Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 18.0, vertical: 8),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Display family member card
+                  Stack(
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            height: 100,
+                            width: screenWidth * .9,
+                            decoration: const BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [Color(0xFF00A559), Color(0xFF006627)],
+                                begin: Alignment.centerLeft,
+                                end: Alignment.centerRight,
+                              ),
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(10),
+                                bottomLeft: Radius.circular(10),
+                              ),
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
                                       child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
-                                          Align(
-                                            alignment: Alignment.topLeft,
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Text(
-                                                classData['class_name'] ?? '',
-                                                style: TextStyle(
-                                                  fontFamily: popinsBold,
-                                                  fontSize: 13,
-                                                  color:
-                                                      const Color(0xFF00A53C),
-                                                ),
-                                              ),
-                                            ),
+                                          Text(
+                                            member['name'],
+                                            style: TextStyle(
+                                                color: whiteColor,
+                                                fontFamily: popinsBold,
+                                                fontSize: 16),
                                           ),
-                                          const SizedBox(height: 5),
-                                          Expanded(
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(
-                                                  right: 8),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.end,
-                                                children: [
-                                                  SizedBox(
-                                                    height: 36,
-                                                    width: 110,
-                                                    child: ElevatedButton(
-                                                      style: ElevatedButton
-                                                          .styleFrom(
-                                                        backgroundColor: () {
-                                                          switch (
-                                                              enrollmentStatus) {
-                                                            case '':
-                                                              return const Color(
-                                                                  0xFFFED36A); // Waiting for Approval
-                                                            case '1':
-                                                              return const Color(
-                                                                  0xFF1EC7CD); // Approved
-                                                            case '2':
-                                                              return const Color(
-                                                                  0xFFFED36A); // Hold On
-                                                            case '3':
-                                                              return const Color(
-                                                                  0xFFFED36A); // Rejected
-                                                            default:
-                                                              return const Color
-                                                                  .fromARGB(
-                                                                  255,
-                                                                  76,
-                                                                  99,
-                                                                  100); // No enrollment
-                                                          }
-                                                        }(),
-                                                        shape:
-                                                            RoundedRectangleBorder(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(5),
-                                                        ),
-                                                      ),
-                                                      onPressed: () {
-                                                        print(
-                                                            'enrollmentStatus  :  $enrollmentStatus');
-                                                        if (enrollmentStatus ==
-                                                            '') {
-                                                          showEnrollDialog(
-                                                              classData,
-                                                              familyController,
-                                                              member);
-                                                        } else {
-                                                          print(
-                                                              'Already Enrolled or Waiting for Approval');
-                                                        }
-                                                      },
-                                                      child: Text(
-                                                        enrollmentStatus == ''
-                                                            ? 'Enroll'
-                                                            : _getEnrollButtonText(
-                                                                enrollmentStatus),
-                                                        style: const TextStyle(
-                                                          fontFamily:
-                                                              popinsSemiBold,
-                                                          fontSize: 12,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  const SizedBox(width: 5),
-                                                  SizedBox(
-                                                    height: 36,
-                                                    width: 110,
-                                                    child: ElevatedButton(
-                                                      style: ElevatedButton
-                                                          .styleFrom(
-                                                        backgroundColor:
-                                                            whiteColor,
-                                                        shape:
-                                                            RoundedRectangleBorder(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(5),
-                                                        ),
-                                                      ),
-                                                      onPressed: () {
-                                                        _showDetailsDialog(
-                                                            classData);
-                                                      },
-                                                      child: const Text(
-                                                        'Details',
-                                                        style: TextStyle(
-                                                          color: Colors.black,
-                                                          fontFamily:
-                                                              popinsRegulr,
-                                                          fontSize: 14,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              Image.asset(eventIcon,
+                                                  height: 24, width: 24),
+                                              const SizedBox(width: 8),
+                                              Text(
+                                                '${AppClass().formatDate(member['dob'])} (${AppClass().calculateAge(member['dob'])} Years) - ',
+                                                style: TextStyle(
+                                                    color: whiteColor,
+                                                    fontFamily: popinsBold,
+                                                    fontSize: 12),
                                               ),
-                                            ),
+                                              Text(
+                                                member['relation_type'],
+                                                style: TextStyle(
+                                                    color: whiteColor,
+                                                    fontFamily: popinsBold,
+                                                    fontSize: 12),
+                                              ),
+                                              IconButton(
+                                                icon: Icon(
+                                                  showClassesMap[index] == true
+                                                      ? Icons.school_outlined
+                                                      : Icons.school,
+                                                  color: goldenColor,
+                                                ),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    showClassesMap[index] =
+                                                        !(showClassesMap[
+                                                                index] ??
+                                                            false);
+                                                  });
+                                                },
+                                              ),
+                                              Text(
+                                                enrolCount.toString(),
+                                                style: TextStyle(
+                                                    color: whiteColor,
+                                                    fontFamily: popinsRegulr),
+                                              )
+                                            ],
                                           ),
                                         ],
                                       ),
                                     ),
-                                  ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      Positioned(
+                        left: screenWidth * .88,
+                        child: Container(
+                          height: 100,
+                          width: 8,
+                          decoration: BoxDecoration(
+                            color: goldenColor,
+                            borderRadius: const BorderRadius.only(
+                              topRight: Radius.circular(10),
+                              bottomRight: Radius.circular(10),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+
+                  if (showClassesMap[index] ?? false)
+                    Text(
+                      'Classes',
+                      style: TextStyle(
+                          fontFamily: popinsMedium, color: whiteColor),
+                    ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  if (showClassesMap[index] ?? false)
+                    Divider(
+                      color: lightColor,
+                    ),
+                  if (showClassesMap[index] ?? false)
+                    ListView.builder(
+                      shrinkWrap:
+                          true, // Ensures the ListView takes only the space it needs
+                      physics:
+                          NeverScrollableScrollPhysics(), // Prevents nested scrolling
+                      itemCount: availableClasses.length,
+                      itemBuilder: (context, classIndex) {
+                        var classData = availableClasses[classIndex];
+
+                        // Calculate age and check eligibility
+                        int memberAge = _calculateAge(member['dob']);
+                        int minAge = int.parse(classData['minimum_age'] ?? '0');
+                        int maxAge =
+                            int.parse(classData['maximum_age'] ?? '100');
+
+                        bool ageMatch =
+                            memberAge >= minAge && memberAge <= maxAge;
+                        bool genderMatch = classData['class_gender'] == "All" ||
+                            member['gender'] == classData['class_gender'];
+
+                        // Compare the class_id from availableClasses and enrollments
+                        RxString enrollmentStatus = 'Enroll'.obs;
+                        // Default to "Enroll"
+                        for (var enrollment in enrollments) {
+                          int enrollmentClassId =
+                              int.tryParse(enrollment['class_id'].toString()) ??
+                                  0; // Convert to int
+                          int availableClassId =
+                              int.tryParse(classData['class_id'].toString()) ??
+                                  0;
+                          if (enrollmentClassId == availableClassId) {
+                            // Match found; get the enrollment status
+                            enrollmentStatus.value =
+                                _getEnrollmentButtonText(enrollment['_active']);
+                            print(
+                                'Class: ${classData['class_name']}, Enrollment Status: $enrollmentStatus');
+
+                            break;
+                          }
+                        }
+
+                        if (ageMatch && genderMatch) {
+                          return Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                    color: Color(0xFF315B5A),
+                                    borderRadius: BorderRadius.circular(10)),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SizedBox(
+                                      height: 5,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        classData['class_name'],
+                                        style: TextStyle(
+                                            fontFamily: popinsMedium,
+                                            color: whiteColor),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 8),
+                                      child: Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          children: [
+                                            Obx(
+                                              () => GestureDetector(
+                                                onTap: enrollmentStatus.value ==
+                                                        'Enroll'
+                                                    ? () {
+                                                        Get.to(() =>
+                                                            EnrollScreen(
+                                                                classData:
+                                                                    classData,
+                                                                member:
+                                                                    member));
+                                                      }
+                                                    : null,
+                                                child: Obx(
+                                                  () => Container(
+                                                    alignment: Alignment.center,
+                                                    width: 150,
+                                                    padding: EdgeInsets.all(8),
+                                                    decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10),
+                                                      color: enrollmentStatus
+                                                                  .value ==
+                                                              'Enroll'
+                                                          ? Colors.white
+                                                          : enrollmentStatus
+                                                                      .value ==
+                                                                  'Pending Approval'
+                                                              ? goldenColor
+                                                              : enrollmentStatus
+                                                                          .value ==
+                                                                      'Enrolled'
+                                                                  ? Colors.green
+                                                                  : enrollmentStatus
+                                                                              .value ==
+                                                                          'Rejected'
+                                                                      ? Colors
+                                                                          .red
+                                                                      : Colors
+                                                                          .white,
+                                                    ),
+                                                    //isable button for other states
+                                                    child: Obx(
+                                                      () => Text(
+                                                        enrollmentStatus.value,
+                                                        style: TextStyle(
+                                                          color: enrollmentStatus
+                                                                      .value ==
+                                                                  'Enroll'
+                                                              ? Colors.black
+                                                              : enrollmentStatus
+                                                                          .value ==
+                                                                      'Pending Approval'
+                                                                  ? whiteColor
+                                                                  : enrollmentStatus
+                                                                              .value ==
+                                                                          'Enrolled'
+                                                                      ? const Color
+                                                                          .fromARGB(
+                                                                          255,
+                                                                          170,
+                                                                          218,
+                                                                          171)
+                                                                      : enrollmentStatus.value ==
+                                                                              'Rejected'
+                                                                          ? Colors
+                                                                              .white
+                                                                          : Colors
+                                                                              .white, // Use white for other states
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
+                                            ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  elevation: 0,
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10)),
+                                                ),
+                                                onPressed: () {
+                                                  _showDetailsDialog(classData);
+                                                },
+                                                child: const Text(
+                                                  'Details',
+                                                  style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontFamily: popinsMedium),
+                                                ))
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    )
+                                  ],
                                 ),
                               ),
-                            );
-                          } else {
-                            return Container();
-                          }
-                        }).toList(),
-                      )),
-              ],
+                            ],
+                          );
+                        } else {
+                          return const SizedBox.shrink();
+                        }
+                      },
+                    )
+                ],
+              ),
             );
           },
         );
       }),
     );
-  }
-
-  String getEnrollmentStatus(
-    List<dynamic> enrollments,
-  ) {
-    // Loop through enrollments to find the matching class ID
-    for (var enrollment in enrollments) {
-      switch (enrollment['_active']) {
-        case '0':
-          return '0'; // Waiting for Approval
-        case '1':
-          return '1'; // Approved
-        case '2':
-          return '2'; // Hold On
-        case '3':
-          return '3'; // Rejected
-        default:
-          return ''; // No matching status
-      }
-    }
-    return ''; // No enrollment found for this class
-  }
-
-  String _getEnrollButtonText(String status) {
-    switch (status) {
-      case '0':
-        return 'Waiting for Approval';
-      case '1':
-        return 'Approved';
-      case '2':
-        return 'Hold On';
-      case '3':
-        return 'Rejected';
-      default:
-        return 'Enroll';
-    }
   }
 
   void _showDetailsDialog(dynamic classData) {
@@ -456,234 +547,81 @@ class _ClassesScreenState extends State<ClassesScreen> {
     );
   }
 
-  void showEnrollDialog(
-      dynamic classData, FamilyController familyController, dynamic member) {
-    bool isAllergic = false;
-    bool isAcknowledged = false;
-    bool isLoading = false;
-    TextEditingController allergiesController = TextEditingController();
-    TextEditingController emergencyContactController = TextEditingController();
-    TextEditingController emergencyContactNameController =
-        TextEditingController();
-
-    final GlobalKey<FormState> _formKey = GlobalKey<FormState>(); // Form key
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (BuildContext context, StateSetter setState) {
-            return AlertDialog(
-              backgroundColor: whiteColor,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              title: Container(
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.only(
-                      bottomLeft: Radius.circular(20),
-                      bottomRight: Radius.circular(20)),
-                  color: primaryColor,
-                ),
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      'ENROLLMENT FORM',
-                      style:
-                          TextStyle(fontFamily: popinsBold, color: whiteColor),
-                    ),
-                  ),
-                ),
-              ),
-              content: SingleChildScrollView(
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const SizedBox(height: 10),
-                      _PasswordTextField(
-                        label: 'Emergency Contact',
-                        controller: emergencyContactController,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter emergency contact';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 10),
-                      _PasswordTextField(
-                        label: 'Emergency Contact Name',
-                        controller: emergencyContactNameController,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter emergency contact name';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 10),
-                      Card(
-                        elevation: 5,
-                        color: whiteColor,
-                        child: DropdownButtonFormField<String>(
-                          decoration: InputDecoration(
-                            label: Text(
-                              'Allergic',
-                              style: TextStyle(
-                                  fontFamily: popinsSemiBold,
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                            labelStyle: TextStyle(
-                              color: Colors.grey.shade700,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            border: InputBorder.none,
-                            contentPadding:
-                                const EdgeInsets.symmetric(horizontal: 16),
-                          ),
-                          items: const [
-                            DropdownMenuItem(value: 'YES', child: Text('YES')),
-                            DropdownMenuItem(value: 'NO', child: Text('NO')),
-                          ],
-                          onChanged: (value) {
-                            setState(() {
-                              isAllergic = value == 'YES';
-                            });
-                          },
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      if (isAllergic)
-                        _PasswordTextField(
-                          label: 'Allergic Details',
-                          controller: allergiesController,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please provide allergic details';
-                            }
-                            return null;
-                          },
-                        ),
-                      const SizedBox(height: 10),
-                      GestureDetector(
-                        onTap: () {
-                          _showDisclaimerDialog(
-                              context,
-                              classData['class_has_disclaimer']
-                                  ['disclaimer_title'],
-                              classData['class_has_disclaimer']
-                                  ['disclaimer_description']);
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8),
-                          child: Text(
-                            'Disclaimer: Please view carefully.',
-                            style: TextStyle(
-                              color: Colors.grey[600],
-                              fontStyle: FontStyle.italic,
-                              decoration: TextDecoration.underline,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      Row(
-                        children: [
-                          Checkbox(
-                            activeColor: primaryColor,
-                            value: isAcknowledged,
-                            onChanged: (value) {
-                              setState(() {
-                                isAcknowledged = value ?? false;
-                              });
-                            },
-                          ),
-                          const Expanded(
-                            child: Text(
-                              'I Acknowledge That I Have Read, Understood And Agreed To The Rosenberg Community Center Policies And Procedures',
-                              style: TextStyle(
-                                  fontSize: 12, fontFamily: popinsRegulr),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              actions: [
-                Center(
-                  child: isLoading
-                      ? SpinKitFadingCircle(color: primaryColor)
-                      : ElevatedButton(
-                          onPressed: isAcknowledged
-                              ? () async {
-                                  if (_formKey.currentState!.validate()) {
-                                    setState(() {
-                                      isLoading = true;
-                                    });
-
-                                    try {
-                                      await familyController.registerForClass(
-                                        context: context,
-                                        token: globals.accessToken.value,
-                                        classId: classData['class_id'],
-                                        id: member['id'],
-                                        relationId: member['relation_id'],
-                                        emergencyContact:
-                                            emergencyContactController.text,
-                                        emergencyContactName:
-                                            emergencyContactNameController.text,
-                                        allergiesDetail:
-                                            allergiesController.text,
-                                      );
-                                      Navigator.of(context).pop();
-                                    } catch (error) {
-                                      print("Error: $error");
-                                    } finally {
-                                      setState(() {
-                                        isLoading = false;
-                                        ProfileController().fetchUserData2();
-                                      });
-                                    }
-                                  }
-                                }
-                              : null,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: primaryColor,
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 60, vertical: 10),
-                            shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.elliptical(30, 30),
-                                bottomLeft: Radius.circular(5),
-                                bottomRight: Radius.elliptical(30, 30),
-                                topRight: Radius.circular(5),
-                              ),
-                            ),
-                            shadowColor:
-                                const Color.fromARGB(255, 252, 254, 255),
-                            elevation: 8,
-                          ),
-                          child: Text(
-                            'ENROLL IN CLASS',
-                            style: TextStyle(
-                                fontFamily: popinsSemiBold, color: whiteColor),
-                          ),
-                        ),
-                ),
-              ],
-            );
-          },
-        );
-      },
-    );
+  int _calculateAge(String dob) {
+    try {
+      // Ensure the date is formatted as YYYY-MM-DD
+      List<String> parts = dob.split('-');
+      if (parts.length == 3) {
+        // Pad month and day with leading zero if needed
+        String formattedDate =
+            '${parts[0]}-${parts[1].padLeft(2, '0')}-${parts[2].padLeft(2, '0')}';
+        DateTime birthDate = DateTime.parse(formattedDate);
+        DateTime today = DateTime.now();
+        return today.year -
+            birthDate.year -
+            (today.isBefore(
+                    DateTime(today.year, birthDate.month, birthDate.day))
+                ? 1
+                : 0);
+      } else {
+        throw FormatException('Invalid date format');
+      }
+    } catch (e) {
+      print('Error parsing date: $dob. Exception: $e');
+      return 0; // Return a default age if there's an error
+    }
   }
+
+  // Enrollment button text logic
+  String _getEnrollmentButtonText(String status) {
+    switch (status) {
+      case '0':
+        return 'Pending Approval';
+      case '1':
+        return 'Enrolled';
+      case '2':
+        return 'Hold';
+      case '3':
+        return 'Rejected';
+      default:
+        return 'Enroll';
+    }
+  }
+}
+
+// Disclaimer dialog logic
+showDisclaimerDialog(BuildContext context, String title, String description) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        title: Text(title,
+            style: TextStyle(
+                fontFamily: popinsBold, fontSize: 16, color: Colors.black87)),
+        content: SizedBox(
+          height: 500,
+          width: 120,
+          child: SingleChildScrollView(
+            child: Html(data: description),
+          ),
+        ),
+        actions: [
+          TextButton(
+            style: TextButton.styleFrom(foregroundColor: primaryColor),
+            child:
+                const Text('Close', style: TextStyle(fontFamily: popinsMedium)),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
 }
 
 class _PasswordTextField extends StatelessWidget {

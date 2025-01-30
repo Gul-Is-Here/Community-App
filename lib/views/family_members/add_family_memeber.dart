@@ -100,7 +100,9 @@ class _AddFamilyMemberScreenState extends State<AddFamilyMemberScreen> {
       await profileController.fetchUserData2();
 
       Get.snackbar("Success", "Family Member Added Successfully",
-          snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.green);
+          colorText: whiteColor,
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green);
       Navigator.of(context).pop();
     } catch (e) {
       Get.snackbar("Error", "Failed to add family member",
@@ -140,11 +142,17 @@ class _AddFamilyMemberScreenState extends State<AddFamilyMemberScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                const Text(
+                  'First Name',
+                  style:
+                      TextStyle(color: Colors.green, fontFamily: popinsMedium),
+                ),
+                SizedBox(
+                  height: 5,
+                ),
                 TextField(
                   controller: firstNameController,
                   decoration: InputDecoration(
-                    labelText: 'First Name',
-                    labelStyle: TextStyle(color: Color(0xFF0E7539)),
                     filled: true,
                     fillColor: lightColor, // Light green shade
                     border: OutlineInputBorder(
@@ -154,11 +162,17 @@ class _AddFamilyMemberScreenState extends State<AddFamilyMemberScreen> {
                   ),
                 ),
                 SizedBox(height: 16),
+                const Text(
+                  'Last Name',
+                  style:
+                      TextStyle(color: Colors.green, fontFamily: popinsMedium),
+                ),
+                SizedBox(
+                  height: 5,
+                ),
                 TextField(
                   controller: lastNameController,
                   decoration: InputDecoration(
-                    labelText: 'Last Name',
-                    labelStyle: TextStyle(color: Color(0xFF0E7539)),
                     filled: true,
                     fillColor: lightColor,
                     border: OutlineInputBorder(
@@ -168,8 +182,13 @@ class _AddFamilyMemberScreenState extends State<AddFamilyMemberScreen> {
                   ),
                 ),
                 SizedBox(height: 16),
+                const Text(
+                  'Relationship',
+                  style:
+                      TextStyle(color: Colors.green, fontFamily: popinsMedium),
+                ),
                 buildDropdownField(
-                  label: "Relationship",
+                  label: "",
                   value: selectedRelation,
                   items: relation,
                   onChanged: (newValue) {
@@ -177,8 +196,13 @@ class _AddFamilyMemberScreenState extends State<AddFamilyMemberScreen> {
                   },
                 ),
                 SizedBox(height: 16),
+                const Text(
+                  'Date of Birth',
+                  style:
+                      TextStyle(color: Colors.green, fontFamily: popinsMedium),
+                ),
                 buildTextField(
-                  label: "Date of Birth",
+                  label: "",
                   controller: dobController,
                   onTap: () async {
                     DateTime? pickedDate = await showDatePicker(

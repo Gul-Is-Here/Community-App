@@ -2,9 +2,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:community_islamic_app/constants/color.dart';
 import 'package:community_islamic_app/controllers/home_controller.dart';
 import 'package:community_islamic_app/services/notification_service.dart';
-import 'package:community_islamic_app/widgets/project_background.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
