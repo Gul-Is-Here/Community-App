@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import '../../controllers/live_stream_controller.dart';
 
+
 class LiveStreamPage extends StatefulWidget {
   @override
   _LiveStreamPageState createState() => _LiveStreamPageState();
@@ -15,9 +16,6 @@ class _LiveStreamPageState extends State<LiveStreamPage> {
   @override
   void initState() {
     super.initState();
-    controller.fetchLiveUrl(); // Fetch live URL
-
-    // Initialize WebViewController
     webViewController = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted);
   }
@@ -31,7 +29,6 @@ class _LiveStreamPageState extends State<LiveStreamPage> {
           return Center(child: CircularProgressIndicator());
         }
 
-        // Load the live stream URL dynamically
         webViewController.loadRequest(Uri.parse(controller.liveUrl.value));
 
         return WebViewWidget(controller: webViewController);

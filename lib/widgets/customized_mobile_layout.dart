@@ -51,6 +51,7 @@ class CustomizedMobileLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var controller = Get.put(LiveStreamController());
     eventsController.feedsList;
 
     // homeController.getNextPrayerTime;
@@ -80,7 +81,7 @@ class CustomizedMobileLayout extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
+            const SizedBox(
               height: 40,
             ),
             Row(
@@ -98,10 +99,10 @@ class CustomizedMobileLayout extends StatelessWidget {
                         height: 32,
                         width: 32,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 2,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 5,
                       ),
                       Text(
@@ -214,7 +215,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                                       fontSize: 28),
                                 ),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 10,
                               ),
                               BlinkingDot(),
@@ -292,7 +293,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                                       //
                                     ],
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 2,
                                   ),
                                   Row(
@@ -321,7 +322,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                                               fontSize: 11),
                                         ),
                                       ),
-                                      SizedBox(
+                                      const SizedBox(
                                         height: 2,
                                       ),
                                       GestureDetector(
@@ -337,7 +338,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                                               fontSize: 11),
                                         ),
                                       ),
-                                      SizedBox(
+                                      const SizedBox(
                                         height: 2,
                                       ),
                                       GestureDetector(
@@ -409,7 +410,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                     ),
                   )),
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             Padding(
@@ -426,70 +427,57 @@ class CustomizedMobileLayout extends StatelessWidget {
                   ),
                   Obx(() {
                     if (controller.isLoading.value) {
-                      return Text(
-                        'Live',
-                        style: TextStyle(
-                            fontFamily: popinsRegulr, color: whiteColor),
-                      );
+                      return Text('Live', style: TextStyle(fontFamily: popinsRegulr, color: whiteColor),);
                     }
 
                     bool isYouTubeLink =
                         controller.liveUrl.value.contains("youtube.com") ||
                             controller.liveUrl.value.contains("youtu.be");
 
-                    bool isLive = controller
-                        .liveUrl.value.isNotEmpty; // Assume live if URL exists
-
                     return Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        if (isLive)
+                        if (controller.isLive.value)
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               AnimatedContainer(
-                                duration: Duration(seconds: 1),
+                                duration: const Duration(seconds: 1),
                                 width: 10,
                                 height: 10,
-                                decoration: BoxDecoration(
+                                decoration: const BoxDecoration(
                                   color: Colors.red,
                                   shape: BoxShape.circle,
                                 ),
                               ),
-                              SizedBox(width: 5),
-                              Text(
-                                "LIVE",
-                                style: TextStyle(
-                                  fontFamily: popinsRegulr,
-                                  color: Colors.red,
-                                  fontWeight: FontWeight.bold,
+                              const SizedBox(width: 5),
+                              GestureDetector(
+                                onTap: controller.isLive.value
+                                    ? () {
+                                        Get.to(() => isYouTubeLink
+                                            ? YouTubePlayerPage()
+                                            : LiveStreamPage());
+                                      }
+                                    : null,
+                                child: const Text(
+                                  "LIVE",
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                             ],
                           ),
-                        SizedBox(height: 10),
-                        ElevatedButton(
-                          onPressed: isLive
-                              ? () {
-                                  Get.to(() => isYouTubeLink
-                                      ? YouTubePlayerPage()
-                                      : LiveStreamPage());
-                                }
-                              : null, // Disable button if not live
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: isLive
-                                ? Colors.red
-                                : Colors.grey, // Red when live, grey when not
-                          ),
-                          child: Text("Watch Live Stream"),
-                        ),
+
+                        // Debugging: Show extracted live URL
                       ],
                     );
                   })
                 ],
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             Padding(
@@ -707,29 +695,29 @@ class CustomizedMobileLayout extends StatelessWidget {
                           FeatureWidgeticons(
                               icons: quranIcon,
                               onTap: () {
-                                Get.to(() => QuranScreen(
+                                Get.to(() => const QuranScreen(
                                       isNavigation: true,
                                     ));
                               }),
                           FeatureWidgeticons(
                               icons: azkarIcon,
                               onTap: () {
-                                Get.to(() => CommingSoonScreen());
+                                Get.to(() => const CommingSoonScreen());
                               }),
                           FeatureWidgeticons(
                               icons: haditIcon,
                               onTap: () {
-                                Get.to(() => CommingSoonScreen());
+                                Get.to(() => const CommingSoonScreen());
                               }),
                           FeatureWidgeticons(
                               icons: duaIcon,
                               onTap: () {
-                                Get.to(() => CommingSoonScreen());
+                                Get.to(() => const CommingSoonScreen());
                               }),
                           FeatureWidgeticons(
                               icons: tasbihIcon,
                               onTap: () {
-                                Get.to(() => CommingSoonScreen());
+                                Get.to(() => const CommingSoonScreen());
                               }),
                           FeatureWidgeticons(
                               icons: qiblaIcon,
@@ -744,7 +732,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                   }
                   return const SizedBox();
                 }),
-                SizedBox(
+                const SizedBox(
                   height: 5,
                 ),
                 Padding(
@@ -779,7 +767,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 5,
                 ),
                 Obx(() {
@@ -794,21 +782,21 @@ class CustomizedMobileLayout extends StatelessWidget {
                             title: '5 DAILY\PRAYERS',
                             image: dailyPrayer,
                             onTap: () {
-                              Get.to(() => CommingSoonScreen());
+                              Get.to(() => const CommingSoonScreen());
                             },
                           ),
                           OurServicesWidget(
                             title: 'FREE QURAN CLASSES',
                             image: freeQuranClasses,
                             onTap: () {
-                              Get.to(() => CommingSoonScreen());
+                              Get.to(() => const CommingSoonScreen());
                             },
                           ),
                           OurServicesWidget(
                             title: 'YOUTH SIRA SERIES',
                             image: youthSeraSeries,
                             onTap: () {
-                              Get.to(() => CommingSoonScreen());
+                              Get.to(() => const CommingSoonScreen());
                             },
                           ),
                         ],
@@ -829,21 +817,21 @@ class CustomizedMobileLayout extends StatelessWidget {
                             title: 'GIRLS HALAQA',
                             image: girlsHaqa,
                             onTap: () {
-                              Get.to(() => CommingSoonScreen());
+                              Get.to(() => const CommingSoonScreen());
                             },
                           ),
                           OurServicesWidget(
                             title: 'YOUTH PROGRAM',
                             image: youthProgram,
                             onTap: () {
-                              Get.to(() => CommingSoonScreen());
+                              Get.to(() => const CommingSoonScreen());
                             },
                           ),
                           OurServicesWidget(
                             title: 'YOUTH SOCCER CLUB',
                             image: youthsoccorClub,
                             onTap: () {
-                              Get.to(() => CommingSoonScreen());
+                              Get.to(() => const CommingSoonScreen());
                             },
                           ),
                         ],
@@ -854,7 +842,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                 })
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 100,
             ),
           ],

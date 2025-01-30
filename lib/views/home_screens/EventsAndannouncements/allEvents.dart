@@ -33,12 +33,13 @@ class _AllEventsDatesScreenState extends State<AllEventsDatesScreen> {
     eventTypeController.selectedEvents!.value = updatedEvents;
   }
 
-  void _clearFilters() async {
-    setState(() async {
+  void _clearFilters() {
+    setState(() {
       selectedEventType.value = 0; // Reset to "All" events
       selectedDate.value = null; // Reset the selected date
       _calendarWidgetKey.currentState?.resetSelectedDate();
-      _calendarWidgetKey.currentState?._updateDisplayedEvents();
+      _calendarWidgetKey.currentState
+          ?._updateDisplayedEvents(); // Update displayed events
     });
   }
 
@@ -248,7 +249,10 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   }
 
   void resetSelectedDate() {
-    widget.selectedDate.value = null; // Clear selectedDate
+    setState(() {
+      widget.selectedDate.value = null; // Clear selectedDate
+      _updateDisplayedEvents(); // Update displayed events
+    });
   }
 
   void _initializeSelectedDateAndEvents() {
