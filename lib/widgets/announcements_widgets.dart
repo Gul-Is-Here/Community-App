@@ -1,619 +1,13 @@
-// import 'package:community_islamic_app/app_classes/app_class.dart';
-// import 'package:community_islamic_app/constants/image_constants.dart';
-// import 'package:flutter/material.dart';
-// import 'package:get/get.dart';
-// // import 'package:velocity_x/velocity_x.dart';
-// import 'package:carousel_slider/carousel_slider.dart';
-// import '../constants/color.dart';
-// import '../controllers/home_controller.dart';
-// import '../controllers/home_events_controller.dart';
-// import '../views/home_screens/EventsAndannouncements/announcements_details_screen.dart';
-// import '../views/home_screens/EventsAndannouncements/announcements_screen.dart';
-
-// class AnnouncementWidget extends StatelessWidget {
-//   const AnnouncementWidget({
-//     super.key,
-//     required this.eventsController,
-//     required this.homeController,
-//   });
-
-//   final HomeEventsController eventsController;
-//   final HomeController homeController;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final screenHeight1 = MediaQuery.of(context).size.height;
-//     final screenWidth = MediaQuery.of(context).size.width;
-
-//     return Padding(
-//       padding: const EdgeInsets.all(0),
-//       child: Column(
-//         children: [
-//           // Observing changes in the alerts list
-//           Obx(() {
-//             if (eventsController.isLoading.value) {
-//               // Show loading spinner while fetching data
-//               return Column(
-//                 children: [
-//                   Padding(
-//                     padding:
-//                         const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-//                     child: Row(
-//                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                       children: [
-//                         Text(
-//                           'Announcement',
-//                           style: TextStyle(
-//                               fontFamily: popinsBold,
-//                               color: whiteColor,
-//                               fontSize: 16),
-//                         ),
-//                         GestureDetector(
-//                           onTap: () {
-//                             // Get.to(() => AnnouncementsScreen());
-//                           },
-//                           child: Text(
-//                             'View All',
-//                             style: TextStyle(
-//                                 fontFamily: popinsRegulr,
-//                                 color: whiteColor,
-//                                 fontSize: 12),
-//                           ),
-//                         )
-//                       ],
-//                     ),
-//                   ),
-//                   Container(
-//                     color: Colors.transparent,
-//                     height: 49,
-//                     width: screenWidth * 1,
-//                     child: ListView.builder(
-//                       scrollDirection: Axis.horizontal,
-//                       shrinkWrap: true,
-//                       itemCount: 3,
-//                       itemBuilder: (context, index) {
-//                         // var alertsData = eventsController.alertsList[index];
-
-//                         return Padding(
-//                           padding: const EdgeInsets.symmetric(horizontal: 12),
-//                           child: GestureDetector(
-//                             onTap: () {},
-//                             child: Container(
-//                               margin: EdgeInsets.all(0),
-//                               width: 225,
-//                               height: screenHeight1 * .08,
-//                               decoration: const BoxDecoration(
-//                                 borderRadius: BorderRadius.only(
-//                                   topLeft: Radius.circular(
-//                                     30,
-//                                   ),
-//                                   topRight: Radius.circular(30),
-//                                 ),
-//                               ),
-//                               child: Card(
-//                                 margin: const EdgeInsets.all(0),
-//                                 shape: RoundedRectangleBorder(
-//                                   borderRadius: BorderRadius.circular(30),
-//                                 ),
-//                                 elevation: 10,
-//                                 child: Container(
-//                                   margin: EdgeInsets.all(0),
-//                                   decoration: BoxDecoration(
-//                                     border: Border.all(
-//                                       width: 1,
-//                                       color: lightColor,
-//                                     ),
-//                                     borderRadius: const BorderRadius.only(
-//                                       topRight: Radius.circular(20),
-//                                       topLeft: Radius.circular(35),
-//                                       bottomLeft: Radius.circular(35),
-//                                       bottomRight: Radius.circular(20),
-//                                     ),
-//                                     color: const Color(0xFF1E5045),
-//                                   ),
-//                                   child: Row(
-//                                     children: [
-//                                       Container(
-//                                         height: 47,
-//                                         width: 47,
-//                                         decoration: BoxDecoration(
-//                                           borderRadius:
-//                                               BorderRadius.circular(30),
-//                                           color: lightColor,
-//                                         ),
-//                                         child: const Column(
-//                                           mainAxisAlignment:
-//                                               MainAxisAlignment.center,
-//                                           crossAxisAlignment:
-//                                               CrossAxisAlignment.center,
-//                                           children: [
-//                                             Text(
-//                                               textAlign: TextAlign.center,
-//                                               '2 Mar',
-//                                               style: TextStyle(
-//                                                   fontFamily: popinsSemiBold,
-//                                                   fontSize: 10),
-//                                             )
-//                                           ],
-//                                         ),
-//                                       ),
-//                                       Expanded(
-//                                         child: Padding(
-//                                           padding: const EdgeInsets.symmetric(
-//                                             horizontal: 16,
-//                                             vertical: 5,
-//                                           ),
-//                                           child: Column(
-//                                             mainAxisAlignment:
-//                                                 MainAxisAlignment.start,
-//                                             crossAxisAlignment:
-//                                                 CrossAxisAlignment.start,
-//                                             children: [
-//                                               const SizedBox(height: 5),
-//                                               Text(
-//                                                 maxLines: 2,
-//                                                 'Announcements are coming soon',
-//                                                 overflow: TextOverflow.ellipsis,
-//                                                 style: TextStyle(
-//                                                   fontSize: 11,
-//                                                   color: whiteColor,
-//                                                   fontFamily: popinsSemiBold,
-//                                                 ),
-//                                               ),
-//                                             ],
-//                                           ),
-//                                         ),
-//                                       ),
-//                                     ],
-//                                   ),
-//                                 ),
-//                               ),
-//                             ),
-//                           ),
-//                         );
-//                       },
-//                     ),
-//                   ),
-//                   SizedBox(
-//                     height: 10,
-//                   ),
-//                   Obx(
-//                     () => Row(
-//                       mainAxisAlignment: MainAxisAlignment.center,
-//                       children: List.generate(
-//                         3,
-//                         (index) => Container(
-//                           width: 8,
-//                           height: 8,
-//                           margin: const EdgeInsets.symmetric(horizontal: 4),
-//                           decoration: BoxDecoration(
-//                             shape: BoxShape.circle,
-//                             color: eventsController.selectedIndex.value == index
-//                                 ? whiteColor
-//                                 : Colors.grey,
-//                           ),
-//                         ),
-//                       ),
-//                     ),
-//                   ),
-//                 ],
-//               );
-//             }
-
-//             if (eventsController.alertsList.isEmpty) {
-//               // Show "Notification Coming Soon" if the list is empty
-//               return Column(
-//                 children: [
-//                   Padding(
-//                     padding:
-//                         const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-//                     child: Row(
-//                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                       children: [
-//                         Text(
-//                           'Announcement',
-//                           style: TextStyle(
-//                               fontFamily: popinsBold,
-//                               color: whiteColor,
-//                               fontSize: 16),
-//                         ),
-//                         GestureDetector(
-//                           onTap: () {
-//                             Get.to(() => AnnouncementsScreen());
-//                           },
-//                           child: Text(
-//                             'View All',
-//                             style: TextStyle(
-//                                 fontFamily: popinsRegulr,
-//                                 color: whiteColor,
-//                                 fontSize: 12),
-//                           ),
-//                         )
-//                       ],
-//                     ),
-//                   ),
-//                   Container(
-//                     color: Colors.transparent,
-//                     height: 100,
-//                     width: screenWidth * 1,
-//                     child: ListView.builder(
-//                       scrollDirection: Axis.horizontal,
-//                       shrinkWrap: true,
-//                       itemCount: 3,
-//                       itemBuilder: (context, index) {
-//                         // var alertsData = eventsController.alertsList[index];
-
-//                         return Padding(
-//                           padding: const EdgeInsets.symmetric(horizontal: 12),
-//                           child: GestureDetector(
-//                             onTap: () {
-//                               // Navigate to AnnouncementsDetailsScreen
-//                               // eventsController
-//                               //     .selectedIndexAnnouncment.value = index;
-//                               // Get.to(() => AnnouncementsDetailsScreen(
-//                               //       alertDisc: alertsData.alertDescription,
-//                               //       controller: eventsController,
-//                               //       title: alertsData.alertTitle,
-//                               //       details: alertsData.alertDescription,
-//                               //       createdDate:
-//                               //           alertsData.createdAt.toString(),
-//                               //       description: '',
-//                               //       postedDate:
-//                               //           alertsData.updatedAt.toString(),
-//                               //     ));
-//                             },
-//                             child: Container(
-//                               margin: EdgeInsets.all(0),
-//                               width: screenWidth * 1,
-//                               height: screenHeight1 * .09,
-//                               decoration: const BoxDecoration(
-//                                 borderRadius: BorderRadius.only(
-//                                   topLeft: Radius.circular(
-//                                     30,
-//                                   ),
-//                                   topRight: Radius.circular(30),
-//                                 ),
-//                               ),
-//                               child: Card(
-//                                 margin: const EdgeInsets.all(0),
-//                                 shape: RoundedRectangleBorder(
-//                                   borderRadius: BorderRadius.circular(30),
-//                                 ),
-//                                 elevation: 10,
-//                                 child: Container(
-//                                   margin: EdgeInsets.all(0),
-//                                   decoration: BoxDecoration(
-//                                     border: Border.all(
-//                                       width: 1,
-//                                       color: lightColor,
-//                                     ),
-//                                     borderRadius: const BorderRadius.only(
-//                                       topRight: Radius.circular(20),
-//                                       topLeft: Radius.circular(35),
-//                                       bottomLeft: Radius.circular(35),
-//                                       bottomRight: Radius.circular(20),
-//                                     ),
-//                                     color: const Color(0xFF1E5045),
-//                                   ),
-//                                   child: Row(
-//                                     children: [
-//                                       Container(
-//                                         height: 47,
-//                                         width: 47,
-//                                         decoration: BoxDecoration(
-//                                           borderRadius:
-//                                               BorderRadius.circular(30),
-//                                           color: lightColor,
-//                                         ),
-//                                         child: const Column(
-//                                           mainAxisAlignment:
-//                                               MainAxisAlignment.center,
-//                                           crossAxisAlignment:
-//                                               CrossAxisAlignment.center,
-//                                           children: [
-//                                             Text(
-//                                               textAlign: TextAlign.center,
-//                                               '2 Mar',
-//                                               style: TextStyle(
-//                                                   fontFamily: popinsSemiBold,
-//                                                   fontSize: 10),
-//                                             )
-//                                           ],
-//                                         ),
-//                                       ),
-//                                       Expanded(
-//                                         child: Padding(
-//                                           padding: const EdgeInsets.symmetric(
-//                                             horizontal: 16,
-//                                             vertical: 5,
-//                                           ),
-//                                           child: Column(
-//                                             mainAxisAlignment:
-//                                                 MainAxisAlignment.start,
-//                                             crossAxisAlignment:
-//                                                 CrossAxisAlignment.start,
-//                                             children: [
-//                                               const SizedBox(height: 5),
-//                                               Text(
-//                                                 maxLines: 2,
-//                                                 'Announcemnets are coming soon',
-//                                                 overflow: TextOverflow.ellipsis,
-//                                                 style: TextStyle(
-//                                                   fontSize: 11,
-//                                                   color: whiteColor,
-//                                                   fontFamily: popinsSemiBold,
-//                                                 ),
-//                                               ),
-//                                             ],
-//                                           ),
-//                                         ),
-//                                       ),
-//                                     ],
-//                                   ),
-//                                 ),
-//                               ),
-//                             ),
-//                           ),
-//                         );
-//                       },
-//                     ),
-//                   ),
-//                   SizedBox(
-//                     height: 10,
-//                   ),
-//                   Obx(
-//                     () => Row(
-//                       mainAxisAlignment: MainAxisAlignment.center,
-//                       children: List.generate(
-//                         3,
-//                         (index) => Container(
-//                           width: 8,
-//                           height: 8,
-//                           margin: const EdgeInsets.symmetric(horizontal: 4),
-//                           decoration: BoxDecoration(
-//                             shape: BoxShape.circle,
-//                             color: eventsController.selectedIndex.value == index
-//                                 ? whiteColor
-//                                 : Colors.grey,
-//                           ),
-//                         ),
-//                       ),
-//                     ),
-//                   ),
-//                 ],
-//               );
-//             }
-
-//             // Show list of alerts if available
-//             return Column(
-//               children: [
-//                 // Header Row
-//                 Padding(
-//                   padding:
-//                       const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-//                   child: Row(
-//                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                     children: [
-//                       Text(
-//                         'Announcement',
-//                         style: TextStyle(
-//                           fontFamily: popinsBold,
-//                           color: whiteColor,
-//                           fontSize: 16,
-//                         ),
-//                       ),
-//                       GestureDetector(
-//                         onTap: () {
-//                           Get.to(() => AnnouncementsScreen());
-//                         },
-//                         child: Text(
-//                           'View All',
-//                           style: TextStyle(
-//                             fontFamily: popinsRegulr,
-//                             color: whiteColor,
-//                             fontSize: 12,
-//                           ),
-//                         ),
-//                       ),
-//                     ],
-//                   ),
-//                 ),
-//                 SizedBox(
-//                   height: 5,
-//                 ),
-//                 // Carousel Slider with dots
-//                 Obx(() {
-//                   return Column(
-//                     children: [
-//                       // Carousel Slider
-//                       CarouselSlider.builder(
-//                         itemCount: eventsController.alertsList.length,
-//                         itemBuilder: (context, index, realIndex) {
-//                           var alertsData = eventsController.alertsList[index];
-
-//                           return Padding(
-//                             padding: const EdgeInsets.symmetric(horizontal: 8),
-//                             child: GestureDetector(
-//                               onTap: () {
-//                                 // Navigate to AnnouncementsDetailsScreen
-//                                 eventsController
-//                                     .selectedIndexAnnouncment.value = index;
-//                                 Get.to(() => AnnouncementsDetailsScreen(
-//                                       alertDisc: alertsData.alertDescription,
-//                                       controller: eventsController,
-//                                       title: alertsData.alertTitle,
-//                                       details: alertsData.alertDescription,
-//                                       createdDate:
-//                                           alertsData.createdAt.toString(),
-//                                       description: '',
-//                                       postedDate:
-//                                           alertsData.updatedAt.toString(),
-//                                     ));
-//                               },
-//                               child: Container(
-//                                 margin: EdgeInsets.all(0),
-//                                 width: 320,
-//                                 height: 100, // Adjusted height
-//                                 decoration: const BoxDecoration(
-//                                   borderRadius: BorderRadius.only(
-//                                     topLeft: Radius.circular(30),
-//                                     topRight: Radius.circular(30),
-//                                   ),
-//                                 ),
-//                                 child: Card(
-//                                   margin: const EdgeInsets.all(0),
-//                                   shape: RoundedRectangleBorder(
-//                                     borderRadius: BorderRadius.circular(30),
-//                                   ),
-//                                   elevation: 10,
-//                                   child: Container(
-//                                     margin: EdgeInsets.all(0),
-//                                     decoration: BoxDecoration(
-//                                         borderRadius: BorderRadius.circular(10),
-//                                         gradient: LinearGradient(
-//                                             colors: [
-//                                               Color(0xFF00A559),
-//                                               Color(0xFF00A559),
-//                                             ],
-//                                             begin: Alignment.topLeft,
-//                                             end: Alignment.bottomRight)),
-//                                     child: Row(
-//                                       children: [
-//                                         Expanded(
-//                                           child: Padding(
-//                                             padding: const EdgeInsets.symmetric(
-//                                               horizontal: 16,
-//                                               vertical: 5,
-//                                             ),
-//                                             child: Column(
-//                                               mainAxisAlignment:
-//                                                   MainAxisAlignment.start,
-//                                               crossAxisAlignment:
-//                                                   CrossAxisAlignment.start,
-//                                               children: [
-//                                                 const SizedBox(height: 5),
-//                                                 Padding(
-//                                                   padding:
-//                                                       const EdgeInsets.only(
-//                                                           left: 12, top: 12),
-//                                                   child: Text(
-//                                                     alertsData.alertTitle,
-//                                                     maxLines: 2,
-//                                                     overflow:
-//                                                         TextOverflow.ellipsis,
-//                                                     style: TextStyle(
-//                                                       fontSize: 16,
-//                                                       color: whiteColor,
-//                                                       fontFamily:
-//                                                           popinsSemiBold,
-//                                                     ),
-//                                                   ),
-//                                                 ),
-//                                                 Padding(
-//                                                   padding: const EdgeInsets
-//                                                       .symmetric(
-//                                                       vertical: 2,
-//                                                       horizontal: 12.0),
-//                                                   child: Row(
-//                                                     children: [
-//                                                       Image.asset(
-//                                                         eventIcon,
-//                                                         width: 24,
-//                                                         height: 24,
-//                                                       ),
-//                                                       Text(
-//                                                         'Posted on ${AppClass().formatDate2(alertsData.createdAt.toString())}',
-//                                                         style: TextStyle(
-//                                                           color: whiteColor,
-//                                                           fontFamily:
-//                                                               popinsRegulr,
-//                                                         ),
-//                                                       )
-//                                                     ],
-//                                                   ),
-//                                                 )
-//                                               ],
-//                                             ),
-//                                           ),
-//                                         ),
-//                                         Container(
-//                                           height: screenHeight1 * 1,
-//                                           width: 10,
-//                                           decoration: BoxDecoration(
-//                                               color: goldenColor,
-//                                               borderRadius: BorderRadius.only(
-//                                                   topRight: Radius.circular(10),
-//                                                   bottomRight:
-//                                                       Radius.circular(10))),
-//                                         )
-//                                       ],
-//                                     ),
-//                                   ),
-//                                 ),
-//                               ),
-//                             ),
-//                           );
-//                         },
-//                         options: CarouselOptions(
-//                           height: 100, // Adjust height as needed
-//                           autoPlay: true,
-//                           autoPlayInterval: const Duration(seconds: 3),
-//                           enlargeCenterPage: true,
-//                           viewportFraction: 1,
-
-//                           onPageChanged: (index, reason) {
-//                             eventsController.selectedIndex.value = index;
-//                           },
-//                         ),
-//                       ),
-
-//                       // Indicator Dots
-//                       SizedBox(
-//                         height: 10,
-//                       ),
-//                       Row(
-//                         mainAxisAlignment: MainAxisAlignment.center,
-//                         children: List.generate(
-//                           eventsController.alertsList.length,
-//                           (index) => Container(
-//                             width: 8,
-//                             height: 8,
-//                             margin: const EdgeInsets.symmetric(horizontal: 4),
-//                             decoration: BoxDecoration(
-//                               shape: BoxShape.circle,
-//                               color:
-//                                   eventsController.selectedIndex.value == index
-//                                       ? whiteColor
-//                                       : Colors.grey,
-//                             ),
-//                           ),
-//                         ),
-//                       ),
-//                     ],
-//                   );
-//                 }),
-//                 SizedBox(
-//                   height: 10,
-//                 ),
-//               ],
-//             );
-//           })
-//         ],
-//       ),
-//     );
-//   }
-// }
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:community_islamic_app/app_classes/app_class.dart';
+import 'package:community_islamic_app/constants/color.dart';
 import 'package:community_islamic_app/constants/image_constants.dart';
+import 'package:community_islamic_app/controllers/home_controller.dart';
+import 'package:community_islamic_app/controllers/home_events_controller.dart';
+import 'package:community_islamic_app/views/home_screens/EventsAndannouncements/announcements_details_screen.dart';
+import 'package:community_islamic_app/views/home_screens/EventsAndannouncements/announcements_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-// import 'package:velocity_x/velocity_x.dart';
-import 'package:carousel_slider/carousel_slider.dart';
-import '../constants/color.dart';
-import '../controllers/home_controller.dart';
-import '../controllers/home_events_controller.dart';
-import '../views/home_screens/EventsAndannouncements/announcements_details_screen.dart';
-import '../views/home_screens/EventsAndannouncements/announcements_screen.dart';
 
 class AnnouncementWidget extends StatelessWidget {
   const AnnouncementWidget({
@@ -627,573 +21,232 @@ class AnnouncementWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight1 = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Padding(
       padding: const EdgeInsets.all(0),
       child: Column(
         children: [
-          // Observing changes in the alerts list
           Obx(() {
             if (eventsController.isLoading.value) {
-              // Show loading spinner while fetching data
-              return Column(
-                children: [
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Announcement',
-                          style: TextStyle(
-                              fontFamily: popinsBold,
-                              color: whiteColor,
-                              fontSize: 16),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            // Get.to(() => AnnouncementsScreen());
-                          },
-                          child: Text(
-                            'View All',
-                            style: TextStyle(
-                                fontFamily: popinsRegulr,
-                                color: whiteColor,
-                                fontSize: 12),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  Container(
-                    color: Colors.transparent,
-                    height: 49,
-                    width: screenWidth * 1,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      shrinkWrap: true,
-                      itemCount: 3,
-                      itemBuilder: (context, index) {
-                        // var alertsData = eventsController.alertsList[index];
-
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 12),
-                          child: GestureDetector(
-                            onTap: () {},
-                            child: Container(
-                              margin: EdgeInsets.all(0),
-                              width: 225,
-                              height: screenHeight1 * .08,
-                              decoration: const BoxDecoration(
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(
-                                    30,
-                                  ),
-                                  topRight: Radius.circular(30),
-                                ),
-                              ),
-                              child: Card(
-                                margin: const EdgeInsets.all(0),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30),
-                                ),
-                                elevation: 10,
-                                child: Container(
-                                  margin: EdgeInsets.all(0),
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                      width: 1,
-                                      color: lightColor,
-                                    ),
-                                    borderRadius: const BorderRadius.only(
-                                      topRight: Radius.circular(20),
-                                      topLeft: Radius.circular(35),
-                                      bottomLeft: Radius.circular(35),
-                                      bottomRight: Radius.circular(20),
-                                    ),
-                                    color: const Color(0xFF1E5045),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        height: 47,
-                                        width: 47,
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(30),
-                                          color: lightColor,
-                                        ),
-                                        child: const Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              textAlign: TextAlign.center,
-                                              '2 Mar',
-                                              style: TextStyle(
-                                                  fontFamily: popinsSemiBold,
-                                                  fontSize: 10),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 16,
-                                            vertical: 5,
-                                          ),
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              const SizedBox(height: 5),
-                                              Text(
-                                                maxLines: 2,
-                                                'Announcements are coming soon',
-                                                overflow: TextOverflow.ellipsis,
-                                                style: TextStyle(
-                                                  fontSize: 11,
-                                                  color: whiteColor,
-                                                  fontFamily: popinsSemiBold,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Obx(
-                    () => Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(
-                        3,
-                        (index) => Container(
-                          width: 8,
-                          height: 8,
-                          margin: const EdgeInsets.symmetric(horizontal: 4),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: eventsController.selectedIndex.value == index
-                                ? whiteColor
-                                : Colors.grey,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              );
+              return _buildLoadingState();
             }
 
             if (eventsController.alertsList.isEmpty) {
-              // Show "Notification Coming Soon" if the list is empty
-              return Column(
-                children: [
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Announcement',
-                          style: TextStyle(
-                              fontFamily: popinsBold,
-                              color: whiteColor,
-                              fontSize: 16),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            Get.to(() => AnnouncementsScreen());
-                          },
-                          child: Text(
-                            'View All',
-                            style: TextStyle(
-                                fontFamily: popinsRegulr,
-                                color: whiteColor,
-                                fontSize: 12),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  Container(
-                    color: Colors.transparent,
-                    height: 100,
-                    width: screenWidth * 1,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      shrinkWrap: true,
-                      itemCount: 3,
-                      itemBuilder: (context, index) {
-                        // var alertsData = eventsController.alertsList[index];
-
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 12),
-                          child: GestureDetector(
-                            onTap: () {
-                              // Navigate to AnnouncementsDetailsScreen
-                              // eventsController
-                              //     .selectedIndexAnnouncment.value = index;
-                              // Get.to(() => AnnouncementsDetailsScreen(
-                              //       alertDisc: alertsData.alertDescription,
-                              //       controller: eventsController,
-                              //       title: alertsData.alertTitle,
-                              //       details: alertsData.alertDescription,
-                              //       createdDate:
-                              //           alertsData.createdAt.toString(),
-                              //       description: '',
-                              //       postedDate:
-                              //           alertsData.updatedAt.toString(),
-                              //     ));
-                            },
-                            child: Container(
-                              margin: EdgeInsets.all(0),
-                              width: screenWidth * 1,
-                              height: screenHeight1 * .08,
-                              decoration: const BoxDecoration(
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(
-                                    30,
-                                  ),
-                                  topRight: Radius.circular(30),
-                                ),
-                              ),
-                              child: Card(
-                                margin: const EdgeInsets.all(0),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30),
-                                ),
-                                elevation: 10,
-                                child: Container(
-                                  margin: EdgeInsets.all(0),
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                      width: 1,
-                                      color: lightColor,
-                                    ),
-                                    borderRadius: const BorderRadius.only(
-                                      topRight: Radius.circular(20),
-                                      topLeft: Radius.circular(35),
-                                      bottomLeft: Radius.circular(35),
-                                      bottomRight: Radius.circular(20),
-                                    ),
-                                    color: const Color(0xFF1E5045),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        height: 47,
-                                        width: 47,
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(30),
-                                          color: lightColor,
-                                        ),
-                                        child: const Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              textAlign: TextAlign.center,
-                                              '2 Mar',
-                                              style: TextStyle(
-                                                  fontFamily: popinsSemiBold,
-                                                  fontSize: 10),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 16,
-                                            vertical: 5,
-                                          ),
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              const SizedBox(height: 5),
-                                              Text(
-                                                maxLines: 2,
-                                                'Announcemnets are coming soon',
-                                                overflow: TextOverflow.ellipsis,
-                                                style: TextStyle(
-                                                  fontSize: 11,
-                                                  color: whiteColor,
-                                                  fontFamily: popinsSemiBold,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Obx(
-                    () => Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(
-                        3,
-                        (index) => Container(
-                          width: 8,
-                          height: 8,
-                          margin: const EdgeInsets.symmetric(horizontal: 4),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: eventsController.selectedIndex.value == index
-                                ? whiteColor
-                                : Colors.grey,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              );
+              return _buildEmptyState();
             }
 
-            // Show list of alerts if available
-            return Column(
-              children: [
-                // Header Row
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Announcement',
-                        style: TextStyle(
-                          fontFamily: popinsBold,
-                          color: whiteColor,
-                          fontSize: 16,
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          Get.to(() => AnnouncementsScreen());
-                        },
-                        child: Text(
-                          'View All',
-                          style: TextStyle(
-                            fontFamily: popinsRegulr,
-                            color: whiteColor,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                // Carousel Slider with dots
-                Obx(() {
-                  return Column(
-                    children: [
-                      // Carousel Slider
-                      CarouselSlider.builder(
-                        itemCount: eventsController.alertsList.length,
-                        itemBuilder: (context, index, realIndex) {
-                          var alertsData = eventsController.alertsList[index];
-
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8),
-                            child: GestureDetector(
-                              onTap: () {
-                                // Navigate to AnnouncementsDetailsScreen
-                                eventsController
-                                    .selectedIndexAnnouncment.value = index;
-                                Get.to(() => AnnouncementsDetailsScreen(
-                                      alertDisc: alertsData.alertDescription,
-                                      controller: eventsController,
-                                      title: alertsData.alertTitle,
-                                      details: alertsData.alertDescription,
-                                      createdDate:
-                                          alertsData.createdAt.toString(),
-                                      description: '',
-                                      postedDate:
-                                          alertsData.updatedAt.toString(),
-                                    ));
-                              },
-                              child: SizedBox(
-                                height: screenHeight1 * .24,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Card(
-                                    color: Colors.transparent,
-                                    margin: const EdgeInsets.all(0),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    // elevation: 10,
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                              horizontal: 16,
-                                              vertical: 5,
-                                            ),
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                const SizedBox(height: 5),
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          left: 12, top: 12),
-                                                  child: Text(
-                                                    alertsData.alertTitle,
-                                                    maxLines: 2,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    style: TextStyle(
-                                                      fontSize: 16,
-                                                      color: whiteColor,
-                                                      fontFamily:
-                                                          popinsSemiBold,
-                                                    ),
-                                                  ),
-                                                ),
-                                                Padding(
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                      vertical: 2,
-                                                      horizontal: 12.0),
-                                                  child: Row(
-                                                    children: [
-                                                      Image.asset(
-                                                        eventIcon,
-                                                        width: 24,
-                                                        height: 24,
-                                                      ),
-                                                      Expanded(
-                                                        child: Text(
-                                                          maxLines: 1,
-                                                          'Posted on ${AppClass().formatDate2(alertsData.createdAt.toString())}',
-                                                          style: TextStyle(
-                                                              color: whiteColor,
-                                                              fontFamily:
-                                                                  popinsRegulr,
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis),
-                                                        ),
-                                                      )
-                                                    ],
-                                                  ),
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                        // Container(
-                                        //   height: screenHeight1 * 1,
-                                        //   width: 10,
-                                        //   decoration: BoxDecoration(
-                                        //       color: goldenColor,
-                                        //       borderRadius: BorderRadius.only(
-                                        //           topRight: Radius.circular(10),
-                                        //           bottomRight:
-                                        //               Radius.circular(10))),
-                                        // )
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                        options: CarouselOptions(
-                          height: screenWidth * .285, // Adjust height as needed
-                          autoPlay: true,
-                          autoPlayInterval: const Duration(seconds: 3),
-                          enlargeCenterPage: true,
-                          viewportFraction: 1,
-
-                          onPageChanged: (index, reason) {
-                            eventsController.selectedIndex.value = index;
-                          },
-                        ),
-                      ),
-
-                      // Indicator Dots
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: List.generate(
-                          eventsController.alertsList.length,
-                          (index) => Container(
-                            width: 8,
-                            height: 8,
-                            margin: const EdgeInsets.symmetric(horizontal: 4),
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color:
-                                  eventsController.selectedIndex.value == index
-                                      ? whiteColor
-                                      : Colors.grey,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  );
-                }),
-                SizedBox(
-                  height: 10,
-                ),
-              ],
-            );
-          })
+            return _buildAnnouncementsContent(screenWidth);
+          }),
         ],
       ),
     );
+  }
+
+  Widget _buildLoadingState() {
+    return Column(
+      children: [
+        _buildHeader(),
+        const SizedBox(height: 10),
+        Center(
+          child: CircularProgressIndicator(
+            color: primaryColor,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildEmptyState() {
+    return Column(
+      children: [
+        _buildHeader(),
+        const SizedBox(height: 10),
+        Center(
+          child: Text(
+            'Announcements are coming soon',
+            style: TextStyle(
+              fontSize: 16,
+              color: whiteColor,
+              fontFamily: popinsSemiBold,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAnnouncementsContent(double screenWidth) {
+    return Column(
+      children: [
+        _buildHeader(),
+        const SizedBox(height: 5),
+        _buildCarousel(screenWidth),
+        const SizedBox(height: 10),
+        _buildCarouselIndicators(),
+      ],
+    );
+  }
+
+  Widget _buildHeader() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            'Announcement',
+            style: TextStyle(
+              fontFamily: popinsBold,
+              color: whiteColor,
+              fontSize: 16,
+            ),
+          ),
+          GestureDetector(
+            onTap: () {
+              Get.to(() => AnnouncementsScreen());
+            },
+            child: Text(
+              'View All',
+              style: TextStyle(
+                fontFamily: popinsRegulr,
+                color: whiteColor,
+                fontSize: 12,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCarousel(double screenWidth) {
+    return CarouselSlider.builder(
+      itemCount: eventsController.alertsList.length,
+      itemBuilder: (context, index, realIndex) {
+        final alert = eventsController.alertsList[index];
+        return _buildAnnouncementCard(alert);
+      },
+      options: CarouselOptions(
+        height: screenWidth * 0.285,
+        autoPlay: true,
+        autoPlayInterval: const Duration(seconds: 3),
+        enlargeCenterPage: true,
+        viewportFraction: 1,
+        onPageChanged: (index, reason) {
+          eventsController.selectedIndex.value = index;
+        },
+      ),
+    );
+  }
+
+  Widget _buildAnnouncementCard(dynamic alert) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: GestureDetector(
+        onTap: () {
+          eventsController.selectedIndexAnnouncment.value =
+              eventsController.alertsList.indexOf(alert);
+          Get.to(() => AnnouncementsDetailsScreen(
+                alertDisc: alert.alertDescription,
+                controller: eventsController,
+                title: alert.alertTitle,
+                details: alert.alertDescription,
+                createdDate: alert.createdAt.toString(),
+                description: '',
+                postedDate: alert.updatedAt.toString(),
+              ));
+        },
+        child: Card(
+          color: Colors.transparent,
+          margin: const EdgeInsets.all(0),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 5,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 5),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 12, top: 12),
+                          child: Text(
+                            alert.alertTitle,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: whiteColor,
+                              fontFamily: popinsSemiBold,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 2,
+                            horizontal: 12.0,
+                          ),
+                          child: Row(
+                            children: [
+                              Image.asset(
+                                eventIcon,
+                                width: 24,
+                                height: 24,
+                              ),
+                              Expanded(
+                                child: Text(
+                                  'Posted on ${AppClass().formatDate2(alert.createdAt.toString())}',
+                                  style: TextStyle(
+                                    color: whiteColor,
+                                    fontFamily: popinsRegulr,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCarouselIndicators() {
+    return Obx(() {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: List.generate(
+          eventsController.alertsList.length,
+          (index) => Container(
+            width: 8,
+            height: 8,
+            margin: const EdgeInsets.symmetric(horizontal: 4),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: eventsController.selectedIndex.value == index
+                  ? whiteColor
+                  : Colors.grey,
+            ),
+          ),
+        ),
+      );
+    });
   }
 }

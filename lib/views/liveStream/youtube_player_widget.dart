@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import '../../controllers/live_stream_controller.dart';
-// import 'controller/live_stream_controller.dart';
 
 class YouTubePlayerPage extends StatefulWidget {
   @override
@@ -10,41 +9,31 @@ class YouTubePlayerPage extends StatefulWidget {
 }
 
 class _YouTubePlayerPageState extends State<YouTubePlayerPage> {
-  final LiveStreamController controller = Get.put(LiveStreamController());
+  final LiveStreamController controller = Get.find();
   late YoutubePlayerController _ytController;
 
   @override
   void initState() {
     super.initState();
-    controller.fetchLiveUrl();
+    String videoId =
+        YoutubePlayer.convertUrlToId(controller.liveUrl.value) ?? "";
+
+    if (videoId.isNotEmpty) {
+      _ytController = YoutubePlayerController(
+        initialVideoId: videoId,
+        flags: YoutubePlayerFlags(autoPlay: true, mute: false),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("YouTube Live Stream")),
-      body: Obx(() {
-        if (controller.isLoading.value) {
-          return Center(child: CircularProgressIndicator());
-        }
-
-        String videoId =
-            YoutubePlayer.convertUrlToId(controller.liveUrl.value) ?? "";
-
-        if (videoId.isEmpty) {
-          return Center(child: Text("Invalid YouTube URL"));
-        }
-
-        _ytController = YoutubePlayerController(
-          initialVideoId: videoId,
-          flags: YoutubePlayerFlags(autoPlay: true, mute: false),
-        );
-
-        return YoutubePlayer(
-          controller: _ytController,
-          showVideoProgressIndicator: true,
-        );
-      }),
+      body: YoutubePlayer(
+        controller: _ytController,
+        showVideoProgressIndicator: true,
+      ),
     );
   }
 }

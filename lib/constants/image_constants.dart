@@ -84,7 +84,8 @@ const dourPromise = 'assets/ConnectIcons/promise.png';
 const dContactUs = 'assets/ConnectIcons/contact_us.png';
 const dLogout = 'assets/ConnectIcons/logout.png';
 const icLocation = 'assets/ConnectIcons/location.png';
-
+const liveIcon = 'assets/ConnectIcons/icLIve.png';
+const wayMasjid = 'assets/ConnectIcons/icWayMasjid.png';
 final List<String> bannerList = [
   banner1,
   banner2,
