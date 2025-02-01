@@ -1,8 +1,49 @@
-import 'package:community_islamic_app/constants/color.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:community_islamic_app/constants/color.dart';
+import '../../controllers/askImamController.dart';
+// import 'ask_imam_controller.dart'; // Import the controller
 
-class AskImamPage extends StatelessWidget {
+class AskImamPage extends StatefulWidget {
+  @override
+  _AskImamPageState createState() => _AskImamPageState();
+}
+
+class _AskImamPageState extends State<AskImamPage> {
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _messageController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  String? _selectedQuestionType;
+
+  final AskImamController _askImamController = Get.put(AskImamController());
+
+  void _submitForm() {
+    // Validate input fields
+    if (_nameController.text.isEmpty ||
+        _emailController.text.isEmpty ||
+        _selectedQuestionType == null ||
+        _phoneController.text.isEmpty ||
+        _messageController.text.isEmpty) {
+      Get.snackbar(
+        'Error',
+        'Please fill all fields',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      return;
+    }
+
+    // Call the controller method to submit the form
+    _askImamController.submitForm(
+      number: _phoneController.text,
+      name: _nameController.text,
+      emailPhone: _emailController.text,
+      message: _messageController.text,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -12,7 +53,6 @@ class AskImamPage extends StatelessWidget {
           'Ask Imam',
           style: TextStyle(color: Colors.white, fontFamily: popinsMedium),
         ),
-        // centerTitle: true,
         elevation: 0,
         leading: IconButton(
           onPressed: () {
@@ -47,49 +87,76 @@ class AskImamPage extends StatelessWidget {
                     TextStyle(color: Colors.white70, fontFamily: popinsRegulr),
               ),
               SizedBox(height: 20),
-              _buildInputField(label: 'Name', hint: 'Your Name'),
               _buildInputField(
-                  label: 'Email/Phone No.', hint: 'Your Email or phone number'),
+                label: 'Name',
+                hint: 'Your Name',
+                controller: _nameController,
+              ),
+              _buildInputField(
+                label: 'Email',
+                hint: 'Enter Email',
+                controller: _emailController,
+              ),
+              _buildInputField(
+                label: 'Phone No.',
+                hint: 'Enter phone number',
+                controller: _phoneController,
+              ),
               _buildDropdownField(
-                  label: 'Question', hint: 'Select Question Type'),
+                label: 'Question',
+                hint: 'Select Question Type',
+                value: _selectedQuestionType,
+                onChanged: (newValue) {
+                  setState(() {
+                    _selectedQuestionType = newValue;
+                  });
+                },
+              ),
               _buildInputField(
                 label: 'Message',
                 hint: 'Your Message',
                 maxLines: 4,
+                controller: _messageController,
               ),
               SizedBox(height: 16),
-              Align(
-                alignment: Alignment.centerRight,
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    gradient: LinearGradient(
-                      begin: Alignment.bottomLeft,
-                      end: Alignment.centerRight,
-                      colors: [Color(0xFF00A559), Color(0xFF006627)],
-                    ),
-                  ),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.transparent,
-                      backgroundColor: Colors.transparent,
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 40, vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+              Obx(() {
+                return Align(
+                  alignment: Alignment.centerRight,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      gradient: LinearGradient(
+                        begin: Alignment.bottomLeft,
+                        end: Alignment.centerRight,
+                        colors: [Color(0xFF00A559), Color(0xFF006627)],
                       ),
                     ),
-                    onPressed: () {},
-                    child: Text(
-                      'Submit',
-                      style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white,
-                          fontFamily: popinsMedium),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.transparent,
+                        backgroundColor: Colors.transparent,
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      onPressed: _askImamController.isLoading.value
+                          ? null
+                          : _submitForm,
+                      child: _askImamController.isLoading.value
+                          ? CircularProgressIndicator(color: Colors.white)
+                          : Text(
+                              'Submit',
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                  fontFamily: popinsMedium),
+                            ),
                     ),
                   ),
-                ),
-              ),
+                );
+              }),
             ],
           ),
         ),
@@ -101,6 +168,7 @@ class AskImamPage extends StatelessWidget {
     required String label,
     required String hint,
     int maxLines = 1,
+    required TextEditingController controller,
   }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
@@ -118,6 +186,7 @@ class AskImamPage extends StatelessWidget {
           ),
           SizedBox(height: 8),
           TextField(
+            controller: controller,
             maxLines: maxLines,
             style: TextStyle(color: Colors.white),
             decoration: InputDecoration(
@@ -140,6 +209,8 @@ class AskImamPage extends StatelessWidget {
   Widget _buildDropdownField({
     required String label,
     required String hint,
+    required String? value,
+    required Function(String?) onChanged,
   }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
@@ -170,6 +241,7 @@ class AskImamPage extends StatelessWidget {
                       color: Colors.white54, fontFamily: popinsRegulr),
                 ),
                 icon: Icon(Icons.arrow_drop_down, color: Colors.white54),
+                value: value,
                 items: [
                   'General Question',
                   'Request for Dua',
@@ -184,7 +256,7 @@ class AskImamPage extends StatelessWidget {
                     ),
                   );
                 }).toList(),
-                onChanged: (newValue) {},
+                onChanged: onChanged,
               ),
             ),
           ),

@@ -413,7 +413,7 @@ class AppClass {
                                 const EdgeInsets.symmetric(horizontal: 8.0),
                             child: buildSocialMediaButton(
                               context: context,
-                              image: icAskImam,
+                              image: askImamIcon,
                               label: 'Ask Imam',
                               onPressed: () {
                                 Navigator.of(context).pop();
