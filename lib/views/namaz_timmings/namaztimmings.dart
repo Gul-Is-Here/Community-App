@@ -234,7 +234,7 @@ class NamazTimingsScreen extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10))),
                 onPressed: () {
-                  Get.to(() => MonthlyNamazTimeScreen());
+                  Get.to(() => YearlyNamazTimesScreen());
                 },
                 child: Text(
                   'View Monthly Prayer Timings',

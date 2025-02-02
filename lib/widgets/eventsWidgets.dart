@@ -123,7 +123,11 @@ class EventsWidget extends StatelessWidget {
                 title: event.eventTitle,
                 sTime: event.eventStarttime,
                 endTime: event.eventEndtime,
-                entry: event.paid == '0' ? 'Free Event' : 'Paid Event',
+                entry: event.paid == '0'
+                    ? 'Free Event'
+                    : event.paid == '1'
+                        ? 'Paid Event'
+                        : '',
                 eventDate: event.eventDate.toString(),
                 eventDetails: event.eventDetail,
                 eventType: event.eventhastype.eventtypeName,
@@ -147,53 +151,82 @@ class EventsWidget extends StatelessWidget {
         width: 287,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          image: DecorationImage(
-            image: imageUrl.startsWith('http')
-                ? NetworkImage(imageUrl)
-                : AssetImage(imageUrl) as ImageProvider,
-            fit: BoxFit.cover,
-          ),
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildEventDate(eventDate),
-              const SizedBox(height: 5),
-              Text(
-                eventDetail,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.white,
-                  fontFamily: popinsSemiBold,
+        child: Stack(
+          children: [
+            // Event Image
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Image.network(
+                imageUrl,
+                width: double.infinity,
+                height: double.infinity,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    color: Colors.grey[300],
+                    child: const Icon(Icons.error, color: Colors.red),
+                  );
+                },
+              ),
+            ),
+            // Gradient Overlay
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                gradient: LinearGradient(
+                  colors: [
+                    primaryColor.withOpacity(.6), // Dark overlay
+                    Colors.transparent, // Transparent at the bottom
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
                 ),
               ),
-              const Spacer(),
-              GestureDetector(
-                onTap: onTapDetails,
-                child: Card(
-                  color: whiteColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(2),
+            ),
+            // Event Details
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildEventDate(eventDate),
+                  const SizedBox(height: 5),
+                  Text(
+                    eventDetail,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Colors.white,
+                      fontFamily: popinsSemiBold,
+                    ),
                   ),
-                  child: const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Text(
-                      'Details',
-                      style: TextStyle(
-                        fontFamily: popinsRegulr,
-                        fontSize: 12,
-                        color: Colors.black,
+                  const Spacer(),
+                  GestureDetector(
+                    onTap: onTapDetails,
+                    child: Card(
+                      color: whiteColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                      child: const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(
+                          'Details',
+                          style: TextStyle(
+                            fontFamily: popinsRegulr,
+                            fontSize: 12,
+                            color: Colors.black,
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

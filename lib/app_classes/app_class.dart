@@ -321,6 +321,16 @@ class AppClass {
                       children: [
                         // Page 1 with 8 icons in 2 rows
                         buildSocialMediaPage(context, [
+                          buildSocialMediaButton2(
+                            context: context,
+                            image: askImamIcon,
+                            label: 'Ask Imam',
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              Get.to(() => AskImamPage());
+                              // Ask Imam action
+                            },
+                          ),
                           buildSocialMediaButton(
                             context: context,
                             image: icFacebook,
@@ -395,15 +405,6 @@ class AppClass {
                               await launchUrl(phoneUri);
                             },
                           ),
-                          buildSocialMediaButton(
-                            context: context,
-                            image: icChat,
-                            label: 'RCC Chat',
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                              // Chat action
-                            },
-                          ),
                         ]),
                         // Page 2 with 1 icon
                         Align(
@@ -413,12 +414,14 @@ class AppClass {
                                 const EdgeInsets.symmetric(horizontal: 8.0),
                             child: buildSocialMediaButton(
                               context: context,
-                              image: askImamIcon,
-                              label: 'Ask Imam',
+                              image: icChat,
+                              label: 'RCC Chat',
                               onPressed: () {
+                                const String calendlyUrl =
+                                    "https://calendly.com/gulfarazahmed08/30min";
+                                AppClass().launchURL(calendlyUrl);
                                 Navigator.of(context).pop();
-                                Get.to(() => AskImamPage());
-                                // Ask Imam action
+                                // Chat action
                               },
                             ),
                           ),
@@ -485,6 +488,41 @@ class AppClass {
               image,
               width: 24,
               height: 24,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            label,
+            style: TextStyle(
+              fontFamily: popinsRegulr,
+              fontSize: 12,
+              color: whiteColor,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildSocialMediaButton2({
+    required BuildContext context,
+    required String image,
+    required String label,
+    required VoidCallback onPressed,
+  }) {
+    return GestureDetector(
+      onTap: onPressed,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CircleAvatar(
+            radius: 28,
+            backgroundColor: lightColor,
+            child: Image.asset(
+              image,
+              width: 30,
+              height: 30,
             ),
           ),
           const SizedBox(height: 8),
@@ -595,14 +633,14 @@ $details
     String locatinD,
     String eventLink,
   ) {
-    DateTime? _reminderDateTime;
+    DateTime? reminderDateTime0;
     bool isSharing = false; // State to manage sharing loader
 
-    Future<void> _loadReminder() async {
-      _reminderDateTime = await ReminderUtil.loadReminderFromStorage(title);
+    Future<void> loadReminder() async {
+      reminderDateTime0 = await ReminderUtil.loadReminderFromStorage(title);
     }
 
-    Future<void> _showDateTimePicker() async {
+    Future<void> showDateTimePicker() async {
       DateTime eventDateTime =
           DateFormat('yyyy-MM-dd HH:mm').parse('$eventDate $sTime');
 
@@ -636,7 +674,7 @@ $details
                 details: eventDetails,
                 reminderDateTime: reminderDateTime,
               );
-              _reminderDateTime = reminderDateTime;
+              reminderDateTime0 = reminderDateTime;
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(
@@ -659,7 +697,7 @@ $details
       }
     }
 
-    Future<void> _shareEvent() async {
+    Future<void> shareEvent() async {
       isSharing = true;
       try {
         await _downloadAndShareImage(
@@ -686,7 +724,7 @@ $details
       backgroundColor: const Color(0xFFB3E8DA),
       context: context,
       builder: (context) => FutureBuilder(
-        future: _loadReminder(),
+        future: loadReminder(),
         builder: (context, snapshot) {
           if (snapshot.connectionState != ConnectionState.done) {
             return const Center(child: CircularProgressIndicator());
@@ -722,7 +760,7 @@ $details
                               setState(() {
                                 isSharing = true; // Show loader
                               });
-                              await _shareEvent();
+                              await shareEvent();
                               setState(() {
                                 isSharing = false; // Hide loader
                               });
@@ -905,7 +943,7 @@ $details
                                 ),
                                 backgroundColor: primaryColor),
                             onPressed: () async {
-                              await _showDateTimePicker();
+                              await showDateTimePicker();
                             },
                             child: Text(
                               "Set Reminder",
@@ -913,7 +951,7 @@ $details
                                   fontFamily: popinsMedium, color: whiteColor),
                             ),
                           ),
-                          if (_reminderDateTime != null) ...[
+                          if (reminderDateTime0 != null) ...[
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -926,7 +964,7 @@ $details
                                 ),
                                 Text(
                                   DateFormat('yyyy-MM-dd HH:mm')
-                                      .format(_reminderDateTime!),
+                                      .format(reminderDateTime0!),
                                   style: const TextStyle(
                                       fontFamily: popinsRegulr,
                                       color: Colors.black,

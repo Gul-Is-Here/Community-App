@@ -1,5 +1,6 @@
 import 'package:community_islamic_app/app_classes/app_class.dart';
 import 'package:community_islamic_app/controllers/live_stream_controller.dart';
+import 'package:community_islamic_app/views/home_screens/masjid_map/map_splash_screen.dart';
 import 'package:community_islamic_app/views/namaz_timmings/namaztimmings.dart';
 import 'package:community_islamic_app/views/qibla_screen/qibla_screen.dart';
 import 'package:community_islamic_app/views/quran_screen.dart/quran_screen.dart';
@@ -41,6 +42,8 @@ class CustomizedMobileLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    homeController.updateCurrentPrayer();
+    homeController.currentPrayerTitle.value;
     final double screenHeight1 = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
     final iqamatimes = _getAllIqamaTimes();
@@ -64,7 +67,7 @@ class CustomizedMobileLayout extends StatelessWidget {
             _buildHeader(context),
             Center(
               child: SizedBox(
-                height: screenHeight1 * .22,
+                height: screenHeight1 * .24,
                 width: 350,
                 child: Card(
                   color: Colors.transparent,
@@ -190,7 +193,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                 fontSize: 28,
               ),
             )),
-        const SizedBox(width: 10),
+        // const SizedBox(width: 10),
         const BlinkingDot(),
         const Spacer(),
         Padding(
@@ -230,7 +233,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                       ),
                     )),
                 Padding(
-                  padding: const EdgeInsets.only(top: 4),
+                  padding: const EdgeInsets.only(top: 8),
                   child: Obx(() => Text(
                         homeController.currentPrayerTitle.value ==
                                     'Next: Fajr' ||
@@ -246,7 +249,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                       )),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 4),
+                  padding: const EdgeInsets.only(top: 12),
                   child: Obx(() => Text(
                         ' (${homeController.currentPrayerIqama})',
                         style: TextStyle(
@@ -258,7 +261,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 2),
+            const SizedBox(height: 20),
             Row(
               children: [
                 _buildNavLink(' Calendar',
@@ -275,7 +278,7 @@ class CustomizedMobileLayout extends StatelessWidget {
           onTap: () => appClass.showSocialMediaDialog(Get.context!),
           child: Column(
             children: [
-              const SizedBox(height: 6),
+              // const SizedBox(height: 6),
               Image.asset(
                 shareIcon,
                 width: 30,
@@ -297,6 +300,16 @@ class CustomizedMobileLayout extends StatelessWidget {
                   ),
                 ),
               ),
+              GestureDetector(
+                onTap: () {
+                  Get.to(() => MapSplashScreen());
+                },
+                child: Image.asset(
+                  wayMasjid,
+                  width: 30,
+                  height: 30,
+                ),
+              )
             ],
           ),
         )
@@ -354,14 +367,15 @@ class CustomizedMobileLayout extends StatelessWidget {
               "LIVE",
               style: TextStyle(
                 color: whiteColor,
-                fontWeight: FontWeight.bold,
+                fontFamily: popinsMedium,
+                // fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(width: 2),
             Image.asset(
               liveIcon,
-              width: 24,
-              height: 24,
+              width: 20,
+              height: 20,
             )
           ],
         );
@@ -389,15 +403,15 @@ class CustomizedMobileLayout extends StatelessWidget {
                 Text(
                   "LIVE",
                   style: TextStyle(
-                    color: whiteColor,
-                    fontWeight: FontWeight.bold,
-                  ),
+                      color: whiteColor,
+                      // fontWeight: FontWeight.bold,
+                      fontFamily: popinsMedium),
                 ),
                 const SizedBox(width: 2),
                 Image.asset(
                   liveIcon,
-                  width: 24,
-                  height: 24,
+                  width: 20,
+                  height: 20,
                 ),
               ],
             ),

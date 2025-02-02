@@ -454,8 +454,10 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                                         event.eventEndtime.toString(),
                                         event.eventhastype.eventtypeName,
                                         event.paid == '0'
-                                            ? 'Free Event'
-                                            : 'Paid Event',
+                                                  ? 'Free Event'
+                                                  : event.paid == '1'
+                                                      ? 'Paid Event'
+                                                      : '',
                                         event.eventDate.toString(),
                                         event.eventDetail,
                                         event.eventImage,
