@@ -98,46 +98,10 @@ class _HomeState extends State<Home> {
               ),
 
               // Draggable FloatingActionButton
-              Positioned(
-                left: _fabPosition.dx,
-                top: _fabPosition.dy,
-                child: Draggable(
-                  feedback: _buildFloatingButton(
-                      context), // Visual feedback when dragging
-                  child: _buildFloatingButton(
-                      context), // Static FAB when not dragging
-                  childWhenDragging:
-                      Container(), // Empty container while dragging
-                  onDragEnd: (details) {
-                    setState(() {
-                      // Update the FAB position when dragging ends
-                      _fabPosition = details.offset;
-                    });
-                  },
-                ),
-              ),
             ],
           )),
     );
   }
 
   // FloatingActionButton builder
-  Widget _buildFloatingButton(BuildContext context) {
-    return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.1,
-      width: MediaQuery.of(context).size.width * 0.2,
-      child: FloatingActionButton(
-        isExtended: true,
-        backgroundColor: Colors.transparent,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-        onPressed: () {
-          Get.to(() => MapSplashScreen());
-        },
-        child: Image.asset(
-          masjidIcon,
-          height: 120,
-        ),
-      ),
-    );
-  }
 }

@@ -2,27 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:community_islamic_app/constants/color.dart';
 import '../../controllers/askImamController.dart';
-// import 'ask_imam_controller.dart'; // Import the controller
 
-class AskImamPage extends StatefulWidget {
-  @override
-  _AskImamPageState createState() => _AskImamPageState();
-}
-
-class _AskImamPageState extends State<AskImamPage> {
+class AskImamPage extends StatelessWidget {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _messageController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
-  String? _selectedQuestionType;
+  final RxString _selectedQuestionType = ''.obs;
 
   final AskImamController _askImamController = Get.put(AskImamController());
 
-  void _submitForm() {
-    // Validate input fields
+  void _submitForm() async {
     if (_nameController.text.isEmpty ||
         _emailController.text.isEmpty ||
-        _selectedQuestionType == null ||
+        _selectedQuestionType.value.isEmpty ||
         _phoneController.text.isEmpty ||
         _messageController.text.isEmpty) {
       Get.snackbar(
@@ -35,13 +28,17 @@ class _AskImamPageState extends State<AskImamPage> {
       return;
     }
 
-    // Call the controller method to submit the form
-    _askImamController.submitForm(
-      number: _phoneController.text,
+    await _askImamController.submitForm(
       name: _nameController.text,
       emailPhone: _emailController.text,
       message: _messageController.text,
+      number: _phoneController.text,
     );
+    _nameController.clear();
+    _emailController.clear();
+    _messageController.clear();
+    _phoneController.clear();
+    // Get.back();
   }
 
   @override
@@ -49,116 +46,107 @@ class _AskImamPageState extends State<AskImamPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: primaryColor,
-        title: Text(
+        title: const Text(
           'Ask Imam',
           style: TextStyle(color: Colors.white, fontFamily: popinsMedium),
         ),
         elevation: 0,
         leading: IconButton(
-          onPressed: () {
-            Get.back();
-          },
-          icon: Icon(
-            Icons.arrow_back_ios,
-            color: Colors.white,
-          ),
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+          onPressed: Get.back,
         ),
       ),
       backgroundColor: primaryColor,
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Have a question/request for the Imam?',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontFamily: popinsRegulr,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Have a question/request for the Imam?',
+              style: TextStyle(
+                fontSize: 20,
+                fontFamily: popinsRegulr,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
-              SizedBox(height: 8),
-              Text(
-                'Submit your question for the Imam below, He will provide an answer for this.',
-                style:
-                    TextStyle(color: Colors.white70, fontFamily: popinsRegulr),
-              ),
-              SizedBox(height: 20),
-              _buildInputField(
-                label: 'Name',
-                hint: 'Your Name',
-                controller: _nameController,
-              ),
-              _buildInputField(
-                label: 'Email',
-                hint: 'Enter Email',
-                controller: _emailController,
-              ),
-              _buildInputField(
-                label: 'Phone No.',
-                hint: 'Enter phone number',
-                controller: _phoneController,
-              ),
-              _buildDropdownField(
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'Submit your question for the Imam below, He will provide an answer for this.',
+              style: TextStyle(color: Colors.white70, fontFamily: popinsRegulr),
+            ),
+            const SizedBox(height: 20),
+            _buildInputField(
+              label: 'Name',
+              hint: 'Your Name',
+              controller: _nameController,
+            ),
+            _buildInputField(
+              label: 'Email',
+              hint: 'Enter Email',
+              controller: _emailController,
+            ),
+            _buildInputField(
+              label: 'Phone No.',
+              hint: 'Enter phone number',
+              controller: _phoneController,
+            ),
+            Obx(
+              () => _buildDropdownField(
                 label: 'Question',
                 hint: 'Select Question Type',
-                value: _selectedQuestionType,
-                onChanged: (newValue) {
-                  setState(() {
-                    _selectedQuestionType = newValue;
-                  });
-                },
+                value: _selectedQuestionType.value,
+                onChanged: (newValue) =>
+                    _selectedQuestionType.value = newValue!,
               ),
-              _buildInputField(
-                label: 'Message',
-                hint: 'Your Message',
-                maxLines: 4,
-                controller: _messageController,
-              ),
-              SizedBox(height: 16),
-              Obx(() {
-                return Align(
-                  alignment: Alignment.centerRight,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      gradient: LinearGradient(
-                        begin: Alignment.bottomLeft,
-                        end: Alignment.centerRight,
-                        colors: [Color(0xFF00A559), Color(0xFF006627)],
-                      ),
-                    ),
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.transparent,
-                        backgroundColor: Colors.transparent,
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 40, vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      onPressed: _askImamController.isLoading.value
-                          ? null
-                          : _submitForm,
-                      child: _askImamController.isLoading.value
-                          ? CircularProgressIndicator(color: Colors.white)
-                          : Text(
-                              'Submit',
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.white,
-                                  fontFamily: popinsMedium),
-                            ),
+            ),
+            _buildInputField(
+              label: 'Message',
+              hint: 'Your Message',
+              maxLines: 4,
+              controller: _messageController,
+            ),
+            const SizedBox(height: 16),
+            Obx(() {
+              return Align(
+                alignment: Alignment.centerRight,
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFF00A559), Color(0xFF006627)],
+                      begin: Alignment.bottomLeft,
+                      end: Alignment.centerRight,
                     ),
                   ),
-                );
-              }),
-            ],
-          ),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.transparent,
+                      backgroundColor: Colors.transparent,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 40, vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    onPressed:
+                        _askImamController.isLoading.value ? null : _submitForm,
+                    child: _askImamController.isLoading.value
+                        ? const CircularProgressIndicator(color: Colors.white)
+                        : const Text(
+                            'Submit',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.white,
+                              fontFamily: popinsMedium,
+                            ),
+                          ),
+                  ),
+                ),
+              );
+            }),
+          ],
         ),
       ),
     );
@@ -177,22 +165,23 @@ class _AskImamPageState extends State<AskImamPage> {
         children: [
           Text(
             label,
-            style: TextStyle(
+            style: const TextStyle(
               fontFamily: popinsRegulr,
               fontSize: 14,
               color: Color(0xFF158549),
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           TextField(
+            cursorColor: primaryColor,
             controller: controller,
             maxLines: maxLines,
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(color: Colors.black),
             decoration: InputDecoration(
               hintText: hint,
-              hintStyle:
-                  TextStyle(color: Colors.black26, fontFamily: popinsRegulr),
+              hintStyle: const TextStyle(
+                  color: Colors.black26, fontFamily: popinsRegulr),
               filled: true,
               fillColor: lightColor,
               border: OutlineInputBorder(
@@ -209,7 +198,7 @@ class _AskImamPageState extends State<AskImamPage> {
   Widget _buildDropdownField({
     required String label,
     required String hint,
-    required String? value,
+    required String value,
     required Function(String?) onChanged,
   }) {
     return Padding(
@@ -220,14 +209,15 @@ class _AskImamPageState extends State<AskImamPage> {
           Text(
             label,
             style: TextStyle(
-                fontSize: 14,
-                color: primaryColor,
-                fontWeight: FontWeight.bold,
-                fontFamily: popinsRegulr),
+              fontSize: 14,
+              color: primaryColor,
+              fontWeight: FontWeight.bold,
+              fontFamily: popinsRegulr,
+            ),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 12),
             decoration: BoxDecoration(
               color: Colors.white10,
               borderRadius: BorderRadius.circular(8),
@@ -237,21 +227,21 @@ class _AskImamPageState extends State<AskImamPage> {
                 dropdownColor: primaryColor,
                 hint: Text(
                   hint,
-                  style: TextStyle(
+                  style: const TextStyle(
                       color: Colors.white54, fontFamily: popinsRegulr),
                 ),
-                icon: Icon(Icons.arrow_drop_down, color: Colors.white54),
-                value: value,
+                icon: const Icon(Icons.arrow_drop_down, color: Colors.white54),
+                value: value.isEmpty ? null : value,
                 items: [
                   'General Question',
                   'Request for Dua',
-                  'Religious Advice'
+                  'Religious Advice',
                 ].map((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
                     child: Text(
                       value,
-                      style: TextStyle(
+                      style: const TextStyle(
                           color: Colors.white, fontFamily: popinsRegulr),
                     ),
                   );

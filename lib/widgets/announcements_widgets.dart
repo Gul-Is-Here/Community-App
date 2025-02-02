@@ -163,65 +163,85 @@ class AnnouncementWidget extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 5,
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 5),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 12, top: 12),
-                          child: Text(
-                            alert.alertTitle,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: whiteColor,
-                              fontFamily: popinsSemiBold,
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 2,
-                            horizontal: 12.0,
-                          ),
-                          child: Row(
-                            children: [
-                              Image.asset(
-                                eventIcon,
-                                width: 24,
-                                height: 24,
-                              ),
-                              Expanded(
-                                child: Text(
-                                  'Posted on ${AppClass().formatDate2(alert.createdAt.toString())}',
-                                  style: TextStyle(
-                                    color: whiteColor,
-                                    fontFamily: popinsRegulr,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+          child: Stack(
+            children: [
+              // Background Container with Gradient
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  gradient: LinearGradient(
+                    colors: [
+                      primaryColor
+                          .withOpacity(0.8), // Primary color with opacity
+                      Colors.transparent, // Transparent at the bottom
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
                   ),
                 ),
-              ],
-            ),
+              ),
+              // Announcement Content
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 5,
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(height: 5),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 12, top: 12),
+                              child: Text(
+                                alert.alertTitle,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: whiteColor,
+                                  fontFamily: popinsSemiBold,
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 2,
+                                horizontal: 12.0,
+                              ),
+                              child: Row(
+                                children: [
+                                  Image.asset(
+                                    eventIcon,
+                                    width: 24,
+                                    height: 24,
+                                  ),
+                                  Expanded(
+                                    child: Text(
+                                      'Posted on ${AppClass().formatDate2(alert.createdAt.toString())}',
+                                      style: TextStyle(
+                                        color: whiteColor,
+                                        fontFamily: popinsRegulr,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ),
