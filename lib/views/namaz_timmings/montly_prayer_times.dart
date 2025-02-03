@@ -93,27 +93,24 @@ class YearlyNamazTimesScreen extends StatelessWidget {
                                     color: whiteColor),
                               ),
                               onChanged: (newValue) {
-                                prayerController.selectedDate.value =
-                                    newValue ?? '';
+                                if (newValue != null) {
+                                  prayerController.selectedDate.value =
+                                      newValue;
+                                }
                               },
-                              items: prayerController.filteredPrayerTimes
-                                  .map((entry) {
-                                String readableDate = entry['date']
-                                    ['readable']; // Extract "01 Jan 2025"
-                                String day = entry['date']['gregorian']['day']
-                                    .toString()
-                                    .padLeft(2, '0'); // "01"
-
+                              items: List.generate(31, (index) {
+                                String day = (index + 1).toString().padLeft(
+                                    2, '0'); // Convert to "01", "02" format
                                 return DropdownMenuItem(
                                   value: day,
                                   child: Text(
-                                    readableDate, // Show full date e.g., "01 January 2025"
+                                    "$day ${monthNames[int.parse(prayerController.selectedMonth.value) - 1]} 2025",
                                     style: TextStyle(
                                         fontFamily: popinsRegulr,
-                                        color: Colors.black),
+                                        color: whiteColor),
                                   ),
                                 );
-                              }).toList(),
+                              }),
                             )),
                       ],
                     ),
