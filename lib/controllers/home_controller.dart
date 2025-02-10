@@ -426,7 +426,7 @@ class HomeController extends GetxController {
     return DateFormat("HH:mm").parse(time).toLocal();
   }
 
-  void updateCurrentPrayer() {
+  updateCurrentPrayer() {
     final now = DateTime.now();
 
     final todayString = "${now.day}/${now.month}";

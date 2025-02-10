@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:community_islamic_app/constants/color.dart';
+import '../../app_classes/app_class.dart';
 import '../../controllers/askImamController.dart';
 
 class AskImamPage extends StatelessWidget {
@@ -92,14 +93,57 @@ class AskImamPage extends StatelessWidget {
               hint: 'Enter phone number',
               controller: _phoneController,
             ),
-            Obx(
-              () => _buildDropdownField(
-                label: 'Question',
-                hint: 'Select Question Type',
-                value: _selectedQuestionType.value,
-                onChanged: (newValue) =>
-                    _selectedQuestionType.value = newValue!,
-              ),
+            Row(
+              children: [
+                Expanded(
+                  child: Obx(
+                    () => _buildDropdownField(
+                      label: 'Question',
+                      hint: 'Ask a Question',
+                      value: _selectedQuestionType.value,
+                      onChanged: (newValue) =>
+                          _selectedQuestionType.value = newValue!,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      const String calendlyUrl =
+                          "https://calendly.com/gulfarazahmed08/30min";
+                      AppClass().launchURL(calendlyUrl);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 15, left: 5),
+                      child: Container(
+                        height: 47,
+                        decoration: BoxDecoration(
+                            color: whiteColor.withOpacity(.1),
+                            borderRadius: BorderRadius.circular(10)),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            children: [
+                              Text(
+                                'Book a Appointment',
+                                style: TextStyle(
+                                    fontFamily: popinsRegulr,
+                                    color: whiteColor,
+                                    fontSize: 12),
+                              ),
+                              Icon(
+                                Icons.arrow_forward_ios_outlined,
+                                color: whiteColor,
+                                size: 15,
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                )
+              ],
             ),
             _buildInputField(
               label: 'Message',
@@ -210,14 +254,14 @@ class AskImamPage extends StatelessWidget {
             label,
             style: TextStyle(
               fontSize: 14,
-              color: primaryColor,
+              color: secondaryColor,
               fontWeight: FontWeight.bold,
               fontFamily: popinsRegulr,
             ),
           ),
           const SizedBox(height: 8),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 10),
             decoration: BoxDecoration(
               color: Colors.white10,
               borderRadius: BorderRadius.circular(8),
@@ -228,7 +272,9 @@ class AskImamPage extends StatelessWidget {
                 hint: Text(
                   hint,
                   style: const TextStyle(
-                      color: Colors.white54, fontFamily: popinsRegulr),
+                      color: Colors.white54,
+                      fontFamily: popinsRegulr,
+                      fontSize: 12),
                 ),
                 icon: const Icon(Icons.arrow_drop_down, color: Colors.white54),
                 value: value.isEmpty ? null : value,
@@ -242,7 +288,9 @@ class AskImamPage extends StatelessWidget {
                     child: Text(
                       value,
                       style: const TextStyle(
-                          color: Colors.white, fontFamily: popinsRegulr),
+                          color: Colors.white,
+                          fontFamily: popinsRegulr,
+                          fontSize: 12),
                     ),
                   );
                 }).toList(),

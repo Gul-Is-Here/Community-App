@@ -114,67 +114,66 @@ class AnnouncementCard extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: GestureDetector(
         onTap: onTap,
-        child: Container(
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              gradient: LinearGradient(
-                  colors: [Colors.green, Colors.green],
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight)),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          title,
-                          style: TextStyle(
-                            color: whiteColor,
-                            fontFamily: popinsRegulr,
-                            fontSize: 18.0,
-                            fontWeight: FontWeight.bold,
+        child: Card(
+          child: Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Color(0xFF032727)),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            title,
+                            style: TextStyle(
+                              color: whiteColor,
+                              fontFamily: popinsRegulr,
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                        SizedBox(height: 10),
-                        Row(
-                          children: [
-                            Image.asset(
-                              eventIcon,
-                              height: 16,
-                              width: 16,
-                            ),
-                            SizedBox(width: 5),
-                            Text(
-                              "Posted on $postedDate",
-                              style: TextStyle(
-                                fontFamily: popinsRegulr,
-                                fontSize: 12.0,
-                                color: whiteColor,
+                          SizedBox(height: 10),
+                          Row(
+                            children: [
+                              Image.asset(
+                                eventIcon,
+                                height: 16,
+                                width: 16,
                               ),
-                            ),
-                          ],
-                        ),
-                      ],
+                              SizedBox(width: 5),
+                              Text(
+                                "Posted on $postedDate",
+                                style: TextStyle(
+                                  fontFamily: popinsRegulr,
+                                  fontSize: 12.0,
+                                  color: whiteColor,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              Container(
-                height: 100,
-                width: MediaQuery.of(context).size.width * .03,
-                decoration: BoxDecoration(
-                    color: goldenColor,
-                    borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(10),
-                        bottomRight: Radius.circular(10))),
-              )
-            ],
+                  ],
+                ),
+                Container(
+                  height: 100,
+                  width: MediaQuery.of(context).size.width * .03,
+                  decoration: BoxDecoration(
+                      color: Color(0xFF032727),
+                      borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(10),
+                          bottomRight: Radius.circular(10))),
+                )
+              ],
+            ),
           ),
         ),
       ),

@@ -199,7 +199,7 @@ class NotificationServices {
   }
 
   Future scheduleNotificationForAdhan({
-    String title = "ATHAN REMINDER",
+    String title = "ADHAN REMINDER",
     String? body,
     required String payLoad,
     required DateTime scheduleNotificationDateTime,

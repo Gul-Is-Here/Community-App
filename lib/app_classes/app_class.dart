@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:community_islamic_app/constants/globals.dart';
 import 'package:community_islamic_app/services/reminderUtilles.dart';
 import 'package:community_islamic_app/views/Gallery_Events/ask_imam_screen.dart';
+import 'package:community_islamic_app/views/home_screens/comming_soon_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
@@ -197,6 +198,16 @@ class AppClass {
     return DateFormat('d/M').parse(dateStr);
   }
 
+  // used in show date in Yearly azan timmings page
+  String formatDateOfMonth(String dateString) {
+    // Parse the input date string into a DateTime object
+    final inputFormat = DateFormat('dd MMM yyyy');
+    final date = inputFormat.parse(dateString);
+
+    // Format the DateTime object to the desired output format
+    final outputFormat = DateFormat('dd MMM');
+    return outputFormat.format(date);
+  }
   // Metho 1 dec
 
   String convertDate(String inputDate) {
@@ -417,10 +428,7 @@ class AppClass {
                               image: icChat,
                               label: 'RCC Chat',
                               onPressed: () {
-                                const String calendlyUrl =
-                                    "https://calendly.com/gulfarazahmed08/30min";
-                                AppClass().launchURL(calendlyUrl);
-                                Navigator.of(context).pop();
+                                Get.to(() => CommingSoonScreen());
                                 // Chat action
                               },
                             ),

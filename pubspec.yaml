@@ -22,9 +22,9 @@ dependencies:
   url_launcher: ^6.3.0
   flutter_local_notifications: ^17.2.1+2
   timezone: ^0.9.4
-  audioplayers: ^6.0.0
-  just_audio: ^0.9.39
-  audio_service: ^0.18.15
+  # audioplayers: ^6.0.0
+  # just_audio: ^0.9.39
+  # audio_service: ^0.18.15
   shared_preferences: ^2.3.1
   dio: ^5.5.0+1
   path_provider: ^2.1.5
@@ -61,6 +61,9 @@ dependencies:
   video_player: ^2.9.2
   webview_flutter: ^4.10.0
   youtube_player_flutter: ^9.1.1
+  audio_service: ^0.18.17
+  audioplayers: ^6.1.2
+  just_audio: ^0.9.46
   # awesome_notifications: ^0.10.0
  
 
