@@ -6,6 +6,7 @@ class AskImamController extends GetxController {
   final isLoading = false.obs;
   // final isSuccess = false.obs;
   final errorMessage = ''.obs;
+  RxInt selectedOption = (-1).obs; // -1 means no option selected
 
   Future<void> submitForm({
     required String name,

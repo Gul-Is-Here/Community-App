@@ -128,7 +128,7 @@ class AnnouncementWidget extends StatelessWidget {
         return _buildAnnouncementCard(alert);
       },
       options: CarouselOptions(
-        height: screenWidth * 0.285,
+        height: screenWidth * 0.26,
         autoPlay: true,
         autoPlayInterval: const Duration(seconds: 3),
         enlargeCenterPage: true,
@@ -168,21 +168,22 @@ class AnnouncementWidget extends StatelessWidget {
               // Background Container with Gradient
               Container(
                 decoration: BoxDecoration(
+                  color: Color(0xFF032727),
                   borderRadius: BorderRadius.circular(10),
-                  gradient: LinearGradient(
-                    colors: [
-                      primaryColor
-                          .withOpacity(0.8), // Primary color with opacity
-                      Colors.transparent, // Transparent at the bottom
-                    ],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                  ),
+                  // gradient: LinearGradient(
+                  //   colors: [
+                  //     primaryColor
+                  //         .withOpacity(0.8), // Primary color with opacity
+                  //     Colors.transparent, // Transparent at the bottom
+                  //   ],
+                  //   begin: Alignment.topCenter,
+                  //   end: Alignment.bottomCenter,
+                  // ),
                 ),
               ),
               // Announcement Content
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(4.0),
                 child: Row(
                   children: [
                     Expanded(
@@ -197,7 +198,7 @@ class AnnouncementWidget extends StatelessWidget {
                           children: [
                             const SizedBox(height: 5),
                             Padding(
-                              padding: const EdgeInsets.only(left: 12, top: 12),
+                              padding: const EdgeInsets.only(left: 12, top: 8),
                               child: Text(
                                 alert.alertTitle,
                                 maxLines: 2,

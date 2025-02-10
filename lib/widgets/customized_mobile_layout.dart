@@ -39,11 +39,13 @@ class CustomizedMobileLayout extends StatelessWidget {
   final HomeEventsController eventsController = Get.put(HomeEventsController());
   final NotificationServices notificationServices = NotificationServices();
   final AppClass appClass = AppClass();
-
+Future<void> getPrayerTimes() async{
+  await homeController.updateCurrentPrayer();
+   await homeController.currentPrayerTitle.value;
+}
   @override
   Widget build(BuildContext context) {
-    homeController.updateCurrentPrayer();
-    homeController.currentPrayerTitle.value;
+   
     final double screenHeight1 = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
     final iqamatimes = _getAllIqamaTimes();
@@ -67,10 +69,10 @@ class CustomizedMobileLayout extends StatelessWidget {
             _buildHeader(context),
             Center(
               child: SizedBox(
-                height: screenHeight1 * .28,
+                height: screenHeight1 * .23,
                 width: 350,
                 child: Card(
-                  color: Colors.transparent,
+                  color: const Color(0xFF032727),
                   child: Padding(
                     padding: const EdgeInsets.all(12.0),
                     child: Column(
@@ -92,7 +94,7 @@ class CustomizedMobileLayout extends StatelessWidget {
             const SizedBox(height: 10),
             _buildPrayerTimesCard(iqamatimes),
             _buildEventsAndAnnouncements(),
-            _buildFeaturesSection(),
+            // _buildFeaturesSection(),
             _buildOurServicesSection(),
             const SizedBox(height: 100),
           ],
@@ -306,8 +308,8 @@ class CustomizedMobileLayout extends StatelessWidget {
                 },
                 child: Image.asset(
                   wayMasjid,
-                  width: 30,
-                  height: 30,
+                  width: 28,
+                  height: 28,
                 ),
               )
             ],
@@ -538,66 +540,66 @@ class CustomizedMobileLayout extends StatelessWidget {
   }
 
   /// Builds the Features section with a toggle button.
-  Widget _buildFeaturesSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildSectionTitle(
-          title: 'Features',
-          trailing: Obx(() => IconButton(
-                onPressed: () {
-                  eventsController.isHiddenFeature.value =
-                      !eventsController.isHiddenFeature.value;
-                },
-                icon: Icon(
-                  eventsController.isHiddenFeature.value
-                      ? Icons.keyboard_arrow_down
-                      : Icons.keyboard_arrow_up,
-                  color: whiteColor,
-                ),
-              )),
-        ),
-        Obx(() {
-          if (!eventsController.isHiddenFeature.value) {
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  FeatureWidgeticons(
-                    icons: quranIcon,
-                    onTap: () =>
-                        Get.to(() => const QuranScreen(isNavigation: true)),
-                  ),
-                  FeatureWidgeticons(
-                    icons: azkarIcon,
-                    onTap: () => Get.to(() => const CommingSoonScreen()),
-                  ),
-                  FeatureWidgeticons(
-                    icons: haditIcon,
-                    onTap: () => Get.to(() => const CommingSoonScreen()),
-                  ),
-                  FeatureWidgeticons(
-                    icons: duaIcon,
-                    onTap: () => Get.to(() => const CommingSoonScreen()),
-                  ),
-                  FeatureWidgeticons(
-                    icons: tasbihIcon,
-                    onTap: () => Get.to(() => const CommingSoonScreen()),
-                  ),
-                  FeatureWidgeticons(
-                    icons: qiblaIcon,
-                    onTap: () => Get.to(() => QiblahScreen(isNavigation: true)),
-                  ),
-                ],
-              ),
-            );
-          }
-          return const SizedBox();
-        }),
-      ],
-    );
-  }
+  // Widget _buildFeaturesSection() {
+  //   return Column(
+  //     crossAxisAlignment: CrossAxisAlignment.start,
+  //     children: [
+  //       _buildSectionTitle(
+  //         title: 'Features',
+  //         trailing: Obx(() => IconButton(
+  //               onPressed: () {
+  //                 eventsController.isHiddenFeature.value =
+  //                     !eventsController.isHiddenFeature.value;
+  //               },
+  //               icon: Icon(
+  //                 eventsController.isHiddenFeature.value
+  //                     ? Icons.keyboard_arrow_down
+  //                     : Icons.keyboard_arrow_up,
+  //                 color: whiteColor,
+  //               ),
+  //             )),
+  //       ),
+  // Obx(() {
+  //   if (!eventsController.isHiddenFeature.value) {
+  //     return Padding(
+  //       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+  //       child: Row(
+  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //         children: [
+  //           FeatureWidgeticons(
+  //             icons: quranIcon,
+  //             onTap: () =>
+  //                 Get.to(() => const QuranScreen(isNavigation: true)),
+  //           ),
+  //           FeatureWidgeticons(
+  //             icons: azkarIcon,
+  //             onTap: () => Get.to(() => const CommingSoonScreen()),
+  //           ),
+  //           FeatureWidgeticons(
+  //             icons: haditIcon,
+  //             onTap: () => Get.to(() => const CommingSoonScreen()),
+  //           ),
+  //           FeatureWidgeticons(
+  //             icons: duaIcon,
+  //             onTap: () => Get.to(() => const CommingSoonScreen()),
+  //           ),
+  //           FeatureWidgeticons(
+  //             icons: tasbihIcon,
+  //             onTap: () => Get.to(() => const CommingSoonScreen()),
+  //           ),
+  //           FeatureWidgeticons(
+  //             icons: qiblaIcon,
+  //             onTap: () => Get.to(() => QiblahScreen(isNavigation: true)),
+  //           ),
+  //         ],
+  //       ),
+  //     );
+  //   }
+  //   return const SizedBox();
+  // }),
+  //     ],
+  //   );
+  // }
 
   /// Builds the "Our Services" section with a toggle button.
   Widget _buildOurServicesSection() {

@@ -1,5 +1,4 @@
 import 'package:audio_service/audio_service.dart';
-import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:rxdart/rxdart.dart';
 import '../../model/quran_audio_model.dart';
@@ -13,12 +12,14 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
   }
 
   void _init() {
+    // Update playback state based on audio player position
     _audioPlayer.positionStream.listen((position) {
       playbackState.add(playbackState.value.copyWith(
         updatePosition: position,
       ));
     });
 
+    // Update playback state based on audio player events
     _audioPlayer.playbackEventStream.listen((event) {
       final playing = _audioPlayer.playing;
       playbackState.add(playbackState.value.copyWith(
@@ -45,6 +46,7 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
       ));
     });
 
+    // Automatically restart playback when audio completes
     _audioPlayer.playerStateStream.listen((state) {
       if (state.processingState == ProcessingState.completed) {
         _audioPlayer.seek(Duration.zero);

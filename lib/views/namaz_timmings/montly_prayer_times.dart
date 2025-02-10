@@ -76,42 +76,9 @@ class YearlyNamazTimesScreen extends StatelessWidget {
                             );
                           }),
                         ),
-                        SizedBox(
-                          width: 20,
-                        ),
-                        Obx(() => DropdownButton<String>(
-                              dropdownColor: primaryColor,
-                              iconEnabledColor: whiteColor,
-                              value: prayerController.selectedDate.value.isEmpty
-                                  ? null
-                                  : prayerController.selectedDate.value
-                                      .padLeft(2, '0'),
-                              hint: Text(
-                                "Select Date (optional)",
-                                style: TextStyle(
-                                    fontFamily: popinsRegulr,
-                                    color: whiteColor),
-                              ),
-                              onChanged: (newValue) {
-                                if (newValue != null) {
-                                  prayerController.selectedDate.value =
-                                      newValue;
-                                }
-                              },
-                              items: List.generate(31, (index) {
-                                String day = (index + 1).toString().padLeft(
-                                    2, '0'); // Convert to "01", "02" format
-                                return DropdownMenuItem(
-                                  value: day,
-                                  child: Text(
-                                    "$day ${monthNames[int.parse(prayerController.selectedMonth.value) - 1]} 2025",
-                                    style: TextStyle(
-                                        fontFamily: popinsRegulr,
-                                        color: whiteColor),
-                                  ),
-                                );
-                              }),
-                            )),
+                        // SizedBox(
+                        //   width: 20,
+                        // ),
                       ],
                     ),
                   ),
@@ -174,7 +141,8 @@ class YearlyNamazTimesScreen extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             _buildPrayerTimeText(
-                              dayData['date']['readable'],
+                              AppClass().formatDateOfMonth(
+                                  dayData['date']['readable'] ),
                               fontWeight: FontWeight.bold,
                               fontSize: 12,
                             ),
@@ -207,7 +175,7 @@ class YearlyNamazTimesScreen extends StatelessWidget {
     return Text(
       text,
       style: const TextStyle(
-        fontFamily: "popinsSemiBold",
+        fontFamily: popinsSemiBold,
         fontSize: 14,
         color: Colors.white,
         fontWeight: FontWeight.bold,
@@ -221,7 +189,7 @@ class YearlyNamazTimesScreen extends StatelessWidget {
     return Text(
       text,
       style: TextStyle(
-        fontFamily: "popinsRegular",
+        fontFamily: popinsRegulr,
         fontSize: fontSize,
         fontWeight: fontWeight,
         color: Colors.black87,
