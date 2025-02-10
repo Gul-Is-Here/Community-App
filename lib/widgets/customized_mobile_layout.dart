@@ -67,7 +67,7 @@ class CustomizedMobileLayout extends StatelessWidget {
             _buildHeader(context),
             Center(
               child: SizedBox(
-                height: screenHeight1 * .24,
+                height: screenHeight1 * .28,
                 width: 350,
                 child: Card(
                   color: Colors.transparent,

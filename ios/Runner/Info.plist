@@ -45,15 +45,57 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>We need access to your location to determine the Qibla direction.</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
     <string>location-services</string>
     <string>gps</string>
     <string>magnetometer</string>
 	</array>
+	<key>NSAppTransportSecurity</key>
+    <dict>
+      <key>NSAllowsArbitraryLoads</key>
+      <true/>
+    </dict>
+   <!-- Location Permissions -->
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>We use your location to provide better service.</string> 
+	<key>NSLocationAlwaysUsageDescription</key>
+    <string>We need access to your location even when the app is in the background.</string>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>We use your location to improve app functionality.</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Photo Library Access Warning</string> 
+	<key>NSCameraUsageDescription</key>
+	<string>Access to the camera allows you to take photos for your profile.</string>
 
+<!-- Notification Permission -->
+    <key>NSUserNotificationUsageDescription</key>
+    <string>We use notifications to keep you updated.</string>
+<!-- Background Modes (Required for FOREGROUND_SERVICE equivalent) -->
+<key>UIBackgroundModes</key>
+<array>
+    <string>audio</string>
+    <string>location</string>
+    <string>fetch</string>
+    <string>remote-notification</string>
+</array>
+
+<!-- Bluetooth & Device Wake Permissions -->
+<key>NSBluetoothAlwaysUsageDescription</key>
+<string>We need Bluetooth access to communicate with external devices.</string>
+<key>NSBluetoothPeripheralUsageDescription</key>
+<string>We use Bluetooth to enhance your experience.</string>
+
+<!-- Alarm and Wake Lock Equivalent -->
+<key>NSAllowsExternalPlayback</key>
+<true/>
+<key>UIBackgroundModes</key>
+<array>
+    <string>fetch</string>
+    <string>remote-notification</string>
+</array>
+<key>NSMicrophoneUsageDescription</key>
+<string>... explain why the app uses the microphone here ...</string>
 
 </dict>
 </plist>

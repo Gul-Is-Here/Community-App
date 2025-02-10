@@ -1,10 +1,8 @@
 import 'dart:math';
-import 'package:community_islamic_app/app_classes/app_class.dart';
+// import 'package:community_islamic_app/app_classes/app_class.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_qiblah/flutter_qiblah.dart';
 import 'package:get/get.dart';
-// import 'package:velocity_x/velocity_x.dart';
-
 import '../../constants/color.dart';
 import '../../constants/image_constants.dart';
 import '../../controllers/home_controller.dart';
@@ -92,6 +90,7 @@ class QiblahScreen extends StatelessWidget {
         body: StreamBuilder(
           stream: FlutterQiblah.qiblahStream,
           builder: (context, snapshot) {
+            print('print ==>> ${snapshot.hasData} ');
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(
                 child: CircularProgressIndicator(

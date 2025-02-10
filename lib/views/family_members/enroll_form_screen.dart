@@ -336,7 +336,7 @@ class _EnrollScreenState extends State<EnrollScreen> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
-      spacing: 10,
+      // spacing: 10,
       children: [
         Text(
           title,

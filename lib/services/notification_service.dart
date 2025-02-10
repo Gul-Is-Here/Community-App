@@ -113,21 +113,23 @@ class NotificationServices {
 
     await _flutterLocalNotificationPlugin
         .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()!
-        .requestNotificationsPermission();
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.requestNotificationsPermission();
+    // .requestNotificationsPermission();
 
     await _flutterLocalNotificationPlugin
         .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()!
-        .requestExactAlarmsPermission();
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.requestExactAlarmsPermission();
+    // .requestExactAlarmsPermission();
 
     sharedPreferencess = await SharedPreferences.getInstance();
 
     List<AndroidNotificationChannel>? channelList =
         await _flutterLocalNotificationPlugin
             .resolvePlatformSpecificImplementation<
-                AndroidFlutterLocalNotificationsPlugin>()!
-            .getNotificationChannels();
+                AndroidFlutterLocalNotificationsPlugin>()
+            ?.getNotificationChannels();
 
     if (channelList == null || channelList.isEmpty) {
       await createPrayerNotificationChannels();

@@ -27,6 +27,7 @@ class QiblahController extends GetxController
 
   /// Fetches the user's location and updates the city and country names.
   Future<void> getLocation() async {
+    print('==========>>>>');
     try {
       LocationPermission permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied ||

@@ -76,7 +76,9 @@ class LoginScreen extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                            SizedBox(height: 50,),
+                                SizedBox(
+                                  height: 50,
+                                ),
                                 const Text(
                                   'Login',
                                   style: TextStyle(
@@ -84,7 +86,9 @@ class LoginScreen extends StatelessWidget {
                                       fontFamily: popinsMedium,
                                       fontWeight: FontWeight.bold),
                                 ),
-                            SizedBox(height: 30,),
+                                SizedBox(
+                                  height: 30,
+                                ),
                                 TextFormField(
                                   onChanged: (value) =>
                                       loginController.email.value = value,
@@ -95,7 +99,7 @@ class LoginScreen extends StatelessWidget {
                                     return null;
                                   },
                                   decoration: InputDecoration(
-                                    labelText: 'username',
+                                    labelText: 'Email',
                                     labelStyle: TextStyle(
                                         fontFamily: popinsRegulr,
                                         color: primaryColor),
@@ -131,7 +135,9 @@ class LoginScreen extends StatelessWidget {
                                     filled: true,
                                   ),
                                 ),
-                     SizedBox(height: 20,),
+                                SizedBox(
+                                  height: 20,
+                                ),
                                 Obx(() => TextFormField(
                                       onChanged: (value) => loginController
                                           .password.value = value,
@@ -193,7 +199,9 @@ class LoginScreen extends StatelessWidget {
                                         filled: true,
                                       ),
                                     )),
-                               SizedBox(height: 20,),
+                                SizedBox(
+                                  height: 20,
+                                ),
                                 TextButton(
                                   onPressed: () {},
                                   child: Text(
@@ -204,7 +212,9 @@ class LoginScreen extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                              SizedBox(height: 20,),
+                                SizedBox(
+                                  height: 20,
+                                ),
                                 Center(
                                   child: Obx(
                                     () => loginController.isLoading.value
@@ -257,7 +267,9 @@ class LoginScreen extends StatelessWidget {
                                           ),
                                   ),
                                 ),
-                              SizedBox(height: 10,),
+                                SizedBox(
+                                  height: 10,
+                                ),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [

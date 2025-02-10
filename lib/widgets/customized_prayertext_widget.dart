@@ -50,7 +50,7 @@ class PrayerTimeWidget extends StatelessWidget {
 
     return SizedBox(
       width: screenWidth * .15,
-      height: screenHeight1 * .082,
+      height: screenHeight1 * .096,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
