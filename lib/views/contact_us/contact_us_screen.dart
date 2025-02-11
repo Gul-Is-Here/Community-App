@@ -1,8 +1,14 @@
 import 'package:community_islamic_app/constants/color.dart';
+import 'package:community_islamic_app/controllers/contact_uc_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class ContactUsPage extends StatelessWidget {
+  TextEditingController nameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController messageController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+  var controller = Get.put(ContactFormController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,7 +24,7 @@ class ContactUsPage extends StatelessWidget {
           onPressed: () {
             Get.back();
           },
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back_ios,
             color: Colors.white,
           ),
@@ -94,11 +100,20 @@ class ContactUsPage extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 8),
-                      buildInputField(label: 'Name', hint: 'Your Name'),
                       buildInputField(
-                          label: 'Email/Phone No.',
-                          hint: 'Your email or phone number'),
+                          label: 'Name',
+                          hint: 'Your Name',
+                          controller: nameController),
                       buildInputField(
+                          controller: emailController,
+                          label: 'Email',
+                          hint: 'Your email'),
+                      buildInputField(
+                          controller: phoneController,
+                          label: 'Phone No.',
+                          hint: 'Your  phone number'),
+                      buildInputField(
+                        controller: messageController,
                         label: 'Message',
                         hint: 'Your Message',
                         maxLines: 4,
@@ -111,25 +126,40 @@ class ContactUsPage extends StatelessWidget {
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
-                    gradient: LinearGradient(
+                    gradient: const LinearGradient(
                       begin: Alignment.bottomLeft,
                       end: Alignment.centerRight,
                       colors: [Color(0xFF00A559), Color(0xFF006627)],
                     ),
                   ),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.transparent,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 40, vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                  child: Obx(
+                    () => ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 40, vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
                       ),
-                    ),
-                    onPressed: () {},
-                    child: const Text(
-                      'Submit',
-                      style: TextStyle(fontSize: 16, color: Colors.white),
+                      onPressed: () async {
+                        await controller.sendContactForm(
+                          name: nameController.text,
+                          number: phoneController.text,
+                          email: emailController.text,
+                          message: messageController.text,
+                        );
+                        Navigator.of(context).pop();
+                      },
+                      child: controller.isLoading.value
+                          ? CircularProgressIndicator(
+                              color: whiteColor,
+                            )
+                          : Text(
+                              'Submit',
+                              style:
+                                  TextStyle(fontSize: 16, color: Colors.white),
+                            ),
                     ),
                   ),
                 ),
@@ -246,6 +276,7 @@ class ContactUsPage extends StatelessWidget {
   }
 
   Widget buildInputField({
+    required var controller,
     required String label,
     required String hint,
     int maxLines = 1,
@@ -267,8 +298,10 @@ class ContactUsPage extends StatelessWidget {
           Align(
             alignment: Alignment.topCenter,
             child: TextField(
+              cursorColor: primaryColor,
+              controller: controller,
               maxLines: maxLines,
-              style: const TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.black),
               decoration: InputDecoration(
                 hintText: hint,
                 hintStyle: TextStyle(

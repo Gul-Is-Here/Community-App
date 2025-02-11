@@ -96,100 +96,149 @@ class AskImamPage extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: Obx(
-                    () => _buildDropdownField(
-                      label: 'Question',
-                      hint: 'Ask a Question',
-                      value: _selectedQuestionType.value,
-                      onChanged: (newValue) =>
-                          _selectedQuestionType.value = newValue!,
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      const String calendlyUrl =
-                          "https://calendly.com/gulfarazahmed08/30min";
-                      AppClass().launchURL(calendlyUrl);
-                    },
+                    child: Obx(
+                  () => GestureDetector(
+                    onTap: () => _askImamController.selectedOption.value = 0,
                     child: Padding(
                       padding: const EdgeInsets.only(top: 15, left: 5),
                       child: Container(
                         height: 47,
                         decoration: BoxDecoration(
-                            color: whiteColor.withOpacity(.1),
+                            color: _askImamController.selectedOption.value == 0
+                                ? secondaryColor
+                                : whiteColor.withOpacity(.1),
                             borderRadius: BorderRadius.circular(10)),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            children: [
-                              Text(
-                                'Book a Appointment',
-                                style: TextStyle(
-                                    fontFamily: popinsRegulr,
-                                    color: whiteColor,
-                                    fontSize: 12),
-                              ),
-                              Icon(
-                                Icons.arrow_forward_ios_outlined,
-                                color: whiteColor,
-                                size: 15,
-                              )
-                            ],
+                        child: Center(
+                            child: Text(
+                          'Ask a Question',
+                          style: TextStyle(
+                              color: whiteColor,
+                              fontFamily: popinsRegulr,
+                              fontSize: 12),
+                        )),
+                      ),
+                    ),
+                  ),
+                )),
+                Expanded(
+                  child: Obx(
+                    () => GestureDetector(
+                      onTap: () {
+                        _askImamController.selectedOption.value = 1;
+                        const String calendlyUrl =
+                            "https://calendly.com/gulfarazahmed08/30min";
+                        AppClass().launchURL(calendlyUrl);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 15, left: 5),
+                        child: Container(
+                          height: 47,
+                          decoration: BoxDecoration(
+                              color:
+                                  _askImamController.selectedOption.value == 1
+                                      ? secondaryColor
+                                      : whiteColor.withOpacity(.1),
+                              borderRadius: BorderRadius.circular(10)),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                Text(
+                                  'Book a Appointment',
+                                  style: TextStyle(
+                                      fontFamily: popinsRegulr,
+                                      color: whiteColor,
+                                      fontSize: 12),
+                                ),
+                                Icon(
+                                  Icons.arrow_forward_ios_outlined,
+                                  color: whiteColor,
+                                  size: 15,
+                                )
+                              ],
+                            ),
                           ),
                         ),
                       ),
                     ),
                   ),
-                )
+                ),
               ],
             ),
-            _buildInputField(
-              label: 'Message',
-              hint: 'Your Message',
-              maxLines: 4,
-              controller: _messageController,
+            SizedBox(
+              height: 5,
             ),
-            const SizedBox(height: 16),
-            Obx(() {
-              return Align(
-                alignment: Alignment.centerRight,
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF00A559), Color(0xFF006627)],
-                      begin: Alignment.bottomLeft,
-                      end: Alignment.centerRight,
-                    ),
-                  ),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.transparent,
-                      backgroundColor: Colors.transparent,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 40, vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                    onPressed:
-                        _askImamController.isLoading.value ? null : _submitForm,
-                    child: _askImamController.isLoading.value
-                        ? const CircularProgressIndicator(color: Colors.white)
-                        : const Text(
-                            'Submit',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.white,
-                              fontFamily: popinsMedium,
+            Obx(
+              () => _askImamController.selectedOption.value == 0
+                  ? Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Obx(
+                          () => Align(
+                            alignment: Alignment.centerLeft,
+                            child: _buildDropdownField(
+                              label: 'Question',
+                              hint: 'Select  Type',
+                              value: _selectedQuestionType.value,
+                              onChanged: (newValue) =>
+                                  _selectedQuestionType.value = newValue!,
                             ),
                           ),
-                  ),
-                ),
-              );
-            }),
+                        ),
+                        _buildInputField(
+                          label: 'Message',
+                          hint: 'Your Message',
+                          maxLines: 4,
+                          controller: _messageController,
+                        ),
+                        const SizedBox(height: 16),
+                        Obx(() {
+                          return Align(
+                            alignment: Alignment.centerRight,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    Color(0xFF00A559),
+                                    Color(0xFF006627)
+                                  ],
+                                  begin: Alignment.bottomLeft,
+                                  end: Alignment.centerRight,
+                                ),
+                              ),
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  foregroundColor: Colors.transparent,
+                                  backgroundColor: Colors.transparent,
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 40, vertical: 12),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                                onPressed: _askImamController.isLoading.value
+                                    ? null
+                                    : _submitForm,
+                                child: _askImamController.isLoading.value
+                                    ? const CircularProgressIndicator(
+                                        color: Colors.white)
+                                    : const Text(
+                                        'Submit',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.white,
+                                          fontFamily: popinsMedium,
+                                        ),
+                                      ),
+                              ),
+                            ),
+                          );
+                        }),
+                      ],
+                    )
+                  : SizedBox(),
+            )
           ],
         ),
       ),
