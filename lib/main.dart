@@ -35,11 +35,6 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   tz.initializeTimeZones();
   await NotificationServices().initializeNotification();
-  // await HomeController().fetchPrayerTimes();
-  // HomeController().getCurrentPrayerCurrent();
-  // HomeEventsController().fetchEventsData();
-  // QiblahController();
-  // await QiblahController().getLocation();
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
   DateTime today = DateTime.now();
