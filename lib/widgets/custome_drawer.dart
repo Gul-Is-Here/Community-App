@@ -8,6 +8,7 @@ import 'package:community_islamic_app/views/auth_screens/login_screen.dart';
 import 'package:community_islamic_app/views/auth_screens/registration_screen.dart';
 import 'package:community_islamic_app/views/azan_settings/azan_settings_screen.dart';
 import 'package:community_islamic_app/views/contact_us/contact_us_screen.dart';
+import 'package:community_islamic_app/views/contact_us/rate_Out_app.dart';
 import 'package:community_islamic_app/views/home_screens/home_screen.dart';
 import 'package:community_islamic_app/views/profile_screen/profile_screen.dart';
 import 'package:flutter/material.dart';
@@ -353,13 +354,13 @@ class _CustomDrawerState extends State<CustomDrawer> {
                 height: 24,
                 width: 24,
               ),
-              title: Text('Our Promise',
+              title: Text('Rate Our App',
                   style: TextStyle(
                       fontFamily: popinsRegulr,
                       fontSize: 14,
                       color: whiteColor)),
               onTap: () {
-                // Navigate to a proper screen for "Our Promise"
+                Get.to(() => RateAppPage());
               },
             ),
             ListTile(
