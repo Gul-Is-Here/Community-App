@@ -9,6 +9,8 @@ import 'package:community_islamic_app/views/home_screens/EventsAndannouncements/
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../views/azan_settings/events_notification_settinons.dart';
+
 class AnnouncementWidget extends StatelessWidget {
   const AnnouncementWidget({
     super.key,
@@ -94,13 +96,28 @@ class AnnouncementWidget extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            'Announcement',
-            style: TextStyle(
-              fontFamily: popinsBold,
-              color: whiteColor,
-              fontSize: 16,
-            ),
+          Row(
+            children: [
+              Text(
+                'Announcement',
+                style: TextStyle(
+                  fontFamily: popinsBold,
+                  color: whiteColor,
+                  fontSize: 16,
+                ),
+              ),
+              SizedBox(
+                width: 5,
+              ),
+              GestureDetector(
+                onTap: () => Get.to(() => NotificationSettingsPage()),
+                child: Image.asset(
+                  notificationICon,
+                  width: 20,
+                  height: 20,
+                ),
+              )
+            ],
           ),
           GestureDetector(
             onTap: () {

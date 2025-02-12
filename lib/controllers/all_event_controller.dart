@@ -1,51 +1,50 @@
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import '../model/eventType_model.dart';
 import '../model/home_events_model.dart';
 
 class EventTypeController extends GetxController {
-  // RxList to hold the event types
-  RxList<Event>? selectedEvents = <Event>[].obs;
-  var eventTypes = <Eventtype>[].obs;
+  RxList<Event> selectedEvents = <Event>[].obs;
+  RxList<Eventtype> eventTypes = <Eventtype>[].obs;
+
+  final String apiUrl =
+      "https://rosenbergcommunitycenter.org/api/EventTypes?access=7b150e45-e0c1-43bc-9290-3c0bf6473a51332";
 
   @override
   void onInit() {
     super.onInit();
     fetchEventTypes();
   }
-  // API URL
-  final String apiUrl =
-      "https://rosenbergcommunitycenter.org/api/EventTypes?access=7b150e45-e0c1-43bc-9290-3c0bf6473a51332";
 
-  // Method to fetch event types from API
-  // Method to fetch data from the API
+  // Fetch event types from API
   Future<void> fetchEventTypes() async {
-    print('Event Type Called');
+    debugPrint('Fetching Event Types...');
     try {
-      // Make the HTTP GET request
       final response = await http.get(Uri.parse(apiUrl));
-      print(response);
+
       if (response.statusCode == 200) {
-        // Parse the response using your model
-        final EventType eventType = EventType.fromRawJson(response.body);
-        // Update the observable list
-        eventTypes.value = eventType.data.eventtypes;
-        print('Feeds List : $eventTypes');
+        final eventType = EventType.fromRawJson(response.body);
+        eventTypes.assignAll(eventType.data.eventtypes);
+        debugPrint('Fetched Event Types: ${eventTypes.length}');
       } else {
-        Get.snackbar("Error", "Failed to fetch data: ${response.statusCode}");
+        _showError(
+            "Failed to fetch data (Status Code: ${response.statusCode})");
       }
     } catch (e) {
-      Get.snackbar("Error", "An error occurred: $e");
+      _showError("An error occurred: $e");
     }
   }
 
+  // Filter events based on selected date and event type
   List<Event> updateDisplayedEvents({
     required DateTime? selectedDate,
     required Map<DateTime, List<Event>> eventDates,
     required int selectedEventType,
   }) {
+    // If no date is selected, flatten all events from the eventDates map
     if (selectedDate == null) {
-      // Show all events if no specific date is selected
       return eventDates.values
           .expand((events) => events)
           .where((event) =>
@@ -53,13 +52,17 @@ class EventTypeController extends GetxController {
               event.eventhastype.eventtypeId == selectedEventType)
           .toList();
     } else {
-      // Show events for the selected date
-      return eventDates[selectedDate]
-              ?.where((event) =>
-                  selectedEventType == 1 ||
-                  event.eventhastype.eventtypeId == selectedEventType)
-              .toList() ??
-          [];
+      // Otherwise, filter events by the selected date and event type
+      return (eventDates[selectedDate] ?? [])
+          .where((event) =>
+              selectedEventType == 1 ||
+              event.eventhastype.eventtypeId == selectedEventType)
+          .toList();
     }
+  }
+
+  // Show error messages
+  void _showError(String message) {
+    Get.snackbar("Error", message);
   }
 }

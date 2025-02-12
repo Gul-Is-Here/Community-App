@@ -173,13 +173,13 @@ $details
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: lightColor,
+      backgroundColor: Color(0xFF003130),
       appBar: AppBar(
-        backgroundColor: primaryColor,
-        title: const Text(
+        backgroundColor: Color(0xFF003130),
+        title: Text(
           "Event Detail",
           style: TextStyle(
-              color: Colors.white,
+              color: lightColor,
               fontWeight: FontWeight.bold,
               fontFamily: popinsRegulr),
         ),
@@ -212,17 +212,27 @@ $details
         elevation: 0,
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              widget.title,
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                fontFamily: popinsRegulr,
-                color: primaryColor,
+            SizedBox(
+              height: 10,
+            ),
+            Container(
+              padding: EdgeInsets.all(5),
+              width: double.infinity,
+              decoration: BoxDecoration(color: Color(0xFF032727)),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Text(
+                  widget.title,
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: popinsRegulr,
+                    color: lightColor,
+                  ),
+                ),
               ),
             ),
             const SizedBox(height: 12),
@@ -237,25 +247,56 @@ $details
             ),
 
             const SizedBox(height: 20),
-            _buildSectionTitle("Event Date"),
-            const SizedBox(height: 8),
-            Text(
-              AppClass().formatDate2(widget.eventDate),
-              style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  fontFamily: popinsRegulr),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                      color: Color(0xFF032727),
+                      borderRadius: BorderRadius.circular(5)),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: _buildSectionTitle("Event Date"),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Text(
+                          AppClass().formatDate2(widget.eventDate),
+                          style: TextStyle(
+                              fontSize: 16,
+                              color: lightColor,
+                              fontWeight: FontWeight.w500,
+                              fontFamily: popinsRegulr),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                    ],
+                  )),
             ),
+
             const SizedBox(height: 20),
-            _buildSectionTitle("Details"),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              child: _buildSectionTitle("Details"),
+            ),
             const SizedBox(height: 8),
-            Text(
-              widget.eventDetails,
-              style: const TextStyle(
-                  fontSize: 14,
-                  height: 1.5,
-                  color: Colors.black87,
-                  fontFamily: popinsRegulr),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Text(
+                widget.eventDetails,
+                style: TextStyle(
+                    fontSize: 14,
+                    height: 1.5,
+                    color: lightColor,
+                    fontFamily: popinsRegulr),
+              ),
             ),
             const SizedBox(height: 20),
             // ElevatedButton(
@@ -263,92 +304,126 @@ $details
             //   child: const Text("Set Reminder"),
             // ),
             // const SizedBox(height: 20),
-            Row(
-              children: [
-                Image.asset(icLocation),
-                SizedBox(
-                  width: 10,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Container(
+                decoration: BoxDecoration(
+                    color: Color(0xFF032727),
+                    borderRadius: BorderRadius.circular(5)),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 16),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Image.asset(
+                            icLocation,
+                            color: lightColor,
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            'Location',
+                            style: TextStyle(
+                                fontFamily: popinsSemiBold,
+                                fontSize: 16,
+                                color: lightColor),
+                          ),
+                          Text(
+                            '(click to locate )',
+                            style: TextStyle(
+                                fontFamily: popinsRegulr,
+                                fontSize: 11,
+                                color: lightColor),
+                          ),
+                        ],
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        AppClass().launchURL(widget.locatinV);
+                        // print(eventLink);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8.0, horizontal: 16),
+                        child: Text(
+                            maxLines: 4,
+                            widget.eventVenue,
+                            style: TextStyle(
+                                decoration: TextDecoration.underline,
+                                overflow: TextOverflow.ellipsis,
+                                fontSize: 16,
+                                fontFamily: popinsSemiBold,
+                                color: lightColor)),
+                      ),
+                    ),
+                  ],
                 ),
-                Text(
-                  'Location',
-                  style: TextStyle(
-                      fontFamily: popinsSemiBold,
-                      fontSize: 16,
-                      color: secondaryColor),
-                ),
-                Text(
-                  '(click to locate )',
-                  style: TextStyle(
-                      fontFamily: popinsRegulr,
-                      fontSize: 11,
-                      color: secondaryColor),
-                ),
-              ],
+              ),
             ),
-            SizedBox(
-              height: 5,
-            ),
-            GestureDetector(
-              onTap: () {
-                AppClass().launchURL(widget.locatinV);
-                // print(eventLink);
-              },
-              child: Text(
-                  maxLines: 4,
-                  widget.eventVenue,
-                  style: TextStyle(
-                      decoration: TextDecoration.underline,
-                      overflow: TextOverflow.ellipsis,
-                      fontSize: 16,
-                      fontFamily: popinsSemiBold,
-                      color: primaryColor)),
-            ),
+            // SizedBox(
+            //   height: 5,
+            // ),
+
             SizedBox(
               height: 5,
             ),
 
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                          10,
-                        ),
-                      ),
-                      backgroundColor: primaryColor),
-                  onPressed: _showDateTimePicker,
-                  child: Text(
-                    "Set Reminder",
-                    style:
-                        TextStyle(fontFamily: popinsMedium, color: whiteColor),
-                  ),
-                ),
-                if (_reminderDateTime != null) ...[
-                  const SizedBox(height: 10),
-                  Column(
-                    children: [
-                      Text(
-                        "Reminder Set",
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 8.0, horizontal: 16),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                              10,
+                            ),
+                          ),
+                          backgroundColor: Color(0xFF032727)),
+                      onPressed: _showDateTimePicker,
+                      child: Text(
+                        "Set Reminder",
                         style: TextStyle(
-                            fontFamily: popinsSemiBold,
-                            fontSize: 16,
-                            color: secondaryColor),
+                            fontFamily: popinsMedium, color: lightColor),
                       ),
-                      // const SizedBox(height: 5),
-                      Text(
-                        DateFormat('yyyy-MM-dd HH:mm')
-                            .format(_reminderDateTime!),
-                        style: const TextStyle(
-                            fontFamily: popinsRegulr,
-                            color: Colors.black,
-                            fontSize: 12),
-                      ),
-                    ],
+                    ),
                   ),
+                  if (_reminderDateTime != null) ...[
+                    const SizedBox(height: 10),
+                    Column(
+                      children: [
+                        Text(
+                          "Reminder Set",
+                          style: TextStyle(
+                              fontFamily: popinsSemiBold,
+                              fontSize: 16,
+                              color: lightColor),
+                        ),
+                        // const SizedBox(height: 5),
+                        Text(
+                          DateFormat('yyyy-MM-dd HH:mm')
+                              .format(_reminderDateTime!),
+                          style: TextStyle(
+                              fontFamily: popinsRegulr,
+                              color: lightColor,
+                              fontSize: 12),
+                        ),
+                      ],
+                    ),
+                  ],
                 ],
-              ],
+              ),
             ),
             const SizedBox(
               height: 20,
@@ -403,24 +478,27 @@ $details
   }
 
   Widget _buildEventDetailItem(String title, String value) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: primaryColor,
-              fontFamily: popinsRegulr),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          value,
-          style: const TextStyle(
-              fontSize: 14, color: Colors.black87, fontFamily: popinsRegulr),
-        ),
-      ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: lightColor,
+                fontFamily: popinsRegulr),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            value,
+            style: TextStyle(
+                fontSize: 14, color: lightColor, fontFamily: popinsRegulr),
+          ),
+        ],
+      ),
     );
   }
 
@@ -431,7 +509,7 @@ $details
         fontSize: 16,
         fontWeight: FontWeight.bold,
         fontFamily: popinsRegulr,
-        color: primaryColor,
+        color: lightColor,
       ),
     );
   }

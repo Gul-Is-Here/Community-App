@@ -28,95 +28,86 @@ class AudioPlayerBar2 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() {
-      final progress = audioPlayerController.progress.value;
-      final bufferreDuration = audioPlayerController.buffereDuration.value;
-      final duration = audioPlayerController.duration.value;
-      final playbackSpeed = audioPlayerController.playbackSpeed.value;
-
-      return Padding(
-        padding: const EdgeInsets.only(left: 8, right: 8, bottom: 90),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10.0),
-          decoration: BoxDecoration(
-            color: primaryColor,
-            borderRadius: BorderRadius.circular(10.0),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.2),
-                offset: const Offset(0, 4),
-                blurRadius: 8,
-              ),
-            ],
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                totalVerseCount,
-                style: TextStyle(fontFamily: popinsMedium, color: whiteColor),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  GestureDetector(
-                    onTap: _togglePlaybackSpeed,
-                    child: Container(
-                      height: 30,
-                      width: 30,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: Colors.white),
-                      ),
-                      child: Center(
-                        child: Text(
-                          '${playbackSpeed}x',
-                          style: const TextStyle(
-                              color: Colors.white, fontSize: 12),
-                        ),
-                      ),
+    return Padding(
+      padding: const EdgeInsets.only(left: 8, right: 8, bottom: 90),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10.0),
+        decoration: BoxDecoration(
+          color: primaryColor,
+          borderRadius: BorderRadius.circular(10.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              offset: const Offset(0, 4),
+              blurRadius: 8,
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              totalVerseCount,
+              style: TextStyle(fontFamily: popinsMedium, color: whiteColor),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _buildPlaybackSpeedControl(),
+                Row(
+                  children: [
+                    _buildIconButton(Icons.skip_previous, onPrevious),
+                    _buildIconButton(
+                      isPlaying ? Icons.pause : Icons.play_arrow,
+                      onPlayPause,
+                      size: 40,
                     ),
-                  ),
-                  Row(
-                    children: [
-                      _buildIconButton(Icons.skip_previous, onPrevious),
-                      _buildIconButton(
-                        isPlaying ? Icons.pause : Icons.play_arrow,
-                        onPlayPause,
-                        size: 40,
-                      ),
-                      _buildIconButton(Icons.stop, onStop,
-                          size: 40), // Stop button added
-                      _buildIconButton(Icons.skip_next, onNext),
-                    ],
-                  ),
-                  // Cross button to close the player
-                  IconButton(
-                    icon: const Icon(Icons.close, color: Colors.white),
-                    onPressed: onStop, // Close player
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              SizedBox(
-                width: double.maxFinite,
-                height: 5,
-                child: LinearProgressIndicator(
-                  value: duration > 0 ? progress / duration : 0,
-                  backgroundColor: Colors.white.withOpacity(0.3),
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    _buildIconButton(Icons.stop, onStop,
+                        size: 40), // Stop button
+                    _buildIconButton(Icons.skip_next, onNext),
+                  ],
                 ),
-              ),
-              const SizedBox(height: 8),
-              // Add any other UI elements if needed
-            ],
+                // Close player button
+                IconButton(
+                  icon: const Icon(Icons.close, color: Colors.white),
+                  onPressed: onStop,
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Obx(() => _buildProgressBar()),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Builds the playback speed toggle button.
+  Widget _buildPlaybackSpeedControl() {
+    return Obx(() {
+      final playbackSpeed = audioPlayerController.playbackSpeed.value;
+      return GestureDetector(
+        onTap: _togglePlaybackSpeed,
+        child: Container(
+          height: 30,
+          width: 30,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: Colors.white),
+          ),
+          child: Center(
+            child: Text(
+              '${playbackSpeed}x',
+              style: const TextStyle(color: Colors.white, fontSize: 12),
+            ),
           ),
         ),
       );
     });
   }
 
+  /// Builds an icon button with the specified icon and action.
   Widget _buildIconButton(IconData icon, VoidCallback onPressed,
       {double size = 24}) {
     return IconButton(
@@ -125,6 +116,23 @@ class AudioPlayerBar2 extends StatelessWidget {
     );
   }
 
+  /// Builds the progress bar.
+  Widget _buildProgressBar() {
+    final progress = audioPlayerController.progress.value;
+    final duration = audioPlayerController.duration.value;
+
+    return SizedBox(
+      width: double.maxFinite,
+      height: 5,
+      child: LinearProgressIndicator(
+        value: (duration > 0) ? (progress / duration).clamp(0.0, 1.0) : 0,
+        backgroundColor: Colors.white.withOpacity(0.3),
+        valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
+      ),
+    );
+  }
+
+  /// Toggles playback speed.
   void _togglePlaybackSpeed() {
     final speeds = [0.5, 1.0, 1.5, 2.0];
     final currentSpeed = audioPlayerController.playbackSpeed.value;
