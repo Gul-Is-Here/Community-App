@@ -1,6 +1,7 @@
 import 'package:community_islamic_app/constants/globals.dart';
 import 'package:community_islamic_app/constants/image_constants.dart';
 import 'package:community_islamic_app/controllers/all_event_controller.dart';
+import 'package:community_islamic_app/views/azan_settings/events_notification_settinons.dart';
 import 'package:community_islamic_app/views/home_screens/EventsAndannouncements/events_details_screen.dart';
 import 'package:community_islamic_app/widgets/eventsWidgets.dart';
 import 'package:flutter/material.dart';
@@ -56,6 +57,20 @@ class _AllEventsDatesScreenState extends State<AllEventsDatesScreen> {
           'All Events',
           style: TextStyle(color: whiteColor, fontFamily: popinsMedium),
         ),
+        actions: [
+          GestureDetector(
+            onTap: () => Get.to(() => NotificationSettingsPage()),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Image.asset(
+                notificationICon, // Your notification icon
+                width: 20,
+                height: 20,
+              ),
+            ),
+          ),
+        ],
+        
         backgroundColor: primaryColor,
       ),
       body: Obx(() {

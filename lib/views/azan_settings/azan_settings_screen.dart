@@ -2,6 +2,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:community_islamic_app/constants/color.dart';
 import 'package:community_islamic_app/controllers/home_controller.dart';
 import 'package:community_islamic_app/services/notification_service.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,10 +11,12 @@ class AzanSettingsScreen extends StatefulWidget {
   const AzanSettingsScreen({super.key});
 
   @override
-  _AzanSettingsScreenState createState() => _AzanSettingsScreenState();
+  _AzanSettingsScreenState createState() =>
+      _AzanSettingsScreenState();
 }
 
-class _AzanSettingsScreenState extends State<AzanSettingsScreen> {
+class _AzanSettingsScreenState
+    extends State<AzanSettingsScreen> {
   String _selectedAzan = 'Adhan - Makkah';
 
   Map<String, bool> _azanTimes = {
@@ -32,15 +35,13 @@ class _AzanSettingsScreenState extends State<AzanSettingsScreen> {
     'Isha': true,
   };
 
-  // Add a map to track the playing state for each Azan sound
-  final Map<String, bool> _isPlaying = {
-    'Adhan - Makkah': false,
-    'Adhan - Madina': false,
-  };
+  bool _eventNotificationsEnabled = false;
+  bool _announcementNotificationsEnabled = false;
 
   SharedPreferences? sharedPreferences;
-
   final AudioPlayer player = AudioPlayer();
+  final NotificationServices notificationServices = NotificationServices();
+  final HomeController homeController = Get.find<HomeController>();
 
   @override
   void initState() {
@@ -53,33 +54,49 @@ class _AzanSettingsScreenState extends State<AzanSettingsScreen> {
 
     if (mounted) {
       setState(() {
-        _azanTimes = {
-          'Fajr': sharedPreferences!.getBool("fajr")!,
-          'Dhuhr': sharedPreferences!.getBool("dhuhr")!,
-          'Asr': sharedPreferences!.getBool("asr")!,
-          'Maghrib': sharedPreferences!.getBool("maghrib")!,
-          'Isha': sharedPreferences!.getBool("isha")!,
-        };
-
-        _iqamahTimes = {
-          'Fajr': sharedPreferences!.getBool("fajrIqamah")!,
-          'Dhuhr': sharedPreferences!.getBool("dhuhrIqamah")!,
-          'Asr': sharedPreferences!.getBool("asrIqamah")!,
-          'Maghrib': sharedPreferences!.getBool("maghribIqamah")!,
-          'Isha': sharedPreferences!.getBool("ishaIqamah")!,
-        };
-
-        _selectedAzan = sharedPreferences!.getString("selectedSound")!;
+        _selectedAzan = sharedPreferences!.getString("selectedSound") ?? 'Adhan - Makkah';
+        _eventNotificationsEnabled = sharedPreferences!.getBool('event') ?? false;
+        _announcementNotificationsEnabled = sharedPreferences!.getBool('announcement') ?? false;
       });
     }
   }
 
-  HomeController homeController = Get.find<HomeController>();
+  Future<void> _saveNotificationSettings() async {
+    sharedPreferences!.setBool('event', _eventNotificationsEnabled);
+    sharedPreferences!.setBool('announcement', _announcementNotificationsEnabled);
+  }
+
+  void _toggleEventNotifications(bool value) async {
+    setState(() {
+      _eventNotificationsEnabled = value;
+    });
+    await _saveNotificationSettings();
+
+    if (value) {
+      FirebaseMessaging.instance.subscribeToTopic('events');
+    } else {
+      FirebaseMessaging.instance.unsubscribeFromTopic('events');
+    }
+  }
+
+  void _toggleAnnouncementNotifications(bool value) async {
+    setState(() {
+      _announcementNotificationsEnabled = value;
+    });
+    await _saveNotificationSettings();
+
+    if (value) {
+      FirebaseMessaging.instance.subscribeToTopic('announcements');
+    } else {
+      FirebaseMessaging.instance.unsubscribeFromTopic('announcements');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: primaryColor,
         leading: IconButton(
           onPressed: () {
             Get.back();
@@ -90,202 +107,54 @@ class _AzanSettingsScreenState extends State<AzanSettingsScreen> {
           ),
         ),
         title: const Text(
-          "Prayer Notification",
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            fontFamily: popinsSemiBold,
-            color: Colors.white,
-          ),
+          "Prayer & Notification Settings",
+          style: TextStyle(fontSize: 20, fontFamily: popinsSemiBold, color: Colors.white),
         ),
-        backgroundColor: primaryColor,
       ),
       backgroundColor: Colors.white,
       body: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         children: [
           const SizedBox(height: 20),
-          GestureDetector(
-            onTap: () async {
-              if (_azanTimes.values.every((val) => val)) {
-                for (var azanTime in _azanTimes.keys) {
-                  _azanTimes[azanTime] = false;
-
-                  sharedPreferences!.setBool(azanTime.toLowerCase(), false);
-                }
-
-                for (var iqamahTime in _iqamahTimes.keys) {
-                  _iqamahTimes[iqamahTime] = false;
-
-                  sharedPreferences!
-                      .setBool("${iqamahTime.toLowerCase()}Iqamah", false);
-                }
-                setState(() {});
-
-                await NotificationServices().cancelAll();
-
-                // await homeController.setNotifications();`
-              } else {
-                for (var azanTime in _azanTimes.keys) {
-                  _azanTimes[azanTime] = true;
-
-                  sharedPreferences!.setBool(azanTime.toLowerCase(), true);
-                }
-                for (var iqamahTime in _iqamahTimes.keys) {
-                  _iqamahTimes[iqamahTime] = true;
-
-                  sharedPreferences!
-                      .setBool("${iqamahTime.toLowerCase()}Iqamah", true);
-                }
-                setState(() {});
-
-                await NotificationServices().cancelAll();
-
-                await homeController.setNotifications();
-              }
-            },
-            child: Container(
-              width: double.maxFinite,
-              height: 60,
-              decoration: BoxDecoration(
-                color: primaryColor,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              padding: const EdgeInsets.all(8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const SizedBox(),
-                  Text(
-                    _azanTimes.values.every((val) => val)
-                        ? "Turn off Notification"
-                        : "Turn on Notification",
-                    style: const TextStyle(
-                      fontSize: 17,
-                      fontFamily: popinsMedium,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                  Icon(
-                    _azanTimes.values.every((val) => val)
-                        ? Icons.check_circle_outline
-                        : Icons.circle_outlined,
-                    color: Colors.white,
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 20),
           _buildAzanSelection(),
           const SizedBox(height: 20),
-          _buildAzanTimeSelection(),
+          _buildAzanTimeTable(),
+          const SizedBox(height: 20),
+          _buildNotificationSettings(),
         ],
       ),
     );
   }
 
   Widget _buildAzanSelection() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            spreadRadius: 2,
-            blurRadius: 5,
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Azan Sound',
-            style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                fontFamily: popinsSemiBold),
-          ),
-          const SizedBox(height: 10),
-          Column(
-            children: [
-              _buildAzanOption('Disable'),
-              _buildAzanOption('Default'),
-              _buildAzanOption('Adhan - Makkah'),
-              _buildAzanOption('Adhan - Madina'),
-            ],
-          ),
-        ],
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text("Azan Sound", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        const SizedBox(height: 10),
+        Column(
+          children: ['Disable', 'Default', 'Adhan - Makkah', 'Adhan - Madina'].map((title) {
+            return ListTile(
+              leading: Radio<String>(
+                activeColor: primaryColor,
+                value: title,
+                groupValue: _selectedAzan,
+                onChanged: (String? value) async {
+                  sharedPreferences?.setString("selectedSound", value!);
+                  setState(() {
+                    _selectedAzan = value!;
+                  });
+                  await homeController.setNotifications();
+                },
+              ),
+              title: Text(title),
+            );
+          }).toList(),
+        ),
+      ],
     );
   }
-
-  Widget _buildAzanOption(String title) {
-    return ListTile(
-      leading: Radio<String>(
-        activeColor: primaryColor,
-        value: title,
-        groupValue: _selectedAzan,
-        onChanged: (String? value) async {
-          sharedPreferences?.setString("selectedSound", value!);
-
-          setState(() {
-            _selectedAzan = value!;
-          });
-
-          await homeController.setNotifications();
-        },
-      ),
-      title: Text(
-        title,
-        style: TextStyle(fontFamily: popinsRegulr),
-      ),
-      trailing: title != 'Disable' && title != 'Default'
-          ? IconButton(
-              icon: _isPlaying[title] == true
-                  ? Icon(
-                      Icons.pause,
-                      color: primaryColor,
-                    )
-                  : Icon(
-                      Icons.play_arrow,
-                      color: primaryColor,
-                    ),
-              onPressed: () async {
-                if (_isPlaying[title] == true) {
-                  // Stop the current audio if playing
-                  await player.stop();
-                  setState(() {
-                    _isPlaying[title] = false;
-                  });
-                } else {
-                  // Stop any audio currently playing
-                  for (var key in _isPlaying.keys) {
-                    _isPlaying[key] = false;
-                  }
-
-                  // Play the selected Azan sound
-                  if (title == "Adhan - Makkah") {
-                    await player.play(AssetSource("azan.mp3"));
-                  } else if (title == "Adhan - Madina") {
-                    await player.play(AssetSource("azanMadina.mp3"));
-                  }
-
-                  setState(() {
-                    _isPlaying[title] = true;
-                  });
-                }
-              },
-            )
-          : null,
-    );
-  }
-
-  Widget _buildAzanTimeSelection() {
+Widget _buildAzanTimeTable() {
     // Your Azan time selection code (unchanged)
     return Container(
       padding: const EdgeInsets.all(16),
@@ -418,6 +287,28 @@ class _AzanSettingsScreenState extends State<AzanSettingsScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildNotificationSettings() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text("General Notifications", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        const SizedBox(height: 10),
+        SwitchListTile(
+          activeColor: primaryColor,
+          title: const Text("Event Notifications"),
+          value: _eventNotificationsEnabled,
+          onChanged: _toggleEventNotifications,
+        ),
+        SwitchListTile(
+          activeColor: primaryColor,
+          title: const Text("Announcement Notifications"),
+          value: _announcementNotificationsEnabled,
+          onChanged: _toggleAnnouncementNotifications,
+        ),
+      ],
     );
   }
 }

@@ -5,6 +5,7 @@
 import 'package:community_islamic_app/firebase_options.dart';
 import 'package:community_islamic_app/views/auth_screens/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';

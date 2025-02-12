@@ -1,4 +1,5 @@
 import 'package:community_islamic_app/constants/color.dart';
+import 'package:community_islamic_app/views/azan_settings/events_notification_settinons.dart';
 import 'package:community_islamic_app/views/home_screens/EventsAndannouncements/announcements_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -48,6 +49,20 @@ class AnnouncementsScreen extends StatelessWidget {
           'Announcements',
           style: TextStyle(fontFamily: popinsSemiBold, color: Colors.white),
         ),
+        actions: [
+          GestureDetector(
+            onTap: () => Get.to(() => NotificationSettingsPage()),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Image.asset(
+                notificationICon, // Your notification icon
+                width: 20,
+                height: 20,
+              ),
+            ),
+          ),
+        ],
+        
         // centerTitle: true,
       ),
       body: Obx(() {

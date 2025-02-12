@@ -290,16 +290,17 @@ class CustomizedMobileLayout extends StatelessWidget {
                     ),
                     // Spacer(),
                     SizedBox(
-                      width: screenWidth * .3,
+                      width: screenWidth * .32,
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(right: 0),
+                      padding: const EdgeInsets.only(right: 10.0),
                       child: GestureDetector(
                         onTap: () {
                           Get.to(() => MapSplashScreen());
                         },
                         child: Image.asset(
                           wayMasjid,
+                          // shareIcon,
                           width: 28,
                           height: 28,
                         ),

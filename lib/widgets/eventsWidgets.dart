@@ -89,14 +89,14 @@ class EventsWidget extends StatelessWidget {
             SizedBox(
               width: 5,
             ),
-            GestureDetector(
-              onTap: () => Get.to(() => NotificationSettingsPage()),
-              child: Image.asset(
-                notificationICon,
-                width: 20,
-                height: 20,
-              ),
-            )
+            // GestureDetector(
+            //   onTap: () => Get.to(() => NotificationSettingsPage()),
+            //   child: Image.asset(
+            //     notificationICon,
+            //     width: 20,
+            //     height: 20,
+            //   ),
+            // )
           ],
         ),
         GestureDetector(
