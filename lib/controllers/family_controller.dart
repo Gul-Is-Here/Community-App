@@ -80,7 +80,7 @@ class FamilyController extends GetxController {
       if (response.statusCode == 200) {
         _updateEnrollmentStatus(classId); // Update local enrollment status
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('Successfully enrolled in the class!'),
             backgroundColor: Colors.green,
           ),

@@ -39,13 +39,13 @@ class CustomizedMobileLayout extends StatelessWidget {
   final HomeEventsController eventsController = Get.put(HomeEventsController());
   final NotificationServices notificationServices = NotificationServices();
   final AppClass appClass = AppClass();
-Future<void> getPrayerTimes() async{
-  await homeController.updateCurrentPrayer();
-   await homeController.currentPrayerTitle.value;
-}
+  Future<void> getPrayerTimes() async {
+    await homeController.updateCurrentPrayer();
+    await homeController.currentPrayerTitle.value;
+  }
+
   @override
   Widget build(BuildContext context) {
-   
     final double screenHeight1 = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
     final iqamatimes = _getAllIqamaTimes();
@@ -69,7 +69,7 @@ Future<void> getPrayerTimes() async{
             _buildHeader(context),
             Center(
               child: SizedBox(
-                height: screenHeight1 * .23,
+                height: screenHeight1 * .19,
                 width: 350,
                 child: Card(
                   color: const Color(0xFF032727),
@@ -79,14 +79,14 @@ Future<void> getPrayerTimes() async{
                       children: [
                         _buildPrayerTimeHeader(),
                         _buildCurrentPrayerDisplay(),
-                        _buildAdditionalInfo(iqamatimes),
+                        _buildAdditionalInfo(iqamatimes, context),
                       ],
                     ),
                   ),
                 ),
               ),
             ),
-            const SizedBox(height: 10),
+            // const SizedBox(height: 10),
             _buildSectionTitle(
               title: 'Prayer Time',
               trailing: _buildLiveStreamButton(),
@@ -114,17 +114,31 @@ Future<void> getPrayerTimes() async{
             children: [
               Image.asset(
                 aboutUsIcon,
-                height: 32,
-                width: 32,
+                height: 35,
+                width: 35,
               ),
               const SizedBox(width: 5),
-              Text(
-                'Rosenberg Community Center',
-                style: TextStyle(
-                  fontFamily: popinsSemiBold,
-                  color: whiteColor,
-                  fontSize: 15,
-                ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Rosenberg Community Center',
+                    style: TextStyle(
+                      fontFamily: popinsSemiBold,
+                      color: whiteColor,
+                      fontSize: 15,
+                    ),
+                  ),
+                  Text(
+                    'Faith. Family. Fellowship',
+                    style: TextStyle(
+                      fontFamily: popinsSemiBold,
+                      color: whiteColor,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -136,6 +150,7 @@ Future<void> getPrayerTimes() async{
           icon: Icon(
             Icons.menu,
             color: whiteColor,
+            size: 35,
           ),
         ),
       ],
@@ -187,28 +202,35 @@ Future<void> getPrayerTimes() async{
   Widget _buildCurrentPrayerDisplay() {
     return Row(
       children: [
-        Obx(() => Text(
-              '${homeController.currentPrayerTitle.value} ',
-              style: TextStyle(
-                fontFamily: popinsBold,
-                color: whiteColor,
-                fontSize: 28,
+        Obx(() => Padding(
+              padding: const EdgeInsets.only(bottom: 0.0),
+              child: Text(
+                '${homeController.currentPrayerTitle.value} ',
+                style: TextStyle(
+                  fontFamily: popinsBold,
+                  color: whiteColor,
+                  fontSize: 28,
+                ),
               ),
             )),
         // const SizedBox(width: 10),
         const BlinkingDot(),
         const Spacer(),
         Padding(
-          padding: const EdgeInsets.only(right: 12.0),
-          child: GestureDetector(
-            onTap: () {
-              Get.to(() => const AzanSettingsScreen());
-            },
-            child: Image.asset(
-              notificationICon,
-              width: 25,
-              height: 25,
-            ),
+          padding: const EdgeInsets.only(
+            right: 12.0,
+          ),
+          child: Column(
+            children: [
+              GestureDetector(
+                onTap: () => appClass.showSocialMediaDialog(Get.context!),
+                child: Image.asset(
+                  shareIcon,
+                  width: 28,
+                  height: 28,
+                ),
+              ),
+            ],
           ),
         ),
       ],
@@ -216,105 +238,95 @@ Future<void> getPrayerTimes() async{
   }
 
   /// Builds the row below the current prayer display that shows prayer timing, iqama time, and navigation links.
-  Widget _buildAdditionalInfo(Map<String, String> iqamatimes) {
+  Widget _buildAdditionalInfo(
+      Map<String, String> iqamatimes, BuildContext context) {
+    var screenWidth = MediaQuery.of(context).size.width;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
+            Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Obx(() => Text(
-                      homeController.currentPrayerTimes.value,
-                      style: TextStyle(
-                        fontFamily: popinsBold,
-                        color: whiteColor,
-                        fontSize: 24,
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Obx(() => Text(
+                          homeController.currentPrayerTimes.value,
+                          style: TextStyle(
+                            fontFamily: popinsBold,
+                            color: whiteColor,
+                            fontSize: 24,
+                          ),
+                        )),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: Obx(() => Text(
+                            homeController.currentPrayerTitle.value ==
+                                        'Next: Fajr' ||
+                                    homeController.currentPrayerTitle.value ==
+                                        'Iqama: Fajr'
+                                ? 'AM'
+                                : 'PM',
+                            style: TextStyle(
+                              fontFamily: popinsBold,
+                              color: whiteColor,
+                              fontSize: 16,
+                            ),
+                          )),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 12),
+                      child: Obx(() => Text(
+                            ' (${homeController.currentPrayerIqama})',
+                            style: TextStyle(
+                              fontFamily: popinsRegulr,
+                              color: whiteColor,
+                              fontSize: 11,
+                            ),
+                          )),
+                    ),
+                    // Spacer(),
+                    SizedBox(
+                      width: screenWidth * .3,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 0),
+                      child: GestureDetector(
+                        onTap: () {
+                          Get.to(() => MapSplashScreen());
+                        },
+                        child: Image.asset(
+                          wayMasjid,
+                          width: 28,
+                          height: 28,
+                        ),
                       ),
-                    )),
-                Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: Obx(() => Text(
-                        homeController.currentPrayerTitle.value ==
-                                    'Next: Fajr' ||
-                                homeController.currentPrayerTitle.value ==
-                                    'Iqama: Fajr'
-                            ? 'AM'
-                            : 'PM',
-                        style: TextStyle(
-                          fontFamily: popinsBold,
-                          color: whiteColor,
-                          fontSize: 16,
-                        ),
-                      )),
+                    ),
+                  ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 12),
-                  child: Obx(() => Text(
-                        ' (${homeController.currentPrayerIqama})',
-                        style: TextStyle(
-                          fontFamily: popinsRegulr,
-                          color: whiteColor,
-                          fontSize: 11,
-                        ),
-                      )),
-                ),
+                Row(
+                  children: [
+                    Row(
+                      children: [
+                        _buildNavLink(' Calendar',
+                            () => Get.to(() => const HijriCalendarExample())),
+                        _buildNavLink('  View Times',
+                            () => Get.to(() => const NamazTimingsScreen())),
+                      ],
+                    ),
+                    // SizedBox(
+                    //   width: screenWidth * .256,
+                    // ),
+                  ],
+                )
               ],
             ),
-            const SizedBox(height: 20),
-            Row(
-              children: [
-                _buildNavLink(' Calendar',
-                    () => Get.to(() => const HijriCalendarExample())),
-                _buildNavLink('  View Times',
-                    () => Get.to(() => const NamazTimingsScreen())),
-                _buildNavLink(
-                    '  Events', () => Get.to(() => NotificationSettingsPage())),
-              ],
-            )
+            // const SizedBox(height: 20),
           ],
         ),
-        GestureDetector(
-          onTap: () => appClass.showSocialMediaDialog(Get.context!),
-          child: Column(
-            children: [
-              // const SizedBox(height: 6),
-              Image.asset(
-                shareIcon,
-                width: 30,
-                height: 30,
-              ),
-              ShaderMask(
-                shaderCallback: (bounds) => LinearGradient(
-                  colors: [goldenColor, goldenColor2],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ).createShader(bounds),
-                child: const Text(
-                  'Connect',
-                  style: TextStyle(
-                    fontFamily: popinsRegulr,
-                    fontSize: 12,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  Get.to(() => MapSplashScreen());
-                },
-                child: Image.asset(
-                  wayMasjid,
-                  width: 28,
-                  height: 28,
-                ),
-              )
-            ],
-          ),
-        )
       ],
     );
   }
@@ -343,14 +355,32 @@ Future<void> getPrayerTimes() async{
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          Text(
-            title,
-            style: TextStyle(
-              fontFamily: popinsBold,
-              fontSize: 16,
-              color: whiteColor,
-            ),
+          Row(
+            children: [
+              Text(
+                title,
+                style: TextStyle(
+                  fontFamily: popinsBold,
+                  fontSize: 16,
+                  color: whiteColor,
+                ),
+              ),
+              SizedBox(
+                width: 5,
+              ),
+              GestureDetector(
+                onTap: () {
+                  Get.to(() => const AzanSettingsScreen());
+                },
+                child: Image.asset(
+                  notificationICon,
+                  width: 20,
+                  height: 20,
+                ),
+              ),
+            ],
           ),
           if (trailing != null) trailing,
         ],
@@ -363,23 +393,25 @@ Future<void> getPrayerTimes() async{
     return Obx(() {
       // Show a default live indicator when loading.
       if (liveStreamController.isLoading.value) {
-        return Row(
-          children: [
-            Text(
-              "LIVE",
-              style: TextStyle(
-                color: whiteColor,
-                fontFamily: popinsMedium,
-                // fontWeight: FontWeight.bold,
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 6),
+          child: Row(
+            children: [
+              Text(
+                "LIVE",
+                style: TextStyle(
+                    color: whiteColor, fontFamily: popinsMedium, fontSize: 12
+                    // fontWeight: FontWeight.bold,
+                    ),
               ),
-            ),
-            const SizedBox(width: 2),
-            Image.asset(
-              liveIcon,
-              width: 20,
-              height: 20,
-            )
-          ],
+              const SizedBox(width: 2),
+              Image.asset(
+                liveIcon,
+                width: 20,
+                height: 20,
+              )
+            ],
+          ),
         );
       }
 
@@ -394,28 +426,35 @@ Future<void> getPrayerTimes() async{
             Get.to(
                 () => isYouTubeLink ? YouTubePlayerPage() : LiveStreamPage());
           },
-          child: Container(
-            padding: const EdgeInsets.all(4),
-            decoration: BoxDecoration(
-              color: Colors.red,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Row(
-              children: [
-                Text(
-                  "LIVE",
-                  style: TextStyle(
-                      color: whiteColor,
-                      // fontWeight: FontWeight.bold,
-                      fontFamily: popinsMedium),
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: Container(
+              padding: const EdgeInsets.all(0),
+              decoration: BoxDecoration(
+                color: Colors.red,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 2.0, horizontal: 6),
+                child: Row(
+                  children: [
+                    Text(
+                      "LIVE",
+                      style: TextStyle(
+                          color: whiteColor,
+                          // fontWeight: FontWeight.bold,
+                          fontFamily: popinsMedium),
+                    ),
+                    const SizedBox(width: 2),
+                    Image.asset(
+                      liveIcon,
+                      width: 20,
+                      height: 20,
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 2),
-                Image.asset(
-                  liveIcon,
-                  width: 20,
-                  height: 20,
-                ),
-              ],
+              ),
             ),
           ),
         );

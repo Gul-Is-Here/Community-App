@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../model/home_events_model.dart';
+import '../views/azan_settings/events_notification_settinons.dart';
 
 class EventsWidget extends StatelessWidget {
   const EventsWidget({
@@ -75,13 +76,28 @@ class EventsWidget extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          'Events',
-          style: TextStyle(
-            fontFamily: popinsBold,
-            color: whiteColor,
-            fontSize: 16,
-          ),
+        Row(
+          children: [
+            Text(
+              'Events',
+              style: TextStyle(
+                fontFamily: popinsBold,
+                color: whiteColor,
+                fontSize: 16,
+              ),
+            ),
+            SizedBox(
+              width: 5,
+            ),
+            GestureDetector(
+              onTap: () => Get.to(() => NotificationSettingsPage()),
+              child: Image.asset(
+                notificationICon,
+                width: 20,
+                height: 20,
+              ),
+            )
+          ],
         ),
         GestureDetector(
           onTap: () => Get.to(() => AllEventsDatesScreen()),

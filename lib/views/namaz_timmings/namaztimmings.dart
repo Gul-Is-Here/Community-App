@@ -275,7 +275,7 @@ class NamazTimingsScreen extends StatelessWidget {
 🌇 Maghrib: ${formatPrayerTime(timings.maghrib)} | Iqamah: ${_calculateIqamaTime(timings.maghrib)}
 🌌 Isha: ${formatPrayerTime(timings.isha)} | Iqamah: ${iqamaTimes['Isha']}
 
-*Shared from Rosenberg Community App*
+*Shared from Rosenberg Community Center App*
     ''';
   }
 
