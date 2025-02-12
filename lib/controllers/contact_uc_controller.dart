@@ -35,4 +35,9 @@ class ContactFormController extends GetxController {
       isLoading(false);
     }
   }
+
+
+
+  // Rate Our App Post Method
+  
 }

@@ -69,7 +69,7 @@ class CustomizedMobileLayout extends StatelessWidget {
             _buildHeader(context),
             Center(
               child: SizedBox(
-                height: screenHeight1 * .19,
+                height: screenHeight1 * .2,
                 width: 350,
                 child: Card(
                   color: const Color(0xFF032727),
@@ -78,7 +78,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                     child: Column(
                       children: [
                         _buildPrayerTimeHeader(),
-                        _buildCurrentPrayerDisplay(),
+                        _buildCurrentPrayerDisplay(context),
                         _buildAdditionalInfo(iqamatimes, context),
                       ],
                     ),
@@ -108,50 +108,64 @@ class CustomizedMobileLayout extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 6),
-          child: Row(
-            children: [
-              Image.asset(
-                aboutUsIcon,
-                height: 35,
-                width: 35,
-              ),
-              const SizedBox(width: 5),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Rosenberg Community Center',
-                    style: TextStyle(
-                      fontFamily: popinsSemiBold,
-                      color: whiteColor,
-                      fontSize: 15,
-                    ),
+        /// Logo & Title Section
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 6),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Image.asset(
+                  aboutUsIcon,
+                  height: 35,
+                  width: 35,
+                ),
+                const SizedBox(width: 5),
+                Expanded(
+                  // Prevents overflow
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Rosenberg Community Center',
+                        style: TextStyle(
+                          fontFamily: popinsSemiBold,
+                          color: whiteColor,
+                          fontSize: 15,
+                          overflow: TextOverflow.ellipsis, // Prevents overflow
+                        ),
+                      ),
+                      Text(
+                        'Faith. Family. Fellowship',
+                        style: TextStyle(
+                          fontFamily: popinsSemiBold,
+                          color: whiteColor,
+                          fontSize: 12,
+                          overflow: TextOverflow.ellipsis, // Prevents overflow
+                        ),
+                      ),
+                    ],
                   ),
-                  Text(
-                    'Faith. Family. Fellowship',
-                    style: TextStyle(
-                      fontFamily: popinsSemiBold,
-                      color: whiteColor,
-                      fontSize: 12,
-                    ),
-                  ),
-                ],
-              ),
-            ],
+                ),
+              ],
+            ),
           ),
         ),
-        IconButton(
-          onPressed: () {
-            Scaffold.of(context).openDrawer();
+
+        /// Drawer Menu Button
+        Builder(
+          builder: (context) {
+            return IconButton(
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+              icon: Icon(
+                Icons.menu,
+                color: whiteColor,
+                size: 35,
+              ),
+            );
           },
-          icon: Icon(
-            Icons.menu,
-            color: whiteColor,
-            size: 35,
-          ),
         ),
       ],
     );
@@ -199,38 +213,39 @@ class CustomizedMobileLayout extends StatelessWidget {
   }
 
   /// Builds the central display showing the current prayer, its time, and a blinking dot.
-  Widget _buildCurrentPrayerDisplay() {
+  Widget _buildCurrentPrayerDisplay(BuildContext context) {
     return Row(
       children: [
-        Obx(() => Padding(
-              padding: const EdgeInsets.only(bottom: 0.0),
-              child: Text(
-                '${homeController.currentPrayerTitle.value} ',
-                style: TextStyle(
-                  fontFamily: popinsBold,
-                  color: whiteColor,
-                  fontSize: 28,
-                ),
-              ),
-            )),
-        // const SizedBox(width: 10),
-        const BlinkingDot(),
-        const Spacer(),
+        /// Prayer Title
+        Expanded(
+          child: Obx(() => Row(
+                children: [
+                  Text(
+                    '${homeController.currentPrayerTitle.value} ',
+                    style: TextStyle(
+                      fontFamily: popinsBold,
+                      color: whiteColor,
+                      fontSize: 28,
+                      overflow: TextOverflow.ellipsis, // Prevents overflow
+                    ),
+                  ),
+                  const BlinkingDot(),
+                ],
+              )),
+        ),
+
+        /// Blinking Dot
+
+        /// Share Icon
         Padding(
-          padding: const EdgeInsets.only(
-            right: 12.0,
-          ),
-          child: Column(
-            children: [
-              GestureDetector(
-                onTap: () => appClass.showSocialMediaDialog(Get.context!),
-                child: Image.asset(
-                  shareIcon,
-                  width: 28,
-                  height: 28,
-                ),
-              ),
-            ],
+          padding: const EdgeInsets.only(right: 12.0),
+          child: GestureDetector(
+            onTap: () => appClass.showSocialMediaDialog(context),
+            child: Image.asset(
+              shareIcon,
+              width: 28,
+              height: 28,
+            ),
           ),
         ),
       ],
@@ -241,33 +256,39 @@ class CustomizedMobileLayout extends StatelessWidget {
   Widget _buildAdditionalInfo(
       Map<String, String> iqamatimes, BuildContext context) {
     var screenWidth = MediaQuery.of(context).size.width;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        /// First Column (Prayer Info & Navigation Links)
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Column(
+            /// Prayer Time Info Row
+            Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Obx(() => Text(
+                /// Prayer Time Details
+                Obx(() => Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize:
+                          MainAxisSize.min, // Prevents infinite width issues
+                      children: [
+                        Text(
                           homeController.currentPrayerTimes.value,
                           style: TextStyle(
                             fontFamily: popinsBold,
                             color: whiteColor,
                             fontSize: 24,
                           ),
-                        )),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8),
-                      child: Obx(() => Text(
-                            homeController.currentPrayerTitle.value ==
-                                        'Next: Fajr' ||
-                                    homeController.currentPrayerTitle.value ==
-                                        'Iqama: Fajr'
+                        ),
+                        const SizedBox(width: 5),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8),
+                          child: Text(
+                            (homeController.currentPrayerTitle.value
+                                    .contains('Fajr'))
                                 ? 'AM'
                                 : 'PM',
                             style: TextStyle(
@@ -275,58 +296,49 @@ class CustomizedMobileLayout extends StatelessWidget {
                               color: whiteColor,
                               fontSize: 16,
                             ),
-                          )),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 12),
-                      child: Obx(() => Text(
-                            ' (${homeController.currentPrayerIqama})',
+                          ),
+                        ),
+                        const SizedBox(width: 5),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 12),
+                          child: Text(
+                            ' (${homeController.currentPrayerIqama.value})',
                             style: TextStyle(
                               fontFamily: popinsRegulr,
                               color: whiteColor,
                               fontSize: 11,
                             ),
-                          )),
-                    ),
-                    // Spacer(),
-                    SizedBox(
-                      width: screenWidth * .32,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 10.0),
-                      child: GestureDetector(
-                        onTap: () {
-                          Get.to(() => MapSplashScreen());
-                        },
-                        child: Image.asset(
-                          wayMasjid,
-                          // shareIcon,
-                          width: 28,
-                          height: 28,
+                          ),
                         ),
-                      ),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Row(
-                      children: [
-                        _buildNavLink(' Calendar',
-                            () => Get.to(() => const HijriCalendarExample())),
-                        _buildNavLink('  View Times',
-                            () => Get.to(() => const NamazTimingsScreen())),
                       ],
-                    ),
-                    // SizedBox(
-                    //   width: screenWidth * .256,
-                    // ),
-                  ],
-                )
+                    )),
               ],
             ),
-            // const SizedBox(height: 20),
+
+            /// Navigation Links Row
+            const SizedBox(height: 8), // Add spacing
+            Row(
+              children: [
+                _buildNavLink(' Calendar',
+                    () => Get.to(() => const HijriCalendarExample())),
+                _buildNavLink('  View Times',
+                    () => Get.to(() => const NamazTimingsScreen())),
+              ],
+            ),
           ],
+        ),
+
+        /// Masjid Location Icon
+        GestureDetector(
+          onTap: () => Get.to(() => MapSplashScreen()),
+          child: Padding(
+            padding: const EdgeInsets.only(right: 10.0),
+            child: Image.asset(
+              wayMasjid,
+              width: 28,
+              height: 28,
+            ),
+          ),
         ),
       ],
     );
