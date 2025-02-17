@@ -59,9 +59,19 @@ class _QuranScreenState extends State<QuranScreen> {
               )
             : SizedBox(),
         centerTitle: true,
+        bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(4.0),
+            child: Container(
+              color: lightColor,
+              height: 2.0,
+            )),
         title: Text(
           'Listen/Read Quran',
-          style: TextStyle(fontFamily: popinsSemiBold, color: whiteColor),
+          style: TextStyle(
+            fontFamily: popinsSemiBold,
+            color: whiteColor,
+            fontSize: 18,
+          ),
         ),
         backgroundColor: primaryColor,
       ),
@@ -126,7 +136,7 @@ class _QuranScreenState extends State<QuranScreen> {
                           );
                         },
                         firstIcon: quranIcon,
-                        surahTxet: surah.name ?? 'Surah not found',
+                        surahTxet: surah.name,
                         thirdIcon:
                             chapter.revelationPlace == RevelationPlace.MAKKAH
                                 ? kabbaIcon

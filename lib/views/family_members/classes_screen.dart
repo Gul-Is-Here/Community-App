@@ -43,19 +43,24 @@ class _ClassesScreenState extends State<ClassesScreen> {
         backgroundColor: primaryColor,
         title: Text(
           'Classes',
-          style: TextStyle(fontFamily: popinsMedium, color: whiteColor),
+          style: TextStyle(
+              fontFamily: popinsSemiBold, color: whiteColor, fontSize: 18),
         ),
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back_ios,
             color: whiteColor,
+            size: 20,
           ),
           onPressed: () => Get.back(),
         ),
       ),
       body: Obx(() {
         if (familyController.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return Center(
+              child: CircularProgressIndicator(
+            color: whiteColor,
+          ));
         }
 
         // Get relations (family members) and classes
@@ -89,9 +94,9 @@ class _ClassesScreenState extends State<ClassesScreen> {
                           Container(
                             height: 100,
                             width: screenWidth * .9,
-                            decoration: const BoxDecoration(
+                            decoration: BoxDecoration(
                               gradient: LinearGradient(
-                                colors: [Color(0xFF00A559), Color(0xFF006627)],
+                                colors: [Color(0xFF315B5A), Color(0xFF315B5A)],
                                 begin: Alignment.centerLeft,
                                 end: Alignment.centerRight,
                               ),

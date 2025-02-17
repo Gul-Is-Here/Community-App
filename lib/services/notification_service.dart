@@ -279,7 +279,7 @@ class NotificationServices {
     if (sharedPreferencess?.getBool('annoucement') ?? false) {
       await _flutterLocalNotificationPlugin.show(
         1,
-        message.notification?.title ?? 'Announcement Notification',
+        'ANNOUNCEMENT NotifICATION',
         message.notification?.body ?? 'This is Announcement Notification',
         const NotificationDetails(
           android: AndroidNotificationDetails(
@@ -305,7 +305,7 @@ class NotificationServices {
     if (sharedPreferencess?.getBool('event') ?? false) {
       await _flutterLocalNotificationPlugin.show(
         1,
-        message.notification?.title ?? 'Event Notification',
+        'EVENT NOTIFICATION',
         message.notification?.body ?? 'This is Event Notification',
         const NotificationDetails(
           android: AndroidNotificationDetails(

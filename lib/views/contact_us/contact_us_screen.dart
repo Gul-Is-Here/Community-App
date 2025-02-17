@@ -2,6 +2,7 @@ import 'package:community_islamic_app/constants/color.dart';
 import 'package:community_islamic_app/controllers/contact_uc_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ContactUsPage extends StatelessWidget {
   TextEditingController nameController = TextEditingController();
@@ -16,7 +17,8 @@ class ContactUsPage extends StatelessWidget {
         backgroundColor: primaryColor,
         title: const Text(
           'Contact Us',
-          style: TextStyle(color: Colors.white, fontFamily: popinsMedium),
+          style: TextStyle(
+              color: Colors.white, fontFamily: popinsSemiBold, fontSize: 18),
         ),
         // centerTitle: true,
         elevation: 0,
@@ -25,6 +27,7 @@ class ContactUsPage extends StatelessWidget {
             Get.back();
           },
           icon: const Icon(
+            size: 20,
             Icons.arrow_back_ios,
             color: Colors.white,
           ),
@@ -62,6 +65,22 @@ class ContactUsPage extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               _buildContactCard(
+                onTap2: () async {
+                  Navigator.of(context).pop();
+                  final Uri emailLaunchUri = Uri(
+                    scheme: 'mailto',
+                    path: 'admin@rosenbergcommunitycenter.org',
+                  );
+                  await launchUrl(emailLaunchUri);
+                },
+                onTap1: () async {
+                  Navigator.of(context).pop();
+                  final Uri phoneUri = Uri(
+                    scheme: 'tel',
+                    path: '+1 (281) 303-1758',
+                  );
+                  await launchUrl(phoneUri);
+                },
                 title2: 'Email',
                 title: 'Customer Support',
                 icon: Icons.phone,
@@ -72,6 +91,14 @@ class ContactUsPage extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               _buildContactCard(
+                onTap1: () async {
+                  Navigator.of(context).pop();
+
+                  final Uri mapLaunchUri = Uri.parse(
+                      'https://www.google.com/maps/search/?api=1&query=6719+Koeblen+Road,+Richmond,+TX,+77469');
+                  await launchUrl(mapLaunchUri);
+                },
+                onTap2: () {},
                 title2: 'Email',
                 title: 'Location',
                 icon: Icons.location_on,
@@ -172,6 +199,8 @@ class ContactUsPage extends StatelessWidget {
   }
 
   Widget _buildContactCard({
+    required void Function() onTap1,
+    required void Function() onTap2,
     required String title,
     required IconData icon,
     required String label,
@@ -195,44 +224,9 @@ class ContactUsPage extends StatelessWidget {
                 fontSize: 16, color: whiteColor, fontFamily: popinsSemiBold),
           ),
           const SizedBox(height: 8),
-          Row(
-            children: [
-              Container(
-                  height: 40,
-                  width: 40,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30),
-                      color: lightColor),
-                  child: Icon(
-                    icon,
-                    color: const Color(0xFF00A53C),
-                    size: 20,
-                  )),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      label,
-                      style: const TextStyle(
-                          fontSize: 14, color: Color(0xFF00A53C)),
-                    ),
-                    Text(
-                      value,
-                      style: const TextStyle(
-                          fontSize: 14,
-                          fontFamily: popinsMedium,
-                          color: Colors.white),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          if (subIcon != null && subValue != null) ...[
-            const SizedBox(height: 8),
-            Row(
+          GestureDetector(
+            onTap: onTap1,
+            child: Row(
               children: [
                 Container(
                     height: 40,
@@ -241,7 +235,7 @@ class ContactUsPage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(30),
                         color: lightColor),
                     child: Icon(
-                      subIcon,
+                      icon,
                       color: const Color(0xFF00A53C),
                       size: 20,
                     )),
@@ -251,14 +245,12 @@ class ContactUsPage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        title2,
+                        label,
                         style: const TextStyle(
-                            fontSize: 14,
-                            color: Color(0xFF00A53C),
-                            fontFamily: popinsRegulr),
+                            fontSize: 14, color: Color(0xFF00A53C)),
                       ),
                       Text(
-                        subValue,
+                        value,
                         style: const TextStyle(
                             fontSize: 14,
                             fontFamily: popinsMedium,
@@ -268,6 +260,49 @@ class ContactUsPage extends StatelessWidget {
                   ),
                 ),
               ],
+            ),
+          ),
+          if (subIcon != null && subValue != null) ...[
+            const SizedBox(height: 8),
+            GestureDetector(
+              onTap: onTap2,
+              child: Row(
+                children: [
+                  Container(
+                      height: 40,
+                      width: 40,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(30),
+                          color: lightColor),
+                      child: Icon(
+                        subIcon,
+                        color: const Color(0xFF00A53C),
+                        size: 20,
+                      )),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title2,
+                          style: const TextStyle(
+                              fontSize: 14,
+                              color: Color(0xFF00A53C),
+                              fontFamily: popinsRegulr),
+                        ),
+                        Text(
+                          subValue,
+                          style: const TextStyle(
+                              fontSize: 14,
+                              fontFamily: popinsMedium,
+                              color: Colors.white),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ]
         ],

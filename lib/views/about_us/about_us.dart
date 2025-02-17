@@ -31,15 +31,17 @@ class AboutUsScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           'About Us',
-          style: TextStyle(fontFamily: popinsMedium, color: whiteColor),
+          style: TextStyle(
+              fontFamily: popinsSemiBold, fontSize: 18, color: whiteColor),
         ),
         leading: IconButton(
           onPressed: () {
             Get.back();
           },
           icon: const Icon(
-            Icons.arrow_back,
+            Icons.arrow_back_ios,
             color: Colors.white,
+            size: 20,
           ),
         ),
         backgroundColor: primaryColor,

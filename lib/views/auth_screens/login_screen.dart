@@ -99,7 +99,7 @@ class LoginScreen extends StatelessWidget {
                                     return null;
                                   },
                                   decoration: InputDecoration(
-                                    labelText: 'Email',
+                                    labelText: 'Username',
                                     labelStyle: TextStyle(
                                         fontFamily: popinsRegulr,
                                         color: primaryColor),

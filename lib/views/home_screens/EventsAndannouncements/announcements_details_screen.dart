@@ -1,3 +1,4 @@
+import 'package:community_islamic_app/constants/image_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:community_islamic_app/constants/color.dart';
 import 'package:community_islamic_app/controllers/home_events_controller.dart';
@@ -12,6 +13,7 @@ class AnnouncementsDetailsScreen extends StatelessWidget {
   final String description;
   final String details;
   final String alertDisc;
+  final String? image;
 
   AnnouncementsDetailsScreen({
     Key? key,
@@ -22,6 +24,7 @@ class AnnouncementsDetailsScreen extends StatelessWidget {
     required this.createdDate,
     required this.description,
     required this.postedDate,
+    this.image,
   }) : super(key: key);
 
   @override
@@ -35,31 +38,34 @@ class AnnouncementsDetailsScreen extends StatelessWidget {
         title: Text(
           title,
           style: TextStyle(
-            fontFamily: popinsMedium,
+            fontFamily: popinsSemiBold,
             fontSize: 18,
-            color: Colors.white,
+            color: whiteColor,
           ),
         ),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(
+            Icons.arrow_back_ios,
+            color: Colors.white,
+            size: 20,
+          ),
           onPressed: () => Get.back(),
         ),
         actions: [
           IconButton(
             icon: Icon(Icons.share, color: goldenColor),
             onPressed: () {
-              // Share functionality
               Share.share(
-                  ''' $title\n\n$alertDisc\n\n*Shared from Rosenberg Community Center App*''');
+                  ''' *$title*\n\n$alertDisc\n\n*Shared from Rosenberg Community Center App*''');
             },
           ),
         ],
         bottom: PreferredSize(
-          preferredSize: Size.fromHeight(1.0), // Height of the bottom line
+          preferredSize: const Size.fromHeight(1.0),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Container(
-              color: Colors.white, // Bottom line color
+              color: lightColor,
               height: 1.0,
             ),
           ),
@@ -69,90 +75,34 @@ class AnnouncementsDetailsScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Image Section
-
-            // Announcement Details Section
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Posted Date
-                  // Row(
-                  //   children: [
-                  //     Icon(Icons.calendar_today, color: Colors.grey, size: 18),
-                  //     SizedBox(width: 8),
-                  //     Text(
-                  //       'Posted: ${controller.formatDateString(postedDate)}',
-                  //       style: TextStyle(
-                  //         color: Colors.grey[700],
-                  //         fontSize: 14.0,
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
-                  // SizedBox(height: 8.0),
-
-                  // Created Date
-                  // Row(
-                  //   children: [
-                  //     Icon(Icons.date_range, color: Colors.grey, size: 18),
-                  //     SizedBox(width: 8),
-                  //     Text(
-                  //       'Created: ${controller.formatDateString(createdDate)}',
-                  //       style: TextStyle(
-                  //         color: Colors.grey[700],
-                  //         fontSize: 14.0,
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
-                  // SizedBox(height: 20.0),
-
-                  // // Title
                   Text(
                     title,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.green,
                       fontSize: 16.0,
                       fontFamily: popinsSemiBold,
-                      // color: Colors.black87,
                     ),
                   ),
-                  SizedBox(height: 20.0),
+                  const SizedBox(height: 20.0),
                   Text(
                     alertDisc,
                     style: TextStyle(
                       fontFamily: popinsRegulr,
-                      // fontWeight: FontWeight.bold,
                       color: whiteColor,
                     ),
                   ),
-                  SizedBox(height: 20.0),
-
-                  // Description with Card-like appearance
-                  // Container(
-                  //   padding: EdgeInsets.all(16.0),
-                  //   decoration: BoxDecoration(
-                  //     color: Colors.white,
-                  //     borderRadius: BorderRadius.circular(12.0),
-                  //     boxShadow: [
-                  //       BoxShadow(
-                  //         color: Colors.black12,
-                  //         blurRadius: 8.0,
-                  //         offset: Offset(0, 4),
-                  //       ),
-                  //     ],
-                  //   ),
-                  //   child: Text(
-                  //     description,
-                  //     style: TextStyle(
-                  //       fontSize: 16.0,
-                  //       height: 1.6,
-                  //       color: Colors.black87,
-                  //     ),
-                  //   ),
-                  // ),
+                  const SizedBox(height: 20.0),
+                  if (image != null && image!.isNotEmpty)
+                    Image.network(
+                      image!,
+                      errorBuilder: (context, error, stackTrace) =>
+                          const SizedBox(),
+                    ),
                 ],
               ),
             ),

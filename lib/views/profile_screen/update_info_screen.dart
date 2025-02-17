@@ -14,7 +14,7 @@ class EditProfileScreen extends StatelessWidget {
             Navigator.pop(context);
           },
         ),
-        title: Text("Edit Profile"),
+        title: Text("Edit Profile", style: TextStyle(fontFamily: popinsSemiBold),),
       ),
       body: Center(
         child: ElevatedButton(

@@ -14,28 +14,35 @@ class NotificationSettingsPage extends StatefulWidget {
 }
 
 class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
-  bool _eventNotificationsEnabled = false;
-  bool _announcementNotificationsEnabled = false;
+  bool _eventNotificationsEnabled = true;
+  bool _announcementNotificationsEnabled = true;
+
   final NotificationServices notificationServices = NotificationServices();
 
   @override
   void initState() {
     super.initState();
     _loadSettings();
+    _subscribeToDefaultTopics();
   }
 
   Future<void> _loadSettings() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      _eventNotificationsEnabled = prefs.getBool('event') ?? false;
-      _announcementNotificationsEnabled = prefs.getBool('annoucement') ?? false;
+      _eventNotificationsEnabled = prefs.getBool('Events') ?? true;
+      _announcementNotificationsEnabled = prefs.getBool('Alert') ?? true;
     });
   }
 
   Future<void> _saveSettings() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('event', _eventNotificationsEnabled);
-    await prefs.setBool('annoucement', _announcementNotificationsEnabled);
+    await prefs.setBool('Events', _eventNotificationsEnabled);
+    await prefs.setBool('Alert', _announcementNotificationsEnabled);
+  }
+
+  Future<void> _subscribeToDefaultTopics() async {
+    await FirebaseMessaging.instance.subscribeToTopic('Events');
+    await FirebaseMessaging.instance.subscribeToTopic('Alert');
   }
 
   void _toggleEventNotifications(bool value) async {
@@ -45,9 +52,9 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
     await _saveSettings();
 
     if (value) {
-      FirebaseMessaging.instance.subscribeToTopic('events');
+      FirebaseMessaging.instance.subscribeToTopic('Events');
     } else {
-      FirebaseMessaging.instance.unsubscribeFromTopic('events');
+      FirebaseMessaging.instance.unsubscribeFromTopic('Events');
     }
   }
 
@@ -58,16 +65,23 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
     await _saveSettings();
 
     if (value) {
-      FirebaseMessaging.instance.subscribeToTopic('announcements');
+      FirebaseMessaging.instance.subscribeToTopic('Alert');
     } else {
-      FirebaseMessaging.instance.unsubscribeFromTopic('announcements');
+      FirebaseMessaging.instance.unsubscribeFromTopic('Alert');
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: whiteColor,
       appBar: AppBar(
+        bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(4.0),
+            child: Container(
+              color: lightColor,
+              height: 2.0,
+            )),
         backgroundColor: primaryColor,
         leading: IconButton(
             onPressed: () {
@@ -76,10 +90,12 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
             icon: Icon(
               Icons.arrow_back_ios,
               color: whiteColor,
+              size: 20,
             )),
         title: Text(
           'Notification Settings',
-          style: TextStyle(fontFamily: popinsMedium, color: whiteColor),
+          style: TextStyle(
+              fontFamily: popinsSemiBold, color: whiteColor, fontSize: 18),
         ),
       ),
       body: Padding(
@@ -87,6 +103,7 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
         child: Column(
           children: [
             Card(
+              color: whiteColor,
               elevation: 4.0,
               child: Column(
                 children: [
@@ -94,21 +111,24 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
                     activeColor: primaryColor,
                     title: const Text(
                       'Event Notifications',
-                      style: TextStyle(fontFamily: popinsRegulr),
+                      style: TextStyle(fontFamily: popinsMedium, fontSize: 14),
                     ),
                     subtitle: const Text(
                         'Enable or disable event notifications',
-                        style: TextStyle(fontFamily: popinsRegulr)),
+                        style:
+                            TextStyle(fontFamily: popinsRegulr, fontSize: 12)),
                     value: _eventNotificationsEnabled,
                     onChanged: _toggleEventNotifications,
                   ),
                   SwitchListTile(
                     activeColor: primaryColor,
                     title: const Text('Announcement Notifications',
-                        style: TextStyle(fontFamily: popinsRegulr)),
+                        style:
+                            TextStyle(fontFamily: popinsMedium, fontSize: 14)),
                     subtitle: const Text(
                         'Enable or disable announcement notifications',
-                        style: TextStyle(fontFamily: popinsRegulr)),
+                        style:
+                            TextStyle(fontFamily: popinsRegulr, fontSize: 12)),
                     value: _announcementNotificationsEnabled,
                     onChanged: _toggleAnnouncementNotifications,
                   ),
@@ -118,7 +138,8 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
             const SizedBox(height: 20),
             const Text(
               'Manage your notification preferences here. Toggle the switches to enable or disable specific types of notifications.',
-              style: TextStyle(color: Colors.grey, fontFamily: popinsRegulr),
+              style: TextStyle(
+                  color: Colors.grey, fontFamily: popinsRegulr, fontSize: 12),
               textAlign: TextAlign.center,
             ),
           ],

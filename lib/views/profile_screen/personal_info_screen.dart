@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:community_islamic_app/app_classes/app_class.dart';
 import 'package:community_islamic_app/constants/color.dart';
 import 'package:community_islamic_app/controllers/infoprofileController.dart';
 import 'package:community_islamic_app/views/profile_screen/update_profile_details.dart';
@@ -137,7 +138,7 @@ class PersonalInfoScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: whiteColor,
-      endDrawer: Container(color: Colors.white, child:  CustomDrawer()),
+      endDrawer: Container(color: Colors.white, child: CustomDrawer()),
       appBar: AppBar(
         backgroundColor: whiteColor,
         leading: IconButton(
@@ -255,7 +256,9 @@ class PersonalInfoScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-           SizedBox(height: 20,),
+                      SizedBox(
+                        height: 20,
+                      ),
                       PersonnelInfoRow(
                           title: 'First Name',
                           value: userData['first_name'] ?? 'N/A'),
@@ -273,7 +276,9 @@ class PersonalInfoScreen extends StatelessWidget {
                           value: userData['number'] ?? 'N/A'),
 
                       PersonnelInfoRow(
-                          title: 'DOB', value: userData['dob'] ?? 'N/A'),
+                          title: 'DOB',
+                          value: AppClass().formatDateString(userData['dob']) ??
+                              'N/A'),
 
                       PersonnelInfoRow(
                           title: 'Residential Address',

@@ -201,52 +201,62 @@ class _EnrollScreenState extends State<EnrollScreen> {
               Center(
                 child: isLoading
                     ? SpinKitFadingCircle(color: primaryColor)
-                    : ElevatedButton(
-                        onPressed: isAcknowledged
-                            ? () async {
-                                if (_formKey.currentState!.validate()) {
-                                  setState(() {
-                                    isLoading = true;
-                                  });
-
-                                  try {
-                                    await familyController.registerForClass(
-                                      userId: widget.member['id'],
-                                      context: context,
-                                      token: globals.accessToken.value,
-                                      classId: widget.classData['class_id'],
-                                      relationId: widget.member['relation_id'],
-                                      emergencyContact:
-                                          emergencyContactController.text,
-                                      emergencyContactName:
-                                          emergencyContactNameController.text,
-                                      allergiesDetail: allergiesController.text,
-                                    );
-                                    await ProfileController().fetchUserData2();
-                                    await ProfileController().fetchUserData();
-                                    Navigator.of(context).pop();
-                                  } catch (error) {
-                                    print("Error: $error");
-                                  } finally {
+                    : Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            gradient: LinearGradient(
+                                colors: [Colors.green, primaryColor])),
+                        child: ElevatedButton(
+                          onPressed: isAcknowledged
+                              ? () async {
+                                  if (_formKey.currentState!.validate()) {
                                     setState(() {
-                                      isLoading = false;
+                                      isLoading = true;
                                     });
+
+                                    try {
+                                      await familyController.registerForClass(
+                                        userId: widget.member['id'],
+                                        context: context,
+                                        token: globals.accessToken.value,
+                                        classId: widget.classData['class_id'],
+                                        relationId:
+                                            widget.member['relation_id'],
+                                        emergencyContact:
+                                            emergencyContactController.text,
+                                        emergencyContactName:
+                                            emergencyContactNameController.text,
+                                        allergiesDetail:
+                                            allergiesController.text,
+                                      );
+                                      await ProfileController()
+                                          .fetchUserData2();
+                                      await ProfileController().fetchUserData();
+                                      Navigator.of(context).pop();
+                                    } catch (error) {
+                                      print("Error: $error");
+                                    } finally {
+                                      setState(() {
+                                        isLoading = false;
+                                      });
+                                    }
                                   }
                                 }
-                              }
-                            : null,
-                        style: ElevatedButton.styleFrom(
-                          // shadowColor: whiteColor,
-                          backgroundColor: Colors.green,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+                              : null,
+                          style: ElevatedButton.styleFrom(
+                            // shadowColor: whiteColor,
+                            backgroundColor: Colors.transparent,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 50, vertical: 15),
                           ),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 50, vertical: 15),
-                        ),
-                        child: const Text(
-                          'Enroll',
-                          style: TextStyle(color: Colors.white),
+                          child: const Text(
+                            'Enroll',
+                            style: TextStyle(color: Colors.white),
+                          ),
                         ),
                       ),
               ),

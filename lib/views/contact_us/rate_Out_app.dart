@@ -34,11 +34,13 @@ class RateAppPage extends StatelessWidget {
             icon: Icon(
               Icons.arrow_back_ios,
               color: whiteColor,
+              size: 18,
             )),
         backgroundColor: primaryColor,
         title: const Text(
-          'Rate App',
-          style: TextStyle(color: Colors.white, fontFamily: popinsMedium),
+          'Rate RCC App',
+          style: TextStyle(
+              color: Colors.white, fontFamily: popinsSemiBold, fontSize: 18),
         ),
       ),
       backgroundColor: primaryColor,
@@ -62,7 +64,7 @@ class RateAppPage extends StatelessWidget {
                         index < selectedRating.value
                             ? Icons.star
                             : Icons.star_border,
-                        color: secondaryColor,
+                        color: goldenColor,
                       ),
                       onPressed: () {
                         selectedRating.value = index + 1;
