@@ -31,7 +31,7 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
 android {
-    namespace = "com.example.community_islamic_app"
+    namespace = "com.community_islamic_app.app"
     compileSdk = 34
     ndkVersion = flutter.ndkVersion
 
