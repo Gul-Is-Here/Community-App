@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" package="com.example.community_islamic_app">
+    xmlns:tools="http://schemas.android.com/tools" package="com.community_islamic_app.app">
 
     <!-- Permissions -->
     <uses-permission android:name="android.permission.INTERNET"/>

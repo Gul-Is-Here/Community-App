@@ -22,10 +22,7 @@ class AnnouncementsScreen extends StatelessWidget {
             onPressed: () {
               Get.back();
             },
-            icon: Icon(
-              Icons.arrow_back,
-              color: Colors.white,
-            )),
+            icon: Icon(Icons.arrow_back_ios, color: Colors.white, size: 20)),
         backgroundColor: primaryColor,
         // actions: [
         //   IconButton(
@@ -45,9 +42,10 @@ class AnnouncementsScreen extends StatelessWidget {
             ),
           ),
         ),
-        title: const Text(
+        title: Text(
           'Announcements',
-          style: TextStyle(fontFamily: popinsSemiBold, color: Colors.white),
+          style: TextStyle(
+              fontFamily: popinsSemiBold, color: lightColor, fontSize: 18),
         ),
         actions: [
           GestureDetector(
@@ -62,7 +60,7 @@ class AnnouncementsScreen extends StatelessWidget {
             ),
           ),
         ],
-        
+
         // centerTitle: true,
       ),
       body: Obx(() {
@@ -88,6 +86,7 @@ class AnnouncementsScreen extends StatelessWidget {
                 alertDisc: alert.alertDescription,
                 onTap: () {
                   Get.to(() => AnnouncementsDetailsScreen(
+                      image: alert.image,
                       alertDisc: alert.alertDescription,
                       controller: controller,
                       title: alert.alertTitle,
@@ -132,7 +131,10 @@ class AnnouncementCard extends StatelessWidget {
         child: Card(
           child: Container(
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
+                border: Border.all(width: 2, color: Color(0xFFC4F1DD)),
+                borderRadius: BorderRadius.circular(
+                  10,
+                ),
                 color: Color(0xFF032727)),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

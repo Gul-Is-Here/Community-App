@@ -197,7 +197,7 @@ class HomeController extends GetxController {
 
         if (fajrDateTime.isAfter(now)) {
           await _notificationServices.scheduleNotificationForAdhan(
-            body: "Its Fajr Athan Time",
+            body: "Its Fajr Adhan Time",
             scheduleNotificationDateTime: fajrDateTime,
             payLoad: "fajr",
           );
@@ -222,7 +222,7 @@ class HomeController extends GetxController {
 
         if (dhuhrDateTime.isAfter(now)) {
           await _notificationServices.scheduleNotificationForAdhan(
-            body: "Its Zuhr Athan Time",
+            body: "Its Zuhr Adhan Time",
             scheduleNotificationDateTime: dhuhrDateTime,
             payLoad: "dhuhr",
           );
@@ -247,7 +247,7 @@ class HomeController extends GetxController {
 
         if (asrDateTime.isAfter(now)) {
           await _notificationServices.scheduleNotificationForAdhan(
-            body: "Its Asr Athan Time",
+            body: "Its Asr Adhan Time",
             scheduleNotificationDateTime: asrDateTime,
             payLoad: "asr",
           );
@@ -273,7 +273,7 @@ class HomeController extends GetxController {
 
         if (maghribDateTime.isAfter(now)) {
           await _notificationServices.scheduleNotificationForAdhan(
-            body: "Its Maghrib Athan Time",
+            body: "Its Maghrib Adhan Time",
             scheduleNotificationDateTime: maghribDateTime,
             payLoad: "maghrib",
           );
@@ -298,7 +298,7 @@ class HomeController extends GetxController {
 
         if (ishaDateTime.isAfter(now)) {
           await _notificationServices.scheduleNotificationForAdhan(
-            body: "Its Isha Athan Time",
+            body: "Its Isha Adhan Time",
             scheduleNotificationDateTime: ishaDateTime,
             payLoad: "isha",
           );
@@ -452,52 +452,52 @@ class HomeController extends GetxController {
 
           // Determine the current or next prayer
           if (now.isBefore(fajrTime)) {
-            currentPrayerTitle.value = "Next: Fajr";
+            currentPrayerTitle.value = "Next: FAJR";
             return;
           }
           if (now.isBefore(fajrIqama)) {
-            currentPrayerTitle.value = "Fajr";
+            currentPrayerTitle.value = "FAJR";
             return;
           }
 
           if (now.isBefore(dhuhrTime)) {
-            currentPrayerTitle.value = "Next: Dhuhr";
+            currentPrayerTitle.value = "Next: DHUHR";
             return;
           }
           if (now.isBefore(dhuhrIqama)) {
-            currentPrayerTitle.value = "Dhuhr";
+            currentPrayerTitle.value = "DHUHR";
             return;
           }
 
           if (now.isBefore(asrTime)) {
-            currentPrayerTitle.value = "Next: Asr";
+            currentPrayerTitle.value = "Next: ASR";
             return;
           }
           if (now.isBefore(asrIqama)) {
-            currentPrayerTitle.value = "Asr";
+            currentPrayerTitle.value = "ASR";
             return;
           }
 
           if (now.isBefore(maghribTime)) {
-            currentPrayerTitle.value = "Next: Maghrib";
+            currentPrayerTitle.value = "Next: MAGHRIB";
             return;
           }
           if (now.isBefore(maghribIqama)) {
-            currentPrayerTitle.value = "Maghrib";
+            currentPrayerTitle.value = "MAGHRIB";
             return;
           }
 
           if (now.isBefore(ishaTime)) {
-            currentPrayerTitle.value = "Next: Isha";
+            currentPrayerTitle.value = "Next: ISHA";
             return;
           }
           if (now.isBefore(ishaIqama)) {
-            currentPrayerTitle.value = "Isha";
+            currentPrayerTitle.value = "ISHA";
             return;
           }
 
           // If all prayers for today have passed
-          currentPrayerTitle.value = "Next: Fajr";
+          currentPrayerTitle.value = "Next: FAJR";
           return;
         }
       }

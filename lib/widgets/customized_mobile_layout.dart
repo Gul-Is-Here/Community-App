@@ -69,12 +69,13 @@ class CustomizedMobileLayout extends StatelessWidget {
             _buildHeader(context),
             Center(
               child: SizedBox(
-                height: screenHeight1 * .2,
+                height: screenHeight1 * .20,
                 width: 350,
                 child: Card(
                   color: const Color(0xFF032727),
                   child: Padding(
-                    padding: const EdgeInsets.all(12.0),
+                    padding:
+                        const EdgeInsets.only(right: 12.0, left: 12, top: 12),
                     child: Column(
                       children: [
                         _buildPrayerTimeHeader(),
@@ -88,14 +89,14 @@ class CustomizedMobileLayout extends StatelessWidget {
             ),
             // const SizedBox(height: 10),
             _buildSectionTitle(
-              title: 'Prayer Time',
+              title: 'PRAYER TIME',
               trailing: _buildLiveStreamButton(),
             ),
             const SizedBox(height: 10),
             _buildPrayerTimesCard(iqamatimes),
             _buildEventsAndAnnouncements(),
             // _buildFeaturesSection(),
-            _buildOurServicesSection(),
+            buildOurServicesSection(),
             const SizedBox(height: 100),
           ],
         ),
@@ -220,13 +221,16 @@ class CustomizedMobileLayout extends StatelessWidget {
         Expanded(
           child: Obx(() => Row(
                 children: [
-                  Text(
-                    '${homeController.currentPrayerTitle.value} ',
-                    style: TextStyle(
-                      fontFamily: popinsBold,
-                      color: whiteColor,
-                      fontSize: 28,
-                      overflow: TextOverflow.ellipsis, // Prevents overflow
+                  Padding(
+                    padding: const EdgeInsets.only(top: 5.0),
+                    child: Text(
+                      '${homeController.currentPrayerTitle.value} ',
+                      style: TextStyle(
+                        fontFamily: popinsBold,
+                        color: whiteColor,
+                        fontSize: 28,
+                        overflow: TextOverflow.ellipsis, // Prevents overflow
+                      ),
                     ),
                   ),
                   const BlinkingDot(),
@@ -238,7 +242,9 @@ class CustomizedMobileLayout extends StatelessWidget {
 
         /// Share Icon
         Padding(
-          padding: const EdgeInsets.only(right: 12.0),
+          padding: const EdgeInsets.only(
+            right: 12.0,
+          ),
           child: GestureDetector(
             onTap: () => appClass.showSocialMediaDialog(context),
             child: Image.asset(
@@ -319,20 +325,33 @@ class CustomizedMobileLayout extends StatelessWidget {
             const SizedBox(height: 8), // Add spacing
             Row(
               children: [
-                _buildNavLink(' Calendar',
-                    () => Get.to(() => const HijriCalendarExample())),
-                _buildNavLink('  View Times',
-                    () => Get.to(() => const NamazTimingsScreen())),
+                buildNavLink(
+                    ' Calendar',
+                    () => Get.to(() => const HijriCalendarExample()),
+                    Icon(
+                      Icons.calendar_month,
+                      color: goldenColor,
+                      size: 15,
+                    )),
+                buildNavLink(
+                    '  View Times',
+                    () => Get.to(() => const NamazTimingsScreen()),
+                    Icon(
+                      Icons.timer,
+                      color: goldenColor,
+                      size: 15,
+                    )),
               ],
             ),
           ],
         ),
 
         /// Masjid Location Icon
+        // SizedBox(height: 40),
         GestureDetector(
           onTap: () => Get.to(() => MapSplashScreen()),
           child: Padding(
-            padding: const EdgeInsets.only(right: 10.0),
+            padding: const EdgeInsets.only(right: 12.0, top: 8),
             child: Image.asset(
               wayMasjid,
               width: 28,
@@ -345,19 +364,26 @@ class CustomizedMobileLayout extends StatelessWidget {
   }
 
   /// Helper widget for navigation links in the prayer card.
-  Widget _buildNavLink(String text, VoidCallback onTap) {
+  Widget buildNavLink(String text, VoidCallback onTap, Icon icIcon) {
     return GestureDetector(
       onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 2),
-        child: Text(
-          text,
-          style: TextStyle(
-            fontFamily: popinsRegulr,
-            color: whiteColor,
-            fontSize: 11,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          icIcon,
+          // const SizedBox(width: 4), // Reduced space between icon and text
+          Text(
+            text,
+            style: TextStyle(
+              fontFamily: popinsRegulr,
+              color: whiteColor,
+              fontSize: 11,
+            ),
           ),
-        ),
+          SizedBox(
+            width: 10,
+          )
+        ],
       ),
     );
   }
@@ -365,35 +391,22 @@ class CustomizedMobileLayout extends StatelessWidget {
   /// Builds a section title with an optional trailing widget.
   Widget _buildSectionTitle({required String title, Widget? trailing}) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      padding: const EdgeInsets.only(
+        left: 12,
+        right: 12,
+        top: 8,
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          Row(
-            children: [
-              Text(
-                title,
-                style: TextStyle(
-                  fontFamily: popinsBold,
-                  fontSize: 16,
-                  color: whiteColor,
-                ),
-              ),
-              SizedBox(
-                width: 5,
-              ),
-              GestureDetector(
-                onTap: () {
-                  Get.to(() => const AzanSettingsScreen());
-                },
-                child: Image.asset(
-                  notificationICon,
-                  width: 20,
-                  height: 20,
-                ),
-              ),
-            ],
+          Text(
+            title,
+            style: TextStyle(
+              fontFamily: popinsBold,
+              fontSize: 16,
+              color: whiteColor,
+            ),
           ),
           if (trailing != null) trailing,
         ],
@@ -407,7 +420,7 @@ class CustomizedMobileLayout extends StatelessWidget {
       // Show a default live indicator when loading.
       if (liveStreamController.isLoading.value) {
         return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 6),
+          padding: const EdgeInsets.only(top: 2, left: 6, right: 6),
           child: Row(
             children: [
               Text(
@@ -654,12 +667,12 @@ class CustomizedMobileLayout extends StatelessWidget {
   // }
 
   /// Builds the "Our Services" section with a toggle button.
-  Widget _buildOurServicesSection() {
+  Widget buildOurServicesSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildSectionTitle(
-          title: 'Our Services',
+          title: 'OUR SERVICES',
           trailing: Obx(() => IconButton(
                 onPressed: () {
                   eventsController.isHiddenServices.value =
@@ -673,7 +686,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                 ),
               )),
         ),
-        const SizedBox(height: 5),
+        // const SizedBox(height: 5),
         Obx(() {
           if (!eventsController.isHiddenServices.value) {
             return Padding(
@@ -684,17 +697,16 @@ class CustomizedMobileLayout extends StatelessWidget {
                   OurServicesWidget(
                     title: '5 DAILY\nPRAYERS',
                     image: dailyPrayer,
-                    onTap: () => Get.to(() => const CommingSoonScreen()),
+                    onTap: () {},
                   ),
                   OurServicesWidget(
-                    title: 'FREE QURAN CLASSES',
-                    image: freeQuranClasses,
-                    onTap: () => Get.to(() => const CommingSoonScreen()),
-                  ),
+                      title: 'FREE QURAN CLASSES',
+                      image: freeQuranClasses,
+                      onTap: () {}),
                   OurServicesWidget(
                     title: 'YOUTH SIRA SERIES',
                     image: youthSeraSeries,
-                    onTap: () => Get.to(() => const CommingSoonScreen()),
+                    onTap: () {},
                   ),
                 ],
               ),
@@ -712,17 +724,17 @@ class CustomizedMobileLayout extends StatelessWidget {
                   OurServicesWidget(
                     title: 'GIRLS HALAQA',
                     image: girlsHaqa,
-                    onTap: () => Get.to(() => const CommingSoonScreen()),
+                    onTap: () {},
                   ),
                   OurServicesWidget(
                     title: 'YOUTH PROGRAM',
                     image: youthProgram,
-                    onTap: () => Get.to(() => const CommingSoonScreen()),
+                    onTap: () {},
                   ),
                   OurServicesWidget(
                     title: 'YOUTH SOCCER CLUB',
                     image: youthsoccorClub,
-                    onTap: () => Get.to(() => const CommingSoonScreen()),
+                    onTap: () {},
                   ),
                 ],
               ),

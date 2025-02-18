@@ -92,14 +92,14 @@ class AnnouncementWidget extends StatelessWidget {
 
   Widget _buildHeader() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      padding: const EdgeInsets.only(left: 12, top: 8, bottom: 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Row(
             children: [
               Text(
-                'Announcement',
+                'ANNOUNCEMENTS',
                 style: TextStyle(
                   fontFamily: popinsBold,
                   color: whiteColor,
@@ -110,7 +110,7 @@ class AnnouncementWidget extends StatelessWidget {
                 width: 5,
               ),
               // GestureDetector(
-              //   onTap: () => Get.to(() => NotificationSettingsPage()),
+              //   onTap: () => Get.to(() => NsotificationSettingsPage()),
               //   child: Image.asset(
               //     notificationICon,
               //     width: 20,
@@ -165,6 +165,7 @@ class AnnouncementWidget extends StatelessWidget {
           eventsController.selectedIndexAnnouncment.value =
               eventsController.alertsList.indexOf(alert);
           Get.to(() => AnnouncementsDetailsScreen(
+                image: alert.image,
                 alertDisc: alert.alertDescription,
                 controller: eventsController,
                 title: alert.alertTitle,
@@ -178,6 +179,7 @@ class AnnouncementWidget extends StatelessWidget {
           color: Colors.transparent,
           margin: const EdgeInsets.all(0),
           shape: RoundedRectangleBorder(
+            side: BorderSide(width: 2, color: const Color(0xFFC4F1DD)),
             borderRadius: BorderRadius.circular(10),
           ),
           child: Stack(

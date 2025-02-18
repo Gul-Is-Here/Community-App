@@ -251,11 +251,17 @@ class _EditFamilyMemberScreenState extends State<EditFamilyMemberScreen> {
                           fontFamily: popinsRegulr, color: whiteColor)),
                 ),
                 SizedBox(height: 24),
-                SizedBox(
+                Container(
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Colors.green, primaryColor],
+                      ),
+                      borderRadius: BorderRadius.circular(8)),
                   width: double.infinity,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFF0E8041), // Submit button color
+                      backgroundColor:
+                          Colors.transparent, // Submit button color
                       padding: EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),

@@ -17,15 +17,16 @@ class CusTomizedCardWidget2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final cardSize = screenWidth * 0.33; // Standardized card size
-
+    final cardSize = screenWidth * 0.33;
+    final screenHeiht = MediaQuery.of(context).size.width;
+    final cardHeight = screenHeiht * 0.33;
     return GestureDetector(
       onTap: onTap,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10),
         child: SizedBox(
           width: cardSize, // Fixed card width
-          height: cardSize + 20, // Fixed card height
+          height: cardHeight + 20, // Fixed card height
           child: Card(
             elevation: 10,
             shape: RoundedRectangleBorder(
@@ -33,7 +34,7 @@ class CusTomizedCardWidget2 extends StatelessWidget {
               side: BorderSide(width: 5, color: lightColor),
             ),
             child: Padding(
-              padding: const EdgeInsets.all(16), // Consistent padding
+              padding: const EdgeInsets.all(8), // Consistent padding
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -52,7 +53,7 @@ class CusTomizedCardWidget2 extends StatelessWidget {
                     title,
                     textAlign: TextAlign.center,
                     maxLines: 2,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontFamily: popinsRegulr,
                       overflow: TextOverflow.ellipsis,
                       color: Colors.black,

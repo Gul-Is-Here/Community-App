@@ -22,12 +22,16 @@ class UpdatePasswordScreen extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: primaryColor,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: whiteColor,
+            size: 20,
+          ),
           onPressed: controller.isLoading.value ? null : () => Get.back(),
         ),
       ),
@@ -47,7 +51,7 @@ class UpdatePasswordScreen extends StatelessWidget {
                     height: screenHeight * 0.15, // Height of the screen
                     child: Center(
                       child: SpinKitFadingCircle(
-                        color: primaryColor,
+                        color: lightColor,
                         size: 50.0,
                       ), // Loading indicator
                     ),
@@ -97,10 +101,10 @@ class UpdatePasswordScreen extends StatelessWidget {
                     children: [
                       Text(
                         userName,
-                        style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.w600,
-                        ),
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontFamily: popinsMedium,
+                            color: whiteColor),
                       ),
                       const SizedBox(height: 4),
                     ],
@@ -111,13 +115,18 @@ class UpdatePasswordScreen extends StatelessWidget {
               },
             ),
 
-            const Divider(),
+            Divider(
+              color: lightColor,
+            ),
             Align(
               alignment: Alignment.centerLeft,
               child: Container(
                 height: 45,
                 width: double.infinity,
-                decoration: BoxDecoration(color: containerConlor),
+                decoration: BoxDecoration(
+                    gradient:
+                        LinearGradient(colors: [Colors.green, primaryColor]),
+                    borderRadius: BorderRadius.circular(8)),
                 child: const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 8),
                   child: Center(
@@ -125,8 +134,8 @@ class UpdatePasswordScreen extends StatelessWidget {
                       'UPDATE PASSWORD',
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                        fontFamily: popinsMedium,
                       ),
                     ),
                   ),
@@ -150,59 +159,65 @@ class UpdatePasswordScreen extends StatelessWidget {
             ),
             const SizedBox(height: 40),
             Obx(() {
-              return ElevatedButton(
-                onPressed: controller.isLoading.value
-                    ? null
-                    : () {
-                        String oldPass = currentPassController.text.trim();
-                        String newPass = newPassController.text.trim();
-                        String confirmPass = confirmPassController.text.trim();
+              return Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    gradient:
+                        LinearGradient(colors: [Colors.green, primaryColor])),
+                child: ElevatedButton(
+                  onPressed: controller.isLoading.value
+                      ? null
+                      : () {
+                          String oldPass = currentPassController.text.trim();
+                          String newPass = newPassController.text.trim();
+                          String confirmPass =
+                              confirmPassController.text.trim();
 
-                        // Validation
-                        if (oldPass.isEmpty ||
-                            newPass.isEmpty ||
-                            confirmPass.isEmpty) {
-                          Get.snackbar('Error', 'Please fill in all fields');
-                          return;
-                        }
+                          // Validation
+                          if (oldPass.isEmpty ||
+                              newPass.isEmpty ||
+                              confirmPass.isEmpty) {
+                            Get.snackbar('Error', 'Please fill in all fields');
+                            return;
+                          }
 
-                        if (newPass.length < 6) {
-                          Get.snackbar('Error',
-                              'New password must be at least 6 characters');
-                          return;
-                        }
+                          if (newPass.length < 6) {
+                            Get.snackbar('Error',
+                                'New password must be at least 6 characters');
+                            return;
+                          }
 
-                        if (newPass != confirmPass) {
-                          Get.snackbar('Error', 'Passwords do not match');
-                          return;
-                        }
+                          if (newPass != confirmPass) {
+                            Get.snackbar('Error', 'Passwords do not match');
+                            return;
+                          }
 
-                        controller.updatePassword(
-                            oldPass, newPass, confirmPass);
-                      },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: primaryColor,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 80, vertical: 10),
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.elliptical(30, 30),
-                      bottomLeft: Radius.circular(5),
-                      bottomRight: Radius.elliptical(30, 30),
-                      topRight: Radius.circular(5),
-                    ),
-                  ),
-                  shadowColor: Colors.tealAccent.shade200,
-                  elevation: 10,
-                ),
-                child: controller.isLoading.value
-                    ? const CircularProgressIndicator(
-                        color: Colors.white,
-                      )
-                    : const Text(
-                        'UPDATE PASSWORD',
-                        style: TextStyle(fontSize: 16, color: Colors.white),
+                          controller.updatePassword(
+                              oldPass, newPass, confirmPass);
+                        },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.transparent,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 80, vertical: 10),
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.elliptical(30, 30),
+                        bottomLeft: Radius.circular(5),
+                        bottomRight: Radius.elliptical(30, 30),
+                        topRight: Radius.circular(5),
                       ),
+                    ),
+                    elevation: 10,
+                  ),
+                  child: controller.isLoading.value
+                      ? SpinKitFadingCircle(
+                          color: lightColor,
+                        )
+                      : const Text(
+                          'UPDATE PASSWORD',
+                          style: TextStyle(fontSize: 16, color: Colors.white),
+                        ),
+                ),
               );
             }),
           ],
@@ -230,7 +245,7 @@ class _PasswordTextField extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5),
         ),
-        color: Colors.white,
+        color: lightColor,
         shadowColor: Colors.grey.shade300,
         child: TextFormField(
           controller: controller,

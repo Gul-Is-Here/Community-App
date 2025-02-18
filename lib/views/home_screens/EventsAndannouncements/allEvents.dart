@@ -49,13 +49,24 @@ class _AllEventsDatesScreenState extends State<AllEventsDatesScreen> {
     return Scaffold(
       backgroundColor: whiteColor,
       appBar: AppBar(
+        bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(4.0),
+            child: Container(
+              color: lightColor,
+              height: 2.0,
+            )),
         leading: IconButton(
           onPressed: () => Get.back(),
-          icon: Icon(Icons.arrow_back, color: whiteColor),
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: whiteColor,
+            size: 20,
+          ),
         ),
         title: Text(
-          'All Events',
-          style: TextStyle(color: whiteColor, fontFamily: popinsMedium),
+          'Events',
+          style: TextStyle(
+              fontSize: 18, color: whiteColor, fontFamily: popinsSemiBold),
         ),
         actions: [
           GestureDetector(
@@ -70,7 +81,6 @@ class _AllEventsDatesScreenState extends State<AllEventsDatesScreen> {
             ),
           ),
         ],
-        
         backgroundColor: primaryColor,
       ),
       body: Obx(() {
@@ -155,11 +165,14 @@ class _AllEventsDatesScreenState extends State<AllEventsDatesScreen> {
                                       onTap: () {
                                         selectedEventType.value =
                                             eventType.eventtypeId;
-                                        selectedDate.value = null;
-                                        _calendarWidgetKey.currentState
-                                            ?.resetSelectedDate();
-                                        _calendarWidgetKey.currentState
-                                            ?._updateDisplayedEvents();
+                                        selectedDate.value =
+                                            null; // Clear selected date
+                                        setState(() {
+                                          _calendarWidgetKey.currentState
+                                              ?.resetSelectedDate();
+                                          _calendarWidgetKey.currentState
+                                              ?._updateDisplayedEvents();
+                                        });
                                       },
                                       child: Card(
                                         color: selectedEventType.value ==
@@ -244,7 +257,8 @@ class CalendarWidget extends StatefulWidget {
 class _CalendarWidgetState extends State<CalendarWidget> {
   late DateTime _currentDate;
   late PageController _pageController;
-  RxList<Event> _displayedEvents = <Event>[].obs; // Initialize as RxList<Event>
+  final RxList<Event> _displayedEvents =
+      <Event>[].obs; // Initialize as RxList<Event>
 
   @override
   void initState() {
@@ -418,7 +432,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                   Obx(() {
                     if (_displayedEvents.isNotEmpty) {
                       // Group events by their dates
-                      final groupedEvents =
+                      var groupedEvents =
                           _displayedEvents.fold<Map<DateTime, List<Event>>>(
                         {},
                         (map, event) {
@@ -435,103 +449,109 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                         child: ListView.builder(
                           itemCount: groupedEvents.keys.length,
                           itemBuilder: (context, index) {
-                            final eventDate =
-                                groupedEvents.keys.toList()[index];
-                            final events = groupedEvents[eventDate]!;
+                            Rx<DateTime> eventDate =
+                                groupedEvents.keys.toList()[index].obs;
+                            RxList<Event> events =
+                                groupedEvents[eventDate]!.obs;
 
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // Display the event date once as a header
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 8.0),
-                                  child: Text(
-                                    DateFormat('MMM, dd yyyy')
-                                        .format(eventDate),
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontFamily: popinsMedium,
-                                      color: Colors.black87,
-                                      fontWeight: FontWeight.bold,
+                            return Obx(
+                              () => Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  // Display the event date once as a header
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 8.0),
+                                    child: Text(
+                                      DateFormat('MMM, dd yyyy')
+                                          .format(eventDate.value),
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontFamily: popinsMedium,
+                                        color: Colors.black87,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                ...events.map((event) {
-                                  return GestureDetector(
-                                    onTap: () {
-                                      AppClass()
-                                          .EventDetailsShowModelBottomSheet(
-                                        context,
-                                        event.eventId,
-                                        event.eventTitle,
-                                        event.eventStarttime.toString(),
-                                        event.eventEndtime.toString(),
-                                        event.eventhastype.eventtypeName,
-                                        event.paid == '0'
-                                            ? 'Free Event'
-                                            : event.paid == '1'
-                                                ? 'Paid Event'
-                                                : '',
-                                        event.eventDate.toString(),
-                                        event.eventDetail,
-                                        event.eventImage,
-                                        event.venueName,
-                                        event.eventLink,
-                                      );
-                                    },
-                                    child: Container(
-                                      margin: const EdgeInsets.symmetric(
-                                          vertical: 8.0),
-                                      padding: const EdgeInsets.all(12.0),
-                                      decoration: BoxDecoration(
-                                        color: AppClass().hexToColor(event
-                                            .eventhastype.eventtypeBgcolor),
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Image.network(
-                                                event
-                                                    .eventhastype.eventtypeIcon,
-                                                height: 24,
-                                                width: 24,
-                                              ),
-                                              const SizedBox(width: 5),
-                                              Text(
-                                                event.eventTitle,
-                                                style: TextStyle(
-                                                  fontSize: 16,
-                                                  fontFamily: popinsMedium,
-                                                  color: AppClass().hexToColor(
-                                                      event.eventhastype
-                                                          .eventtypeTextcolor),
+                                  ...events.map((event) {
+                                    return GestureDetector(
+                                      onTap: () {
+                                        AppClass()
+                                            .EventDetailsShowModelBottomSheet(
+                                          context,
+                                          event.eventId,
+                                          event.eventTitle,
+                                          event.eventStarttime.toString(),
+                                          event.eventEndtime.toString(),
+                                          event.eventhastype.eventtypeName,
+                                          event.paid == '0'
+                                              ? 'Free Event'
+                                              : event.paid == '1'
+                                                  ? 'Paid Event'
+                                                  : '',
+                                          event.eventDate.toString(),
+                                          event.eventDetail,
+                                          event.eventImage,
+                                          event.venueName,
+                                          event.eventLink,
+                                        );
+                                      },
+                                      child: Container(
+                                        margin: const EdgeInsets.symmetric(
+                                            vertical: 8.0),
+                                        padding: const EdgeInsets.all(12.0),
+                                        decoration: BoxDecoration(
+                                          color: AppClass().hexToColor(event
+                                              .eventhastype.eventtypeBgcolor),
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Image.network(
+                                                  event.eventhastype
+                                                      .eventtypeIcon,
+                                                  height: 24,
+                                                  width: 24,
                                                 ),
-                                              ),
-                                            ],
-                                          ),
-                                          Text(
-                                              event.paid == '0'
-                                                  ? 'Free Event'
-                                                  : event.paid == '1'
-                                                      ? 'Paid Event'
-                                                      : '',
-                                              style: TextStyle(
-                                                  fontFamily: popinsMedium,
-                                                  fontSize: 14,
-                                                  color: AppClass().hexToColor(
-                                                      event.eventhastype
-                                                          .eventtypeTextcolor))),
-                                        ],
+                                                const SizedBox(width: 5),
+                                                Text(
+                                                  event.eventTitle,
+                                                  style: TextStyle(
+                                                    fontSize: 16,
+                                                    fontFamily: popinsMedium,
+                                                    color: AppClass()
+                                                        .hexToColor(event
+                                                            .eventhastype
+                                                            .eventtypeTextcolor),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            Text(
+                                                event.paid == '0'
+                                                    ? 'Free Event'
+                                                    : event.paid == '1'
+                                                        ? 'Paid Event'
+                                                        : '',
+                                                style: TextStyle(
+                                                    fontFamily: popinsMedium,
+                                                    fontSize: 14,
+                                                    color: AppClass()
+                                                        .hexToColor(event
+                                                            .eventhastype
+                                                            .eventtypeTextcolor))),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  );
-                                }).toList(),
-                              ],
+                                    );
+                                  }),
+                                ],
+                              ),
                             );
                           },
                         ),
@@ -623,10 +643,10 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                         colors: [Color(0xFF00A559), Color(0xFF006627)],
                       )
                     : null,
-                color: isSelected
-                    ? null // Selected dates use the gradient
+                color: widget.selectedDate.value == null
+                    ? whiteColor
                     : isToday
-                        ? const Color(0xFF00A559) // Highlight today's date
+                        ? whiteColor
                         : whiteColor,
                 borderRadius: BorderRadius.circular(5),
               ),
@@ -638,7 +658,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                     color: isSelected
                         ? whiteColor
                         : isToday
-                            ? whiteColor // Text color for today
+                            ? Colors.red // Text color for today
                             : Colors.black87,
                     fontFamily: popinsMedium,
                   ),

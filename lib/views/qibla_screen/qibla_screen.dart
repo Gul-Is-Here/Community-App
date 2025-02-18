@@ -34,7 +34,7 @@ class QiblahScreen extends StatelessWidget {
               TextButton(
                 onPressed: () =>
                     Navigator.of(context).pop(false), // Stay on the app
-                child: Text(
+                child: const Text(
                   "No",
                   style: TextStyle(fontFamily: popinsMedium, color: Colors.red),
                 ),
@@ -64,6 +64,7 @@ class QiblahScreen extends StatelessWidget {
       child: Scaffold(
         backgroundColor: primaryColor,
         appBar: AppBar(
+          centerTitle: true,
           leading: isNavigation
               ? IconButton(
                   onPressed: () {
@@ -74,15 +75,24 @@ class QiblahScreen extends StatelessWidget {
                     color: whiteColor,
                   ),
                 )
-              : SizedBox(),
+              : const SizedBox(),
           elevation: 0,
+          bottom: PreferredSize(
+              preferredSize: const Size.fromHeight(4.0),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Container(
+                  color: lightColor,
+                  height: 2.0,
+                ),
+              )),
           backgroundColor: Colors.transparent,
           title: Text(
             'Qibla Direction',
             style: TextStyle(
               fontFamily: popinsSemiBold,
               color: whiteColor,
-              fontSize: screenHeight * 0.022,
+              fontSize: 18,
             ),
           ),
           automaticallyImplyLeading: true,
@@ -112,13 +122,13 @@ class QiblahScreen extends StatelessWidget {
                       alignment: Alignment.center,
                       width: 234,
                       decoration: BoxDecoration(
-                          gradient: LinearGradient(
+                          gradient: const LinearGradient(
                               colors: [Color(0xFF01823D), Color(0xFF01823D)],
                               begin: Alignment.center,
                               end: Alignment.center),
                           borderRadius: BorderRadius.circular(5),
-                          border:
-                              Border.all(width: 1, color: Color(0xFF18423F))),
+                          border: Border.all(
+                              width: 1, color: const Color(0xFF18423F))),
                       child: Text(
                         'Compass',
                         style: TextStyle(
@@ -205,14 +215,14 @@ class QiblahScreen extends StatelessWidget {
                       width: screenWidth,
                       fit: BoxFit.cover,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 60,
                     ),
                   ],
                 ),
               );
             } else {
-              return Center(
+              return const Center(
                 child: Text(
                   "Unable to get Qiblah direction,\nPlease restart the app",
                   textAlign: TextAlign.center,
@@ -235,7 +245,7 @@ class QiblahScreen extends StatelessWidget {
     return Container(
       height: 67,
       width: 162,
-      padding: EdgeInsets.all(4),
+      padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),
         color: primaryColor,

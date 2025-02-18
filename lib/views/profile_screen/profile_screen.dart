@@ -28,13 +28,19 @@ class ProfileScreen extends StatelessWidget {
     final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      backgroundColor: Colors.white,
-      endDrawer: CustomDrawer(),
+      backgroundColor: primaryColor,
+      // drawerScrimColor: whiteColor,
+
+      // endDrawer: CustomDrawer(),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: whiteColor,
+            size: 20,
+          ),
           onPressed: () {
             Get.back();
           },
@@ -84,16 +90,17 @@ class ProfileScreen extends StatelessWidget {
                     Text(
                       "${userData?['first_name'] ?? ''} ${userData?['last_name'] ?? ''}",
                       style: TextStyle(
-                        fontSize: screenWidth * 0.06,
-                        fontWeight: FontWeight.bold,
-                      ),
+                          fontSize: screenWidth * 0.06,
+                          fontFamily: popinsMedium,
+                          color: whiteColor),
                     ),
                     SizedBox(height: screenHeight * 0.004),
                     Text(
                       userData?['email'] ?? '',
                       style: TextStyle(
+                        fontFamily: popinsMedium,
                         fontSize: screenWidth * 0.045,
-                        color: Colors.black,
+                        color: whiteColor,
                       ),
                     ),
                     SizedBox(height: screenHeight * 0.04),
@@ -103,23 +110,29 @@ class ProfileScreen extends StatelessWidget {
                         Expanded(
                           child: Card(
                             elevation: 10,
-                            child: ElevatedButton(
-                              onPressed: () {
-                                Get.to(() => UpdatePasswordScreen());
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: buttonColorP,
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: screenWidth * 0.04,
-                                  vertical: screenHeight * 0.025,
-                                ),
-                                shape: RoundedRectangleBorder(
+                            child: Container(
+                              decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(8),
+                                  gradient: LinearGradient(
+                                      colors: [Colors.green, primaryColor])),
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  Get.to(() => UpdatePasswordScreen());
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.transparent,
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: screenWidth * 0.04,
+                                    vertical: screenHeight * 0.025,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
                                 ),
-                              ),
-                              child: const Text(
-                                'Update Password',
-                                style: TextStyle(color: Colors.white),
+                                child: const Text(
+                                  'Update Password',
+                                  style: TextStyle(color: Colors.white),
+                                ),
                               ),
                             ),
                           ),
@@ -128,23 +141,29 @@ class ProfileScreen extends StatelessWidget {
                         Expanded(
                           child: Card(
                             elevation: 10,
-                            child: ElevatedButton(
-                              onPressed: () {
-                                Get.to(() => FamilyMemberScreen(                             ));
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: buttonColorP,
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: screenWidth * 0.05,
-                                  vertical: screenHeight * 0.025,
-                                ),
-                                shape: RoundedRectangleBorder(
+                            child: Container(
+                              decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(8),
+                                  gradient: LinearGradient(
+                                      colors: [Colors.green, primaryColor])),
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  Get.to(() => FamilyMemberScreen());
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.transparent,
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: screenWidth * 0.05,
+                                    vertical: screenHeight * 0.025,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
                                 ),
-                              ),
-                              child: const Text(
-                                'Family Member',
-                                style: TextStyle(color: Colors.white),
+                                child: const Text(
+                                  'Family Member',
+                                  style: TextStyle(color: Colors.white),
+                                ),
                               ),
                             ),
                           ),
@@ -152,45 +171,77 @@ class ProfileScreen extends StatelessWidget {
                       ],
                     ),
                     SizedBox(height: screenHeight * 0.03),
-                    const Divider(),
+                    Divider(
+                      color: lightColor,
+                    ),
                     ListTile(
-                      leading: const Icon(Icons.person),
+                      leading: Icon(
+                        Icons.person,
+                        color: whiteColor,
+                      ),
                       title: Text(
                         'Personal Information',
-                        style: TextStyle(fontSize: screenWidth * 0.045),
+                        style: TextStyle(
+                            fontSize: screenWidth * 0.045,
+                            fontFamily: popinsRegulr,
+                            color: whiteColor),
                       ),
                       onTap: () {
                         Get.to(() => PersonalInfoScreen());
                       },
                     ),
-                    const Divider(),
+                    Divider(
+                      color: lightColor,
+                    ),
                     ListTile(
-                      leading: const Icon(Icons.group),
+                      leading: Icon(
+                        Icons.group,
+                        color: whiteColor,
+                      ),
                       title: Text(
                         'Family Members',
-                        style: TextStyle(fontSize: screenWidth * 0.045),
+                        style: TextStyle(
+                            fontSize: screenWidth * 0.045,
+                            fontFamily: popinsRegulr,
+                            color: whiteColor),
                       ),
                       onTap: () {
                         Get.to(() => FamilyMemberScreen());
                       },
                     ),
-                    const Divider(),
+                    Divider(
+                      color: lightColor,
+                    ),
                     ListTile(
-                      leading: const Icon(Icons.class_sharp),
+                      leading: Icon(
+                        Icons.class_sharp,
+                        color: whiteColor,
+                      ),
                       title: Text(
                         'Classes',
-                        style: TextStyle(fontSize: screenWidth * 0.045),
+                        style: TextStyle(
+                            fontSize: screenWidth * 0.045,
+                            fontFamily: popinsRegulr,
+                            color: whiteColor),
                       ),
                       onTap: () {
                         Get.to(() => ClassesScreen());
                       },
                     ),
-                    const Divider(),
+                    Divider(
+                      color: lightColor,
+                    ),
                     ListTile(
-                      leading: const Icon(Icons.logout),
+                      leading: Icon(
+                        Icons.logout,
+                        color: whiteColor,
+                      ),
                       title: Text(
                         'Logout',
-                        style: TextStyle(fontSize: screenWidth * 0.045),
+                        style: TextStyle(
+                            fontSize: screenWidth * 0.045,
+                            fontFamily: popinsRegulr,
+                            color: whiteColor),
                       ),
                       onTap: () async {
                         await loginController.logoutUser();

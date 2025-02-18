@@ -11,8 +11,10 @@ import 'package:community_islamic_app/views/contact_us/contact_us_screen.dart';
 import 'package:community_islamic_app/views/contact_us/rate_Out_app.dart';
 import 'package:community_islamic_app/views/home_screens/home_screen.dart';
 import 'package:community_islamic_app/views/profile_screen/profile_screen.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:share_plus/share_plus.dart';
 // import 'package:velocity_x/velocity_x.dart';
 
 import '../hijri_calendar.dart';
@@ -105,7 +107,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                   height: 50,
                                   width: 50,
                                   decoration: BoxDecoration(
-                                    color: Color(
+                                    color: const Color(
                                         0xFF00A559), // Inner container color
                                     borderRadius: BorderRadius.circular(30),
                                   ),
@@ -118,7 +120,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               ),
                             ),
                             // 10.widthBox
-                            SizedBox(
+                            const SizedBox(
                               height: 10,
                             ),
                             Column(
@@ -211,7 +213,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                 ),
                               ),
                               // 10.widthBox,
-                              SizedBox(
+                              const SizedBox(
                                 height: 10,
                               ),
                               Column(
@@ -239,7 +241,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                 ],
                               ),
                               // 3.widthBox,
-                              SizedBox(
+                              const SizedBox(
                                 height: 3,
                               ),
                               IconButton(
@@ -278,12 +280,12 @@ class _CustomDrawerState extends State<CustomDrawer> {
             //       : const SizedBox(),
             // ),
             // 10.heightBox,
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: const Divider(color: Color(0xFF22554F)),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 15),
+              child: Divider(color: Color(0xFF22554F)),
             ),
             // ListTile(
             //   leading: Icon(Icons.calendar_month, color: primaryColor),
@@ -333,28 +335,37 @@ class _CustomDrawerState extends State<CustomDrawer> {
                 Get.to(() => AboutUsScreen());
               },
             ),
+
             ListTile(
               leading: Image.asset(
-                dShareIcon,
+                dNotificationIcon, // Replace with your actual asset path
                 height: 24,
                 width: 24,
               ),
-              title: Text('Share the App',
-                  style: TextStyle(
-                      fontFamily: popinsRegulr,
-                      fontSize: 14,
-                      color: whiteColor)),
+              title: const Text(
+                'Share the App', // Visible text
+                style: TextStyle(
+                  fontFamily: 'popinsRegulr',
+                  fontSize: 14,
+                  color: Colors.white,
+                ),
+              ),
               onTap: () {
-                // Handle app sharing
+                // Share the app link when tapped
+                Share.share(
+                  'Download *Rosenberg Community Center App!*\nhttps://play.google.com/store/apps/details?id=com.community_islamic_app.app',
+                  subject: 'Download *Rosenberg Community Center App!*',
+                );
               },
             ),
+
             ListTile(
               leading: Image.asset(
                 dourPromise,
                 height: 24,
                 width: 24,
               ),
-              title: Text('Rate Our App',
+              title: Text('RCC App Feedback ',
                   style: TextStyle(
                       fontFamily: popinsRegulr,
                       fontSize: 14,
@@ -401,7 +412,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           Get.to(() => LoginScreen());
                         },
                       )
-                    : SizedBox();
+                    : const SizedBox();
               }),
             ),
             SizedBox(

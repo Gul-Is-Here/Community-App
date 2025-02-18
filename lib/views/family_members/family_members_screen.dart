@@ -38,10 +38,14 @@ class _FamilyMemberScreenState extends State<FamilyMemberScreen> {
         title: const Text(
           'Family Members',
           style: TextStyle(
-              fontFamily: popinsMedium, fontSize: 20, color: Colors.white),
+              fontFamily: popinsSemiBold, fontSize: 18, color: Colors.white),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(
+            Icons.arrow_back_ios,
+            color: Colors.white,
+            size: 20,
+          ),
           onPressed: () => Get.back(),
         ),
         bottom: const PreferredSize(
@@ -53,7 +57,7 @@ class _FamilyMemberScreenState extends State<FamilyMemberScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: secondaryColor,
+        backgroundColor: Color(0xFF315B5A),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30),
           side: BorderSide(width: 2, color: goldenColor),
@@ -68,7 +72,10 @@ class _FamilyMemberScreenState extends State<FamilyMemberScreen> {
       body: Obx(() {
         if (profileController.isLoading.value) {
           return Center(
-            child: SpinKitFadingCircle(color: whiteColor, size: 50.0),
+            child: SpinKitFadingCircle(
+              color: lightColor,
+              size: 50.0,
+            ),
           );
         }
 
@@ -112,13 +119,13 @@ class _FamilyMemberScreenState extends State<FamilyMemberScreen> {
                 Expanded(
                   child: Container(
                     height: 100,
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFF00A559), Color(0xFF006627)],
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Color(0xFF315B5A), Color(0xFF315B5A)],
                         begin: Alignment.centerLeft,
                         end: Alignment.centerRight,
                       ),
-                      borderRadius: const BorderRadius.only(
+                      borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(10),
                         bottomLeft: Radius.circular(10),
                       ),
@@ -192,7 +199,7 @@ class _FamilyMemberScreenState extends State<FamilyMemberScreen> {
             right: 165,
             child: _buildActionButton(
               icon: Icons.edit,
-              color: primaryColor,
+              color: Color(0xFF315B5A),
               onPressed: () {
                 Get.to(() => EditFamilyMemberScreen(member: member));
               },

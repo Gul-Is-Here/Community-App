@@ -2,11 +2,13 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 import '../../../app_classes/app_class.dart';
 import '../../../constants/color.dart';
 import '../../../constants/image_constants.dart';
@@ -156,7 +158,7 @@ $details
         await Share.shareXFiles([XFile(file.path)], text: formattedDetails);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Failed to fetch image.")),
+          const SnackBar(content: Text("Failed to fetch image.")),
         );
       }
     } catch (e) {
@@ -172,33 +174,41 @@ $details
 
   @override
   Widget build(BuildContext context) {
+    final double screenHeight = MediaQuery.of(context).size.height;
+    final double screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
-      backgroundColor: Color(0xFF003130),
+      backgroundColor: lightColor,
       appBar: AppBar(
-        backgroundColor: Color(0xFF003130),
+        backgroundColor: const Color(0xFF003130),
         title: Text(
           "Event Detail",
           style: TextStyle(
-              color: lightColor,
+              fontSize: 18,
+              color: whiteColor,
               fontWeight: FontWeight.bold,
-              fontFamily: popinsRegulr),
+              fontFamily: popinsSemiBold),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+          icon: const Icon(
+            Icons.arrow_back_ios,
+            color: Colors.white,
+            size: 20,
+          ),
           onPressed: () => Navigator.of(context).pop(),
         ),
         actions: [
           IconButton(
             icon: isSharing
-                ? const SizedBox(
+                ? SizedBox(
                     height: 20,
                     width: 20,
                     child: CircularProgressIndicator(
-                      color: Colors.white,
+                      color: goldenColor,
                       strokeWidth: 2,
                     ),
                   )
-                : const Icon(Icons.share, color: Colors.white),
+                : Icon(Icons.share, color: goldenColor),
             onPressed: isSharing
                 ? null // Disable button while sharing
                 : () => _downloadAndShareImage(
@@ -210,27 +220,33 @@ $details
         ],
         centerTitle: false,
         elevation: 0,
+        bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(4.0),
+            child: Container(
+              color: lightColor,
+              height: 2.0,
+            )),
       ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             Container(
-              padding: EdgeInsets.all(5),
+              padding: const EdgeInsets.all(5),
               width: double.infinity,
-              decoration: BoxDecoration(color: Color(0xFF032727)),
+              decoration: BoxDecoration(color: lightColor),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Text(
                   widget.title,
                   style: TextStyle(
-                    fontSize: 20,
+                    fontSize: 18,
                     fontWeight: FontWeight.bold,
                     fontFamily: popinsRegulr,
-                    color: lightColor,
+                    color: primaryColor,
                   ),
                 ),
               ),
@@ -249,36 +265,31 @@ $details
             const SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                      color: Color(0xFF032727),
-                      borderRadius: BorderRadius.circular(5)),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        height: 5,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: _buildSectionTitle("Event Date"),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: Text(
-                          AppClass().formatDate2(widget.eventDate),
-                          style: TextStyle(
-                              fontSize: 16,
-                              color: lightColor,
-                              fontWeight: FontWeight.w500,
-                              fontFamily: popinsRegulr),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                    ],
-                  )),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: _buildSectionTitle("Event Date"),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Text(
+                      AppClass().formatDate2(widget.eventDate),
+                      style: TextStyle(
+                          fontSize: 16,
+                          color: primaryColor,
+                          fontWeight: FontWeight.w500,
+                          fontFamily: popinsRegulr),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                ],
+              ),
             ),
 
             const SizedBox(height: 20),
@@ -294,7 +305,7 @@ $details
                 style: TextStyle(
                     fontSize: 14,
                     height: 1.5,
-                    color: lightColor,
+                    color: primaryColor,
                     fontFamily: popinsRegulr),
               ),
             ),
@@ -308,8 +319,7 @@ $details
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Container(
                 decoration: BoxDecoration(
-                    color: Color(0xFF032727),
-                    borderRadius: BorderRadius.circular(5)),
+                    color: lightColor, borderRadius: BorderRadius.circular(5)),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -322,9 +332,9 @@ $details
                         children: [
                           Image.asset(
                             icLocation,
-                            color: lightColor,
+                            color: primaryColor,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 10,
                           ),
                           Text(
@@ -332,23 +342,24 @@ $details
                             style: TextStyle(
                                 fontFamily: popinsSemiBold,
                                 fontSize: 16,
-                                color: lightColor),
+                                color: primaryColor),
                           ),
-                          Text(
-                            '(click to locate )',
-                            style: TextStyle(
-                                fontFamily: popinsRegulr,
-                                fontSize: 11,
-                                color: lightColor),
-                          ),
+                          // Text(
+                          //   '(click to locate )',
+                          //   style: TextStyle(
+                          //       fontFamily: popinsRegulr,
+                          //       fontSize: 11,
+                          //       color: lightColor),
+                          // ),
                         ],
                       ),
                     ),
                     GestureDetector(
                       onTap: () {
-                        AppClass().launchURL(widget.locatinV);
-                        // print(eventLink);
-                      },
+                        AppClass().openMap(widget.locatinV);
+                      }
+                      // print(eventLink);
+                      ,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
                             vertical: 8.0, horizontal: 16),
@@ -360,7 +371,7 @@ $details
                                 overflow: TextOverflow.ellipsis,
                                 fontSize: 16,
                                 fontFamily: popinsSemiBold,
-                                color: lightColor)),
+                                color: primaryColor)),
                       ),
                     ),
                   ],
@@ -371,7 +382,7 @@ $details
             //   height: 5,
             // ),
 
-            SizedBox(
+            const SizedBox(
               height: 5,
             ),
 
@@ -390,7 +401,7 @@ $details
                               10,
                             ),
                           ),
-                          backgroundColor: Color(0xFF032727)),
+                          backgroundColor: primaryColor),
                       onPressed: _showDateTimePicker,
                       child: Text(
                         "Set Reminder",
@@ -408,7 +419,7 @@ $details
                           style: TextStyle(
                               fontFamily: popinsSemiBold,
                               fontSize: 16,
-                              color: lightColor),
+                              color: primaryColor),
                         ),
                         // const SizedBox(height: 5),
                         Text(
@@ -416,7 +427,7 @@ $details
                               .format(_reminderDateTime!),
                           style: TextStyle(
                               fontFamily: popinsRegulr,
-                              color: lightColor,
+                              color: primaryColor,
                               fontSize: 12),
                         ),
                       ],
@@ -467,7 +478,7 @@ $details
         await Share.shareXFiles([XFile(file.path)], text: formattedDetails);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Failed to fetch image.")),
+          const SnackBar(content: Text("Failed to fetch image.")),
         );
       }
     } catch (e) {
@@ -488,14 +499,14 @@ $details
             style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
-                color: lightColor,
+                color: primaryColor,
                 fontFamily: popinsRegulr),
           ),
           const SizedBox(height: 4),
           Text(
             value,
             style: TextStyle(
-                fontSize: 14, color: lightColor, fontFamily: popinsRegulr),
+                fontSize: 14, color: primaryColor, fontFamily: popinsRegulr),
           ),
         ],
       ),
@@ -509,7 +520,7 @@ $details
         fontSize: 16,
         fontWeight: FontWeight.bold,
         fontFamily: popinsRegulr,
-        color: lightColor,
+        color: primaryColor,
       ),
     );
   }

@@ -51,7 +51,7 @@ class EventsWidget extends StatelessWidget {
 
   Widget _buildEventsContent(List<Event> events) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+      padding: const EdgeInsets.only(left: 12, top: 5),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -79,7 +79,7 @@ class EventsWidget extends StatelessWidget {
         Row(
           children: [
             Text(
-              'Events',
+              'EVENTS',
               style: TextStyle(
                 fontFamily: popinsBold,
                 color: whiteColor,
