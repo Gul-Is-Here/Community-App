@@ -306,7 +306,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                         ),
                         const SizedBox(width: 5),
                         Padding(
-                          padding: const EdgeInsets.only(top: 12),
+                          padding: const EdgeInsets.only(top: 11),
                           child: Text(
                             ' (${homeController.currentPrayerIqama.value})',
                             style: TextStyle(

@@ -37,7 +37,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
             context,
             index: 3,
             icon: prayerIcon,
-            label: "Prayer",
+            label: "Ramadan",
           ),
           _buildNavItem(
             context,
@@ -70,14 +70,14 @@ class CustomBottomNavigationBar extends StatelessWidget {
                       color: primaryColor,
                       borderRadius: BorderRadius.circular(40)),
                   height: 34,
-                  width: 80,
+                  width: 100,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Image.asset(
                         icon,
-                        height: 18,
-                        width: 18,
+                        height: 20,
+                        width: 20,
                         color: whiteColor,
                       ),
                       const SizedBox(width: 8),

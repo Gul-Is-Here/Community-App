@@ -14,8 +14,7 @@ class HomeEventsController extends GetxController {
   var feedsList = <Feed>[].obs; // Observable list to store the fetched feeds
   var alertsList = <Alert>[].obs; // Observable list of Alert objects
   var currentIndex = 0.obs;
-  final String baseUrl = 'https://rosenbergcommunitycenter.org/api/allevents';
-  final String accessKey = '7b150e45-e0c1-43bc-9290-3c0bf6473a51332';
+
   RxBool isHiddenFeature = true.obs;
   RxBool isHiddenServices = true.obs;
   @override
@@ -29,16 +28,26 @@ class HomeEventsController extends GetxController {
   }
 
   // Method to fetch events and update the state
+
   void fetchEventsData() async {
     try {
       isLoading(true); // Set loading to true
-      final Uri url = Uri.parse('$baseUrl?access=$accessKey');
+      final Uri url = Uri.parse(
+          'https://rosenbergcommunitycenter.org/api/allevents?access=7b150e45-e0c1-43bc-9290-3c0bf6473a51332');
 
       final response = await http.get(url);
 
       if (response.statusCode == 200) {
-        // Parse the JSON and update the events observable
-        events.value = Events.fromRawJson(response.body);
+        if (response.body.isNotEmpty) {
+          try {
+            // Parse the JSON safely
+            events.value = Events.fromRawJson(response.body);
+          } catch (e) {
+            print("Error parsing JSON: $e");
+          }
+        } else {
+          print("Error: API returned empty response");
+        }
       } else {
         print("Failed to load events: ${response.statusCode}");
       }

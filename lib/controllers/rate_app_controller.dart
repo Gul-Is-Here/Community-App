@@ -9,6 +9,7 @@ class RateAppController extends GetxController {
 
   Future<void> sendRating({
     required int rating,
+    required String complainType, // New parameter
     String? email,
     String? review,
     String? attachmentPath,
@@ -17,6 +18,7 @@ class RateAppController extends GetxController {
       isLoading.value = true;
       bool success = await _apiService.rateApp(
         rating: rating,
+        complainType: complainType, // Added new parameter
         email: email,
         review: review,
         attachmentPath: attachmentPath,

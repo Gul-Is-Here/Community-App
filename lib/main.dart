@@ -102,11 +102,11 @@ void main() async {
   bool isAllowAnnouncement = await initFirebaseMessagingNoti();
   if (isAllow) {
     FirebaseMessaging.onBackgroundMessage(
-        NotificationServices().notifcationsForEvents);
+        NotificationServices().notificationsForEvents);
   }
   if (isAllowAnnouncement) {
     FirebaseMessaging.onBackgroundMessage(
-        NotificationServices().notifcationsForAnnouncements);
+        NotificationServices().notificationsForAnnouncements);
   }
   runApp(const MyApp());
 }

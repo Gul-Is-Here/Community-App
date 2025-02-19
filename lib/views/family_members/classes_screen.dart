@@ -94,7 +94,7 @@ class _ClassesScreenState extends State<ClassesScreen> {
                           Container(
                             height: 100,
                             width: screenWidth * .9,
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               gradient: LinearGradient(
                                 colors: [Color(0xFF315B5A), Color(0xFF315B5A)],
                                 begin: Alignment.centerLeft,
@@ -321,7 +321,7 @@ class _ClassesScreenState extends State<ClassesScreen> {
                                                       color: enrollmentStatus
                                                                   .value ==
                                                               'Enroll'
-                                                          ? Colors.white
+                                                          ? primaryColor
                                                           : enrollmentStatus
                                                                       .value ==
                                                                   'Pending Approval'
@@ -329,14 +329,14 @@ class _ClassesScreenState extends State<ClassesScreen> {
                                                               : enrollmentStatus
                                                                           .value ==
                                                                       'Enrolled'
-                                                                  ? Colors.green
+                                                                  ? secondaryColor
                                                                   : enrollmentStatus
                                                                               .value ==
                                                                           'Rejected'
                                                                       ? Colors
                                                                           .red
-                                                                      : Colors
-                                                                          .white,
+                                                                      : Color(
+                                                                          0xFF343A40),
                                                     ),
                                                     //isable button for other states
                                                     child: Obx(
@@ -346,7 +346,7 @@ class _ClassesScreenState extends State<ClassesScreen> {
                                                           color: enrollmentStatus
                                                                       .value ==
                                                                   'Enroll'
-                                                              ? Colors.black
+                                                              ? whiteColor
                                                               : enrollmentStatus
                                                                           .value ==
                                                                       'Pending Approval'
@@ -354,12 +354,7 @@ class _ClassesScreenState extends State<ClassesScreen> {
                                                                   : enrollmentStatus
                                                                               .value ==
                                                                           'Enrolled'
-                                                                      ? const Color
-                                                                          .fromARGB(
-                                                                          255,
-                                                                          170,
-                                                                          218,
-                                                                          171)
+                                                                      ? whiteColor
                                                                       : enrollmentStatus.value ==
                                                                               'Rejected'
                                                                           ? Colors
@@ -378,6 +373,7 @@ class _ClassesScreenState extends State<ClassesScreen> {
                                             ),
                                             ElevatedButton(
                                                 style: ElevatedButton.styleFrom(
+                                                  backgroundColor: primaryColor,
                                                   elevation: 0,
                                                   shape: RoundedRectangleBorder(
                                                       borderRadius:
@@ -387,10 +383,10 @@ class _ClassesScreenState extends State<ClassesScreen> {
                                                 onPressed: () {
                                                   _showDetailsDialog(classData);
                                                 },
-                                                child: const Text(
+                                                child: Text(
                                                   'Details',
                                                   style: TextStyle(
-                                                      color: Colors.black,
+                                                      color: whiteColor,
                                                       fontFamily: popinsMedium),
                                                 ))
                                           ],

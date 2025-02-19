@@ -273,51 +273,46 @@ class NotificationServices {
   }
 
   /// -------- Announcements------------------
-  Future<void> notifcationsForAnnouncements(
-    RemoteMessage message,
-  ) async {
-    if (sharedPreferencess?.getBool('annoucement') ?? false) {
-      await _flutterLocalNotificationPlugin.show(
-        1,
-        'ANNOUNCEMENT NotifICATION',
-        message.notification?.body ?? 'This is Announcement Notification',
-        const NotificationDetails(
-          android: AndroidNotificationDetails(
-            'announcement_channel',
-            'Announcement Notifications',
-            importance: Importance.max,
-            playSound: false,
-            priority: Priority.high,
-          ),
-          iOS: DarwinNotificationDetails(),
+ Future<void> notificationsForAnnouncements(RemoteMessage message) async {
+  if (sharedPreferencess?.getBool('annoucement') ?? false) {
+    await _flutterLocalNotificationPlugin.show(
+      1,
+      'ANNOUNCEMENT NOTIFICATION', // Static title
+      message.notification?.body ?? 'This is Announcement Notification',
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'announcement_channel',
+          'Announcement Notifications',
+          importance: Importance.max,
+          playSound: false,
+          priority: Priority.high,
         ),
-      );
-    }
-    debugPrint(
-      "this is here",
+        iOS: DarwinNotificationDetails(),
+      ),
     );
   }
+  debugPrint("this is here");
+}
 
-  ///------------ Events-----------
-  Future<void> notifcationsForEvents(
-    RemoteMessage message,
-  ) async {
-    if (sharedPreferencess?.getBool('event') ?? false) {
-      await _flutterLocalNotificationPlugin.show(
-        1,
-        'EVENT NOTIFICATION',
-        message.notification?.body ?? 'This is Event Notification',
-        const NotificationDetails(
-          android: AndroidNotificationDetails(
-            'events_channel',
-            'Events Notifications',
-            importance: Importance.max,
-            playSound: false,
-            priority: Priority.high,
-          ),
-          iOS: DarwinNotificationDetails(),
+///------------ Events-----------
+Future<void> notificationsForEvents(RemoteMessage message) async {
+  if (sharedPreferencess?.getBool('event') ?? false) {
+    await _flutterLocalNotificationPlugin.show(
+      1,
+      'EVENT NOTIFICATION', // Static title
+      message.notification?.body ?? 'This is Event Notification',
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'events_channel',
+          'Events Notifications',
+          importance: Importance.max,
+          playSound: false,
+          priority: Priority.high,
         ),
-      );
-    }
+        iOS: DarwinNotificationDetails(),
+      ),
+    );
   }
+}
+
 }

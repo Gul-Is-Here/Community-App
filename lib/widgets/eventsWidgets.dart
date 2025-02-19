@@ -134,6 +134,8 @@ class EventsWidget extends StatelessWidget {
           eventDate: event.eventDate.toString(),
           eventDetail: event.eventTitle,
           onTapDetails: () => Get.to(() => EventDetailPage(
+                resType: event.resType,
+                resUrl: event.resUrl,
                 eventId: event.eventId,
                 eventVenue: event.venueName,
                 title: event.eventTitle,
@@ -146,7 +148,7 @@ class EventsWidget extends StatelessWidget {
                         : '',
                 eventDate: event.eventDate.toString(),
                 eventDetails: event.eventDetail,
-                eventType: event.eventhastype.eventtypeName,
+                eventType: event.eventhastype!.eventtypeName,
                 imageLink: event.eventImage,
                 locatinV: event.eventLink,
               )),

@@ -39,8 +39,12 @@ class _AllEventsDatesScreenState extends State<AllEventsDatesScreen> {
       selectedEventType.value = 0; // Reset to "All" events
       selectedDate.value = null; // Reset the selected date
       _calendarWidgetKey.currentState?.resetSelectedDate();
-      _calendarWidgetKey.currentState
-          ?._updateDisplayedEvents(); // Update displayed events
+      _calendarWidgetKey.currentState?._updateDisplayedEvents();
+    });
+
+    // Trigger second update after a short delay
+    Future.delayed(const Duration(milliseconds: 200), () {
+      _calendarWidgetKey.currentState?._updateDisplayedEvents();
     });
   }
 
@@ -167,9 +171,18 @@ class _AllEventsDatesScreenState extends State<AllEventsDatesScreen> {
                                             eventType.eventtypeId;
                                         selectedDate.value =
                                             null; // Clear selected date
+
                                         setState(() {
                                           _calendarWidgetKey.currentState
                                               ?.resetSelectedDate();
+                                          _calendarWidgetKey.currentState
+                                              ?._updateDisplayedEvents();
+                                        });
+
+                                        // Trigger second update after a short delay
+                                        Future.delayed(
+                                            const Duration(milliseconds: 200),
+                                            () {
                                           _calendarWidgetKey.currentState
                                               ?._updateDisplayedEvents();
                                         });
@@ -302,7 +315,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
               entry.key.month == _currentDate.month &&
               (widget.selectedEventType.value == 0 ||
                   entry.value.any((event) =>
-                      event.eventhastype.eventtypeId ==
+                      event.eventhastype!.eventtypeId ==
                       widget.selectedEventType.value)))
           .expand((entry) => entry.value)
           .toList();
@@ -310,6 +323,11 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 
     // Notify parent about the updated events
     widget.onEventsUpdated(_displayedEvents);
+
+    // Trigger second update after a short delay
+    Future.delayed(const Duration(milliseconds: 200), () {
+      widget.onEventsUpdated(_displayedEvents);
+    });
   }
 
   int _calculatePageIndex(DateTime date) {
@@ -478,23 +496,27 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                                       onTap: () {
                                         AppClass()
                                             .EventDetailsShowModelBottomSheet(
-                                          context,
-                                          event.eventId,
-                                          event.eventTitle,
-                                          event.eventStarttime.toString(),
-                                          event.eventEndtime.toString(),
-                                          event.eventhastype.eventtypeName,
-                                          event.paid == '0'
-                                              ? 'Free Event'
-                                              : event.paid == '1'
-                                                  ? 'Paid Event'
-                                                  : '',
-                                          event.eventDate.toString(),
-                                          event.eventDetail,
-                                          event.eventImage,
-                                          event.venueName,
-                                          event.eventLink,
-                                        );
+                                                context,
+                                                event.eventId,
+                                                event.eventTitle,
+                                                event.eventStarttime.toString(),
+                                                event.eventEndtime.toString(),
+                                                event.eventhastype!
+                                                    .eventtypeName,
+                                                event.paid == '0'
+                                                    ? 'Free Event'
+                                                    : event.paid == '1'
+                                                        ? 'Paid Event'
+                                                        : '',
+                                                event.eventDate.toString(),
+                                                event.eventDetail,
+                                                event.eventImage,
+                                                event.venueName,
+                                                event.eventLink,
+                                                event.resUrl == null
+                                                    ? ''
+                                                    : event.resUrl!,
+                                                event.resType);
                                       },
                                       child: Container(
                                         margin: const EdgeInsets.symmetric(
@@ -502,7 +524,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                                         padding: const EdgeInsets.all(12.0),
                                         decoration: BoxDecoration(
                                           color: AppClass().hexToColor(event
-                                              .eventhastype.eventtypeBgcolor),
+                                              .eventhastype!.eventtypeBgcolor),
                                           borderRadius:
                                               BorderRadius.circular(10),
                                         ),
@@ -513,7 +535,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                                             Row(
                                               children: [
                                                 Image.network(
-                                                  event.eventhastype
+                                                  event.eventhastype!
                                                       .eventtypeIcon,
                                                   height: 24,
                                                   width: 24,
@@ -526,7 +548,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                                                     fontFamily: popinsMedium,
                                                     color: AppClass()
                                                         .hexToColor(event
-                                                            .eventhastype
+                                                            .eventhastype!
                                                             .eventtypeTextcolor),
                                                   ),
                                                 ),
@@ -543,7 +565,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                                                     fontSize: 14,
                                                     color: AppClass()
                                                         .hexToColor(event
-                                                            .eventhastype
+                                                            .eventhastype!
                                                             .eventtypeTextcolor))),
                                           ],
                                         ),
@@ -679,7 +701,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                       height: 6.0,
                       decoration: BoxDecoration(
                         color: AppClass()
-                            .hexToColor(event.eventhastype.eventtypeBgcolor),
+                            .hexToColor(event.eventhastype!.eventtypeBgcolor),
                         borderRadius: BorderRadius.circular(20),
                       ),
                     );

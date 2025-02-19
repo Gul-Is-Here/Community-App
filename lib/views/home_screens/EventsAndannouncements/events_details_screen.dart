@@ -26,9 +26,13 @@ class EventDetailPage extends StatefulWidget {
   final String imageLink;
   final String locatinV;
   final String eventVenue;
+  final String resType;
+  final String? resUrl;
 
   const EventDetailPage({
     super.key,
+    required this.resType,
+    required this.resUrl,
     required this.eventId,
     required this.title,
     required this.sTime,
@@ -174,9 +178,6 @@ $details
 
   @override
   Widget build(BuildContext context) {
-    final double screenHeight = MediaQuery.of(context).size.height;
-    final double screenWidth = MediaQuery.of(context).size.width;
-
     return Scaffold(
       backgroundColor: lightColor,
       appBar: AppBar(
@@ -388,26 +389,55 @@ $details
 
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Row(
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(
                         vertical: 8.0, horizontal: 16),
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                              10,
-                            ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                  10,
+                                ),
+                              ),
+                              backgroundColor: primaryColor),
+                          onPressed: _showDateTimePicker,
+                          child: Text(
+                            "Set Reminder",
+                            style: TextStyle(
+                                fontFamily: popinsMedium, color: lightColor),
                           ),
-                          backgroundColor: primaryColor),
-                      onPressed: _showDateTimePicker,
-                      child: Text(
-                        "Set Reminder",
-                        style: TextStyle(
-                            fontFamily: popinsMedium, color: lightColor),
-                      ),
+                        ),
+                        widget.resType == '3'
+                            ? const SizedBox()
+                            : ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(
+                                        10,
+                                      ),
+                                    ),
+                                    backgroundColor: primaryColor),
+                                onPressed: () {
+                                  AppClass().launchURL(widget.resUrl!);
+                                },
+                                child: Text(
+                                  widget.resType == '1'
+                                      ? "Register"
+                                      : widget.resType == '2'
+                                          ? 'RSVP'
+                                          : '',
+                                  style: TextStyle(
+                                      fontFamily: popinsMedium,
+                                      color: lightColor),
+                                ),
+                              ),
+                      ],
                     ),
                   ),
                   if (_reminderDateTime != null) ...[
