@@ -688,6 +688,8 @@ $details
     String imageLink,
     String locatinD,
     String eventLink,
+    String resUrl,
+    String resType,
   ) {
     DateTime? reminderDateTime0;
     bool isSharing = false; // State to manage sharing loader
@@ -747,8 +749,13 @@ $details
             }
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                  content: Text('Reminder must be set before the event time.')),
+              SnackBar(
+                  backgroundColor: Colors.red,
+                  content: Text(
+                    'Reminder must be set before the event time.',
+                    style:
+                        TextStyle(color: whiteColor, fontFamily: popinsRegulr),
+                  )),
             );
           }
         }
@@ -864,17 +871,17 @@ $details
                               Text(
                                 'Start: ${formatTimeToAMPM(sTime)}',
                                 style: TextStyle(
-                                    fontFamily: popinsRegulr,
-                                    color: primaryColor,
-                                    fontSize: 12),
+                                  fontFamily: popinsRegulr,
+                                  color: primaryColor,
+                                ),
                               ),
                               const SizedBox(height: 5),
                               Text(
                                 'End: ${formatTimeToAMPM(endTime)}',
                                 style: TextStyle(
-                                    fontFamily: popinsRegulr,
-                                    color: primaryColor,
-                                    fontSize: 12),
+                                  fontFamily: popinsRegulr,
+                                  color: primaryColor,
+                                ),
                               ),
                             ],
                           ),
@@ -892,17 +899,16 @@ $details
                               Text(
                                 'Type: $eventType',
                                 style: TextStyle(
-                                    fontFamily: popinsRegulr,
-                                    color: primaryColor,
-                                    fontSize: 12),
+                                  fontFamily: popinsRegulr,
+                                  color: primaryColor,
+                                ),
                               ),
                               const SizedBox(height: 5),
                               Text(
                                 'Entry: $entry',
                                 style: TextStyle(
-                                    fontFamily: popinsRegulr,
-                                    color: primaryColor,
-                                    fontSize: 12),
+                                  fontFamily: popinsRegulr,
+                                ),
                               ),
                             ],
                           ),
@@ -933,9 +939,9 @@ $details
                             Text(
                               '${AppClass().formatDate2(eventDate)}',
                               style: TextStyle(
-                                  fontFamily: popinsRegulr,
-                                  color: primaryColor,
-                                  fontSize: 12),
+                                fontFamily: popinsRegulr,
+                                color: primaryColor,
+                              ),
                             ),
                           ],
                         ),
@@ -1025,25 +1031,52 @@ $details
                         height: 5,
                       ),
                       const SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      Column(
                         children: [
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    backgroundColor: primaryColor),
+                                onPressed: () async {
+                                  await showDateTimePicker();
+                                },
+                                child: Text(
+                                  "Set Reminder",
+                                  style: TextStyle(
+                                      fontFamily: popinsMedium, color: lightColor),
                                 ),
-                                backgroundColor: primaryColor),
-                            onPressed: () async {
-                              await showDateTimePicker();
-                            },
-                            child: Text(
-                              "Set Reminder",
-                              style: TextStyle(
-                                  fontFamily: popinsMedium, color: lightColor),
-                            ),
-                          ),
-                          if (reminderDateTime0 != null) ...[
+                              ),  resType == '3'
+                                ? const SizedBox()
+                                : ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
+                                        ),
+                                        backgroundColor: primaryColor),
+                                    onPressed: () {
+                                      AppClass().launchURL(resUrl!);
+                                    },
+                                    child: Text(
+                                      resType == '1'
+                                          ? "Register"
+                                          : resType == '2'
+                                              ? 'RSVP'
+                                              : '',
+                                      style: TextStyle(
+                                          fontFamily: popinsMedium,
+                                          color: lightColor),
+                                    ),
+                                  ),
+                              
+                            ],
+                          ),if (reminderDateTime0 != null) ...[
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [

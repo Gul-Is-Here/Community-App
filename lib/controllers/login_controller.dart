@@ -64,7 +64,7 @@ class LoginController extends GetxController {
           await prefs.setString('userid', globals.userId.value);
 
           Get.snackbar("Success", "Login successful.");
-          Get.offAll(() => const Home()); // Navigate to Home screen
+          Get.off(() => const Home()); // Navigate to Home screen
         } else {
           Get.snackbar("Error", "Invalid login credentials.");
         }

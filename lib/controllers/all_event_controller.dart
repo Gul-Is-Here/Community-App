@@ -49,14 +49,14 @@ class EventTypeController extends GetxController {
           .expand((events) => events)
           .where((event) =>
               selectedEventType == 1 ||
-              event.eventhastype.eventtypeId == selectedEventType)
+              event.eventhastype!.eventtypeId == selectedEventType)
           .toList();
     } else {
       // Otherwise, filter events by the selected date and event type
       return (eventDates[selectedDate] ?? [])
           .where((event) =>
               selectedEventType == 1 ||
-              event.eventhastype.eventtypeId == selectedEventType)
+              event.eventhastype!.eventtypeId == selectedEventType)
           .toList();
     }
   }
