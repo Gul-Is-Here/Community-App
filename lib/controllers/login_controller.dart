@@ -13,7 +13,9 @@ class LoginController extends GetxController {
   var password = ''.obs;
   var isLoading = false.obs;
   // var isLoggedIn = ''.obs; // Observable login state
-
+  final RxBool sendUsername = false.obs;
+  final RxBool sendPassword = false.obs;
+  final RxString message = ''.obs; // For success/error messages
   var profileImage = Rx<File?>(null);
   var relationAvatar = 'male.png'.obs;
   @override
@@ -24,6 +26,14 @@ class LoginController extends GetxController {
     isLoggedIn();
     loadAuthToken();
     _loadaId();
+  }
+
+  void toggleSendUsername(bool value) {
+    sendUsername.value = value;
+  }
+
+  void toggleSendPassword(bool value) {
+    sendPassword.value = value;
   }
 
   Future<void> loginUser() async {
@@ -155,5 +165,42 @@ class LoginController extends GetxController {
     } catch (e) {
       Get.snackbar("Error", "An error occurred: $e");
     }
+  }
+// Reset Password APi Method
+
+  Future<void> resetPassword({
+    required String email,
+    required bool sendUsername,
+    required bool sendPassword,
+  }) async {
+    isLoading.value = true; // Show loading indicator
+    message.value = ''; // Clear previous messages
+    // API endpoint
+    final url = Uri.parse(
+      'https://rosenbergcommunitycenter.org/api/ResetUserPassAPI?access=7b150e45-e0c1-43bc-9290-3c0bf6473a51332',
+    );
+
+    // Prepare form data
+    final request = http.MultipartRequest('POST', url)
+      ..fields['email'] = email
+      ..fields['username'] = sendUsername ? 'yes' : 'no'
+      ..fields['password'] = sendPassword ? 'yes' : 'no';
+
+    // Send the request
+    final response = await request.send();
+
+    // Simulate API call delay
+    await Future.delayed(const Duration(seconds: 2));
+    // Handle the response
+    if (response.statusCode == 200) {
+      message.value = 'Password reset email sent successfully!';
+    } else if (response.statusCode == 403) {
+      message.value = 'Error: Access Denied.';
+    } else if (response.statusCode == 404) {
+      message.value = 'Error: Please enter a valid email address.';
+    } else {
+      print('Failed with status code: ${response.statusCode}');
+    }
+    isLoading.value = false; // Hide loading indicator
   }
 }

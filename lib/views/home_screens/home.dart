@@ -1,8 +1,9 @@
 import 'package:community_islamic_app/controllers/quran_controller.dart';
+import 'package:community_islamic_app/views/RamadanScreen/ramadanScreen.dart';
 import 'package:community_islamic_app/views/home_screens/comming_soon_screen.dart';
 import 'package:community_islamic_app/views/home_screens/home_screen.dart';
 import 'package:community_islamic_app/views/home_screens/masjid_map/map_splash_screen.dart';
-import 'package:community_islamic_app/views/prayer_screens/prayer_screen.dart';
+// import 'package:community_islamic_app/views/ramadan_screen/ramadan_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -54,7 +55,7 @@ class _HomeState extends State<Home> {
       const QuranScreen(
         isNavigation: false,
       ),
-      const CommingSoonScreen(),
+      RamadanScreen(),
       DonationScreen()
     ];
 

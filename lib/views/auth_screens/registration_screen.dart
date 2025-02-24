@@ -17,6 +17,7 @@ class RegistrationScreen extends StatelessWidget {
     final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
+      backgroundColor: whiteColor,
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(0),
@@ -44,6 +45,7 @@ class RegistrationScreen extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(top: 250),
                     child: Card(
+                      color: whiteColor,
                       shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.only(
                               topLeft: Radius.circular(10),

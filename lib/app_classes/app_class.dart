@@ -1048,35 +1048,37 @@ $details
                                 child: Text(
                                   "Set Reminder",
                                   style: TextStyle(
-                                      fontFamily: popinsMedium, color: lightColor),
+                                      fontFamily: popinsMedium,
+                                      color: lightColor),
                                 ),
-                              ),  resType == '3'
-                                ? const SizedBox()
-                                : ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            10,
+                              ),
+                              resType == '3'
+                                  ? const SizedBox()
+                                  : ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              10,
+                                            ),
                                           ),
-                                        ),
-                                        backgroundColor: primaryColor),
-                                    onPressed: () {
-                                      AppClass().launchURL(resUrl!);
-                                    },
-                                    child: Text(
-                                      resType == '1'
-                                          ? "Register"
-                                          : resType == '2'
-                                              ? 'RSVP'
-                                              : '',
-                                      style: TextStyle(
-                                          fontFamily: popinsMedium,
-                                          color: lightColor),
+                                          backgroundColor: primaryColor),
+                                      onPressed: () {
+                                        AppClass().launchURL(resUrl!);
+                                      },
+                                      child: Text(
+                                        resType == '1'
+                                            ? "Register"
+                                            : resType == '2'
+                                                ? 'RSVP'
+                                                : '',
+                                        style: TextStyle(
+                                            fontFamily: popinsMedium,
+                                            color: lightColor),
+                                      ),
                                     ),
-                                  ),
-                              
                             ],
-                          ),if (reminderDateTime0 != null) ...[
+                          ),
+                          if (reminderDateTime0 != null) ...[
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
