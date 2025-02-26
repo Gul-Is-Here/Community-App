@@ -1,11 +1,13 @@
-import 'package:community_islamic_app/constants/image_constants.dart';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:community_islamic_app/constants/color.dart';
 import 'package:community_islamic_app/controllers/home_events_controller.dart';
 import 'package:get/get.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:http/http.dart' as http;
 
-class AnnouncementsDetailsScreen extends StatelessWidget {
+class AnnouncementsDetailsScreen extends StatefulWidget {
   final HomeEventsController controller;
   final String title;
   final String createdDate;
@@ -28,6 +30,52 @@ class AnnouncementsDetailsScreen extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  _AnnouncementsDetailsScreenState createState() =>
+      _AnnouncementsDetailsScreenState();
+}
+
+class _AnnouncementsDetailsScreenState
+    extends State<AnnouncementsDetailsScreen> {
+  bool _isSharing = false;
+
+  Future<void> _shareContent() async {
+    setState(() {
+      _isSharing = true;
+    });
+
+    try {
+      String text =
+          ''' *${widget.title}*\n\n${widget.alertDisc}\n\n*Shared from Rosenberg Community Center App*''';
+
+      if (widget.image != null && widget.image!.isNotEmpty) {
+        final uri = Uri.parse(widget.image!);
+        final response = await http.get(uri);
+
+        if (response.statusCode == 200) {
+          final tempDir = await getTemporaryDirectory();
+          final file = File('${tempDir.path}/shared_image.png');
+          await file.writeAsBytes(response.bodyBytes);
+
+          await Share.shareXFiles([XFile(file.path)], text: text);
+        } else {
+          throw Exception("Failed to download image");
+        }
+      } else {
+        await Share.share(text);
+      }
+    } catch (e) {
+      print("Error sharing: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Failed to share content: $e")),
+      );
+    } finally {
+      setState(() {
+        _isSharing = false;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: primaryColor,
@@ -36,7 +84,7 @@ class AnnouncementsDetailsScreen extends StatelessWidget {
         elevation: 0,
         centerTitle: true,
         title: Text(
-          title,
+          widget.title,
           style: TextStyle(
             fontFamily: popinsSemiBold,
             fontSize: 18,
@@ -53,11 +101,17 @@ class AnnouncementsDetailsScreen extends StatelessWidget {
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.share, color: goldenColor),
-            onPressed: () {
-              Share.share(
-                  ''' *$title*\n\n$alertDisc\n\n*Shared from Rosenberg Community Center App*''');
-            },
+            icon: _isSharing
+                ? const SizedBox(
+                    height: 20,
+                    width: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: Colors.white,
+                    ),
+                  )
+                : Icon(Icons.share, color: goldenColor),
+            onPressed: _isSharing ? null : _shareContent,
           ),
         ],
         bottom: PreferredSize(
@@ -81,7 +135,7 @@ class AnnouncementsDetailsScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    title,
+                    widget.title,
                     style: const TextStyle(
                       color: Colors.green,
                       fontSize: 16.0,
@@ -90,16 +144,16 @@ class AnnouncementsDetailsScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 20.0),
                   Text(
-                    alertDisc,
+                    widget.alertDisc,
                     style: TextStyle(
                       fontFamily: popinsRegulr,
                       color: whiteColor,
                     ),
                   ),
                   const SizedBox(height: 20.0),
-                  if (image != null && image!.isNotEmpty)
+                  if (widget.image != null && widget.image!.isNotEmpty)
                     Image.network(
-                      image!,
+                      widget.image!,
                       errorBuilder: (context, error, stackTrace) =>
                           const SizedBox(),
                     ),

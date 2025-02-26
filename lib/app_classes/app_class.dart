@@ -182,17 +182,18 @@ class AppClass {
 
   String addMinutesToPrayerTime(String prayerTime, int minutesToAdd) {
     try {
-      final dateTime = DateFormat("HH:mm").parse(prayerTime);
-      DateTime updatedTime = dateTime.add(Duration(minutes: minutesToAdd));
-      return DateFormat('h:mm a').format(updatedTime);
+      // Parse the static time in 24-hour format
+      DateTime parsedTime = DateFormat("HH:mm").parse(prayerTime);
+
+      // Add the specified minutes
+      DateTime updatedTime = parsedTime.add(Duration(minutes: minutesToAdd));
+
+      // Format to 12-hour AM/PM format
+      return DateFormat('HH:mm a').format(updatedTime);
     } catch (e) {
       print('Error parsing time: $e');
       return 'Invalid time';
     }
-
-    ///
-    ///.
-    ///
   }
 
   DateTime parseDate(String dateStr) {

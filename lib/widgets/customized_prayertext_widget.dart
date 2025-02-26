@@ -43,10 +43,10 @@ class PrayerTimeWidget extends StatelessWidget {
     }
 
     // Set background color based on current prayer
-    Color backgroundColor = (currentPrayer == namazName)
-            ? goldenColor
-            : const Color(0xFFC4F1DD) // Highlight color for current prayer
-        ; // Default color for other prayers
+    // Color backgroundColor = (currentPrayer == namazName)
+    //         ? goldenColor
+    //         : const Color(0xFFC4F1DD) // Highlight color for current prayer
+    //     ; // Default color for other prayers
 
     return SizedBox(
       width: screenWidth * .15,
@@ -55,7 +55,7 @@ class PrayerTimeWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SizedBox(
+          const SizedBox(
             height: 2,
           ),
           currentPrayer == namazName
@@ -68,7 +68,7 @@ class PrayerTimeWidget extends StatelessWidget {
                           LinearGradient(colors: [lightColor, lightColor]),
                       borderRadius: BorderRadius.circular(20)),
                 ),
-          SizedBox(
+          const SizedBox(
             height: 5,
           ),
           currentPrayer == namazName

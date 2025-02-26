@@ -241,13 +241,15 @@ $details
               decoration: BoxDecoration(color: lightColor),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Text(
-                  widget.title,
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: popinsRegulr,
-                    color: primaryColor,
+                child: Center(
+                  child: Text(
+                    widget.title,
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: popinsRegulr,
+                      color: primaryColor,
+                    ),
                   ),
                 ),
               ),
@@ -282,7 +284,7 @@ $details
                     child: Text(
                       AppClass().formatDate2(widget.eventDate),
                       style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 14,
                           color: primaryColor,
                           fontWeight: FontWeight.w500,
                           fontFamily: popinsRegulr),
@@ -298,7 +300,7 @@ $details
               padding: const EdgeInsets.symmetric(horizontal: 24.0),
               child: _buildSectionTitle("Details"),
             ),
-            const SizedBox(height: 8),
+            // const SizedBox(height: 8),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Text(
@@ -327,17 +329,10 @@ $details
                   children: [
                     Padding(
                       padding: const EdgeInsets.symmetric(
-                          vertical: 8.0, horizontal: 16),
+                          vertical: 0.0, horizontal: 16),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Image.asset(
-                            icLocation,
-                            color: primaryColor,
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
                           Text(
                             'Location',
                             style: TextStyle(
@@ -345,6 +340,14 @@ $details
                                 fontSize: 16,
                                 color: primaryColor),
                           ),
+                          const SizedBox(
+                            width: 5,
+                          ),
+                          Image.asset(
+                            icLocation,
+                            color: primaryColor,
+                          ),
+
                           // Text(
                           //   '(click to locate )',
                           //   style: TextStyle(
@@ -363,15 +366,15 @@ $details
                       ,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
-                            vertical: 8.0, horizontal: 16),
+                            vertical: 0.0, horizontal: 16),
                         child: Text(
                             maxLines: 4,
                             widget.eventVenue,
                             style: TextStyle(
                                 decoration: TextDecoration.underline,
                                 overflow: TextOverflow.ellipsis,
-                                fontSize: 16,
-                                fontFamily: popinsSemiBold,
+                                fontSize: 14,
+                                fontFamily: popinsRegulr,
                                 color: primaryColor)),
                       ),
                     ),
