@@ -100,6 +100,8 @@ class RamadanScreen extends StatelessWidget {
                       onPressed: () {
                         if (item.url != null) {
                           AppClass().launchURL(item.url!);
+                        } else {
+                          AppClass().launchURL(item.attachment!);
                         }
                       },
                       child: Text(

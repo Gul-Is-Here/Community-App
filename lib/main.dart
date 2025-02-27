@@ -119,7 +119,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     EasyLoading.instance.maskType = EasyLoadingMaskType.black;
     return GetMaterialApp(
-      title: 'Rosenberg Community Center App',
+      title: 'Rosenberg Community Center',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: primaryColor,
