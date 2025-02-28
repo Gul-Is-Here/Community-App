@@ -589,15 +589,16 @@ class AppClass {
   }
 
   Future<void> _downloadAndShareImage(
-    String imageUrl,
-    String title,
-    String details,
-    String eventDate,
-    String eventType,
-    String sTime,
-    String endTime,
-    String eventLink,
-  ) async {
+      String imageUrl,
+      String title,
+      String details,
+      String eventDate,
+      String eventType,
+      String sTime,
+      String endTime,
+      String eventLink,
+      String resType,
+      String eventLocation) async {
     try {
       // Validate and format times
       String formattedStartTime;
@@ -617,17 +618,17 @@ class AppClass {
 
       // Construct the formatted event details
       String formattedDetails = '''
-Join Us for a Special Gathering at the Rosenberg Community Center
+*Join Rosenberg Community Center*
 
-📅 Date: ${AppClass().formatDate2(eventDate)}
-⏰ Time: $formattedStartTime – $formattedEndTime
-📍 Location: $eventType
+📅 *Date*: ${AppClass().formatDate2(eventDate)}
+⏰ *Time*: $formattedStartTime – $formattedEndTime
+📍 *Location*: $eventLocation
 
-🌟 Theme: $title
+🌟 *Event*: $title
 
-$details
+🌟 *Event Description*: $details
 
-📌 RSVP Required: $eventLink
+📌 *RSVP* : $resType
 
 *Shared from Rosenberg Community Center App*.
 ''';
@@ -677,21 +678,21 @@ $details
   // ---- Show Model Bottom Sheet of Events Details Page
 
   Future<dynamic> EventDetailsShowModelBottomSheet(
-    BuildContext context,
-    int eventId,
-    String title,
-    String sTime,
-    String endTime,
-    String eventType,
-    String entry,
-    String eventDate,
-    String eventDetails,
-    String imageLink,
-    String locatinD,
-    String eventLink,
-    String resUrl,
-    String resType,
-  ) {
+      BuildContext context,
+      int eventId,
+      String title,
+      String sTime,
+      String endTime,
+      String eventType,
+      String entry,
+      String eventDate,
+      String eventDetails,
+      String imageLink,
+      String locatinD,
+      String eventLink,
+      String resUrl,
+      String resType,
+      String eventLocation) {
     DateTime? reminderDateTime0;
     bool isSharing = false; // State to manage sharing loader
 
@@ -766,16 +767,8 @@ $details
     Future<void> shareEvent() async {
       isSharing = true;
       try {
-        await _downloadAndShareImage(
-          imageLink,
-          title,
-          eventDetails,
-          eventDate,
-          eventType,
-          sTime,
-          endTime,
-          locatinD,
-        );
+        await _downloadAndShareImage(imageLink, title, eventDetails, eventDate,
+            eventType, sTime, endTime, locatinD, resUrl, eventLocation);
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error sharing: $e')),

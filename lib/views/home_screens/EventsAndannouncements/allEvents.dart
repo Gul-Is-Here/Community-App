@@ -516,7 +516,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                                                 event.resUrl == null
                                                     ? ''
                                                     : event.resUrl!,
-                                                event.resType);
+                                                event.resType,
+                                                event.eventLink);
                                       },
                                       child: Container(
                                         margin: const EdgeInsets.symmetric(

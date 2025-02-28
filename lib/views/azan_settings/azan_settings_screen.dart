@@ -281,7 +281,7 @@ class _AzanSettingsScreenState extends State<AzanSettingsScreen> {
                   if (title == "Adhan - Makkah") {
                     await player.play(AssetSource("azan.mp3"));
                   } else if (title == "Adhan - Madina") {
-                    await player.play(AssetSource("azanMadina.mp3"));
+                    await player.play(AssetSource("azanmadina.mp3"));
                   }
 
                   setState(() {

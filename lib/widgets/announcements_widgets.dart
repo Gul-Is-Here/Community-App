@@ -220,7 +220,7 @@ class AnnouncementWidget extends StatelessWidget {
                               padding: const EdgeInsets.only(left: 12, top: 8),
                               child: Text(
                                 alert.alertTitle,
-                                maxLines: 2,
+                                maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
                                   fontSize: 16,

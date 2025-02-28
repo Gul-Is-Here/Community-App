@@ -106,20 +106,51 @@ class NotificationServices {
     await _flutterLocalNotificationPlugin.initialize(
       initializationSettings,
       onDidReceiveNotificationResponse: (NotificationResponse response) {
-        // Handle notification click
-        if (response.actionId == "muteButton") {
-          _flutterLocalNotificationPlugin.cancel(response.id ?? 0);
-        }
-      },
-    );
-    await _flutterLocalNotificationPlugin.initialize(
-      initializationSettings,
-      onDidReceiveNotificationResponse: (NotificationResponse response) {
         if (response.payload != null) {
           _handleNotificationNavigation(response.payload!);
         }
       },
     );
+
+    // Handle when the app is launched from a notification
+    final NotificationAppLaunchDetails? details =
+        await _flutterLocalNotificationPlugin.getNotificationAppLaunchDetails();
+
+    if (details?.didNotificationLaunchApp ?? false) {
+      String? payload = details!.notificationResponse?.payload;
+      if (payload != null) {
+        debugPrint("App Launched with Payload: $payload");
+        _handleNotificationNavigation(payload);
+      }
+    }
+
+    // await _flutterLocalNotificationPlugin.initialize(
+    //   initializationSettings,
+    //   onDidReceiveNotificationResponse: (NotificationResponse response) {
+    //     // Handle notification click
+    //     if (response.actionId == "muteButton") {
+    //       _flutterLocalNotificationPlugin.cancel(response.id ?? 0);
+    //     }
+    //   },
+    // );
+    // await _flutterLocalNotificationPlugin.initialize(
+    //   initializationSettings,
+    //   onDidReceiveNotificationResponse: (NotificationResponse response) {
+    //     if (response.payload != null) {
+    //       _handleNotificationNavigation(response.payload!);
+    //     }
+    //   },
+    // );
+    await _flutterLocalNotificationPlugin.initialize(
+      initializationSettings,
+      onDidReceiveNotificationResponse: (NotificationResponse response) {
+        if (response.payload != null) {
+          debugPrint("Notification Clicked with Payload: ${response.payload}");
+          _handleNotificationNavigation(response.payload!);
+        }
+      },
+    );
+
     await _flutterLocalNotificationPlugin
         .resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin>()
@@ -286,9 +317,9 @@ class NotificationServices {
     if (sharedPreferencess?.getBool('annoucement') ?? false) {
       await _flutterLocalNotificationPlugin.show(
         1,
-        'ANNOUNCEMENT NOTIFICATION', // Static title
+        'ANNOUNCEMENT NOTIFICATION',
         message.notification?.body ?? 'This is Announcement Notification',
-        const NotificationDetails(
+        NotificationDetails(
           android: AndroidNotificationDetails(
             'announcement_channel',
             'Announcement Notifications',
@@ -298,6 +329,7 @@ class NotificationServices {
           ),
           iOS: DarwinNotificationDetails(),
         ),
+        payload: "Alert", // Ensure correct payload
       );
     }
     debugPrint("this is here");
@@ -308,7 +340,7 @@ class NotificationServices {
     if (sharedPreferencess?.getBool('event') ?? false) {
       await _flutterLocalNotificationPlugin.show(
         1,
-        'EVENT NOTIFICATION', // Static title
+        'EVENT NOTIFICATION',
         message.notification?.body ?? 'This is Event Notification',
         const NotificationDetails(
           android: AndroidNotificationDetails(
@@ -320,15 +352,22 @@ class NotificationServices {
           ),
           iOS: DarwinNotificationDetails(),
         ),
+        payload: "Events", // Ensure correct payload
       );
     }
   }
 
   void _handleNotificationNavigation(String payload) {
+    debugPrint("Received Payload: $payload");
+
     if (payload == "Alert") {
-      Get.to(() => AnnouncementsScreen());
+      debugPrint("Navigating to AnnouncementsScreen");
+      Get.offAll(() => AnnouncementsScreen());
     } else if (payload == "Events") {
-      Get.to(() => AllEventsDatesScreen());
+      debugPrint("Navigating to AllEventsDatesScreen");
+      Get.offAll(() => AllEventsDatesScreen());
+    } else {
+      debugPrint("Unknown Payload: $payload");
     }
   }
 }
