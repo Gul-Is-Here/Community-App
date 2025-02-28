@@ -2,6 +2,7 @@
 // import 'package:community_islamic_app/controllers/home_controller.dart';
 // import 'package:community_islamic_app/controllers/home_events_controller.dart';
 // import 'package:community_islamic_app/controllers/qibla_controller.dart';
+import 'package:community_islamic_app/constants/color.dart';
 import 'package:community_islamic_app/firebase_options.dart';
 import 'package:community_islamic_app/views/auth_screens/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -118,6 +119,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     EasyLoading.instance.maskType = EasyLoadingMaskType.black;
     return GetMaterialApp(
+      title: 'Rosenberg Community Center',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: primaryColor,
+        ),
+      ),
       debugShowCheckedModeBanner: false,
       home: SplashScreen(),
       builder: EasyLoading.init(),

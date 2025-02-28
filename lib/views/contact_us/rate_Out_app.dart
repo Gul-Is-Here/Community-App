@@ -104,7 +104,7 @@ class RateAppPage extends StatelessWidget {
               _buildInputField(
                   controller: reviewController,
                   label: "Review",
-                  hint: "Write your review",
+                  hint: "Write your comment(s)",
                   maxLines: 3),
 
               /// Upload Image Button

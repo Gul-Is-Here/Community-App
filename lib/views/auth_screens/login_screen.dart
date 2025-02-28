@@ -1,3 +1,4 @@
+import 'package:community_islamic_app/views/auth_screens/forget_password_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
@@ -20,6 +21,7 @@ class LoginScreen extends StatelessWidget {
     final LoginController loginController = Get.put(LoginController());
 
     return Scaffold(
+      backgroundColor: whiteColor,
       resizeToAvoidBottomInset:
           true, // Allow the screen to resize when the keyboard opens
       body: SingleChildScrollView(
@@ -52,248 +54,255 @@ class LoginScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          top: 250, left: 0, right: 0, bottom: 0),
-                      child: Card(
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(10),
-                            topRight: Radius.circular(10),
-                          ),
-                        ),
-                        child: Container(
-                          decoration: const BoxDecoration(
-                            image: DecorationImage(
-                              image: AssetImage(splash4),
-                              fit: BoxFit.cover,
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            top: 250, left: 0, right: 0, bottom: 0),
+                        child: Card(
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(10),
+                              topRight: Radius.circular(10),
                             ),
                           ),
-                          height: screenHeight * .65,
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SizedBox(
-                                  height: 50,
-                                ),
-                                const Text(
-                                  'Login',
-                                  style: TextStyle(
-                                      fontSize: 24,
-                                      fontFamily: popinsMedium,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                SizedBox(
-                                  height: 30,
-                                ),
-                                TextFormField(
-                                  onChanged: (value) =>
-                                      loginController.email.value = value,
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Please enter your username';
-                                    }
-                                    return null;
-                                  },
-                                  decoration: InputDecoration(
-                                    labelText: 'Username',
-                                    labelStyle: TextStyle(
-                                        fontFamily: popinsRegulr,
-                                        color: primaryColor),
-                                    prefixIcon: Icon(
-                                      Icons.email,
-                                      color: primaryColor,
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(5),
-                                      borderSide: const BorderSide(
-                                        width: 2,
-                                        color:
-                                            Color.fromARGB(255, 220, 217, 217),
-                                      ),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(5),
-                                      borderSide: const BorderSide(
-                                        width: 2,
-                                        color:
-                                            Color.fromARGB(255, 220, 217, 217),
-                                      ),
-                                    ),
-                                    errorBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(5),
-                                      borderSide: const BorderSide(
-                                        width: 1,
-                                        color:
-                                            Color.fromARGB(255, 220, 217, 217),
-                                      ),
-                                    ),
-                                    fillColor: Colors.white,
-                                    filled: true,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: whiteColor,
+                              borderRadius: BorderRadius.circular(10),
+                              image: DecorationImage(
+                                image: AssetImage(splash4),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            // height: screenHeight * .65,
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    height: 50,
                                   ),
-                                ),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                                Obx(() => TextFormField(
-                                      onChanged: (value) => loginController
-                                          .password.value = value,
-                                      obscureText: _obscurePassword.value,
-                                      validator: (value) {
-                                        if (value == null || value.isEmpty) {
-                                          return 'Please enter your password';
-                                        }
-                                        return null;
-                                      },
-                                      decoration: InputDecoration(
-                                        labelText: 'Password',
-                                        labelStyle: TextStyle(
-                                            fontFamily: popinsRegulr,
-                                            color: primaryColor),
-                                        prefixIcon: Icon(
-                                          Icons.lock,
-                                          color: primaryColor,
-                                        ),
-                                        suffixIcon: IconButton(
-                                          icon: Icon(
-                                            _obscurePassword.value
-                                                ? Icons.visibility
-                                                : Icons.visibility_off,
-                                          ),
-                                          onPressed: () {
-                                            _obscurePassword.value =
-                                                !_obscurePassword.value;
-                                          },
-                                        ),
-                                        enabledBorder: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(5),
-                                          borderSide: const BorderSide(
-                                            width: 2,
-                                            color: Color.fromARGB(
-                                                255, 220, 217, 217),
-                                          ),
-                                        ),
-                                        focusedBorder: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(5),
-                                          borderSide: const BorderSide(
-                                            width: 2,
-                                            color: Color.fromARGB(
-                                                255, 220, 217, 217),
-                                          ),
-                                        ),
-                                        errorBorder: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(5),
-                                          borderSide: const BorderSide(
-                                            width: 1,
-                                            color: Color.fromARGB(
-                                                255, 220, 217, 217),
-                                          ),
-                                        ),
-                                        fillColor: Colors.white,
-                                        filled: true,
-                                      ),
-                                    )),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                                TextButton(
-                                  onPressed: () {},
-                                  child: Text(
-                                    'Forget Password?',
+                                  const Text(
+                                    'Login',
                                     style: TextStyle(
-                                      fontFamily: popinsSemiBold,
-                                      color: primaryColor,
+                                        fontSize: 24,
+                                        fontFamily: popinsMedium,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  SizedBox(
+                                    height: 30,
+                                  ),
+                                  TextFormField(
+                                    onChanged: (value) =>
+                                        loginController.email.value = value,
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Please enter your username';
+                                      }
+                                      return null;
+                                    },
+                                    decoration: InputDecoration(
+                                      labelText: 'Username',
+                                      labelStyle: TextStyle(
+                                          fontFamily: popinsRegulr,
+                                          color: primaryColor),
+                                      prefixIcon: Icon(
+                                        Icons.email,
+                                        color: primaryColor,
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(5),
+                                        borderSide: const BorderSide(
+                                          width: 2,
+                                          color: Color.fromARGB(
+                                              255, 220, 217, 217),
+                                        ),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(5),
+                                        borderSide: const BorderSide(
+                                          width: 2,
+                                          color: Color.fromARGB(
+                                              255, 220, 217, 217),
+                                        ),
+                                      ),
+                                      errorBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(5),
+                                        borderSide: const BorderSide(
+                                          width: 1,
+                                          color: Color.fromARGB(
+                                              255, 220, 217, 217),
+                                        ),
+                                      ),
+                                      fillColor: Colors.white,
+                                      filled: true,
                                     ),
                                   ),
-                                ),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                                Center(
-                                  child: Obx(
-                                    () => loginController.isLoading.value
-                                        ? SpinKitFadingCircle(
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  Obx(() => TextFormField(
+                                        onChanged: (value) => loginController
+                                            .password.value = value,
+                                        obscureText: _obscurePassword.value,
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return 'Please enter your password';
+                                          }
+                                          return null;
+                                        },
+                                        decoration: InputDecoration(
+                                          labelText: 'Password',
+                                          labelStyle: TextStyle(
+                                              fontFamily: popinsRegulr,
+                                              color: primaryColor),
+                                          prefixIcon: Icon(
+                                            Icons.lock,
                                             color: primaryColor,
-                                            size: 50.0,
-                                          ) // Loading indicator
-                                        : Container(
-                                            height: 50,
-                                            width: double.infinity,
-                                            child: ElevatedButton(
-                                              style: ElevatedButton.styleFrom(
-                                                elevation: 5,
-                                                shape:
-                                                    const RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.only(
-                                                    bottomLeft:
-                                                        Radius.circular(5),
-                                                    topLeft:
-                                                        Radius.circular(30),
-                                                    topRight:
-                                                        Radius.circular(5),
-                                                    bottomRight:
-                                                        Radius.circular(30),
-                                                  ),
-                                                ),
-                                                backgroundColor: primaryColor,
-                                              ),
-                                              onPressed: () async {
-                                                if (_formKey.currentState!
-                                                    .validate()) {
-                                                  // If the form is valid, proceed with login
-                                                  await loginController
-                                                      .loginUser();
-                                                  final prefs =
-                                                      await SharedPreferences
-                                                          .getInstance();
-                                                  prefs.setBool(
-                                                      'isLoggedIn', true);
-                                                }
-                                              },
-                                              child: const Text(
-                                                'Login',
-                                                style: TextStyle(
-                                                    fontFamily: popinsSemiBold,
-                                                    color: Colors.white),
-                                              ),
+                                          ),
+                                          suffixIcon: IconButton(
+                                            icon: Icon(
+                                              _obscurePassword.value
+                                                  ? Icons.visibility
+                                                  : Icons.visibility_off,
+                                            ),
+                                            onPressed: () {
+                                              _obscurePassword.value =
+                                                  !_obscurePassword.value;
+                                            },
+                                          ),
+                                          enabledBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                            borderSide: const BorderSide(
+                                              width: 2,
+                                              color: Color.fromARGB(
+                                                  255, 220, 217, 217),
                                             ),
                                           ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const Text(
-                                      'Create an account?',
-                                      style:
-                                          TextStyle(fontFamily: popinsRegulr),
-                                    ),
-                                    GestureDetector(
-                                      onTap: () {
-                                        Get.to(() => RegistrationScreen());
-                                      },
-                                      child: Text(
-                                        ' Sign Up',
-                                        style: TextStyle(
-                                          color: primaryColor,
-                                          fontFamily: popinsRegulr,
-                                          fontWeight: FontWeight.bold,
+                                          focusedBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                            borderSide: const BorderSide(
+                                              width: 2,
+                                              color: Color.fromARGB(
+                                                  255, 220, 217, 217),
+                                            ),
+                                          ),
+                                          errorBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                            borderSide: const BorderSide(
+                                              width: 1,
+                                              color: Color.fromARGB(
+                                                  255, 220, 217, 217),
+                                            ),
+                                          ),
+                                          fillColor: Colors.white,
+                                          filled: true,
                                         ),
+                                      )),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Get.to(() => ForgotPasswordScreen());
+                                    },
+                                    child: Text(
+                                      'Forget Password?',
+                                      style: TextStyle(
+                                        fontFamily: popinsSemiBold,
+                                        color: primaryColor,
                                       ),
                                     ),
-                                  ],
-                                )
-                              ],
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  Center(
+                                    child: Obx(
+                                      () => loginController.isLoading.value
+                                          ? SpinKitFadingCircle(
+                                              color: primaryColor,
+                                              size: 50.0,
+                                            ) // Loading indicator
+                                          : Container(
+                                              height: 50,
+                                              width: double.infinity,
+                                              child: ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  elevation: 5,
+                                                  shape:
+                                                      const RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.only(
+                                                      bottomLeft:
+                                                          Radius.circular(5),
+                                                      topLeft:
+                                                          Radius.circular(30),
+                                                      topRight:
+                                                          Radius.circular(5),
+                                                      bottomRight:
+                                                          Radius.circular(30),
+                                                    ),
+                                                  ),
+                                                  backgroundColor: primaryColor,
+                                                ),
+                                                onPressed: () async {
+                                                  if (_formKey.currentState!
+                                                      .validate()) {
+                                                    // If the form is valid, proceed with login
+                                                    await loginController
+                                                        .loginUser();
+                                                    final prefs =
+                                                        await SharedPreferences
+                                                            .getInstance();
+                                                    prefs.setBool(
+                                                        'isLoggedIn', true);
+                                                  }
+                                                },
+                                                child: const Text(
+                                                  'Login',
+                                                  style: TextStyle(
+                                                      fontFamily:
+                                                          popinsSemiBold,
+                                                      color: Colors.white),
+                                                ),
+                                              ),
+                                            ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Text(
+                                        'Create an account?',
+                                        style:
+                                            TextStyle(fontFamily: popinsRegulr),
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          Get.to(() => RegistrationScreen());
+                                        },
+                                        child: Text(
+                                          ' Sign Up',
+                                          style: TextStyle(
+                                            color: primaryColor,
+                                            fontFamily: popinsRegulr,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
                             ),
                           ),
                         ),

@@ -93,7 +93,7 @@ class CustomizedMobileLayout extends StatelessWidget {
               trailing: _buildLiveStreamButton(),
             ),
             const SizedBox(height: 10),
-            _buildPrayerTimesCard(iqamatimes),
+            buildPrayerTimesCard(iqamatimes),
             _buildEventsAndAnnouncements(),
             // _buildFeaturesSection(),
             buildOurServicesSection(),
@@ -294,7 +294,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                           padding: const EdgeInsets.only(top: 8),
                           child: Text(
                             (homeController.currentPrayerTitle.value
-                                    .contains('Fajr'))
+                                    .contains('FAJR'))
                                 ? 'AM'
                                 : 'PM',
                             style: TextStyle(
@@ -490,7 +490,7 @@ class CustomizedMobileLayout extends StatelessWidget {
   }
 
   /// Builds the prayer times card that shows the five daily prayer times.
-  Widget _buildPrayerTimesCard(Map<String, String> iqamatimes) {
+  Widget buildPrayerTimesCard(Map<String, String> iqamatimes) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Card(
@@ -755,15 +755,15 @@ class CustomizedMobileLayout extends StatelessWidget {
     for (var timing in iqamahTiming) {
       DateTime startDate = appClass.parseDate(timing.startDate);
       DateTime endDate = appClass.parseDate(timing.endDate);
-
+      DateTime maghribTime = now.add(const Duration(minutes: 5));
+      String formattedTime = DateFormat("hh:mm a").format(maghribTime);
       if (currentDate.isAfter(startDate.subtract(const Duration(days: 1))) &&
           currentDate.isBefore(endDate.add(const Duration(days: 1)))) {
         return {
           'Fajr': timing.fjar,
           'Dhuhr': timing.zuhr,
           'Asr': timing.asr,
-          'Maghrib':
-              DateFormat("hh:mm a").format(now.add(const Duration(minutes: 5))),
+          'Maghrib': formattedTime,
           'Isha': timing.isha,
         };
       }

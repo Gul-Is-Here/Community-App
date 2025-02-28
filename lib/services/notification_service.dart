@@ -1,3 +1,5 @@
+import 'package:community_islamic_app/views/home_screens/EventsAndannouncements/allEvents.dart';
+import 'package:community_islamic_app/views/home_screens/EventsAndannouncements/announcements_screen.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -110,7 +112,14 @@ class NotificationServices {
         }
       },
     );
-
+    await _flutterLocalNotificationPlugin.initialize(
+      initializationSettings,
+      onDidReceiveNotificationResponse: (NotificationResponse response) {
+        if (response.payload != null) {
+          _handleNotificationNavigation(response.payload!);
+        }
+      },
+    );
     await _flutterLocalNotificationPlugin
         .resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin>()
@@ -273,46 +282,53 @@ class NotificationServices {
   }
 
   /// -------- Announcements------------------
- Future<void> notificationsForAnnouncements(RemoteMessage message) async {
-  if (sharedPreferencess?.getBool('annoucement') ?? false) {
-    await _flutterLocalNotificationPlugin.show(
-      1,
-      'ANNOUNCEMENT NOTIFICATION', // Static title
-      message.notification?.body ?? 'This is Announcement Notification',
-      const NotificationDetails(
-        android: AndroidNotificationDetails(
-          'announcement_channel',
-          'Announcement Notifications',
-          importance: Importance.max,
-          playSound: false,
-          priority: Priority.high,
+  Future<void> notificationsForAnnouncements(RemoteMessage message) async {
+    if (sharedPreferencess?.getBool('annoucement') ?? false) {
+      await _flutterLocalNotificationPlugin.show(
+        1,
+        'ANNOUNCEMENT NOTIFICATION', // Static title
+        message.notification?.body ?? 'This is Announcement Notification',
+        const NotificationDetails(
+          android: AndroidNotificationDetails(
+            'announcement_channel',
+            'Announcement Notifications',
+            importance: Importance.max,
+            playSound: false,
+            priority: Priority.high,
+          ),
+          iOS: DarwinNotificationDetails(),
         ),
-        iOS: DarwinNotificationDetails(),
-      ),
-    );
+      );
+    }
+    debugPrint("this is here");
   }
-  debugPrint("this is here");
-}
 
-///------------ Events-----------
-Future<void> notificationsForEvents(RemoteMessage message) async {
-  if (sharedPreferencess?.getBool('event') ?? false) {
-    await _flutterLocalNotificationPlugin.show(
-      1,
-      'EVENT NOTIFICATION', // Static title
-      message.notification?.body ?? 'This is Event Notification',
-      const NotificationDetails(
-        android: AndroidNotificationDetails(
-          'events_channel',
-          'Events Notifications',
-          importance: Importance.max,
-          playSound: false,
-          priority: Priority.high,
+  ///------------ Events-----------
+  Future<void> notificationsForEvents(RemoteMessage message) async {
+    if (sharedPreferencess?.getBool('event') ?? false) {
+      await _flutterLocalNotificationPlugin.show(
+        1,
+        'EVENT NOTIFICATION', // Static title
+        message.notification?.body ?? 'This is Event Notification',
+        const NotificationDetails(
+          android: AndroidNotificationDetails(
+            'events_channel',
+            'Events Notifications',
+            importance: Importance.max,
+            playSound: false,
+            priority: Priority.high,
+          ),
+          iOS: DarwinNotificationDetails(),
         ),
-        iOS: DarwinNotificationDetails(),
-      ),
-    );
+      );
+    }
   }
-}
 
+  void _handleNotificationNavigation(String payload) {
+    if (payload == "Alert") {
+      Get.to(() => AnnouncementsScreen());
+    } else if (payload == "Events") {
+      Get.to(() => AllEventsDatesScreen());
+    }
+  }
 }

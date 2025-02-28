@@ -182,17 +182,18 @@ class AppClass {
 
   String addMinutesToPrayerTime(String prayerTime, int minutesToAdd) {
     try {
-      final dateTime = DateFormat("HH:mm").parse(prayerTime);
-      DateTime updatedTime = dateTime.add(Duration(minutes: minutesToAdd));
-      return DateFormat('h:mm a').format(updatedTime);
+      // Parse the static time in 24-hour format
+      DateTime parsedTime = DateFormat("HH:mm").parse(prayerTime);
+
+      // Add the specified minutes
+      DateTime updatedTime = parsedTime.add(Duration(minutes: minutesToAdd));
+
+      // Format to 12-hour AM/PM format
+      return DateFormat('HH:mm a').format(updatedTime);
     } catch (e) {
       print('Error parsing time: $e');
       return 'Invalid time';
     }
-
-    ///
-    ///.
-    ///
   }
 
   DateTime parseDate(String dateStr) {
@@ -1048,35 +1049,37 @@ $details
                                 child: Text(
                                   "Set Reminder",
                                   style: TextStyle(
-                                      fontFamily: popinsMedium, color: lightColor),
+                                      fontFamily: popinsMedium,
+                                      color: lightColor),
                                 ),
-                              ),  resType == '3'
-                                ? const SizedBox()
-                                : ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            10,
+                              ),
+                              resType == '3'
+                                  ? const SizedBox()
+                                  : ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              10,
+                                            ),
                                           ),
-                                        ),
-                                        backgroundColor: primaryColor),
-                                    onPressed: () {
-                                      AppClass().launchURL(resUrl!);
-                                    },
-                                    child: Text(
-                                      resType == '1'
-                                          ? "Register"
-                                          : resType == '2'
-                                              ? 'RSVP'
-                                              : '',
-                                      style: TextStyle(
-                                          fontFamily: popinsMedium,
-                                          color: lightColor),
+                                          backgroundColor: primaryColor),
+                                      onPressed: () {
+                                        AppClass().launchURL(resUrl!);
+                                      },
+                                      child: Text(
+                                        resType == '1'
+                                            ? "Register"
+                                            : resType == '2'
+                                                ? 'RSVP'
+                                                : '',
+                                        style: TextStyle(
+                                            fontFamily: popinsMedium,
+                                            color: lightColor),
+                                      ),
                                     ),
-                                  ),
-                              
                             ],
-                          ),if (reminderDateTime0 != null) ...[
+                          ),
+                          if (reminderDateTime0 != null) ...[
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [

@@ -169,3 +169,18 @@ const icFemale = 'assets/ConnectIcons/icFemale.png';
 const icFamily = 'assets/ConnectIcons/icFamily.png';
 const icMale = 'assets/ConnectIcons/male.png';
 const icCommingSoon = 'assets/ConnectIcons/comming_soon.png';
+
+// Donation Page Icons
+const icCommunity = 'assets/ConnectIcons/icCommunity.png';
+const icDonations = 'assets/ConnectIcons/icdonation.png';
+const icInformation = 'assets/ConnectIcons/icInformation.png';
+const icEvet = 'assets/ConnectIcons/icEvent.png';
+const icJoinUs = 'assets/ConnectIcons/icJoin_Us.png';
+
+const icRamadanIconsList = [
+  icEvet,
+  icDonations,
+  icInformation,
+  icCommunity,
+  icJoinUs
+];
