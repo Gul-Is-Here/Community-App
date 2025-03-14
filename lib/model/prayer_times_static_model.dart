@@ -318,7 +318,7 @@ List<StaticPrayarTime> iqamahTimings = [
       zuhr: "2:00 PM",
       asr: "6:00 PM",
       magrib: "Sunset + 5 min",
-      isha: "9:15 PM"),
+      isha: "9:00 PM"),
   StaticPrayarTime(
       startDate: "24/3",
       // endDate: "31/3",
@@ -326,7 +326,7 @@ List<StaticPrayarTime> iqamahTimings = [
       zuhr: "2:00 PM",
       asr: "6:00 PM",
       magrib: "Sunset + 5 min",
-      isha: "9:15 PM"),
+      isha: "9:00 PM"),
   StaticPrayarTime(
       startDate: "1/4",
       // endDate: "14/4",

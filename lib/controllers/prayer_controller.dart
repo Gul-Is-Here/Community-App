@@ -8,11 +8,16 @@ class PrayerController extends GetxController {
   var selectedDate = ''.obs;
   var isLoading = false.obs;
 
+  final List<String> monthNames = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
+
   @override
   void onInit() {
     super.onInit();
-    selectedMonth.value = DateTime.now().month.toString().padLeft(2, '0'); // Format month as "01", "02"
-    selectedDate.value = ''; // Default to show the full month
+    selectedMonth.value = DateTime.now().month.toString().padLeft(2, '0'); // Default to current month
+    selectedDate.value = ''; // Show full month initially
     fetchPrayerTimes();
   }
 
@@ -20,28 +25,16 @@ class PrayerController extends GetxController {
     isLoading.value = true;
     try {
       final response = await http.get(Uri.parse(
-          'https://api.aladhan.com/v1/calendarByCity/2025?city=Sugar+Land&country=USA'));
+          'https://rosenbergcommunitycenter.org/api/IqamahandPrayertimesYearlyMobileAPI?access=7b150e45-e0c1-43bc-9290-3c0bf6473a51332'));
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = json.decode(response.body);
 
-        // Debug: Print the full API response
-        print("API Response: ${jsonEncode(data)}");
-
-        if (data.containsKey('data') && data['data'] is Map) {
-          List<dynamic> extractedData = [];
-
-          // Extract each day's prayer times into a list
-          data['data'].forEach((day, value) {
-            if (value is List) {
-              extractedData.addAll(value);
-            }
-          });
-
+        if (data.containsKey('data') && data['data'] is Map && data['data'].containsKey('PrayerTimingsUpcoming')) {
+          List<dynamic> extractedData = data['data']['PrayerTimingsUpcoming'];
           prayerTimes.assignAll(extractedData);
-          print("Extracted Prayer Times: ${jsonEncode(prayerTimes)}");
         } else {
-          throw Exception('Unexpected data format: "data" is not a map');
+          throw Exception('Unexpected data format: "PrayerTimingsUpcoming" not found');
         }
       } else {
         throw Exception('Failed to load prayer times (Status: ${response.statusCode})');
@@ -53,22 +46,16 @@ class PrayerController extends GetxController {
     }
   }
 
-  // Fix Filtering Logic
+  // Filtered list based on month & date
   List<dynamic> get filteredPrayerTimes {
-    var filteredList = prayerTimes.where((entry) {
-      // Extract month and day with correct formatting
-      String month = entry['date']['gregorian']['month']['number'].toString().padLeft(2, '0');
-      String day = entry['date']['gregorian']['day'].toString().padLeft(2, '0');
+    return prayerTimes.where((entry) {
+      String month = entry['GeorgeMonth'];
+      String day = entry['GeorgeDay'].toString().padLeft(2, '0');
 
-      bool monthMatches = month == selectedMonth.value;
+      bool monthMatches = monthNames.indexOf(month) + 1 == int.parse(selectedMonth.value);
       bool dateMatches = selectedDate.value.isEmpty || day == selectedDate.value;
 
       return monthMatches && dateMatches;
     }).toList();
-
-    // Debug: Print what data is being filtered
-    print("Filtered Prayer Times for Month ${selectedMonth.value} and Day ${selectedDate.value}: ${jsonEncode(filteredList)}");
-
-    return filteredList;
   }
 }

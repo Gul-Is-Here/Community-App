@@ -14,7 +14,7 @@ class JummaPrayerTile extends StatelessWidget {
     final HomeController homeController = Get.find();
 
     return Obx(() {
-      final jummaTimes = homeController.jummaTimes.value.data!.jumah;
+      final jummaTimes = homeController.prayerTime.value.todayPrayerTime.jumuah;
 
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -30,17 +30,29 @@ class JummaPrayerTile extends StatelessWidget {
           const SizedBox(height: 10),
           Row(
             children: [
-              buildJummaTile(
-                'Jumuah Khutba',
-                formatPrayerTime(jummaTimes.prayerTiming),
-                Icons.mic,
-              ),
+              jummaTimes != null
+                  ? buildJummaTile(
+                      'Jumuah Khutba',
+                      jummaTimes.prayerTiming,
+                      Icons.mic,
+                    )
+                  : buildJummaTile(
+                      'Jumuah Khutba',
+                      '01:30 PM',
+                      Icons.mic,
+                    ),
               const SizedBox(width: 10),
-              buildJummaTile(
-                'Jumuah Prayer',
-                formatPrayerTime(jummaTimes.iqamahTiming),
-                Icons.access_time,
-              ),
+              jummaTimes?.iqamahTiming != null
+                  ? buildJummaTile(
+                      'Jumuah Prayer',
+                      jummaTimes!.iqamahTiming,
+                      Icons.access_time,
+                    )
+                  : buildJummaTile(
+                      'Jumuah Prayer',
+                      '02:00 PM',
+                      Icons.access_time,
+                    ),
             ],
           ),
         ],

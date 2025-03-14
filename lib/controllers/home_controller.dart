@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 // import 'package:alarm/alarm.dart';
 import 'package:animated_notch_bottom_bar/animated_notch_bottom_bar/animated_notch_bottom_bar.dart';
+import 'package:community_islamic_app/controllers/prayerTimingsController.dart';
 import 'package:community_islamic_app/model/prayer_times_model.dart';
 
 import 'package:get/get.dart';
@@ -14,11 +15,46 @@ import '../model/prayer_model.dart';
 import '../model/jumma_model.dart';
 import '../model/prayer_times_static_model.dart';
 
+import '../model/prayersmodel.dart';
 import '../services/notification_service.dart';
+import 'notificationEventandAnnouncemt_controller.dart';
+import 'notification_handler_controller.dart';
 
 class HomeController extends GetxController {
   var selectedIndex = 0.obs;
-  var prayerTime = Prayer().obs;
+  var prayerTime = Prayer(
+    iqamahTimings: IqamahTimings(
+      iqamahTimingId: 0,
+      startDate: '',
+      endDate: '',
+      fajr: '',
+      zuhr: '',
+      asr: '',
+      maghrib: '',
+      isha: '',
+    ),
+    upcomingPrayerTimes: [],
+    todayPrayerTime: PrayerTime(
+      prayerTimesId: 0,
+      date: '',
+      fajr: '',
+      sunrise: '',
+      dhuhr: '',
+      asr: '',
+      sunset: '',
+      maghrib: '',
+      isha: '',
+      hijriDayName: '',
+      hijriDayDate: '',
+      hijriMonth: '',
+      hijriYear: '',
+      gregorianDay: '',
+      gregorianMonth: '',
+      gregorianYear: '',
+      jumuah: null,
+    ),
+  ).obs;
+
   var timePrayer = ''.obs;
   var timmngs = ''.obs;
   var jummaTimes = Jumma().obs;
@@ -34,7 +70,8 @@ class HomeController extends GetxController {
   RxString currentPrayerHeighliter = ''.obs;
 
   String? currentPrayerTime;
-  PrayerTimesModel? prayerTimes;
+  PrayerTimesModels? prayerTimes;
+
   // var currentIqamaTime;
   late NotchBottomBarController notchBottomBarController;
 
@@ -43,6 +80,7 @@ class HomeController extends GetxController {
   var timeUntilNextPrayer = ''.obs; // Observable for remaining time
 
   final NotificationServices _notificationServices = NotificationServices();
+
   Timer? _timer;
 
   @override
@@ -55,8 +93,12 @@ class HomeController extends GetxController {
         NotchBottomBarController(index: selectedIndex.value);
     fetchJummaTimes();
     fetchPrayerTimes();
-    getPrayers();
-    getPrayerTimesFromStorage();
+    NotificationSettingsController().subscribeToDefaultTopics();
+
+    await PrayerTimingController().fetchPrayerTimes();
+    await setPrayerTimes();
+    // getPrayers();
+    // getPrayerTimesFromStorage();
     startNextPrayerTimer(); // Start the countdown timer
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
       updateCurrentPrayer();
@@ -72,9 +114,19 @@ class HomeController extends GetxController {
     super.onClose();
   }
 
+  Future<void> setPrayerTimes() async {
+    prayerTimes = await NotificationHandlerController().fetchPrayerTimes();
+
+    if (prayerTimes != null) {
+      await NotificationHandlerController()
+          .schedulePrayerTime(prayerTimes: prayerTimes!);
+    }
+  }
+
   Future<void> startNextPrayerTimer() async {
     _timer = Timer.periodic(const Duration(seconds: 1), (Timer timer) {
       updateTimeUntilNextPrayer(); // Update the countdown every second
+      print('updating ------');
       getCurrentPhase();
       getNextPrayerTimeWithIqama();
       getCurrentPhase();
@@ -83,45 +135,54 @@ class HomeController extends GetxController {
     });
   }
 
-  void updateTimeUntilNextPrayer() {
+  void updateTimeUntilNextPrayer() async {
+    prayerTimes = await NotificationHandlerController().fetchPrayerTimes();
     final now = DateTime.now();
+    final todayDate =
+        "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
 
-    // Ensure prayer times are properly adjusted with today's date
-    if (prayerTime.value.data?.timings != null) {
-      final timings = prayerTime.value.data!.timings;
+    var prayerData = PrayerTimingController().prayerData;
+    print("🛠️ Full prayerData: $prayerData");
+
+    if (prayerTimes == null || prayerTimes?.data?.prayerTime == null) {
+      print("❌ Prayer times data is missing or not structured correctly!");
+      return;
+    }
+
+    var todayTimings = prayerTimes?.data?.prayerTime;
+
+    if (todayTimings == null) {
+      print("❌ PrayerTime is missing or empty!");
+      return;
+    }
+
+    try {
+      print("✅ Today's prayer timings: $todayTimings");
 
       // Parse Azan timings
-      final fajrTime = parseTimeWithDate("${timings.fajr} AM", now);
-      final dhuhrTime = parseTimeWithDate("${timings.dhuhr} PM", now);
-      final asrTime = parseTimeWithDate("${timings.asr} PM", now);
-      final maghribTime = parseTimeWithDate(timings.maghrib, now);
-      final ishaTime = parseTimeWithDate("${timings.isha} PM", now);
-
-      // Locate Iqama timings from iqamahTiming
-      final iqamaTiming = iqamahTiming.firstWhere(
-        (timing) {
-          final startDate = DateFormat("d/M").parse(timing.startDate);
-          final endDate = DateFormat("d/M").parse(timing.endDate);
-
-          return now.isAtSameMomentAs(startDate) ||
-              (now.isAfter(startDate) && now.isBefore(endDate)) ||
-              now.isAtSameMomentAs(endDate);
-        },
-        orElse: () {
-          return iqamahTiming.first; // Fallback to the first timing
-        },
-      );
+      final DateTime? fajrTime = todayTimings.fajr;
+      final DateTime? dhuhrTime = todayTimings.dhuhr;
+      final DateTime? asrTime = todayTimings.asr;
+      final DateTime? maghribTime = todayTimings.maghrib;
+      final DateTime? ishaTime = todayTimings.isha;
 
       // Parse Iqama timings
-      final fajrIqama = parseTimeWithDate(iqamaTiming.fjar, now);
-      final dhuhrIqama = parseTimeWithDate(iqamaTiming.zuhr, now);
-      final asrIqama = parseTimeWithDate(iqamaTiming.asr, now);
-      final maghribIqama = maghribTime
-          .add(const Duration(minutes: 5)); // Maghrib Iqama = Azan + 5 minutes
-      final ishaIqama = parseTimeWithDate(iqamaTiming.isha, now);
+      final DateTime? fajrIqama = todayTimings.fajrIqamah;
+      final DateTime? dhuhrIqama = todayTimings.duhurIqamah;
+      final DateTime? asrIqama = todayTimings.asrIqamah;
+      final DateTime? maghribIqama = todayTimings.maghribIqamah;
+      final DateTime? ishaIqama = todayTimings.ishaIqamah;
+
+      // Print parsed times for debugging
+      print("🕰️ Parsed Times:");
+      print("   Fajr: $fajrTime | Iqama: $fajrIqama");
+      print("   Dhuhr: $dhuhrTime | Iqama: $dhuhrIqama");
+      print("   Asr: $asrTime | Iqama: $asrIqama");
+      print("   Maghrib: $maghribTime | Iqama: $maghribIqama");
+      print("   Isha: $ishaTime | Iqama: $ishaIqama");
 
       // Combine Azan and Iqama times in order
-      List<DateTime> combinedTimes = [
+      List<DateTime?> combinedTimes = [
         fajrTime,
         fajrIqama,
         dhuhrTime,
@@ -131,26 +192,36 @@ class HomeController extends GetxController {
         maghribTime,
         maghribIqama,
         ishaTime,
-        ishaIqama,
+        ishaIqama
       ];
 
-      // Find the next prayer or iqama time
-      DateTime? nextTime;
-      for (var time in combinedTimes) {
-        if (time.isAfter(now)) {
-          nextTime = time;
-          break;
-        }
+      // Remove past times
+      combinedTimes =
+          combinedTimes.where((time) => time!.isAfter(now)).toList();
+
+      if (combinedTimes.isEmpty) {
+        print("⚠️ No valid upcoming prayer times found.");
+        return;
       }
 
-      // If no future time found, set the first Azan of the next day as the next time
-      nextTime ??= fajrTime.add(const Duration(days: 1));
+      // Sort times to ensure proper order
+      combinedTimes.sort();
 
-      // Calculate the remaining time
-      final difference = nextTime.difference(now);
+      // Find the next prayer or iqama time
+      DateTime? nextTime = combinedTimes.first;
 
-      // Update observable value
-      timeUntilNextPrayer.value = formatDuration(difference);
+      print("⏳ Next prayer time: $nextTime");
+
+      // Format the remaining time as HH:mm:ss
+      final duration = nextTime?.difference(now);
+      final String formattedTime =
+          "${duration?.inHours.toString().padLeft(2, '0')}:${(duration!.inMinutes % 60).toString().padLeft(2, '0')}:${(duration.inSeconds % 60).toString().padLeft(2, '0')}";
+
+      // Update observable value (ensure it is RxString)
+      timeUntilNextPrayer.value = formattedTime;
+      print("✅ Updated timeUntilNextPrayer: $formattedTime");
+    } catch (e) {
+      print("❌ Error updating next prayer time: $e");
     }
   }
 
@@ -162,222 +233,57 @@ class HomeController extends GetxController {
     return '${hours.toString().padLeft(2, '0')}: ${minutes.toString().padLeft(2, '0')}: ${seconds.toString().padLeft(2, '0')}';
   }
 
-  Future<void> getPrayers() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-
-    if (sharedPreferences.containsKey("prayerTimes")) {
-      String jsonString = sharedPreferences.getString("prayerTimes")!;
-      prayerTimes = prayerTimesFromJson(jsonString);
-    } else {
-      await getPrayerTimesFromNetwork();
-      await setNotifications();
-    }
-  }
-
-  Future<void> setNotifications() async {
-    if (prayerTimes != null) {
-      DateTime now = DateTime.now();
-
-      StaticPrayarTime iqamahTime = iqamahTimings.firstWhere(
-        (val) {
-          DateTime iqamahStart = val.getDate();
-
-          return now.month == iqamahStart.month && now.day >= iqamahStart.day;
-        },
-      );
-
-      for (Datum data in prayerTimes!.data) {
-        DateTime fajrDateTime = prayerTimes!.getDateTime(
-          data.timings.fajr,
-          data.date.readable,
-        );
-
-        DateTime fajrDateTimeIqamah =
-            iqamahTime.getNamazTime("fajr", fajrDateTime);
-
-        if (fajrDateTime.isAfter(now)) {
-          await _notificationServices.scheduleNotificationForAdhan(
-            body: "Its Fajr Adhan Time",
-            scheduleNotificationDateTime: fajrDateTime,
-            payLoad: "fajr",
-          );
-        }
-
-        if (fajrDateTimeIqamah.isAfter(now)) {
-          await _notificationServices.scheduleNotificationForAdhan(
-            title: "IQAMAH REMINDER",
-            body: "Its Fajr Iqamah Time",
-            scheduleNotificationDateTime: fajrDateTimeIqamah,
-            payLoad: "fajrIqamah",
-          );
-        }
-
-        DateTime dhuhrDateTime = prayerTimes!.getDateTime(
-          data.timings.dhuhr,
-          data.date.readable,
-        );
-
-        DateTime dhuhrDateTimeIqamah =
-            iqamahTime.getNamazTime("dhuhr", dhuhrDateTime);
-
-        if (dhuhrDateTime.isAfter(now)) {
-          await _notificationServices.scheduleNotificationForAdhan(
-            body: "Its Zuhr Adhan Time",
-            scheduleNotificationDateTime: dhuhrDateTime,
-            payLoad: "dhuhr",
-          );
-        }
-
-        if (dhuhrDateTimeIqamah.isAfter(now)) {
-          await _notificationServices.scheduleNotificationForAdhan(
-            title: "IQAMAH REMINDER",
-            body: "Its Zuhr Iqamah Time",
-            scheduleNotificationDateTime: dhuhrDateTimeIqamah,
-            payLoad: "dhuhrIqamah",
-          );
-        }
-
-        DateTime asrDateTime = prayerTimes!.getDateTime(
-          data.timings.asr,
-          data.date.readable,
-        );
-
-        DateTime asrDateTimeIqamah =
-            iqamahTime.getNamazTime("asr", asrDateTime);
-
-        if (asrDateTime.isAfter(now)) {
-          await _notificationServices.scheduleNotificationForAdhan(
-            body: "Its Asr Adhan Time",
-            scheduleNotificationDateTime: asrDateTime,
-            payLoad: "asr",
-          );
-        }
-
-        if (asrDateTimeIqamah.isAfter(now)) {
-          await _notificationServices.scheduleNotificationForAdhan(
-            title: "IQAMAH REMINDER",
-            body: "Its Asr Iqamah Time",
-            scheduleNotificationDateTime: asrDateTimeIqamah,
-            payLoad: "asrIqamah",
-          );
-        }
-
-        DateTime maghribDateTime = prayerTimes!.getDateTime(
-          data.timings.maghrib,
-          data.date.readable,
-        );
-
-        DateTime maghribDateTimeIqamah = maghribDateTime.add(
-          const Duration(minutes: 5),
-        );
-
-        if (maghribDateTime.isAfter(now)) {
-          await _notificationServices.scheduleNotificationForAdhan(
-            body: "Its Maghrib Adhan Time",
-            scheduleNotificationDateTime: maghribDateTime,
-            payLoad: "maghrib",
-          );
-        }
-
-        if (maghribDateTimeIqamah.isAfter(now)) {
-          await _notificationServices.scheduleNotificationForAdhan(
-            title: "IQAMAH REMINDER",
-            body: "Its Maghrib Iqamah Time",
-            scheduleNotificationDateTime: maghribDateTimeIqamah,
-            payLoad: "maghribIqamah",
-          );
-        }
-
-        DateTime ishaDateTime = prayerTimes!.getDateTime(
-          data.timings.isha,
-          data.date.readable,
-        );
-
-        DateTime ishaDateTimeIqamah =
-            iqamahTime.getNamazTime("isha", ishaDateTime);
-
-        if (ishaDateTime.isAfter(now)) {
-          await _notificationServices.scheduleNotificationForAdhan(
-            body: "Its Isha Adhan Time",
-            scheduleNotificationDateTime: ishaDateTime,
-            payLoad: "isha",
-          );
-        }
-
-        if (ishaDateTimeIqamah.isAfter(now)) {
-          await _notificationServices.scheduleNotificationForAdhan(
-            title: "IQAMAH REMINDER",
-            body: "Its Isha Iqamah Time",
-            scheduleNotificationDateTime: ishaDateTimeIqamah,
-            payLoad: "ishaIqamah",
-          );
-        }
-      }
-    }
-  }
-
-  Future<void> getPrayerTimesFromNetwork() async {
-    DateTime dateTime = DateTime.now();
-    final url = Uri.parse(
-      "https://api.aladhan.com/v1/calendarByCity/${dateTime.year}/${dateTime.month}?city=Sugar+Land&country=USA",
-    );
-
-    http.Response response = await http.get(url);
-
-    if (response.statusCode == 200) {
-      SharedPreferences sharedPreferences =
-          await SharedPreferences.getInstance();
-
-      sharedPreferences.setString(
-        "prayerTimes",
-        response.body,
-      );
-
-      sharedPreferences.setInt(
-        "prayerTimesMonth",
-        dateTime.month,
-      );
-
-      prayerTimes = prayerTimesFromJson(
-        response.body,
-      );
-    }
-  }
-
-  // get STored Prayer Times
-  Future<void> getPrayerTimesFromStorage() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-
-    // Check if prayer times exist in SharedPreferences
-    String? storedPrayerTimes = sharedPreferences.getString("prayerTimes");
-    int? storedMonth = sharedPreferences.getInt("prayerTimesMonth");
-
-    if (storedPrayerTimes != null && storedMonth != null) {
-      // Prayer times and month are available in storage
-      prayerTimess = prayerTimesFromJson(storedPrayerTimes);
-
-      storeMonthPrayerTimes = storedMonth;
-    } else {
-      // No prayer times found in storage
-      await getPrayerTimesFromNetwork(); // Fetch from network if not found locally
-    }
-  }
-
   Future<void> fetchPrayerTimes() async {
+    const String apiUrl =
+        'https://rosenbergcommunitycenter.org/api/IqamahandPrayertimesMobileAPI?access=7b150e45-e0c1-43bc-9290-3c0bf6473a51332';
+
     try {
-      final response = await http.get(
-        Uri.parse(
-          'https://api.aladhan.com/v1/timingsByCity?city=Sugar+Land&country=USA&adjustment=$adjustment',
-        ),
-      );
+      print("Fetching prayer times from API...");
+      final response = await http.get(Uri.parse(apiUrl));
 
       if (response.statusCode == 200) {
-        prayerTime.value = Prayer.fromJson(json.decode(response.body));
+        final Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+
+        // 🔹 Debugging output
+        print("API Response: $jsonResponse");
+
+        if (jsonResponse.containsKey('data')) {
+          dynamic data = jsonResponse['data'];
+
+          // 🔹 Ensure `data` is a Map
+          if (data is Map<String, dynamic>) {
+            // 🔹 Fix the `Jumuah` field issue
+            if (data.containsKey('PrayerTimingsUpcoming')) {
+              List<dynamic> prayerTimes = data['PrayerTimingsUpcoming'];
+
+              for (var prayer in prayerTimes) {
+                if (prayer is Map<String, dynamic> &&
+                    prayer.containsKey('Jumuah') &&
+                    prayer['Jumuah'] is String &&
+                    prayer['Jumuah'] == "") {
+                  prayer['Jumuah'] =
+                      null; // or use {} if you prefer an empty object
+                }
+              }
+            }
+
+            // Assuming `Prayer.fromJson()` handles the modified data correctly
+            prayerTime.value = Prayer.fromJson(data);
+            print("Prayer times updated successfully.");
+          } else {
+            print("Error: 'data' is not a valid JSON object.");
+            throw FormatException("Invalid API response format.");
+          }
+        } else {
+          print("Error: API response does not contain 'data' field.");
+          throw FormatException("Invalid API response format.");
+        }
       } else {
         throw HttpException(
             'Failed to load prayer times with status code: ${response.statusCode}');
       }
     } catch (e) {
+      print("Error fetching prayer times: $e");
       Get.snackbar('Error',
           'Failed to load prayer times. Please check your internet connection.');
     }
@@ -433,8 +339,8 @@ class HomeController extends GetxController {
 
     for (var timing in iqamahTiming) {
       if (_isDateInRange(todayString, timing.startDate, timing.endDate)) {
-        if (prayerTime.value.data?.timings != null) {
-          final timings = prayerTime.value.data!.timings;
+        if (prayerTime.value.todayPrayerTime.date.isNotEmpty) {
+          final timings = prayerTime.value.todayPrayerTime;
 
           // Parse Azan timings from API
           final fajrTime = parseTimeWithDate(timings.fajr, now);
@@ -513,8 +419,8 @@ class HomeController extends GetxController {
 
     for (var timing in iqamahTiming) {
       if (_isDateInRange(todayString, timing.startDate, timing.endDate)) {
-        if (prayerTime.value.data?.timings != null) {
-          final timings = prayerTime.value.data!.timings;
+        if (prayerTime.value.todayPrayerTime.date.isNotEmpty) {
+          final timings = prayerTime.value.todayPrayerTime;
 
           // Parse Azan timings from API
           final fajrTime = parseTimeWithDate(timings.fajr, now);
@@ -589,9 +495,8 @@ class HomeController extends GetxController {
     final timeNow = DateFormat("HH:mm").format(now);
     final currentTime = DateFormat("HH:mm").parse(timeNow);
 
-    if (prayerTime.value.data?.timings != null) {
-      final timings = prayerTime.value.data!.timings;
-
+    if (prayerTime.value.todayPrayerTime.date.isNotEmpty) {
+      final timings = prayerTime.value.todayPrayerTime;
       final fajrTime = DateFormat("HH:mm").parse(timings.fajr);
       final dhuhrTime = DateFormat("HH:mm").parse(timings.dhuhr);
       final asrTime = DateFormat("HH:mm").parse(timings.asr);
@@ -672,15 +577,15 @@ class HomeController extends GetxController {
   Object? getPrayerTimes() {
     RxString currentPrayer = getCurrentPrayer();
     if (currentPrayer.value == 'Fajr') {
-      return prayerTime.value.data?.timings.fajr;
+      return prayerTime.value.todayPrayerTime.fajr;
     } else if (currentPrayer.value == 'Dhuhr') {
-      return prayerTime.value.data?.timings.dhuhr;
+      return prayerTime.value.todayPrayerTime.dhuhr;
     } else if (currentPrayer.value == 'Asr') {
-      return prayerTime.value.data?.timings.asr;
+      return prayerTime.value.todayPrayerTime.asr;
     } else if (currentPrayer.value == 'Maghrib') {
-      return prayerTime.value.data?.timings.maghrib;
+      return prayerTime.value.todayPrayerTime.maghrib;
     } else {
-      return prayerTime.value.data?.timings.isha;
+      return prayerTime.value.todayPrayerTime.isha;
     }
   }
 
@@ -690,9 +595,8 @@ class HomeController extends GetxController {
     final timeNow = DateFormat("HH:mm").format(now);
     final currentTime = DateFormat("HH:mm").parse(timeNow);
 
-    if (prayerTime.value.data?.timings != null) {
-      final timings = prayerTime.value.data!.timings;
-
+    if (prayerTime.value.todayPrayerTime.date.isNotEmpty) {
+      final timings = prayerTime.value.todayPrayerTime;
       final fajrTime = DateFormat("HH:mm").parse(timings.fajr);
       final dhuhrTime = DateFormat("HH:mm").parse(timings.dhuhr);
       final asrTime = DateFormat("HH:mm").parse(timings.asr);
@@ -735,9 +639,8 @@ class HomeController extends GetxController {
     final now = DateTime.now();
     final timeNow = DateFormat("HH:mm").format(now);
     final currentTime = DateFormat("HH:mm").parse(timeNow);
-
-    if (prayerTime.value.data?.timings != null) {
-      final timings = prayerTime.value.data!.timings;
+    if (prayerTime.value.todayPrayerTime.date.isNotEmpty) {
+      final timings = prayerTime.value.todayPrayerTime;
 
       final fajrTime = DateFormat("HH:mm").parse(timings.fajr);
       final dhuhrTime = DateFormat("HH:mm").parse(timings.dhuhr);
@@ -818,8 +721,8 @@ class HomeController extends GetxController {
 
     for (var timing in iqamahTiming) {
       if (_isDateInRange(todayString, timing.startDate, timing.endDate)) {
-        if (prayerTime.value.data?.timings != null) {
-          final timings = prayerTime.value.data!.timings;
+        if (prayerTime.value.todayPrayerTime.date.isNotEmpty) {
+          final timings = prayerTime.value.todayPrayerTime;
 
           // Parse Azan timings from API
           final fajrTime = parseTimeWithDate(timings.fajr, now);
@@ -940,8 +843,8 @@ class HomeController extends GetxController {
       // print(
       //     "Checking range: ${timing.startDate} - ${timing.endDate}"); // Log date ranges
       if (_isDateInRange(todayString, timing.startDate, timing.endDate)) {
-        if (prayerTime.value.data?.timings != null) {
-          final timings = prayerTime.value.data!.timings;
+        if (prayerTime.value.todayPrayerTime.date.isNotEmpty) {
+          final timings = prayerTime.value.todayPrayerTime;
 
           // Parse Azan timings
           final fajrTime = parseTimeWithDate(timings.fajr, now);
@@ -1024,8 +927,8 @@ class HomeController extends GetxController {
 
     for (var timing in iqamahTiming) {
       if (isDateInRange(todayString, timing.startDate, timing.endDate)) {
-        if (prayerTime.value.data?.timings != null) {
-          final timings = prayerTime.value.data!.timings;
+        if (prayerTime.value.todayPrayerTime.date.isNotEmpty) {
+          final timings = prayerTime.value.todayPrayerTime;
 
           // Parse Azan timings from API
           final fajrTime = parseTimeWithDate("${timings.fajr} AM", now);
