@@ -1,3 +1,4 @@
+import 'package:community_islamic_app/widgets/myText.dart';
 import 'package:flutter/material.dart';
 
 import '../constants/color.dart';
@@ -35,7 +36,7 @@ class OurServicesWidget extends StatelessWidget {
               vertical: 9.33,
               horizontal: 6.5,
             ),
-            child: Text(
+            child: MyText(
               title,
               style: TextStyle(
                   fontSize: 11, fontFamily: popinsSemiBold, color: whiteColor),
@@ -48,5 +49,3 @@ class OurServicesWidget extends StatelessWidget {
 }
 
 // Function to format prayer time
-
-

@@ -6,6 +6,7 @@ import 'package:community_islamic_app/controllers/home_controller.dart';
 import 'package:community_islamic_app/controllers/home_events_controller.dart';
 import 'package:community_islamic_app/views/home_screens/EventsAndannouncements/allEvents.dart';
 import 'package:community_islamic_app/views/home_screens/EventsAndannouncements/events_details_screen.dart';
+import 'package:community_islamic_app/widgets/myText.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -24,45 +25,45 @@ class EventsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var screenWidth = MediaQuery.of(context).size.width;
+    var screenHeight = MediaQuery.of(context).size.height;
     return Padding(
-      padding: EdgeInsets.zero,
+      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
       child: Obx(() {
         if (eventsController.isLoading.value) {
           return Center(
-            child: CircularProgressIndicator(
-              color: primaryColor,
-            ),
+            child: CircularProgressIndicator(color: primaryColor),
           );
         }
 
         final events = eventsController.events.value?.data.events ?? [];
         if (events.isEmpty) {
           return Center(
-            child: CircularProgressIndicator(
-              color: lightColor,
-            ),
+            child: CircularProgressIndicator(color: lightColor),
           );
         }
 
-        return _buildEventsContent(events);
+        return _buildEventsContent(events, screenWidth, screenHeight);
       }),
     );
   }
 
-  Widget _buildEventsContent(List<Event> events) {
+  Widget _buildEventsContent(
+      List<Event> events, double screenWidth, double screenHeight) {
     return Padding(
-      padding: const EdgeInsets.only(left: 12, top: 5),
+      padding:
+          EdgeInsets.only(left: screenWidth * 0.03, top: screenHeight * 0.01),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildHeader(),
-          const SizedBox(height: 5),
+          _buildHeader(screenWidth),
+          SizedBox(height: screenHeight * 0.01),
           SizedBox(
-            height: 185,
+            height: screenHeight * 0.22, // Scales based on screen height
             child: Column(
               children: [
-                _buildCarousel(events),
-                const SizedBox(height: 5),
+                _buildCarousel(events, screenWidth),
+                SizedBox(height: screenHeight * 0.008),
                 _buildCarouselIndicators(events.length),
               ],
             ),
@@ -72,41 +73,31 @@ class EventsWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(double screenWidth) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Row(
           children: [
-            Text(
+            MyText(
               'EVENTS',
               style: TextStyle(
                 fontFamily: popinsBold,
                 color: whiteColor,
-                fontSize: 16,
+                fontSize: screenWidth * 0.045, // Scales text size dynamically
               ),
             ),
-            SizedBox(
-              width: 5,
-            ),
-            // GestureDetector(
-            //   onTap: () => Get.to(() => NotificationSettingsPage()),
-            //   child: Image.asset(
-            //     notificationICon,
-            //     width: 20,
-            //     height: 20,
-            //   ),
-            // )
+            SizedBox(width: screenWidth * 0.01),
           ],
         ),
         GestureDetector(
           onTap: () => Get.to(() => AllEventsDatesScreen()),
-          child: Text(
+          child: MyText(
             'View All',
             style: TextStyle(
               fontFamily: popinsRegulr,
               color: whiteColor,
-              fontSize: 12,
+              fontSize: screenWidth * 0.03, // Responsive text size
             ),
           ),
         ),
@@ -114,12 +105,12 @@ class EventsWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildCarousel(List<Event> events) {
+  Widget _buildCarousel(List<Event> events, double screenWidth) {
     return CarouselSlider.builder(
       options: CarouselOptions(
         autoPlay: true,
         autoPlayInterval: const Duration(seconds: 3),
-        height: 169,
+        height: screenWidth * 0.4, // Adjust height based on screen width
         viewportFraction: 0.8,
         enlargeCenterPage: false,
         onPageChanged: (index, reason) {
@@ -152,6 +143,7 @@ class EventsWidget extends StatelessWidget {
                 imageLink: event.eventImage,
                 locatinV: event.eventLink,
               )),
+          screenWidth: screenWidth,
         );
       },
     );
@@ -162,11 +154,13 @@ class EventsWidget extends StatelessWidget {
     required String eventDate,
     required String eventDetail,
     required VoidCallback onTapDetails,
+    required double screenWidth,
   }) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+      padding:
+          EdgeInsets.symmetric(horizontal: screenWidth * 0.02, vertical: 5),
       child: Container(
-        width: 287,
+        width: screenWidth * 0.7, // Scales proportionally
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
         ),
@@ -194,8 +188,8 @@ class EventsWidget extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
                 gradient: LinearGradient(
                   colors: [
-                    primaryColor.withOpacity(.6), // Dark overlay
-                    Colors.transparent, // Transparent at the bottom
+                    primaryColor.withOpacity(.6),
+                    Colors.transparent,
                   ],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
@@ -204,23 +198,23 @@ class EventsWidget extends StatelessWidget {
             ),
             // Event Details
             Padding(
-              padding: const EdgeInsets.all(12.0),
+              padding: EdgeInsets.all(screenWidth * 0.03),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildEventDate(eventDate),
-                  const SizedBox(height: 5),
-                  Text(
+                  _buildEventDate(eventDate, screenWidth),
+                  SizedBox(height: screenWidth * 0.015),
+                  MyText(
                     eventDetail,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontSize: 16,
+                    style: TextStyle(
+                      fontSize: screenWidth * 0.05, // Responsive text
                       color: Colors.white,
                       fontFamily: popinsSemiBold,
                     ),
                   ),
-                  const Spacer(),
+                  Spacer(),
                   GestureDetector(
                     onTap: onTapDetails,
                     child: Card(
@@ -228,13 +222,13 @@ class EventsWidget extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(2),
                       ),
-                      child: const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text(
+                      child: Padding(
+                        padding: EdgeInsets.all(screenWidth * 0.02),
+                        child: MyText(
                           'Details',
                           style: TextStyle(
                             fontFamily: popinsRegulr,
-                            fontSize: 12,
+                            fontSize: screenWidth * 0.04,
                             color: Colors.black,
                           ),
                         ),
@@ -250,19 +244,19 @@ class EventsWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildEventDate(String eventDate) {
+  Widget _buildEventDate(String eventDate, double screenWidth) {
     return Row(
       children: [
         Image.asset(
           eventIcon,
-          height: 14,
-          width: 14,
+          height: screenWidth * 0.035,
+          width: screenWidth * 0.035,
         ),
-        const SizedBox(width: 10),
-        Text(
+        SizedBox(width: screenWidth * 0.02),
+        MyText(
           AppClass().formatDate2(eventDate),
-          style: const TextStyle(
-            fontSize: 10,
+          style: TextStyle(
+            fontSize: screenWidth * 0.03, // Responsive text
             color: Colors.white,
             fontFamily: popinsRegulr,
           ),
@@ -281,7 +275,7 @@ class EventsWidget extends StatelessWidget {
           (index) => Container(
             width: 8,
             height: 8,
-            margin: const EdgeInsets.symmetric(horizontal: 4),
+            margin: EdgeInsets.symmetric(horizontal: 4),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: index == currentIndex ? whiteColor : Colors.grey,

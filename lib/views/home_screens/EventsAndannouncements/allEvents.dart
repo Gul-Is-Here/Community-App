@@ -410,141 +410,145 @@ class _CalendarWidgetState extends State<CalendarWidget> {
           ),
         ),
         Expanded(
-          child: PageView.builder(
-            controller: _pageController,
-            itemCount: 12 *
-                3, // Allow navigation for 3 years (previous, current, next)
-            onPageChanged: _onPageChanged,
-            itemBuilder: (context, index) {
-              return Column(
-                children: [
-                  Obx(
-                    () => Table(
-                      children: generateCalendar(daysInMonth, _displayedEvents),
-                    ),
+            child: PageView.builder(
+          controller: _pageController,
+          itemCount:
+              12 * 3, // Allow navigation for 3 years (previous, current, next)
+          onPageChanged: _onPageChanged,
+          itemBuilder: (context, index) {
+            var screenWidth = MediaQuery.of(context).size.width;
+            var screenHeight = MediaQuery.of(context).size.height;
+            var textSize = screenWidth * 0.04; // Responsive text size
+
+            return Column(
+              children: [
+                // Calendar Table
+                Obx(
+                  () => Table(
+                    children: generateCalendar(daysInMonth, _displayedEvents),
                   ),
-                  const Divider(
-                    color: Color(0xFFCED3DE),
-                    thickness: 4,
-                    endIndent: 40,
-                    indent: 40,
-                  ),
-                  const SizedBox(height: 16.0),
+                ),
+                SizedBox(height: screenHeight * 0.015), // Responsive spacing
 
-                  // Display Selected Date
-                  // Obx(() {
-                  //   return Padding(
-                  //     padding: const EdgeInsets.all(8.0),
-                  //     child: Text(
-                  //       'Selected Date: ${DateFormat('dd MMM yyyy').format(widget.selectedDate.value!)}',
-                  //       style: const TextStyle(
-                  //         fontSize: 16,
-                  //         fontFamily: popinsMedium,
-                  //         color: Colors.black87,
-                  //       ),
-                  //     ),
-                  //   );
-                  // }),
+                // Divider
+                Divider(
+                  color: Color(0xFFCED3DE),
+                  thickness: screenWidth * 0.01, // Scales with screen width
+                  endIndent: screenWidth * 0.1,
+                  indent: screenWidth * 0.1,
+                ),
 
-                  // Display Events
-                  Obx(() {
-                    if (_displayedEvents.isNotEmpty) {
-                      // Group events by their dates
-                      var groupedEvents =
-                          _displayedEvents.fold<Map<DateTime, List<Event>>>(
-                        {},
-                        (map, event) {
-                          final date = event.eventDate;
-                          if (!map.containsKey(date)) {
-                            map[date] = [];
-                          }
-                          map[date]!.add(event);
-                          return map;
-                        },
-                      );
+                SizedBox(height: screenHeight * 0.02), // Responsive spacing
 
-                      return Expanded(
-                        child: ListView.builder(
-                          itemCount: groupedEvents.keys.length,
-                          itemBuilder: (context, index) {
-                            Rx<DateTime> eventDate =
-                                groupedEvents.keys.toList()[index].obs;
-                            RxList<Event> events =
-                                groupedEvents[eventDate]!.obs;
+                // Events Section
+                Obx(() {
+                  if (_displayedEvents.isNotEmpty) {
+                    var groupedEvents =
+                        _displayedEvents.fold<Map<DateTime, List<Event>>>(
+                      {},
+                      (map, event) {
+                        final date = event.eventDate;
+                        if (!map.containsKey(date)) {
+                          map[date] = [];
+                        }
+                        map[date]!.add(event);
+                        return map;
+                      },
+                    );
 
-                            return Obx(
-                              () => Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  // Display the event date once as a header
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 8.0),
-                                    child: Text(
-                                      DateFormat('MMM, dd yyyy')
-                                          .format(eventDate.value),
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontFamily: popinsMedium,
-                                        color: Colors.black87,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                    return Expanded(
+                      child: ListView.builder(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: screenWidth * 0.05),
+                        itemCount: groupedEvents.keys.length,
+                        itemBuilder: (context, index) {
+                          Rx<DateTime> eventDate =
+                              groupedEvents.keys.toList()[index].obs;
+                          RxList<Event> events = groupedEvents[eventDate]!.obs;
+
+                          return Obx(
+                            () => Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // Event Date Header
+                                Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: screenHeight * 0.008),
+                                  child: Text(
+                                    DateFormat('MMM, dd yyyy')
+                                        .format(eventDate.value),
+                                    style: TextStyle(
+                                      fontSize: textSize.clamp(14, 18),
+                                      fontFamily: popinsMedium,
+                                      color: Colors.black87,
+                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  ...events.map((event) {
-                                    return GestureDetector(
-                                      onTap: () {
-                                        AppClass()
-                                            .EventDetailsShowModelBottomSheet(
-                                                context,
-                                                event.eventId,
-                                                event.eventTitle,
-                                                event.eventStarttime.toString(),
-                                                event.eventEndtime.toString(),
+                                ),
+
+                                // Event Cards
+                                ...events.map((event) {
+                                  return GestureDetector(
+                                    onTap: () {
+                                      AppClass()
+                                          .EventDetailsShowModelBottomSheet(
+                                              context,
+                                              event.eventId,
+                                              event.eventTitle,
+                                              event.eventStarttime.toString(),
+                                              event.eventEndtime.toString(),
+                                              event.eventhastype!.eventtypeName,
+                                              event.paid == '0'
+                                                  ? 'Free Event'
+                                                  : event.paid == '1'
+                                                      ? 'Paid Event'
+                                                      : '',
+                                              event.eventDate.toString(),
+                                              event.eventDetail,
+                                              event.eventImage,
+                                              event.venueName,
+                                              event.eventLink,
+                                              event.resUrl == null
+                                                  ? ''
+                                                  : event.resUrl!,
+                                              event.resType,
+                                              event.eventLink);
+                                    },
+                                    child: Container(
+                                      margin: EdgeInsets.symmetric(
+                                          vertical: screenHeight * 0.008),
+                                      padding:
+                                          EdgeInsets.all(screenWidth * 0.03),
+                                      decoration: BoxDecoration(
+                                        color: AppClass().hexToColor(event
+                                            .eventhastype!.eventtypeBgcolor),
+                                        borderRadius: BorderRadius.circular(
+                                            screenWidth * 0.02),
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Image.network(
                                                 event.eventhastype!
-                                                    .eventtypeName,
-                                                event.paid == '0'
-                                                    ? 'Free Event'
-                                                    : event.paid == '1'
-                                                        ? 'Paid Event'
-                                                        : '',
-                                                event.eventDate.toString(),
-                                                event.eventDetail,
-                                                event.eventImage,
-                                                event.venueName,
-                                                event.eventLink,
-                                                event.resUrl == null
-                                                    ? ''
-                                                    : event.resUrl!,
-                                                event.resType);
-                                      },
-                                      child: Container(
-                                        margin: const EdgeInsets.symmetric(
-                                            vertical: 8.0),
-                                        padding: const EdgeInsets.all(12.0),
-                                        decoration: BoxDecoration(
-                                          color: AppClass().hexToColor(event
-                                              .eventhastype!.eventtypeBgcolor),
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        ),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                Image.network(
-                                                  event.eventhastype!
-                                                      .eventtypeIcon,
-                                                  height: 24,
-                                                  width: 24,
-                                                ),
-                                                const SizedBox(width: 5),
-                                                Text(
+                                                    .eventtypeIcon,
+                                                height: screenWidth * 0.06,
+                                                width: screenWidth * 0.06,
+                                              ),
+                                              SizedBox(
+                                                  width: screenWidth * 0.02),
+                                              SizedBox(
+                                                width: screenWidth * .4,
+                                                child: Text(
                                                   event.eventTitle,
+                                                  maxLines: 1,
                                                   style: TextStyle(
-                                                    fontSize: 16,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    fontSize:
+                                                        textSize.clamp(14, 16),
                                                     fontFamily: popinsMedium,
                                                     color: AppClass()
                                                         .hexToColor(event
@@ -552,49 +556,53 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                                                             .eventtypeTextcolor),
                                                   ),
                                                 ),
-                                              ],
+                                              ),
+                                            ],
+                                          ),
+                                          Text(
+                                            event.paid == '0'
+                                                ? 'Free Event'
+                                                : event.paid == '1'
+                                                    ? 'Paid Event'
+                                                    : '',
+                                            style: TextStyle(
+                                              fontFamily: popinsMedium,
+                                              fontSize: textSize.clamp(12, 14),
+                                              color: AppClass().hexToColor(event
+                                                  .eventhastype!
+                                                  .eventtypeTextcolor),
                                             ),
-                                            Text(
-                                                event.paid == '0'
-                                                    ? 'Free Event'
-                                                    : event.paid == '1'
-                                                        ? 'Paid Event'
-                                                        : '',
-                                                style: TextStyle(
-                                                    fontFamily: popinsMedium,
-                                                    fontSize: 14,
-                                                    color: AppClass()
-                                                        .hexToColor(event
-                                                            .eventhastype!
-                                                            .eventtypeTextcolor))),
-                                          ],
-                                        ),
+                                          ),
+                                        ],
                                       ),
-                                    );
-                                  }),
-                                ],
-                              ),
-                            );
-                          },
-                        ),
-                      );
-                    } else {
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: const Center(
-                          child: Text(
-                            'No Events for Selected Month',
-                            style: TextStyle(fontFamily: popinsMedium),
+                                    ),
+                                  );
+                                }),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  } else {
+                    return Padding(
+                      padding: EdgeInsets.all(screenWidth * 0.04),
+                      child: Center(
+                        child: Text(
+                          'No Events for Selected Month',
+                          style: TextStyle(
+                            fontFamily: popinsMedium,
+                            fontSize: textSize.clamp(14, 16),
                           ),
                         ),
-                      );
-                    }
-                  }),
-                ],
-              );
-            },
-          ),
-        ),
+                      ),
+                    );
+                  }
+                }),
+              ],
+            );
+          },
+        )),
       ],
     );
   }

@@ -1,4 +1,5 @@
 import 'package:community_islamic_app/constants/color.dart';
+import 'package:community_islamic_app/widgets/myText.dart';
 import 'package:flutter/material.dart';
 import '../constants/image_constants.dart';
 import '../controllers/home_controller.dart';
@@ -81,7 +82,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
                         color: whiteColor,
                       ),
                       const SizedBox(width: 8),
-                      Text(
+                      MyText(
                         label,
                         style: TextStyle(
                           fontSize: 12,

@@ -1,31 +1,26 @@
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:community_islamic_app/constants/color.dart';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/timezone.dart' as tz;
 
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
-
 class ReminderUtil {
   static Future<void> initializeNotifications() async {
-    const AndroidInitializationSettings androidSettings =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
-
-    const DarwinInitializationSettings iOSSettings = DarwinInitializationSettings(
-      requestSoundPermission: true,
-      requestBadgePermission: true,
-      requestAlertPermission: true,
-    );
-
-    const InitializationSettings initSettings = InitializationSettings(
-      android: androidSettings,
-      iOS: iOSSettings,
-    );
-
-    await flutterLocalNotificationsPlugin.initialize(
-      initSettings,
-      onDidReceiveNotificationResponse: (response) {
-        // Handle notification response
-      },
+    await AwesomeNotifications().initialize(
+      'resource://drawable/logo', // Use app icon for notifications
+      [
+        NotificationChannel(
+          channelKey: 'event_reminders',
+          channelName: 'Event Reminders',
+          channelDescription: 'Reminders for upcoming events',
+          importance: NotificationImportance.High,
+          playSound: true,
+          enableVibration: true,
+          defaultColor: primaryColor,
+          ledColor: Colors.white,
+        ),
+      ],
+      debug: true,
     );
   }
 
@@ -39,40 +34,32 @@ class ReminderUtil {
       throw Exception('Reminder time has already passed.');
     }
 
+    // Convert the DateTime to TZ format
     final tz.TZDateTime tzReminderDateTime = tz.TZDateTime.from(
       reminderDateTime,
       tz.local,
     );
 
-    const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
-      'event_reminders',
-      'Event Reminders',
-      channelDescription: 'Reminders for upcoming events',
-      importance: Importance.high,
-      priority: Priority.high,
+    // Schedule the notification
+    await AwesomeNotifications().createNotification(
+      schedule: NotificationCalendar.fromDate(
+        date: tzReminderDateTime,
+        preciseAlarm: true, // Ensures it fires exactly at the time
+      ),
+      content: NotificationContent(
+        id: eventId.hashCode, // Unique ID based on event
+        channelKey: 'event_reminders',
+        title: title,
+        body: details,
+        notificationLayout: NotificationLayout.Default,
+        payload: {"eventId": eventId},
+      ),
     );
 
-    const DarwinNotificationDetails iOSDetails = DarwinNotificationDetails();
-
-    const NotificationDetails notificationDetails = NotificationDetails(
-      android: androidDetails,
-      iOS: iOSDetails,
-    );
-
-    // Use eventId as notification ID to uniquely identify each reminder
-    await flutterLocalNotificationsPlugin.zonedSchedule(
-      eventId.hashCode, // Unique ID for the notification
-      title,
-      details,
-      tzReminderDateTime,
-      notificationDetails,
-      androidAllowWhileIdle: true,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
-    );
-
-    // Save the reminder to local storage
+    // Save the reminder locally
     await saveReminderToStorage(eventId, reminderDateTime);
+
+    print("Reminder set for $title at $reminderDateTime");
   }
 
   static Future<void> saveReminderToStorage(String eventId, DateTime reminderDateTime) async {
@@ -90,14 +77,16 @@ class ReminderUtil {
   }
 
   static Future<void> cancelReminder(String eventId) async {
-    await flutterLocalNotificationsPlugin.cancel(eventId.hashCode);
+    await AwesomeNotifications().cancel(eventId.hashCode);
     final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(eventId); // Remove the saved reminder from storage
+    await prefs.remove(eventId); // Remove from storage
+    print("Reminder canceled for Event ID: $eventId");
   }
 
   static Future<void> cancelAllReminders() async {
-    await flutterLocalNotificationsPlugin.cancelAll();
+    await AwesomeNotifications().cancelAll();
     final prefs = await SharedPreferences.getInstance();
-    await prefs.clear(); // Clear all saved reminders
+    await prefs.clear(); // Clear all reminders
+    print("All reminders have been canceled.");
   }
 }

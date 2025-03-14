@@ -1,334 +1,129 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:community_islamic_app/views/home_screens/EventsAndannouncements/allEvents.dart';
 import 'package:community_islamic_app/views/home_screens/EventsAndannouncements/announcements_screen.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/timezone.dart' as tz;
 
 class NotificationServices {
-  final FlutterLocalNotificationsPlugin _flutterLocalNotificationPlugin =
-      FlutterLocalNotificationsPlugin();
-
   static SharedPreferences? sharedPreferencess;
 
-  Future<void> createPrayerNotificationChannels() async {
-    AndroidFlutterLocalNotificationsPlugin? plugin =
-        _flutterLocalNotificationPlugin.resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>();
+  void initializeNotifications() async {
+    await AwesomeNotifications().initialize(
+      'resource://drawable/logo',
+      _notificationChannels(),
+    );
 
-    List<AndroidNotificationChannel> channels = [
-      const AndroidNotificationChannel(
-        'makkah_channel',
-        'Makkah Notifications',
-        description:
-            'This channel is used for prayer notifications with makhah azan.',
-        importance: Importance.max,
-        sound: RawResourceAndroidNotificationSound("azan"),
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      debugPrint(
+          "📩 Foreground notification received: \${message.notification?.title}");
+      handleForegroundNotification(message);
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      debugPrint("🏁 Notification Clicked: \${message.notification?.title}");
+      handleNotificationNavigation(message.data['type'] ?? "");
+    });
+  }
+
+  List<NotificationChannel> _notificationChannels() {
+    return [
+      NotificationChannel(
+        channelKey: 'announcement_channel',
+        channelName: 'Announcements',
+        channelDescription: 'Notification channel for announcements',
+        defaultColor: Colors.blue,
+        ledColor: Colors.blue,
         playSound: true,
+        importance: NotificationImportance.High,
       ),
-      const AndroidNotificationChannel(
-        'madina_channel',
-        'Madina Notifications',
-        description:
-            'This channel is used for prayer notifications with madina azan.',
-        importance: Importance.max,
-        sound: RawResourceAndroidNotificationSound("azanmadina"),
+      NotificationChannel(
+        channelKey: 'events_channel',
+        channelName: 'Events',
+        channelDescription: 'Notification channel for events',
+        defaultColor: Colors.green,
+        ledColor: Colors.green,
         playSound: true,
-      ),
-      const AndroidNotificationChannel(
-        'iqamah_channel',
-        'Iqamah Notifications',
-        description: 'This channel is used for Iqamah notifications.',
-        importance: Importance.max,
-        sound: RawResourceAndroidNotificationSound("iqamah"),
-        playSound: true,
-      ),
-      const AndroidNotificationChannel(
-        'default_channel',
-        'Default Notifications',
-        description:
-            'This channel is used for prayer notifications with Default sound.',
-        importance: Importance.max,
-        sound: RawResourceAndroidNotificationSound("beep"),
-        playSound: true,
-      ),
-      const AndroidNotificationChannel(
-        'disable_channel',
-        'Disable Notifications',
-        description:
-            'This channel is used for prayer notifications with sound disabled.',
-        importance: Importance.low,
-        sound: null,
-        playSound: false,
-      ),
-      const AndroidNotificationChannel(
-        'events_channel',
-        'Events Notifications',
-        description: 'This channel is used for events and announcements .',
-        importance: Importance.max,
-        sound: null,
-        playSound: false,
-      ),
-      const AndroidNotificationChannel(
-        'announcement_channel',
-        'Announcement Notifications',
-        description: 'This channel is used for events and announcements .',
-        importance: Importance.max,
-        sound: null,
-        playSound: false,
+        importance: NotificationImportance.High,
       ),
     ];
+  }
 
-    for (var channel in channels) {
-      await plugin?.createNotificationChannel(channel);
+  void handleForegroundNotification(RemoteMessage message) {
+    if (message.notification != null) {
+      int notificationId = message.messageId?.hashCode ??
+          DateTime.now().millisecondsSinceEpoch.remainder(100000);
+      AwesomeNotifications().createNotification(
+        content: NotificationContent(
+          largeIcon: 'resource://drawable/logo',
+          id: notificationId,
+          channelKey: _getChannelKey(message),
+          title: message.notification!.title,
+          body: message.notification!.body,
+          notificationLayout: NotificationLayout.Default,
+          payload: {"type": message.data['type'] ?? ""},
+        ),
+      );
     }
   }
 
-  Future<void> cancelAll() async {
-    await _flutterLocalNotificationPlugin.cancelAll();
+  String _getChannelKey(RemoteMessage message) {
+    if (message.data['type'] == "Alert") {
+      return 'announcement_channel';
+    } else if (message.data['type'] == "Events") {
+      return 'events_channel';
+    }
+    return 'events_channel';
   }
 
-  Future<void> initializeNotification() async {
-    const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('logo');
-
-    const DarwinInitializationSettings initializationSettingsDarwin =
-        DarwinInitializationSettings();
-
-    const InitializationSettings initializationSettings =
-        InitializationSettings(
-      android: initializationSettingsAndroid,
-      iOS: initializationSettingsDarwin,
-    );
-
-    await _flutterLocalNotificationPlugin.initialize(
-      initializationSettings,
-      onDidReceiveNotificationResponse: (NotificationResponse response) {
-        // Handle notification click
-        if (response.actionId == "muteButton") {
-          _flutterLocalNotificationPlugin.cancel(response.id ?? 0);
-        }
-      },
-    );
-    await _flutterLocalNotificationPlugin.initialize(
-      initializationSettings,
-      onDidReceiveNotificationResponse: (NotificationResponse response) {
-        if (response.payload != null) {
-          _handleNotificationNavigation(response.payload!);
-        }
-      },
-    );
-    await _flutterLocalNotificationPlugin
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
-        ?.requestNotificationsPermission();
-    // .requestNotificationsPermission();
-
-    await _flutterLocalNotificationPlugin
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
-        ?.requestExactAlarmsPermission();
-    // .requestExactAlarmsPermission();
-
-    sharedPreferencess = await SharedPreferences.getInstance();
-
-    List<AndroidNotificationChannel>? channelList =
-        await _flutterLocalNotificationPlugin
-            .resolvePlatformSpecificImplementation<
-                AndroidFlutterLocalNotificationsPlugin>()
-            ?.getNotificationChannels();
-
-    if (channelList == null || channelList.isEmpty) {
-      await createPrayerNotificationChannels();
-    }
-
-    List<PendingNotificationRequest> pending =
-        await _flutterLocalNotificationPlugin.pendingNotificationRequests();
-
-    if (pending.isNotEmpty) {
-      for (int i = 0; i < pending.length; i++) {
-        debugPrint("Pending Not ${pending[i].body}");
-      }
-    }
-  }
-
-  NotificationDetails notificationDetails({required String title}) {
-    String sound = sharedPreferencess!.getString("selectedSound")!;
-
-    // Handle Iqamah notifications separately
-    if (title.contains("Iqamah")) {
-      sound = 'iqamah';
-    } else {
-      // Handle Adhan notifications
-      sound = sound == 'Adhan - Makkah'
-          ? "makkah"
-          : sound == 'Adhan - Madina'
-              ? "madina"
-              : sound.toLowerCase();
-    }
-
-    return NotificationDetails(
-      android: AndroidNotificationDetails(
-        sound == "disable" || sharedPreferencess!.getBool(title)!
-            ? "${sound}_channel"
-            : "default_channel",
-        sound == "disable" || sharedPreferencess!.getBool(title)!
-            ? "${sound.capitalizeFirst} Notifications"
-            : 'Default Notifications',
-        importance: sound == "disable" ? Importance.low : Importance.max,
-        playSound:
-            !(sharedPreferencess!.getString("selectedSound")! == "disable"),
-        priority: Priority.high,
-        sound: sound == 'iqamah'
-            ? const RawResourceAndroidNotificationSound('iqamah')
-            : sharedPreferencess!.getBool(title)!
-                ? sharedPreferencess!.getString("selectedSound")! == "Disable"
-                    ? null
-                    : RawResourceAndroidNotificationSound(
-                        sharedPreferencess!.getString("selectedSound")! ==
-                                "Adhan - Makkah"
-                            ? 'azan'
-                            : sharedPreferencess!.getString("selectedSound")! ==
-                                    "Adhan - Madina"
-                                ? 'azanmadina'
-                                : "beep")
-                : const RawResourceAndroidNotificationSound('beep'),
-        actions: [
-          const AndroidNotificationAction("muteButton", "Mute"),
-        ],
-      ),
-      iOS: const DarwinNotificationDetails(),
-    );
-  }
-
-  int getDayOfYear(DateTime date) {
-    return date.difference(DateTime(date.year, 1, 1)).inDays + 1;
-  }
-
-  Future scheduleNotificationForAdhan({
-    String title = "ADHAN REMINDER",
-    String? body,
-    required String payLoad,
-    required DateTime scheduleNotificationDateTime,
-  }) async {
-    debugPrint(
-      "Scheduling Notification for $payLoad Will run at ${scheduleNotificationDateTime.day}-${scheduleNotificationDateTime.month} ${scheduleNotificationDateTime.hour} : ${scheduleNotificationDateTime.minute}",
-    );
-
-    int flag = 0;
-
-    if (payLoad == "fajr") {
-      flag = 1;
-    }
-
-    if (payLoad == "dhuhr") {
-      flag = 2;
-    }
-
-    if (payLoad == "asr") {
-      flag = 3;
-    }
-
-    if (payLoad == "maghrib") {
-      flag = 4;
-    }
-
-    if (payLoad == "isha") {
-      flag = 5;
-    }
-
-    if (payLoad == "fajrIqamah") {
-      flag = 6;
-    }
-
-    if (payLoad == "dhuhrIqamah") {
-      flag = 7;
-    }
-
-    if (payLoad == "asrIqamah") {
-      flag = 8;
-    }
-
-    if (payLoad == "maghribIqamah") {
-      flag = 9;
-    }
-
-    if (payLoad == "ishaIqamah") {
-      flag = 10;
-    }
-
-    int dayOfYear = getDayOfYear(scheduleNotificationDateTime);
-
-    int uniqueId = dayOfYear * 10 + flag;
-
-    await _flutterLocalNotificationPlugin.zonedSchedule(
-      uniqueId,
-      title,
-      body,
-      tz.TZDateTime.from(scheduleNotificationDateTime, tz.local),
-      notificationDetails(
-        title: payLoad,
-      ),
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
-    );
-
-    debugPrint(
-      "this is here",
-    );
-  }
-
-  /// -------- Announcements------------------
   Future<void> notificationsForAnnouncements(RemoteMessage message) async {
     if (sharedPreferencess?.getBool('annoucement') ?? false) {
-      await _flutterLocalNotificationPlugin.show(
-        1,
-        'ANNOUNCEMENT NOTIFICATION', // Static title
-        message.notification?.body ?? 'This is Announcement Notification',
-        const NotificationDetails(
-          android: AndroidNotificationDetails(
-            'announcement_channel',
-            'Announcement Notifications',
-            importance: Importance.max,
-            playSound: false,
-            priority: Priority.high,
-          ),
-          iOS: DarwinNotificationDetails(),
+      int notificationId = message.messageId?.hashCode ?? 1;
+      AwesomeNotifications().createNotification(
+        content: NotificationContent(
+          id: notificationId,
+          channelKey: 'announcement_channel',
+          title: '📢 ANNOUNCEMENT NOTIFICATION',
+          body: message.notification?.body ??
+              'This is an Announcement Notification',
+          notificationLayout: NotificationLayout.Default,
+          payload: {"type": "Alert"},
         ),
       );
     }
-    debugPrint("this is here");
+    debugPrint("Announcement notification sent.");
   }
 
-  ///------------ Events-----------
   Future<void> notificationsForEvents(RemoteMessage message) async {
     if (sharedPreferencess?.getBool('event') ?? false) {
-      await _flutterLocalNotificationPlugin.show(
-        1,
-        'EVENT NOTIFICATION', // Static title
-        message.notification?.body ?? 'This is Event Notification',
-        const NotificationDetails(
-          android: AndroidNotificationDetails(
-            'events_channel',
-            'Events Notifications',
-            importance: Importance.max,
-            playSound: false,
-            priority: Priority.high,
-          ),
-          iOS: DarwinNotificationDetails(),
+      int notificationId = message.messageId?.hashCode ?? 2;
+      AwesomeNotifications().createNotification(
+        content: NotificationContent(
+          id: notificationId,
+          channelKey: 'events_channel',
+          title: '🎉 EVENT NOTIFICATION',
+          body: message.notification?.body ?? 'This is an Event Notification',
+          notificationLayout: NotificationLayout.Default,
+          payload: {"type": "Events"},
         ),
       );
     }
+    debugPrint("Event notification sent.");
   }
+}
 
-  void _handleNotificationNavigation(String payload) {
-    if (payload == "Alert") {
-      Get.to(() => AnnouncementsScreen());
-    } else if (payload == "Events") {
-      Get.to(() => AllEventsDatesScreen());
-    }
+void handleNotificationNavigation(String payload) {
+  debugPrint("Received Payload: \$payload");
+
+  if (payload == "Alert") {
+    debugPrint("Navigating to AnnouncementsScreen");
+    Get.offAll(() => AnnouncementsScreen());
+  } else if (payload == "Events") {
+    debugPrint("Navigating to AllEventsDatesScreen");
+    Get.offAll(() => AllEventsDatesScreen());
+  } else {
+    debugPrint("Unknown Payload: \$payload");
   }
 }

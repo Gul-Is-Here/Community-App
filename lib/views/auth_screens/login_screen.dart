@@ -54,7 +54,9 @@ class LoginScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Expanded(
+                    SizedBox(
+                      // Replace Expanded with SizedBox
+                      width: double.infinity,
                       child: Padding(
                         padding: const EdgeInsets.only(
                             top: 250, left: 0, right: 0, bottom: 0),
@@ -74,22 +76,20 @@ class LoginScreen extends StatelessWidget {
                                 fit: BoxFit.cover,
                               ),
                             ),
-                            // height: screenHeight * .65,
                             child: Padding(
                               padding: const EdgeInsets.all(16.0),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  SizedBox(
-                                    height: 50,
-                                  ),
+                                  SizedBox(height: 50),
                                   const Text(
                                     'Login',
                                     style: TextStyle(
-                                        fontSize: 24,
-                                        fontFamily: popinsMedium,
-                                        fontWeight: FontWeight.bold),
+                                      fontSize: 24,
+                                      fontFamily: popinsMedium,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                   SizedBox(
                                     height: 30,

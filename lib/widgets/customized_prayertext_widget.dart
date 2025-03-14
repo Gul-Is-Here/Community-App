@@ -1,6 +1,7 @@
 import 'package:blinking_text/blinking_text.dart';
 import 'package:community_islamic_app/controllers/home_controller.dart';
 import 'package:community_islamic_app/widgets/blinkContainer.dart';
+import 'package:community_islamic_app/widgets/myText.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -25,22 +26,19 @@ class PrayerTimeWidget extends StatelessWidget {
   final String name; // Prayer name (e.g., Fajr, Dhuhr)
   final String namazName; // Specific namaz name for Iqama lookup
   final String timings; // Azan time (in "HH:mm" format)
-  final Map<String, String> iqamatimes; // Iqama times
+  final String iqamatimes; // Iqama times
 
   @override
   Widget build(BuildContext context) {
-    final appClass = AppClass();
     final screenHeight1 = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     // Default Iqama time
-    String iqamaTime = iqamatimes[namazName] ?? 'Not available';
+    // String iqamaTime = iqamatimes[namazName] ?? '02:00 PM';
 
-    // Check if the prayer is Maghrib and adjust the Iqama time accordingly
-    if (namazName == 'Maghrib') {
-      iqamaTime = appClass.formatPrayerTimeToAmPm(
-        appClass.addMinutesToPrayerTime(timings, 5), // Add and format
-      );
-    }
+    // // Check if the prayer is Maghrib and adjust the Iqama time accordingly
+    // if (namazName == 'Maghrib') {
+    //   iqamaTime = AppClass().calculateIqamaTime(timings); // Add and format
+    // }
 
     // Set background color based on current prayer
     // Color backgroundColor = (currentPrayer == namazName)
@@ -60,14 +58,16 @@ class PrayerTimeWidget extends StatelessWidget {
           ),
           currentPrayer == namazName
               ? BlinkingContainer()
-              : Container(
-                  height: 10,
-                  width: 10,
-                  decoration: BoxDecoration(
-                      gradient:
-                          LinearGradient(colors: [lightColor, lightColor]),
-                      borderRadius: BorderRadius.circular(20)),
-                ),
+              : namazName == 'Jumuah'
+                  ? BlinkingContainer()
+                  : Container(
+                      height: 10,
+                      width: 10,
+                      decoration: BoxDecoration(
+                          gradient:
+                              LinearGradient(colors: [lightColor, lightColor]),
+                          borderRadius: BorderRadius.circular(20)),
+                    ),
           const SizedBox(
             height: 5,
           ),
@@ -81,19 +81,19 @@ class PrayerTimeWidget extends StatelessWidget {
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter)
                       .createShader(bounds),
-                  child: Text(
+                  child: MyText(
                     name,
                     style: TextStyle(
-                      fontSize: 10,
+                      fontSize: 11,
                       fontFamily: popinsBold,
                       color: whiteColor,
                     ),
                   ),
                 )
-              : Text(
+              : MyText(
                   name,
                   style: TextStyle(
-                    fontSize: 10,
+                    fontSize: 11,
                     fontFamily: popinsBold,
                     color: lightColor,
                   ),
@@ -114,21 +114,21 @@ class PrayerTimeWidget extends StatelessWidget {
                                   begin: Alignment.topCenter,
                                   end: Alignment.bottomCenter)
                               .createShader(bounds),
-                      child: Text(
-                        appClass.formatPrayerTimeToAmPm(timings),
+                      child: MyText(
+                        timings,
                         style: TextStyle(
                             color: whiteColor,
                             fontFamily: popinsRegulr,
                             // fontWeight: FontWeight.bold,
-                            fontSize: 10),
+                            fontSize: 11),
                       ))
-                  : Text(
-                      appClass.formatPrayerTimeToAmPm(timings),
+                  : MyText(
+                      timings,
                       style: TextStyle(
                           color: lightColor,
                           fontFamily: popinsRegulr,
                           // fontWeight: FontWeight.bold,
-                          fontSize: 10),
+                          fontSize: 11),
                     ),
               currentPrayer == namazName
                   ? ShaderMask(
@@ -140,18 +140,18 @@ class PrayerTimeWidget extends StatelessWidget {
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
                           ).createShader(bounds),
-                      child: Text(
-                        iqamaTime,
+                      child: MyText(
+                        iqamatimes,
                         style: TextStyle(
                             color: whiteColor,
                             fontFamily: popinsRegulr,
                             // fontWeight: FontWeight,
-                            fontSize: 10),
+                            fontSize: 11),
                       ))
-                  : Text(
-                      iqamaTime, // Already formatted Iqama time
+                  : MyText(
+                      iqamatimes, // Already formatted Iqama time
                       style: TextStyle(
-                        fontSize: 10,
+                        fontSize: 11,
                         fontFamily: popinsRegulr,
                         color: lightColor,
                       ),

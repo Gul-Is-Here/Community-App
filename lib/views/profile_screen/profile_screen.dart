@@ -57,7 +57,7 @@ class ProfileScreen extends StatelessWidget {
                   height: screenHeight * 0.8,
                   child: Center(
                     child: SpinKitFadingCircle(
-                      color: primaryColor,
+                      color: lightColor,
                       size: 50.0,
                     ),
                   ),

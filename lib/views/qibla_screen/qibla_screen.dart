@@ -8,6 +8,7 @@ import '../../constants/image_constants.dart';
 import '../../controllers/home_controller.dart';
 import '../../controllers/login_controller.dart';
 import '../../controllers/qibla_controller.dart';
+import '../../widgets/myText.dart';
 
 class QiblahScreen extends StatelessWidget {
   final bool isNavigation;
@@ -253,7 +254,7 @@ class QiblahScreen extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Text(
+          MyText(
             value,
             style: TextStyle(
               fontFamily: popinsSemiBold,

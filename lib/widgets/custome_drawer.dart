@@ -1,6 +1,7 @@
 import 'package:community_islamic_app/constants/color.dart';
 import 'package:community_islamic_app/constants/globals.dart';
 import 'package:community_islamic_app/constants/image_constants.dart';
+import 'package:community_islamic_app/controllers/delete_account_controller.dart';
 import 'package:community_islamic_app/controllers/login_controller.dart';
 import 'package:community_islamic_app/controllers/profileController.dart';
 import 'package:community_islamic_app/views/about_us/about_us.dart';
@@ -32,7 +33,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
   final isLoggedIn = true.obs;
 
   final loginController = Get.find<LoginController>();
-
+  final deleteAccountController = Get.put(DeleteAccountController());
   final profileController = Get.put(ProfileController());
 
   Future<void> handleProfileNavigation() async {
@@ -389,6 +390,71 @@ class _CustomDrawerState extends State<CustomDrawer> {
                 Get.to(() => ContactUsPage());
               },
             ),
+            Padding(
+              padding: const EdgeInsets.only(left: 0),
+              child: Obx(() {
+                return isLoggedIn.value &&
+                        profileController.userData['user'] != null
+                    ? ListTile(
+                        leading: Icon(
+                          Icons.delete,
+                          color: goldenColor,
+                        ),
+                        title: Text(
+                          'Delete Account',
+                          style: TextStyle(
+                            fontFamily: popinsRegulr,
+                            fontSize: 14,
+                            color: whiteColor,
+                          ),
+                        ),
+                        onTap: () {
+                          Get.dialog(
+                            AlertDialog(
+                              title: Text(
+                                "Confirm Deletion",
+                                style: TextStyle(fontFamily: popinsMedium           ),
+                              ),
+                              content: Text(
+                                "Are you sure you want to delete your account? This action cannot be undone.",
+                                style: TextStyle(fontFamily: popinsRegulr),
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Get.back(); // Close dialog
+                                  },
+                                  child: Text(
+                                    "No",
+                                    style: TextStyle(
+                                        fontFamily: popinsMedium,
+                                        color: primaryColor),
+                                  ),
+                                ),
+                                TextButton(
+                                  onPressed: () async {
+                                    Get.back(); // Close dialog
+                                    await deleteAccountController
+                                        .deleteMyAccount(
+                                            globals.accessToken.value);
+                                    await loginController.logoutUser();
+                                    Get.offAll(() =>
+                                        LoginScreen()); // Navigate to login screen
+                                  },
+                                  child: Text("Yes",
+                                      style: TextStyle(
+                                          color: Colors.red,
+                                          fontFamily: popinsMedium)),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      )
+                    : const SizedBox();
+              }),
+            ),
+
             const Spacer(),
 
             Padding(

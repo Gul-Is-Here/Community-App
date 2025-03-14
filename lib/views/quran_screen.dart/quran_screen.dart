@@ -10,6 +10,7 @@ import '../../constants/image_constants.dart';
 import '../../controllers/audio_controller.dart';
 import '../../controllers/login_controller.dart';
 import '../../model/quran_audio_model.dart';
+import '../../widgets/myText.dart';
 import 'player_bar_screen.dart';
 import 'surah_audio_detail_screen.dart';
 
@@ -65,7 +66,7 @@ class _QuranScreenState extends State<QuranScreen> {
               color: lightColor,
               height: 2.0,
             )),
-        title: Text(
+        title: MyText(
           'Listen/Read Quran',
           style: TextStyle(
             fontFamily: popinsSemiBold,
@@ -94,6 +95,7 @@ class _QuranScreenState extends State<QuranScreen> {
           children: [
             // List of Surahs
             ListView.builder(
+              padding: EdgeInsets.only(bottom: 60),
               controller: scrollController,
               itemCount: quranController.chapters.length,
               itemBuilder: (context, index) {
