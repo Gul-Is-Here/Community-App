@@ -148,7 +148,8 @@ class _EventDetailPageState extends State<EventDetailPage> {
 
 🌟 *Event Description*: $details
 
-📌 *RSVP* : ${widget.resUrl}
+ ${widget.resUrl != null ? "📌 *RSVP*: ${widget.resUrl}" : ""}
+
 
 *Shared from Rosenberg Community Center App*
 """;
@@ -493,11 +494,11 @@ Join Us for a Special Gathering at the Rosenberg Community Center
 ⏰ Time: ${AppClass().formatTimeToAMPM(widget.sTime)} – ${AppClass().formatTimeToAMPM(widget.endTime)}
 📍 Location: ${widget.eventVenue}
 
-🌟 Theme: ${widget.title}
+🌟 : ${widget.title}
 
 $details
 
-📌 RSVP Required: ${widget.locatinV}
+📌 RSVP : ${widget.resUrl ?? ''}l
 
 *Shared from Rosenberg Community Center App*
 """;

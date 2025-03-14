@@ -126,7 +126,7 @@ class AskImamPage extends StatelessWidget {
                       onTap: () {
                         _askImamController.selectedOption.value = 1;
                         const String calendlyUrl =
-                            "https://calendly.com/gulfarazahmed08/30min";
+                            "https://calendly.com/imammak/30min";
                         AppClass().launchURL(calendlyUrl);
                       },
                       child: Padding(
