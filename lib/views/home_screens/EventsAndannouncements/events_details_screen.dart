@@ -138,17 +138,18 @@ class _EventDetailPageState extends State<EventDetailPage> {
     });
     try {
       String formattedDetails = """
-Join Us for a Special Gathering at the Rosenberg Community Center
+*Join Rosenberg Community Center*
 
-📅 Date: ${AppClass().formatDate2(widget.eventDate)}
-⏰ Time: ${AppClass().formatTimeToAMPM(widget.sTime)} – ${AppClass().formatTimeToAMPM(widget.endTime)}
-📍 Location: ${widget.eventVenue}
+📅 *Date*: ${AppClass().formatDate2(widget.eventDate)}
+⏰ *Time*: ${AppClass().formatTimeToAMPM(widget.sTime)} – ${AppClass().formatTimeToAMPM(widget.endTime)}
+📍 *Location*: ${widget.locatinV}
 
-🌟 Theme: ${widget.title}
+🌟 *Event*: ${widget.title}
 
-$details
+🌟 *Event Description*: $details
 
-📌 RSVP Required: ${widget.locatinV}
+ ${widget.resUrl != null ? "📌 *RSVP*: ${widget.resUrl}" : ""}
+
 
 *Shared from Rosenberg Community Center App*
 """;
@@ -493,11 +494,11 @@ Join Us for a Special Gathering at the Rosenberg Community Center
 ⏰ Time: ${AppClass().formatTimeToAMPM(widget.sTime)} – ${AppClass().formatTimeToAMPM(widget.endTime)}
 📍 Location: ${widget.eventVenue}
 
-🌟 Theme: ${widget.title}
+🌟 : ${widget.title}
 
 $details
 
-📌 RSVP Required: ${widget.locatinV}
+📌 RSVP : ${widget.resUrl ?? ''}l
 
 *Shared from Rosenberg Community Center App*
 """;

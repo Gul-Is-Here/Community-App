@@ -58,9 +58,11 @@ class _AnnouncementsDetailsScreenState
 
           await Share.shareXFiles([XFile(file.path)], text: text);
         } else {
-          throw Exception("Failed to download image");
+          // If image download fails, still share text
+          await Share.share(text);
         }
       } else {
+        // If no image, just share the text
         await Share.share(text);
       }
     } catch (e) {

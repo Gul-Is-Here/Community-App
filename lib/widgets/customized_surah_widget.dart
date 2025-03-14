@@ -1,5 +1,6 @@
 import 'package:community_islamic_app/constants/color.dart';
 import 'package:community_islamic_app/model/quran_audio_model.dart';
+import 'package:community_islamic_app/widgets/myText.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
@@ -146,7 +147,7 @@ class _CustomizedSurahWidgetState extends State<CustomizedSurahWidget> {
           Expanded(
             child: Column(
               children: [
-                Text(
+                MyText(
                   widget.surahTxet,
                   style: const TextStyle(
                     fontSize: 18,
@@ -154,7 +155,7 @@ class _CustomizedSurahWidgetState extends State<CustomizedSurahWidget> {
                     fontFamily: jameelNori2,
                   ),
                 ),
-                Text(
+                MyText(
                   widget.surahNameEng,
                   style: const TextStyle(
                     // fontSize: 18,

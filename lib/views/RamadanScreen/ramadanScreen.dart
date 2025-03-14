@@ -4,43 +4,50 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../constants/image_constants.dart';
 import '../../controllers/ramadanController.dart';
-
 import '../../model/ramadan_model.dart';
 
 class RamadanScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final RamadanController controller = Get.put(RamadanController());
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       appBar: AppBar(
-          bottom: PreferredSize(
-              preferredSize: const Size.fromHeight(4.0),
-              child: Container(
-                color: lightColor,
-                height: 2.0,
-              )),
-          title: Text(
-            "Ramadan 2025",
-            style: TextStyle(
-                fontFamily: popinsSemiBold, fontSize: 18, color: whiteColor),
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(screenHeight * 0.005),
+          child: Container(
+            color: lightColor,
+            height: screenHeight * 0.002,
           ),
-          backgroundColor: primaryColor),
+        ),
+        title: Text(
+          "Ramadan 2025",
+          style: TextStyle(
+            fontFamily: popinsSemiBold,
+            fontSize: screenWidth * 0.045,
+            color: whiteColor,
+          ),
+        ),
+        backgroundColor: primaryColor,
+      ),
       body: Obx(() {
         if (controller.isLoading.value) {
           return Center(
-              child: CircularProgressIndicator(
-            color: lightColor,
-          ));
+            child: CircularProgressIndicator(color: lightColor),
+          );
         }
+
         return ListView.builder(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(screenWidth * 0.04),
           itemCount: controller.ramadanData.value.ramadan.length,
           itemBuilder: (context, index) {
             RamadanEvent item = controller.ramadanData.value.ramadan[index];
             return Column(
               children: [
-                _buildRamadanCard(item, icRamadanIconsList[index]),
-                // SizedBox(height: ,)
+                _buildRamadanCard(
+                    item, icRamadanIconsList[index], screenWidth, screenHeight),
               ],
             );
           },
@@ -49,26 +56,27 @@ class RamadanScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildRamadanCard(RamadanEvent item, String image) {
+  Widget _buildRamadanCard(RamadanEvent item, String image, double screenWidth,
+      double screenHeight) {
     return Stack(
+      clipBehavior: Clip.antiAlias,
       fit: StackFit.loose,
       alignment: Alignment.center,
       children: [
         Column(
           children: [
-            const SizedBox(height: 8),
+            SizedBox(height: screenHeight * 0.06),
             Container(
-              height: 150,
-              width: 320,
-              padding: const EdgeInsets.all(16),
+              width: screenWidth * 0.9,
+              padding: EdgeInsets.all(screenWidth * 0.04),
               decoration: BoxDecoration(
                 color: primaryColor,
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(screenWidth * 0.05),
                 boxShadow: [
-                  const BoxShadow(
+                  BoxShadow(
                     color: Colors.black26,
-                    blurRadius: 8,
-                    offset: Offset(0, 4),
+                    blurRadius: screenWidth * 0.02,
+                    offset: Offset(0, screenHeight * 0.005),
                   ),
                 ],
               ),
@@ -79,23 +87,27 @@ class RamadanScreen extends StatelessWidget {
                   Text(
                     item.title,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        fontFamily: popinsRegulr),
+                    style: TextStyle(
+                      fontSize: screenWidth * 0.045,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      fontFamily: popinsRegulr,
+                    ),
                   ),
-                  const SizedBox(height: 12),
+                  SizedBox(height: screenHeight * 0.015),
                   if (item.btnText.isNotEmpty)
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color(
                             int.parse(item.btnColor.replaceFirst('#', '0xFF'))),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius:
+                              BorderRadius.circular(screenWidth * 0.02),
                         ),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 8),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: screenWidth * 0.05,
+                          vertical: screenHeight * 0.012,
+                        ),
                       ),
                       onPressed: () {
                         if (item.url != null) {
@@ -107,10 +119,9 @@ class RamadanScreen extends StatelessWidget {
                       child: Text(
                         item.btnText,
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: screenWidth * 0.035,
                           fontWeight: FontWeight.bold,
                           fontFamily: popinsRegulr,
-                          // decoration: TextDecoration.underline,
                           color: Color(int.parse(
                               item.btnTextColor.replaceFirst('#', '0xFF'))),
                         ),
@@ -119,19 +130,17 @@ class RamadanScreen extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(
-              height: 30,
-            )
+            SizedBox(height: screenHeight * 0.07),
           ],
         ),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 170.0),
+        Positioned(
+          top: -screenHeight * 0.0,
           child: CircleAvatar(
-            radius: 30,
+            radius: screenWidth * 0.08,
             backgroundColor: lightColor,
             child: Image.asset(
               image,
-              width: 30,
+              width: screenWidth * 0.1,
             ),
           ),
         ),
